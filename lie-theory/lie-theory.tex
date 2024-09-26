@@ -1,5 +1,608 @@
-\documentclass{article}
+% !TeX program = lualatex
+\documentclass[fleqn]{NotesClass}
+
+\usepackage{csquotes}
+
+\usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes from Solitons: Differential Equations, Symmetries, Infinite Dimensional Algebras},pdfkeywords={},pdfsubject={}]{hyperref}  % Should be loaded second last (cleveref last)
+\colorlet{hyperrefcolor}{blue!60!black}
+\hypersetup{colorlinks=true, linkcolor=hyperrefcolor, urlcolor=hyperrefcolor}
+\usepackage[
+capitalize,
+nameinlink,
+noabbrev
+]{cleveref} % Should be loaded last
+
+% My packages
+\usepackage{NotesBoxes}
+\usepackage{NotesMaths2}
+
+\setmathfont[range={\int, \oint, \otimes, \oplus, \bigotimes, \bigoplus}]{Latin Modern Math}
+
+
+% Highlight colour
+\definecolor{highlight}{HTML}{710D78}
+\definecolor{my blue}{HTML}{2A0D77}
+\definecolor{my red}{HTML}{770D38}
+\definecolor{my green}{HTML}{14770D}
+\definecolor{my yellow}{HTML}{E7BB41}
+
+% Title page info
+\title{Lie Theory}
+\author{Willoughby Seago}
+\date{September 26th, 2024}
+\subtitle{Notes from}
+\subsubtitle{University of Glasgow}
+\renewcommand{\abstracttext}{These are my notes from the master's course \emph{Lie Theory} taught at the University of Glasgow by Dr Dinakar Muthiah. These notes were last updated at \printtime{} on \today{}.}
+
+% Commands
+% Maths
+\renewcommand{\field}{\symbb{k}}
+\newcommand{\cat}[1]{\symsfup{#1}}
+\makeatletter
+\newcommand{\c@egory}[1]{\symsfup{#1}}
+\newcommand{\Vect}[1][\field]{#1\text{-}\c@egory{Vect}}
+\makeatother
+\DeclareMathOperator{\Hom}{Hom}
+\DeclarePairedDelimiterX{\commutator}[2]{[}{]}{#1, #2}
+\DeclarePairedDelimiterX{\bracket}[2]{[}{]}{#1, #2}
+\newcommand{\isomorphic}{\cong}
+\DeclareMathOperator{\Span}{span}
+\newcommand{\id}{\symrm{id}}
 
 \begin{document}
-	This is a test document.
+	\frontmatter
+	\titlepage
+	\innertitlepage{}
+	\tableofcontents
+	% \listoffigures
+	\mainmatter
+	\chapter{Introduction}
+	In this course we will study Lie algebras.
+	The motivation for the definition of a Lie algebra is as a tool for studying Lie groups.
+	Despite this we will rarely mention Lie groups, since the study of Lie groups requires a knowledge of differential geometry.
+	We will stick to the study of Lie algebras, which can be defined purely algebraically.
+	
+	Roughly speaking, the storey is thus: Lie groups are both smooth manifolds and groups in a compatible way.
+	By this, we mean that if \(G\) is a Lie group then the maps
+	\begin{itemize}
+		\item \(m \colon G \times G \to G\) given by \(m(x, y) = xy\)
+	    \item \(i \colon G \to G\) given by \(i(g) = g^{-1}\)
+	\end{itemize}
+	are smooth and these maps satisfy the obvious requirements to make \(G\) a group.
+    
+    Lie groups were first used by Sophus Lie, who lends his name to these objects.
+    Lie is pronounced Lee by the way, not lye.
+    He was looking at the continuous symmetries possessed by the solutions to differential equations, and found that these naturally formed what we now know as a Lie group.
+    The problem with studying Lie groups, apart from all of the topology, is that they are generally very non-linear.
+    We can think of Lie algebras as being a linear approximation of Lie groups, given by expanding about the identity and discarding non-linear terms.
+	
+	To get a Lie algebra out of a Lie group we take the tangent space at the identity, \(T_eG\), which is a vector space.
+	It turns out that the group commutator, \(\commutator{g}{h} = ghg^{-1}h^{-1}\), induces a natural operation on the tangent space, called the Lie bracket.
+	A Lie algebra is then this tangent space equipped with this Lie bracket.
+	
+	It is possible to abstract the properties of this Lie bracket to define a Lie algebra without reference to a Lie group.
+	It is also possible to go in reverse, given a Lie algebra there is always a corresponding Lie group.
+	It should be noted that this assignment is not unique, in general many different Lie groups can have the same Lie algebra.
+	The assignment does become invertible if we restrict ourselves to simply connected Lie groups, but then we're really getting into topology in a way that this course hopes to avoid.
+	This assignment of a Lie algebra to a Lie group is functorial.
+	
+	\section{Notation}
+	Throughout \(\field\) will denote a field.
+	Often we will place further restrictions on \(\field\), such as being algebraically closed.
+	Most of the time we'll be interested in the case \(\field = \complex\), with occasional use of \(\field = \reals\).
+	Unless stated otherwise vector spaces are assumed to be vector spaces over \(\field\).
+    
+    We will denote by \(0\) the zero vector space (for a given field), \(\{0\}\), which consists of only the zero vector.
+	
+	If we have a category, \(\cat{C}\), we will denote by \(\cat{C}(A, B) = \Hom_{\cat{C}}(A, B)\) the set of all morphisms \(A \to B\), or simply \(\Hom(A, B)\) if \(\cat{C}\) is clear from context.
+	This is just notation, we won't make much use of categories apart from borrowing some of the language.
+	The main category we'll make use of is \(\Vect\), the category of vector spaces over \(\field\) and linear maps.
+    
+    We will mostly denote Lie algebras with lowercase fraktur letters, or so called \verb*|\mathfrak| letters.
+    For reference, here's the alphabet in \verb*|\mathfrak|:
+    \begin{equation*}
+        \symfrak{a\,b\,c\,d\,e\,f\,g\,h\,i\,j\,k\,l\,m\,n\,o\,p\,q\,r\,s\,t\,u\,v\,w\,x\,y\,z}
+    \end{equation*}
+	
+	\chapter{Direct Sums and Diagonalisation}
+	Our goal in this section is to state a definition of a diagonalisable linear operator in such a basis free way.
+	We will then generalise this to get an \enquote{almost diagonal form} for arbitrary linear operators when \(\field\) is algebraically closed.
+	To this end we will recap some linear algebra in this first section.
+	
+	\section{Direct Sums}
+	\subsection{Binary Direct Sums}
+	\begin{dfn}{Binary Direct Sum}{}
+		Let \(V\) be a vector space over \(\field\), and let \(U_1, U_2 \subseteq V\) be subspaces.
+		Then we say that \(V = U_1 \oplus U_2\), that is \(V\) is the (internal) \defineindex{direct sum} of \(U_1\) and \(U_2\), if
+		\begin{itemize}
+			\item \(V = U_1 + U_2 \coloneq \{u_1 + u_2 \mid u_1 \in U_1 \text{ and } u_2 \in U_2\}\); and
+			\item \(U_1 \cap U_2 = 0\).
+		\end{itemize}
+		
+		If \(U_1\) and \(U_2\) are vector spaces over \(\field\) then we can construct a vector space \(V = U_1 \oplus U_2\), also over \(\field\), by defining
+		\begin{equation}
+			V = \{(u_1, u_2) \mid u_1 \in U_1 \text{ and } u_2 \in U_2\}
+		\end{equation}
+		and defining addition and scalar multiplication by
+		\begin{equation}
+			(u_1, u_2) + (u_1', u_2') = (u_1 + u_1', u_2 + u_2') \qqand \lambda (u_1, u_2) = (\lambda u_1, \lambda u_2)
+		\end{equation}
+        for all \(u_1, u_1' \in U_1\), \(u_2, u_2' \in U_2\), and \(\lambda \in \field\).
+	\end{dfn}
+	
+    After constructing the external direct sum we may identify \(U_1\) with the subspace consisting of elements of the form \((u_1, 0)\) with \(u_1 \in U_1\), and \(U_2\) with the subspace of elements of the form \((0, u_2)\) with \(u_2 \in U_2\).
+    Then the external direct sum coincides with the internal direct sum.
+    For this reason we won't distinguish internal and external direct sums, making such identifications as necessary.
+    
+    The following lemma gives an alternative characterisation of the direct sum.
+    
+    \begin{lma}{}{lma:binary direct sum gives decompositon of vectors}
+        If \(V = U_1 \oplus U_2\) then every vector \(v \in V\) can be written \emph{uniquely} as a sum \(v = u_1 + u_2\) with \(u_1 \in U_1\) and \(u_2 \in U_2\).
+        Conversely, if every \(v\) has a unique decomposition as \(v = u_1 + u_2\) with \(u_1 \in U_1\) and \(u_2 \in U_2\) then \(V = U_1 \oplus U_2\).
+        \begin{proof}
+            Suppose that \(V = U_1 \oplus U_2\).
+            From the definition of a direct sum we know that \(v \in V = U_1 + U_2\) and as such \(v = u_1 + u_2\) for some \(u_1 \in U_1\) and \(u_2 \in U_2\) because this is how elements of \(U_1 + U_2\) are defined.
+            We need only prove uniqueness.
+            Suppose that \(v = u_1 + u_2\) and \(v = u_1' + u_2'\) with \(u_1, u_1' \in U_1\) and \(u_2, u_2' \in U_2\) are two decompositions of \(v\).
+            Then we have \(u_1 + u_2 = u_1' + u_2'\), which we can rearrange to get \((u_1 - u_1') + (u_2 - u_2') = 0\).
+            This means that \(u_1 - u_1' = u_2' - u_2 \eqqcolon w\).
+            Now, \(u_1 - u_1' \in U_1\), since it's a linear combination of elements of \(U_1\), and similarly \(u_2' - u_2 \in U_2\).
+            Thus, \(w \in U_1 \cap U_2 = 0\) and so \(w = 0\).
+            
+            Suppose instead that every \(v \in V\) has a unique decomposition as \(v = u_1 + u_2\).
+            Then clearly \(v\) corresponds to \((u_1, u_2) \in U_1 \oplus U_2\) and if \(v = u_1 + u_2\) and \(v' = u_1' + u_2'\) and \(\lambda \in \field\) then \(v + \lambda v' = (u_1 + u_2) + \lambda(u_1' + u_2')\) corresponds to \((u_1, u_2) + \lambda(u_1', u_2')\), but also \(v + \lambda v' = (u_1 + \lambda u_1') + (u_2 + \lambda u_2')\) corresponds to \((u_1 + \lambda u_1', u_2 + \lambda u_2')\).
+            This shows that this correspondence defines a linear map.
+            Clearly this correspondence is invertible, and thus we have an isomorphism \(V \isomorphic U_1 \oplus U_2\).
+        \end{proof}
+    \end{lma}
+    
+    Thus, the direct sum may be characterised as giving a unique decomposition of each vector into a pair of vectors from two subspaces with only the zero vector in common.
+    
+    \subsection{Finite Direct Sums}
+    Direct sums of two vector spaces generalise to direct sums of a finite number of vector spaces in an obvious way.
+    
+    \begin{dfn}{Finite Direct Sum}{}
+        Let \(V\) be a vector space over \(\field\), and let \(U_1, \dotsc, U_r \subseteq V\) be subspaces.
+        Then we say that
+        \begin{equation}
+            V = U_1 \oplus \dotsb \oplus U_r = \bigoplus_{i=1}^r U_i,
+        \end{equation}
+        that is \(V\) is the (internal) \define{direct sum} of the \(U_i\), if
+        \begin{itemize}
+            \item \(V = U_1 + \dotsb + U_r \coloneq \{u_1 + \dotsb + u_r \mid u_i \in U_i \text{for all } i = 1, \dotsc, r\}\); and
+            \item for all \(i = 1, \dotsc, r\) we have \(U_i \cap (U_1 + \dotsb + U_{i-1} + U_{i+1} + \dotsb + U_r) = 0\) where the sum is over all subspaces apart from \(U_i\).
+        \end{itemize}
+    \end{dfn}
+    
+    Note that we can define the external direct sum, but care has to be taken as if we define \(U_1 \oplus U_2 \oplus U_3\) to consist of elements of the form \((u_1, u_2, u_3)\) then this is not the same as defining \(U_1 \oplus (U_2 \oplus U_3)\) to consist of elements of the form \((u_1, (u_2, u_3))\) and \((U_1 \oplus U_2) \oplus U_3\) to consist of elements of the form \(((u_1, u_2), u_3)\).
+    However these spaces are naturally (in the technical sense) isomorphic, and as such we will identify them with each other.
+    A complicated way to put this is that the direct sum is associative up to natural isomorphism.
+    An even more complicated way to put this, along with the fact that \(V \oplus 0 \isomorphic V \isomorphic 0 \oplus V\), is that \((\Vect, \oplus, 0)\) is a monoidal category.
+    
+    The same characterisation of the direct sum giving a unique decomposition of \(v \in V\) carries over to finite direct sums.
+    
+    \begin{lma}{}{}
+        If \(V = U_1 \oplus \dotsb \oplus U_r\) then for all \(v \in V\) there exist unique \(u_i \in U_i\) such that \(v = u_1 + \dotsb + u_r\).
+        \begin{proof}
+            We proceed by induction on \(r\).
+            The case \(r = 2\) is \cref{lma:binary direct sum gives decompositon of vectors}.
+            Suppose that the result holds some \(k \ge 2\) and that \(V = U_1 \oplus \dotsb \oplus U_k \oplus U_{k+1}\).
+            Take \(v \in V\).
+            Writing \(V = (U_1 \oplus \dotsb \oplus U_k) \oplus U_{k+1}\) we see that there are unique vectors \(u \in U_1 \oplus \dotsb \oplus U_k\) and \(u_{k+1} \in U_{k+1}\) such that \(v = u + u_{k+1}\).
+            By the induction hypothesis since \(U_1 \oplus \dotsb \oplus U_k\) is a \(k\)-fold direct sum we can uniquely decompose \(u\) as \(u = u_1 + \dotsb + u_k\).
+            Then \(v = u_1 + \dotsb + u_k + u_{k+1}\) gives a unique decomposition of \(v\).
+            Thus, by induction the result holds for any finite direct sum.
+        \end{proof}
+    \end{lma}
+    
+    \subsection{Arbitrary Direct Sums}
+    We can further generalise direct sums to arbitrary collections of spaces.
+    One thing we have to be cautious about is that infinite sums of vectors are not defined, and we get around this by considering sums over infinite sets, but requiring that only finitely many of the vectors in the sum are not zero.
+    More formally, we can view a sequence \((u_i)_{i \in I}\) of vectors as a function \(u \colon I \to V\) with \(u(i) = u_i\) and then we require that \(u\) has finite support.
+    
+    \begin{dfn}{Arbitrary Direct Sums}{}
+        Let \(V\) be a vector space over \(\field\), and let \(\{U_i\}_{i \in I}\) be an indexed family of subspaces, that is \(U_i \subseteq V\) is a subspace for all \(i \in I\).
+        Then we say that
+        \begin{equation}
+            V = \bigoplus_{i \in I} U_i,
+        \end{equation}
+        that is \(V\) is the (internal) \define{direct sum} of the \(U_i\), if
+        \begin{itemize}
+            \item we have
+            \begin{equation*}
+                V = \sum_{i\in I} U_i \coloneq \bigg\{ \sum_{i \in I} u_i \,\bigg\vert\, u_i \in U_i \text{ and } u_i \ne 0 \text{ for only finitely many terms}\bigg\};
+            \end{equation*}
+            \item for all \(i \in I\) we have \(U_i \cap \sum_{j \in I \setminus \{i\}} U_j = 0\).
+        \end{itemize}
+    \end{dfn}
+    
+    We can define the external direct sum by replacing sequences such as \((u_1, u_2, \dotsc)\) with functions \(I \to \bigcup_{j \in I} U_j\) with finite support, the idea being that \(u(i)\) corresponds to \(u_i\) in the case where \(I = \{1, \dotsc, r\}\).
+    
+    \begin{lma}{}{}
+        If \(V = \bigoplus_{i \in I} U_i\) then for all \(v \in V\) there exist unique \(u_i \in U_i\) such that \(v = \sum_{i \in I} u_i\) with only finitely many of the \(u_i\) being nonzero.
+        \begin{proof}
+            The proof is essentially the same as before, but now we work with formally infinite sums in which most terms are zero, and all we have to do is check that at each stage this is still the case, which it is, since adding two such sums cannot result in infinitely many nonzero terms.
+        \end{proof}
+    \end{lma}
+    
+    \begin{exm}{}{}
+        Let \(V = \field[x]\) be the vector space of polynomials in \(x\) with coefficients in \(\field\).
+        That is
+        \begin{equation}
+            V = \Bigg\{ \sum_{i = 0}^N a_i x^i \,\Bigg\vert\, N \in \naturals \text{ and } a_i \in \field \Bigg\}.
+        \end{equation}
+        Addition is just addition of polynomials, and scaling is simply scaling each coefficient, which we can phrase as multiplying by the corresponding constant polynomial.
+        We have the subspaces
+        \begin{equation}
+            U_i = \Span \{x^i\} \coloneqq \{a x^i \mid a \in \field\}
+        \end{equation}
+        and it's easy to see that
+        \begin{equation}
+            V = \bigoplus_{i \in \naturals} U_i.
+        \end{equation}
+        Specifically, if we have a polynomial, \(f(x) \in \field[x]\), then
+        \begin{equation}
+            f(x) = a_0 + a_1x + a_2 x^2 + \dotsb + a_N x^N
+        \end{equation}
+        and \(a_0 \in U_0\), \(a_1 x \in U_1\), \(a_2 x^2 \in U_2\), and so on up to \(a_N x^N \in U_N\), so  we get a finite decomposition of \(f(x)\), and clearly this is unique, showing that \(\field[x]\) is indeed this direct sum as claimed.
+    \end{exm}
+    
+    \begin{remark}{}{}
+        The most general definition of the direct sum is as the coproduct in the category \(\Vect\).
+    \end{remark}
+    
+    \section{Diagonalisable Operators and the Direct Sum Decomposition}
+    In this section we'll give the standard definition of a diagonalisable operator, which should be familiar.
+    We'll then give an equivalent definition which makes no mention of a basis.
+    
+    Let \(V\) be a finite dimensional vector space over \(\field\) with basis \(\symcal{B} = \{v_1, \dotsc, v_n\}\).
+    Recall that if \(T \colon V \to V\) is a linear operator then its matrix in basis \(\symcal{B}\) is the matrix
+    \begin{equation}
+        [T]_{\symcal{B}} \coloneqq 
+        \begin{bmatrix}
+            \uparrow & & \uparrow \\
+            Tv_1 & \dots & Tv_n \\
+            \downarrow & & \downarrow
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            c_{11} & c_{12} & \dots & c_{1n}\\
+            c_{21} & c_{22} & \dots & c_{2n}\\
+            \vdots & \vdots & \ddots & \vdots\\
+            c_{n1} & c_{n2} & \dots & c_{nn}
+        \end{bmatrix}
+    \end{equation}
+    where \(c_{ij}\) is the coefficient of \(v_i\) in \(Tv_j\) when expressed in the basis \(\symcal{B}\).
+    That is, the \(i\)th column of \([T]_{\symcal{B}}\) is \(Tv_i\) as a column vector in basis \(\symcal{B}\).
+    
+    \begin{dfn}{Diagonalisable Operator}{}
+        Let \(V\) be a finite dimensional vector space over \(\field\).
+        Then a linear operator, \(T \colon V \to V\), is \defineindex{diagonalisable} if there exists some basis, \(\symcal{B}\), in which the matrix \([T]_{\symcal{B}}\) is diagonal.
+    \end{dfn}
+    
+    Notice that if \(T \colon V \to V\) is a linear operator diagonalised by the basis \(\symcal{B} = \{v_1, \dotsc, v_n\}\) then
+    \begin{equation}
+        [T]_{\symcal{B}} = 
+        \begin{bmatrix}
+            \lambda_1 & & \\
+            & \ddots & \\
+            & & \lambda_n
+        \end{bmatrix}
+    \end{equation} 
+    for some \(\lambda_i \in \field\).
+    We can also express the basis vectors \(v_i\) in this basis, they are simply the standard basis, in which \([v_i]_{\symcal{B}} = e_i\) is the column vector with 1 in the \(i\)th position and 0 everywhere else.
+    Then, for example, we have
+    \begin{equation}
+        [Tv_1]_{\symcal{B}} = [T]_{\symcal{B}}[v_1]_{\symcal{B}} = 
+        \begin{bmatrix}
+            \lambda_1 & & \\
+            & \ddots & \\
+            & & \lambda_n
+        \end{bmatrix}
+        \begin{bmatrix}
+            1\\ \vdots\\ 0
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            \lambda_1\\ \vdots\\ 0
+        \end{bmatrix}
+        = \lambda_1
+        \begin{bmatrix}
+            1\\ \vdots\\ 0
+        \end{bmatrix}
+        = \lambda_1 [v_1]_{\symcal{B}}.
+    \end{equation}
+    Thus, we have \(Tv_1 = \lambda v_1\), that is, \(v_1\) is an eigenvector of \(T\) with eigenvalue \(\lambda_1\).
+    In general, \(v_i\) will be an eigenvector of \(T\) with eigenvalue \(\lambda_i\).
+    
+    Now make the following observations.
+    We may define the subspaces \(U_i = \Span\{v_i\}\).
+    The fact that \(V = \bigoplus_{i=1}^n U_i\) follows immediately from (and is equivalent to) the fact that \(\symcal{B}\) is a basis.
+    Each subspace \(U_i\) is \(T\)-\defineindex{invariant}, meaning that \(T(U_i) \subseteq U_i\), which simply means that if \(u \in U_i\) then \(Tu \in U_i\) also, so it's not possible to leave \(U_i\) just by the action of \(T\).
+    This is clear in this case because \(T\) acts on each subspace, \(U_i\), by scalar multiplication, specifically, by multiplication by \(\lambda_i\).
+    Because of this it makes sense to consider the restricted linear map \(T|_{U_i} \colon U_i \to U_i\), defined by \(T|_{U_i}(u) = T(u)\) for \(u \in U_i\).
+    By definition \(T(u) = \lambda_i u\) for \(u \in U_i\), and thus we have \(T = \lambda_i \id_{U_i}\) where \(\id_W \colon W \to W\) is the identity linear map.
+    
+    \subsection{Basis Independent Definition}
+    We can now move towards making a basis independent definition of diagonalisability.
+    To do so we need the notion of an eigenspace.
+    
+    \begin{dfn}{Eigenspace}{}
+        Let \(\field\) be a field and let \(V\) be a vector space over \(V\).
+        Let \(T \colon V \to V\) be a linear operator.
+        Then for \(\alpha \in \field\) define the \defineindex{eigenspace} corresponding to \(\alpha\) to be
+        \begin{equation}
+            W_\alpha \coloneqq \{w \in V \mid T(w) = \alpha w\}.
+        \end{equation}
+    \end{dfn}
+    
+    Note that \(W_\alpha\) can alternatively be characterised as
+    \begin{equation}
+        W_\alpha = \{w \in V \mid (T - \alpha)(w) = 0\} = \ker(T - \alpha)
+    \end{equation}
+    where we perform the common abuse of notation writing \(T - \alpha\) when we mean \(T - \alpha \id_V\).
+    
+    For example, in the case of a diagonalisable operator where the eigenvalues are all distinct, as discussed at the end of the previous section, the subspaces \(U_i\) are exactly the eigenspaces \(W_{\lambda_i}\).
+    Also, \(W_{\alpha} = 0\) if \(\alpha \ne \lambda_i\) for any \(i\).
+    This is a general fact, if \(\alpha\) is not an eigenvalue then there will be no \(w \in V\) satisfying \(T(w) = \alpha w\).
+    
+    The problem is that eigenvalues needn't be distinct, in fact, eigenvalues are distinct if and only if the nonzero eigenspaces have dimension 1.
+    Regardless of this problem, we can still perform the direct sum decomposition from the last part, replacing the \(U_i\) with the eigenspaces \(W_\alpha\).
+    In fact, this gives us an equivalent definition of diagonalisability without reference to a basis.
+    
+    \begin{dfn}{Diagonalisable Operator}{}
+        Let \(V\) be a finite dimensional vector space over \(\field\).
+        Then a linear operator, \(T \colon V \to V\), is \defineindex{diagonalisable} if 
+        \begin{equation}
+            V = \bigoplus_{\alpha \in \field} W_\alpha.
+        \end{equation}
+    \end{dfn}
+    
+    \subsection{Decomposition Theorem}
+    We now ask if there is a generalisation of this decomposition to not-necessarily-diagonalisable operators.
+    We'll start with an example.
+    
+    \begin{exm}{Non-diagonalisable Operator}{exm:E not diagonalisable}
+        Consider the case \(\field = \complex\), \(V = \complex^2\), and
+        \begin{equation}
+            T = 
+            \begin{bmatrix}
+                0 & 1\\
+                0 & 0
+            \end{bmatrix}
+        \end{equation}
+        in the standard basis
+        \begin{equation}
+            e_1 = 
+            \begin{bmatrix}
+                1\\ 0
+            \end{bmatrix},
+            \qqand e_2 = 
+            \begin{bmatrix}
+                0\\ 1
+            \end{bmatrix}
+            .
+        \end{equation}
+        To find the eigenvalues we solve the characteristic polynomial, which is
+        \begin{equation}
+            \chi_T(t) = \det(\lambda - T) = \det
+            \begin{bmatrix}
+                0 & 1\\
+                0 & 0
+            \end{bmatrix}
+            = \lambda^2.
+        \end{equation}
+        The only solution to \(\lambda^2 = 0\) is \(\lambda = 0\), and thus we have one repeated eigenvalue.
+        This means that \(T\) is not diagonalisable.
+        For \(\alpha \ne 0\) we have \(W_\alpha = 0\), and we have
+        \begin{equation}
+            W_0 = \{w \in V \mid Tw = 0\} = \ker(T - 0) = \ker T = \Span\{e_1\}.
+        \end{equation}
+        This follows simply by considering the action of \(T\) on the basis vectors, \(Te_1 = 0\) and \(Te_2 = e_1 \ne 0\).
+        This means that
+        \begin{equation}
+            \bigoplus_{\alpha \in \complex} W_{\alpha} = W_0 = \Span\{e_1\} \ne \complex^2.
+        \end{equation}
+        
+        From this calculation we see that \(T^2e_2 = 0\), and so if we instead consider the operator \(T^2\) then the eigenspaces of this cover all of \(\complex^2\), so this suggests that we should look not just at \(T\), but also powers of \(T\) in our decomposition.
+        
+        \begin{remark}{}{}
+            The matrix
+            \begin{equation}
+                T = 
+                \begin{bmatrix}
+                    0 & 1\\
+                    0 & 0
+                \end{bmatrix}
+                = E
+            \end{equation}
+            is important for the Lie algebra \(\specialLinearLie(2, \complex)\), which is one of the most important Lie algebras.
+            The fact that this matrix is not diagonalisable is important in that it effects whether \(E\) commutes with other matrices.
+            Recall that if two matrices can be simultaneously diagonalised then they commute, an important fact in quantum mechanics.
+        \end{remark}
+    \end{exm}
+    
+    Following on from the idea that we should look at powers of \(T\) we replace the eigenspace with the following definition.
+    
+    \begin{dfn}{Generalised Eigenspace}{}
+        Let \(\field\) be a field and let \(T\) be a vector space over \(\field\).
+        Let \(T \colon V \to V\) be a linear operator.
+        Then for \(\alpha \in \field\) define the \defineindex{generalised eigenspace} corresponding to \(\alpha\) to be
+        \begin{equation}
+            V_\alpha \coloneqq \{w \in V \mid (T - \alpha)^N(w) = 0 \text{ for some } N \in \naturals\}.
+        \end{equation}
+    \end{dfn}
+    
+    We can then often make a decomposition into a direct sum of generalised eigenspaces.
+    There's just one hitch, this only works if \(\field\) is algebraically closed.
+    
+    \begin{dfn}{Algebraically Closed Field}{}
+        A field, \(\field\), is algebraically closed if every nonconstant polynomial \(f(t) \in \field[t]\) has a root, \(\alpha \in \field\), such that \(f(\alpha) = 0\).
+    \end{dfn}
+    
+    The complex numbers, \(\complex\), are algebraically closed, this is the fundamental theorem of algebra.
+    The real numbers, \(\reals\), are not algebraically closed, for example \(t^2 + 1\) has no (real) roots.
+    
+    The following proof relies on three standard results, which we state without proof.
+    \begin{thm}{Cayley--Hamilton}{}
+        If \(\chi_T(t) = t^n + a_{n-1}t^{n-1} + \dotsb + a_1t + a_0\) is the characteristic polynomial of the linear operator \(T \colon V \to V\) then the linear operator
+        \begin{equation}
+            T^n + a_{n-1}T^{n-1} + \dotsb + a_1T + a_0\id_V \colon V \to V
+        \end{equation}
+        is the zero map.
+        That is, \(T\) satisfies it's own characteristic polynomial, \(\chi_T(T) = 0\).
+    \end{thm}
+    
+    \begin{lma}{B\'ezout's Lemma}{}
+        If \(R\) is a principal ideal domain and \(x, y \in R\) have greatest common divisor \(d\) then there exist \(a, b \in R\) such that \(ax + by = d\).
+    \end{lma}
+    
+    \begin{lma}{}{}
+        If \(\field\) is a field then \(\field[x]\) is a PID, and in particular B\'ezout's lemma applies to polynomials.
+    \end{lma}
+    
+    \begin{thm}{Decomposition Theorem}{}
+        Let \(\field\) be an algebraically closed field, \(V\) a finite dimensional vector space, and \(T \colon V \to V\) a linear operator.
+        Then
+        \begin{equation}
+            V = \bigoplus_{\alpha \in \field} V_\alpha 
+        \end{equation}
+        where \(V_\alpha\) is the generalised eigenspace associated with \(\alpha\) and only finitely many of the \(V_\alpha\) are nonzero.
+        \begin{proof}
+            We start by showing that \(V_\alpha \cap \sum_{\beta \in \field \setminus \{\alpha\}} V_\beta = 0\).
+            Take \(v V_\alpha \cap \sum_{\beta \in \field \setminus \alpha} V_\beta\), then we have \(v \in V_\alpha\) and \(v \in V_{\beta_1} + \dotsb + V_{\beta_r}\) for some \(\beta_1, \dotsc, \beta_r \in \field \setminus \{\alpha\}\).
+            This means that there exist some \(N, N_1, \dotsc, N_r \in \naturals\) such that
+            \begin{equation}
+                (T - \alpha)^Nv = (T - \beta_1)^{N_1} \dotsm (T - \beta_r)^{N_r} v = 0.
+            \end{equation}
+            Since \(\alpha \ne \beta_i\) we know that the greatest common factor of \((t - \alpha)^N\) and \((t - \beta_1)^{N_1} \dotsm (t - \beta_r)^{N_r}\) is 1.
+            Thus, by B\'ezout's lemma there exist polynomials \(f(t), g(t) \in \field[t]\) such that
+            \begin{equation}
+                f(t)(t - \alpha)^N + g(t)(t - \beta_1)^{N_1} \dotsm (t - \beta_r)^{N_r} = 1.
+            \end{equation}
+            Evaluating at \(T\) and applying this to \(v\) we then have
+            \begin{equation}
+                f(T)(T - \alpha)^Nv + g(T)(T - \beta_1)^{N_1}v \dotsm (T - \beta_r)^{N_r}v = v,
+            \end{equation}
+            and we know that these operators acting on \(v\) both give zero, so the left hand side vanishes, and thus \(v = 0\), and so \(V_\alpha \cap \sum_{\beta \in \field \setminus \{\alpha\}} V_\beta = 0\).
+            
+            We now show that \(\sum_{\alpha \in \field} V_\alpha = V\).
+            Factorise the characteristic polynomial, \(\chi_T(t)\), as follows
+            \begin{equation}
+                \chi_T(t) = (t - \alpha_1)^{N_1} \dotsm (t - \alpha_s)^{N_s},
+            \end{equation}
+            with \(\alpha_i \ne \alpha_j\) for \(i \ne j\).
+            Note that the existence of such a factorisation relies on \(\field\) being algebraically closed.
+            We claim that \(v \in V_{\alpha_1} + \dotsb + V_{\alpha_s}\).
+            This can be proven by induction on \(s\).
+            The basis case, \(s = 1\), has the characteristic polynomial factorise as
+            \begin{equation}
+                \chi_T(t) = (t - \alpha_1)^{N_1}.
+            \end{equation}
+            Then by the Cayley--Hamilton theorem we have
+            \begin{equation}
+                (T - \alpha_1)^{N_1}v = 0
+            \end{equation}
+            for all \(v \in V\), and thus \(V_{\alpha_1} = V\).
+            For the inductive step suppose that \(s > 1\) and the statement is true for \(s - 1\).
+            The highest common factor of \((t - \alpha_s)^{N_s}\) and \((t - \alpha_1)^{N_1} \dotsm (t - \alpha_{s-1})^{N_{s-1}}\) is 1.
+            Thus, by B\'ezout's lemma there exist \(f(t), g(t) \in \field[t]\) such that
+            \begin{equation}
+                f(t)(t - \alpha_s)^{N_s} + g(t)(t - \alpha_1)^{N_1} \dotsm (t - \alpha_{s-1})^{N_{s-1}} = 1.
+            \end{equation}
+            Evaluating at \(T\) and applying the map to \(v \in V\) we have
+            \begin{equation}
+                f(T)(T - \alpha_s)^{N_s}v + g(T)(T - \alpha_1)^{N_1} \dotsm (T - \alpha_{s-1})^{N_{s-1}}v = v.
+            \end{equation}
+            Define
+            \begin{equation}
+                v' = f(T)(T - \alpha_s)^{N_s}v, \qqand v_s = g(T)(T - \alpha_1)^{N_1} \dotsm (T - \alpha_{s-1})^{N_{s-1}}v,
+            \end{equation}
+            so we have \(v = v' + v_s\).
+            Note that we have \((T - \alpha_s)^{N_s}v_s = 0\) and \((T - \alpha_1)^{N_1} \dotsm (T - \alpha_{s-1})^{N_{s-1}}v' = 0\).
+            This is simply the Cayley--Hamilton theorem applied to the linear map \(T\) restricted to the subspaces corresponding to \(v_s\) and \(v'\) respectively.
+            Define
+            \begin{equation}
+                V' = \{u \in V \mid (T - \alpha_1)^{N_1} \dotsm (T - \alpha_{s-1})^{N_{s-1}}u = 0\}.
+            \end{equation}
+            Then \(v_s \in V_{\alpha_s}\) and \(v' \in V'\).
+            The characteristic polynomial of the restricted map, \(T|_{V'}\), has all of its roots in \(\{\alpha_1, \dotsc, \alpha_{s-1}\}\).
+            By induction, we therefore have \(v' = v_1 + \dotsb + v_{s-1}\) with \(v_i \in V_{\alpha_i}' = V' \cap V_{\alpha_i}\).
+            Thus, \(v = v_1 + \dotsb + v_{s-1} + v_s in V_{\alpha_1} + \dotsb + V_{\alpha_s}\).
+            Since \(v \in V\) was arbitrary this shows that \(V = V_{\alpha_1} + \dotsb + V_{\alpha_s}\), proving that \(V = V_{\alpha_1} \oplus \dotsb \oplus V_{\alpha_s}\).
+            This gives the final result by realising that if \(\beta \ne \alpha_i\) then \(V_\beta = 0\) since \(V_\beta \cap (V_{\alpha_1} + \dotsb + V_{\alpha_s}) = 0\) so \(V_\beta \cap V = 0\), so \(V_\beta = 0\).
+            Thus, \(V = \bigoplus_{\alpha \in \field} V_{\alpha}\) and \(V_{\alpha}\) is only nonzero for the finite index set \(\{\alpha_1, \dotsc, \alpha_s\}\).
+        \end{proof}
+    \end{thm}
+    
+    Note that both conditions, the finite dimension of \(V\) and the algebraic closure of \(\field\), are required here.
+    Dropping either condition will result in cases where this decomposition doesn't exist.
+    
+    \begin{exm}{}{}
+        Consider again the example of \(\field = \complex\), \(V = \complex^2\), and
+        \begin{equation}
+            T = 
+            \begin{bmatrix}
+                0 & 1\\
+                0 & 0
+            \end{bmatrix}
+            .
+        \end{equation}
+        As we saw before (\cref{exm:E not diagonalisable}) \(T\) is not diagonalisable, and \(\bigoplus_{\alpha \in \complex} W_\alpha = W_0 = \Span\{e_1\} \ne \complex^2\).
+        We also saw there that \(T^2e_2 = 0\), meaning that when considering generalised eigenspaces we also have \(e_2 \in V_0\), and thus
+        \begin{equation}
+            \bigoplus_{\alpha \in \complex} V_\alpha = V_0 = \complex^2.
+        \end{equation}
+    \end{exm}
+    
+    \begin{dfn}{Jordan Block and Jordan Normal Form}{}
+        A \defineindex{Jordan block} is a matrix of the form
+        \begin{equation}
+            \begin{bmatrix}
+                \alpha & 1 \\
+                & \alpha & 1 \\
+                & & \ddots & \ddots\\
+                & & & \alpha & 1\\
+                & & & & \alpha
+            \end{bmatrix}
+            .
+        \end{equation}
+        That is, we have some \(\alpha \in \field\) on the diagonal and 1s above the diagonal, and 0 everywhere else.
+        
+        A matrix, \(X\), is a sum of Jordan blocks, or is in \defineindex{Jordan normal form} if it is given by the block diagonal matrix
+        \begin{equation}
+            X = 
+            \begin{bmatrix}
+                J_1\\
+                & \ddots \\
+                & & J_r
+            \end{bmatrix}
+        \end{equation}
+        with the \(J_i\) Jordan blocks.
+    \end{dfn}
+    
+    \begin{crl}{Existence of Jordan Normal Form}{}
+        Let \(\field\) be an algebraically closed field, let \(V\) be a finite dimensional vector space, and let \(T \colon V \to V\) be a linear map.
+        There exists a basis of \(V\) such that \([T]_{\symcal{B}}\) is in Jordan normal form.
+        \begin{proof}
+            Consider the decomposition of \(V\) into a sum of generalised eigenspaces of \(T\).
+            Each generalised eigenspace is invariant under \(T\), and thus if \(v_\alpha \in V_\alpha\) then \(Tv_\alpha = c_1v_1 + \dotsb c_rv_r\) where \(\{v_1, \dotsc, v_r\}\) is a basis for \(V_\alpha\).
+            We can further choose this basis by scaling and taking linear combinations untile \(Tv_{i} = \alpha v_i + v_{i+1}\), which can be shown by induction on the size of the dimension of \(V_\alpha\).
+            Then \(T\) acts on \(V_\alpha\) in this basis as a Jordan block, and so \(T\) acts on \(V\), in the basis formed by the union of these bases, as a matrix in Jordan normal form.
+        \end{proof}
+    \end{crl}
+    
+    
+    
+	
+	% Appdendix
+%	\appendixpage
+%	\begin{appendices}
+%	
+%	\end{appendices}
+	
+%	\backmatter
+%	\renewcommand{\glossaryname}{Acronyms}
+%	\printglossary[acronym]
+%	\printindex
 \end{document}
