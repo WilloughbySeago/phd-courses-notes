@@ -1,6 +1,8 @@
 % !TeX program = lualatex
 \documentclass[fleqn]{NotesClass}
 
+\strictpagecheck
+
 \usepackage{csquotes}
 
 \usepackage{tikz}
@@ -73,6 +75,7 @@ noabbrev
 \newcommand{\ad}{\symrm{ad}}
 \newcommand{\borelLie}{\symfrak{b}}
 \newcommand{\nilpotentLie}{\symfrak{n}}
+\DeclareMathOperator{\Der}{Der}
 
 \begin{document}
 	\frontmatter
@@ -94,6 +97,7 @@ noabbrev
 	    \item \(i \colon G \to G\) given by \(i(g) = g^{-1}\)
 	\end{itemize}
 	are smooth and these maps satisfy the obvious requirements to make \(G\) a group.
+    In fancy terms, a Lie group is a group object in the category of smooth manifolds.
     
     Lie groups were first used by Sophus Lie, who lends his name to these objects.
     Lie is pronounced Lee by the way, not lye.
@@ -460,22 +464,22 @@ noabbrev
         \end{equation}
         
         From this calculation we see that \(T^2e_2 = 0\), and so if we instead consider the operator \(T^2\) then the eigenspaces of this cover all of \(\complex^2\), so this suggests that we should look not just at \(T\), but also powers of \(T\) in our decomposition.
-        
-        \begin{remark}{}{}
-            The matrix
-            \begin{equation}
-                T = 
-                \begin{bmatrix}
-                    0 & 1\\
-                    0 & 0
-                \end{bmatrix}
-                = E
-            \end{equation}
-            is important for the Lie algebra \(\specialLinearLie(2, \complex)\), which is one of the most important Lie algebras.
-            The fact that this matrix is not diagonalisable is important in that it effects whether \(E\) commutes with other matrices.
-            Recall that if two matrices can be simultaneously diagonalised then they commute, an important fact in quantum mechanics.
-        \end{remark}
     \end{exm}
+    
+    \begin{remark}{}{}
+        The matrix
+        \begin{equation}
+            T = 
+            \begin{bmatrix}
+                0 & 1\\
+                0 & 0
+            \end{bmatrix}
+            = E
+        \end{equation}
+        is important for the Lie algebra \(\specialLinearLie(2, \complex)\), which is one of the most important Lie algebras.
+        The fact that this matrix is not diagonalisable is important in that it effects whether \(E\) commutes with other matrices.
+        Recall that if two matrices can be simultaneously diagonalised then they commute, an important fact in quantum mechanics.
+    \end{remark}
     
     Following on from the idea that we should look at powers of \(T\) we replace the eigenspace with the following definition.
     
@@ -733,7 +737,8 @@ noabbrev
     and we see that this is a version of the product rule, or Leibniz rule.
     So \(D\) acts a bit like a derivative.
     The fancy way to say this is that the adjoint representation of \(\lie{g}\) acts on \(\lie{g}\) by derivations.
-    A derivation is just any linear map satisfying the Leibniz rule, and the \enquote{adjoint representation} is simply \(\lie{g}\) acting on itself where \(X\) acts on \(Y\) by \(X \cdot Y \mapsto \bracket{X}{Y}\). % TODO 3
+    A \defineindex{derivation} is just any linear map on an algebra satisfying the Leibniz rule with respect to the product of that algebra, which for a Lie group is the Lie bracket.
+    The \enquote{adjoint representation} is simply \(\lie{g}\) acting on itself where \(X\) acts on \(Y\) by \(X \cdot Y \mapsto \bracket{X}{Y}\). % TODO 3
     
     Now\footnote{I've brought this forwards in the notes, it feels wrong to define objects and not move on to morphisms immediately.} that we've defined Lie algebras, an algebraic object, we should define maps between them.
     The appropriate maps will be \enquote{structure preserving}, in the same way that a group homomorphism is structure preserving (it preserves the multiplicative structure) and a linear map is structure preserving (it preserves addition and scalar multiplication).
@@ -821,6 +826,16 @@ noabbrev
     \begin{crl}{}{}
         For a field \(\field\) there is a category \(\LieAlg\) whose objects are Lie algebras over \(\field\) and whose morphisms are Lie algebra homomorphisms.
     \end{crl}
+    
+    The objects of this category, Lie algebras, are vector spaces, and the morphisms are linear maps.
+    This means that \(\LieAlg\) is a subcategory of \(\Vect\), and as such inherits a lot of its structure from \(\Vect\).
+    For example, the coproduct (direct sum) of Lie algebras is just the coproduct (direct sum) of the underlying vector spaces, equipped with an appropriate bracket.
+    That is, given Lie algebras \(\lie{g}\) and \(\lie{h}\) we can equip the vector space \(\lie{g} \oplus \lie{h}\) with a Lie algebra structure by defining
+    \begin{equation}
+        \bracket{X_1 + Y_1}{X_2 + Y_2}_{\lie{g} \oplus \lie{h}} = \bracket{X_1}{X_2}_{\lie{g}} + \bracket{Y_1}{Y_2}_{\lie{h}}
+    \end{equation} 
+    where \(X_1 + Y_1\) and \(X_2 + Y_2\) are two arbitrary elements of \(\lie{g} \oplus \lie{h}\) decomposed into \(X_1, X_2 \in \lie{g}\) and \(Y_1, Y_2 \in \lie{h}\).
+    The alternativity and Jacobi identity for \(\lie{g}\) and \(\lie{h}\) apply directly when brackets in \(\lie{g} \oplus \lie{h}\) are written as on the right-hand side here, and so these properties also hold for the bracket on \(\lie{g} \oplus \lie{h}\).
     
     \section{Subalgebras, Ideals, and Quotients}
     To state these definitions it's useful to abuse the notation slightly as follows.
@@ -1175,7 +1190,42 @@ noabbrev
         Requiring that the matrix is skew-Hermitian means that each entry on the diagonal must be equal to its conjugate, so it must have zero imaginary part (fixing \(n\) parameters), then the entries below the diagonal are fixed by the entries above the diagonal (fixing \(2 n(n - 1)/2 = n^2 - n\) parameters).
         Thus, the dimension is \(2n^2 - n - (n^2 - n) = n^2\).
         \item \(\dim \specialUnitaryLie(n) = n^2 - 1\), since any matrix in \(\specialUnitaryLie(n)\) is in \(\unitaryLie(n)\), and setting its trace to zero fixes the final entry on the diagonal (which is purely real).
-        \item \(\dim \symplecticLie(n) = 2n^2 + n\), but showing this is a bit tricky.
+        \item \(\dim \symplecticLie(n) = 2n^2 + n\), a general \(2n \times 2n\) matrix with entries in \(\reals\) has \((2n)^2 = 4n^2\) parameters.
+        Write this as a block matrix,
+        \begin{equation}
+            A = 
+            \begin{bmatrix}
+                X & Y\\
+                Z & W
+            \end{bmatrix}
+            , \qquad A^{\trans} = 
+            \begin{bmatrix}
+                X^{\trans} & Z^{\trans}\\
+                Y^{\trans} & W^{\trans}
+            \end{bmatrix}
+        \end{equation}
+        with \(X, Y, Z, W \in \matrices{n}{\reals}\).
+        Then computing the defining relationship, \(A^{\trans}J_n + J_nA = 0\), we have
+        \begin{equation}
+            \begin{bmatrix}
+                Z^{\trans} - Z & -W - X^{\trans}\\
+                W^{\trans} + X & Y - Y^{\trans}
+            \end{bmatrix}
+            =
+            \begin{bmatrix}
+                0 & 0\\
+                0 & 0
+            \end{bmatrix}
+            .
+        \end{equation}
+        We see that this fixes \(Z = Z^{\trans}\), \(Y = Y^{\trans}\), and \(W = -X^{\trans}\).
+        Requiring that \(Z\) be symmetric means that the elements below the diagonal are fixed, removing \(n(n-1)/2\) free parameters.
+        Similarly, requiring that \(Y\) is symmetric removes \(n(n-1)/2\) parameters.
+        Since \(X\) determines \(W\) we also fix another \(n^2\) parameters.
+        Thus, the number of remaining free parameters is
+        \begin{equation}
+            4n^2 - \left( \frac{1}{2}n(n - 1) + \frac{1}{2}n(n - 1) + n^2 \right) = 2n^2 + n.
+        \end{equation}
     \end{itemize}
     
     \subsubsection{\texorpdfstring{\(\specialLinearLie(2, \complex)\)}{sl(2, C)}}
@@ -1223,6 +1273,12 @@ noabbrev
     \begin{equation}
         \commutator{H}{E} = 2E, \qquad \commutator{H}{F} = -2F, \qqand \commutator{E}{F} = H.
     \end{equation}
+    
+    Later we will work more abstractly, rather than defining \(\specialLinearLie(2, \complex)\) to be \(2 \times 2\) complex traceless matrices we'll define \(\specialLinearLie(2, \complex)\) to be a three dimensional Lie algebra with basis \(\{H, E, F\}\) satisfying the above bracket relations.
+    Note that this doesn't require the bracket to be the commutator, in fact, the commutator isn't even defined in this abstract setting since we don't have a notion of multiplication\footnote{It turns out that every Lie algebra, \(\lie{g}\), can be embedded into an associative algebra, \(\symcal{U}(\lie{g})\) in which the Lie bracket on \(\lie{g}\) coincides with the commutator in \(\symcal{U}(\lie{g})\). This larger algebra is called the \defineindex{universal enveloping algebra}. Formally, this algebra can be constructed by taking the tensor algebra, \(T(\lie{g}) = \field \oplus \lie{g} \oplus (\lie{g} \otimes \lie{g}) \oplus (\lie{g} \otimes \lie{g} \otimes \lie{g}) \oplus \dotsb\), and defining the quotient \(\symcal{U}(\lie{g}) = T(\lie{g})/I\) where \(I\) is the two sided ideal generated by elements of the form \(a \otimes b - b \otimes a - \commutator{a}{b} \in \lie{g} \oplus (\lie{g} \otimes \lie{g}) \subseteq T(\lie{g})\). A general element of this ideal is thus of the form \(c \otimes d \otimes \dotsb \otimes (a \otimes b - b \otimes a - \bracket{a}{b}) \otimes e \otimes f \otimes \dotsb\) with \(a, b, c, d, e, f \in \lie{g}\). Note that the product of two elements of \(T(\lie{g})\) is their tensor product, although we usually write \(a \otimes b = ab\).} with which to form, say, \(HE\).
+    Once we do this we see that the matrices above form a two-dimensional representation of \(\specialLinearLie(2, \complex)\), called the defining representation, which has an obvious action on \(\complex^2\).
+    % TODO 5
+    
     An important observation here is that if we define the map\footnote{This is the so called adjoint representation.} \(\ad_H \colon \specialLinearLie(2, \complex) \to \specialLinearLie(2, \complex)\) by \(\ad_H(X) = \commutator{H}{X}\) then we see that this map has \(E\) and \(F\) as eigenvectors, with eigenvalues \(2\) and \(-2\) respectively. % TODO 2
     The other eigenvector of \(\ad_H\) is \(H\) itself, since \(\ad_H(H) = \commutator{H}{H} = 0 = 0H\).
     Then we have the eigensspaces \(V_0 = \complex H = \lie{h}\), \(V_2 = \complex E\), and \(V_{-2} = \complex F\), giving the decomposition
@@ -1246,7 +1302,7 @@ noabbrev
     
     \begin{remark}{}{}
         Here \(\borelLie\) stands for \enquote{Borel} because \(\borelLie(n, \field)\) is a \defineindex{Borel subalgebra}, meaning it's a maximal solvable subalgebra (we'll define solvable shortly). % TODO 1
-        The \(\nilpotentLie\) stands for \enquote{nilpotent} because \(\nilpotentLie(n, \field)\) is a (maximal) nilpotent algebra.
+        The \(\nilpotentLie\) stands for \enquote{nilpotent} because \(\nilpotentLie(n, \field)\) is a (maximal) nilpotent algebra (we'll define nilpotent shortly). % TODO 6
         
         These properties ultimately come from the fact that taking nested commutators of (strictly) upper triangular matrices will eventually result in zero.
         The difference in how the commutators are nested is the distinction between solvable (e.g., \(\bracket{\bracket{-}{-}}{\bracket{-}{-}}\)) and nilpotent (e.g., \(\bracket{-}{\bracket{-}{-}}\)).
@@ -1270,10 +1326,37 @@ noabbrev
     Note that as \(\field\)-vector spaces \(\dim \borelLie(n, \field) = n(n + 1)/2 = T_n\) and \(\dim \borelLie(n, \field) = n(n - 1)/2 = T_{n-1}\).
     Thus, the quotient \(\lie{g}\) has dimension \(T_n - T_{n-1} = n\).
     
+    If \(A\) is an algebra with then another important Lie subalgebra of \(\generalLinearLie(A)\) is \(\Der A\), the algebra of derivations of \(A\).
+    Recall that a derivation is a linear map \(D \colon A \to A\) such that
+    \begin{equation}
+        D(ab) = aD(b) + D(a)b
+    \end{equation}
+    for all \(a, b \in A\).
+    To show that this is a subalgebra of \(\generalLinearLie(A)\) we need to show that \(\Der A\) is closed under the commutator, that is, that the commutator of two derivations is a derivation.
+    This follows from the following calculation with \(D_1, D_2 \in \Der A\) and \(a, b \in A\):
+    \begingroup
+    \allowdisplaybreaks
+    \begin{align}
+        \commutator{D_1}{D_2}(ab) &= (D_1D_2 - D_2D_1)(ab)\\
+        &= D_1(D_2(ab)) - D_2(D_1(ab)) \notag\\
+        &= D_1(aD_2(b) + D_2(a)b) - D_2(aD_1(b) - D_1(a)b) \notag\\
+        &= D_1(aD_2(b)) + D_1(D_2(a)b) - D_2(aD_1(b)) - D_2(D_1(a)b) \notag\\
+        &= aD_1(D_2(b)) + D_1(a)D_2(b) + D_2(a)D_1(b) + D_1(D_2(a))b \notag\\
+        &\quad- aD_2(D_1(b)) - D_2(a)D_1(b) - D_1(a)D_2(b) - D_2(D_1(a))b \notag\\
+        &= aD_1(D_2(b)) + D_1(D_2(a))b - aD_2(D_1(b)) - D_2(D_1(a))b \notag\\
+        &= a\{D_1(D_2(b)) - D_2(D_1(b))\} + \{D_1(D_2(a)) - D_2(D_1(a))\}b \notag\\
+        &= a(D_1D_2 - D_2D_1)(b) + (D_1D_2 - D_2D_1)(a)b \notag\\
+        &= a\commutator{D_1}{D_2}(b) + \commutator{D_1}{D_2}(a)b. \notag
+    \end{align}
+    \endgroup
+    This shows that \(\commutator{D_1}{D_2}\) is a derivation, so \(\Der A\) is closed under the commutator.
+    
     % TODO: add reference to definition of solvable Lie alg in remark (TODO 1)
     % TODO: add reference to definition of adjoint representation to discussion of sl(2, C) (TODO 2)
     % TODO: add reference to definition of adjoint representation to discussion of Jacobi identity as derivation (TODO 3)
     % TODO: add reference to definition of (semi)simple Lie alg to discussion of sl(2, C) (TODO 4)
+    % TODO: add reference to definition of representation to discussion of sl(2, C) (TODO 5)
+    % TODO: add reference to definition of nilpotent Lie alg in remark (TODO 6)
 	
 	% Appdendix
 %	\appendixpage
