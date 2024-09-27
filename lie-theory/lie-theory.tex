@@ -7,6 +7,8 @@
 \usetikzlibrary{external}
 \tikzexternalize[prefix=tikz-external/]
 
+\usepackage{tikz-cd}
+
 \usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes from Solitons: Differential Equations, Symmetries, Infinite Dimensional Algebras},pdfkeywords={},pdfsubject={}]{hyperref}  % Should be loaded second last (cleveref last)
 \colorlet{hyperrefcolor}{blue!60!black}
 \hypersetup{colorlinks=true, linkcolor=hyperrefcolor, urlcolor=hyperrefcolor}
@@ -38,6 +40,8 @@ noabbrev
 \subsubtitle{University of Glasgow}
 \renewcommand{\abstracttext}{These are my notes from the master's course \emph{Lie Theory} taught at the University of Glasgow by Dr Dinakar Muthiah. I also found \href{https://www.youtube.com/playlist?list=PLVMgvCDIRy1zJ6iJHLC_lWgIwY4AhviZ-}{this video series}\footnote{\url{https://www.youtube.com/playlist?list=PLVMgvCDIRy1zJ6iJHLC_lWgIwY4AhviZ-}} from Michael Penn useful. These notes were last updated at \printtime{} on \today{}.}
 
+\hyphenation{ei-gen-space ei-gen-spaces}
+
 % Commands
 % Maths
 \renewcommand{\field}{\symbb{k}}
@@ -67,6 +71,8 @@ noabbrev
 \DeclareMathOperator{\tr}{tr}
 \DeclareMathOperator{\im}{im}
 \newcommand{\ad}{\symrm{ad}}
+\newcommand{\borelLie}{\symfrak{b}}
+\newcommand{\nilpotentLie}{\symfrak{n}}
 
 \begin{document}
 	\frontmatter
@@ -235,7 +241,16 @@ noabbrev
         \end{itemize}
     \end{dfn}
     
-    We can define the external direct sum by replacing sequences such as \((u_1, u_2, \dotsc)\) with functions \(I \to \bigcup_{j \in I} U_j\) with finite support, the idea being that \(u(i)\) corresponds to \(u_i\) in the case where \(I = \{1, \dotsc, r\}\).
+    We can define the external direct sum by taking a family of vector spaces, \(\{U_i\}_{i \in I}\), all over \(\field\), and defining
+    \begin{equation}
+        V = \bigoplus_{i \in I} U_i \coloneqq \{(u_i)_{i \in I} \mid u_i \text{ nonzero for only finitely many } i\} \subseteq \prod_{i \in I} U_i
+    \end{equation}
+    where
+    \begin{equation}
+        \prod_{i \in I} U_i = \{(u_i)_{i \in I}\}
+    \end{equation}
+    is the direct product of vector spaces (that is, the product in the category \(\Vect\)).
+    Note that when \(I\) is finite the product and direct sum coincide.
     
     \begin{lma}{}{}
         If \(V = \bigoplus_{i \in I} U_i\) then for all \(v \in V\) there exist unique \(u_i \in U_i\) such that \(v = \sum_{i \in I} u_i\) with only finitely many of the \(u_i\) being nonzero.
@@ -277,6 +292,18 @@ noabbrev
     
     \begin{remark}{}{}
         The most general definition of the direct sum is as the coproduct in the category \(\Vect\).
+        Recall (if you know anything about categories) that the coproduct \(V = \bigoplus_{i \in I} U_i\) comes equipped with inclusion maps \(\iota_i \colon U_i \hookrightarrow V\) which are such that if we have a family of maps \(f_i \colon U_i \to W\) for some other vector space \(W\) then there is a unique linear map \(f \colon V \to W\) such that \(f\iota_i = f_i\).
+        This is the universal property of the coproduct, and can be summarised as the following diagram commuting for all \(j \in I\):
+        \begin{equation}
+            \tikzexternaldisable
+            \begin{tikzcd}
+                U_j \arrow[r, hookrightarrow, "\iota_j"] \arrow[dr, "f_j"'] & \displaystyle \bigoplus_{i \in I} U_i \arrow[d, dashed, "f", "\exists!"', pos=0.4]\\
+                & W\mathrlap{.}
+            \end{tikzcd}
+            \tikzexternalenable
+        \end{equation}
+        
+        The inclusion map \(\iota_i \colon U_i \hookrightarrow V\) is what allows us to identify \(U_i\) in the external direct sum with the subspace \(\iota_i(U_i) \subseteq V\), and since \(\iota_i\) is injective we have \(U_i \isomorphic \iota_i(U_i)\).
     \end{remark}
     
     \section{Diagonalisable Operators and the Direct Sum Decomposition}
@@ -706,7 +733,7 @@ noabbrev
     and we see that this is a version of the product rule, or Leibniz rule.
     So \(D\) acts a bit like a derivative.
     The fancy way to say this is that the adjoint representation of \(\lie{g}\) acts on \(\lie{g}\) by derivations.
-    A derivation is just any linear map satisfying the Leibniz rule, and the \enquote{adjoint representation} is simply \(\lie{g}\) acting on itself where \(X\) acts on \(Y\) by \(X \cdot Y \mapsto \bracket{X}{Y}\).
+    A derivation is just any linear map satisfying the Leibniz rule, and the \enquote{adjoint representation} is simply \(\lie{g}\) acting on itself where \(X\) acts on \(Y\) by \(X \cdot Y \mapsto \bracket{X}{Y}\). % TODO 3
     
     Now\footnote{I've brought this forwards in the notes, it feels wrong to define objects and not move on to morphisms immediately.} that we've defined Lie algebras, an algebraic object, we should define maps between them.
     The appropriate maps will be \enquote{structure preserving}, in the same way that a group homomorphism is structure preserving (it preserves the multiplicative structure) and a linear map is structure preserving (it preserves addition and scalar multiplication).
@@ -1116,6 +1143,7 @@ noabbrev
     \end{equation}
     where we've used the fact that the trace of a product is invariant under cyclic permutations of that product (henceforth, \enquote{the trace is cyclic}).
     Notice that this doesn't actually use that \(X\) and \(Y\) are traceless, the trace of a commutator is always zero.
+    This means that if \(X \in \generalLinearLie(n, \field)\) and \(Y \in \specialLinearLie(n, \field)\) we still have \(\tr(\bracket{X}{Y}) = 0\), and thus \(\bracket{X}{Y} \in \specialLinearLie(n, \field)\), meaning that \(\specialLinearLie(n, \field)\) is an ideal of \(\generalLinearLie(n, \field)\)
     
     \subsubsection{Dimensions}
     An important exercise is to compute the dimensions of the classical Lie algebras.
@@ -1148,7 +1176,6 @@ noabbrev
         Thus, the dimension is \(2n^2 - n - (n^2 - n) = n^2\).
         \item \(\dim \specialUnitaryLie(n) = n^2 - 1\), since any matrix in \(\specialUnitaryLie(n)\) is in \(\unitaryLie(n)\), and setting its trace to zero fixes the final entry on the diagonal (which is purely real).
         \item \(\dim \symplecticLie(n) = 2n^2 + n\), but showing this is a bit tricky.
-        
     \end{itemize}
     
     \subsubsection{\texorpdfstring{\(\specialLinearLie(2, \complex)\)}{sl(2, C)}}
@@ -1196,7 +1223,7 @@ noabbrev
     \begin{equation}
         \commutator{H}{E} = 2E, \qquad \commutator{H}{F} = -2F, \qqand \commutator{E}{F} = H.
     \end{equation}
-    An important observation here is that if we define the map\footnote{This is the so called adjoint representation.} \(\ad_H \colon \specialLinearLie(2, \complex) \to \specialLinearLie(2, \complex)\) by \(\ad_H(X) = \commutator{H}{X}\) then we see that this map has \(E\) and \(F\) as eigenvectors, with eigenvalues \(2\) and \(-2\) respectively.
+    An important observation here is that if we define the map\footnote{This is the so called adjoint representation.} \(\ad_H \colon \specialLinearLie(2, \complex) \to \specialLinearLie(2, \complex)\) by \(\ad_H(X) = \commutator{H}{X}\) then we see that this map has \(E\) and \(F\) as eigenvectors, with eigenvalues \(2\) and \(-2\) respectively. % TODO 2
     The other eigenvector of \(\ad_H\) is \(H\) itself, since \(\ad_H(H) = \commutator{H}{H} = 0 = 0H\).
     Then we have the eigensspaces \(V_0 = \complex H = \lie{h}\), \(V_2 = \complex E\), and \(V_{-2} = \complex F\), giving the decomposition
     \begin{equation}
@@ -1205,12 +1232,48 @@ noabbrev
     
     The important thing here is that we get \(\lie{h}\), which is a special subalgebra called the Cartan subalgebra which we'll see a lot later, and we get the generalised eigenspaces \(V_{\alpha}\).
     We'll see later\footnote{so ignore any terminology here that is unfamiliar} that replacing the generalised eigenspaces with something called root spaces makes this construction generalise to finite dimensional semisimple Lie algebras over \(\complex\), and further that the subalgebras appearing in this decomposition are all simple, so a classification of simple Lie algebras extends to a classification of semisimple Lie algebras.
-    This requires replacing the indexing set \(\complex \setminus \{0\}\) with the root space \(\lie{h}^* \setminus \{0\}\), or rather we've already done that, it's just that \(\dim \lie{h} = 1\) so \(\lie{h}^* \isomorphic \lie{h}\) and \(\dim \lie{h}^* = 1\) so \(\lie{h}^* \isomorphic \complex\).
+    This requires replacing the indexing set \(\complex \setminus \{0\}\) with the root space \(\lie{h}^* \setminus \{0\}\), or rather we've already done that, it's just that \(\dim \lie{h} = 1\) so \(\lie{h}^* \isomorphic \lie{h}\) and \(\dim \lie{h}^* = 1\) so \(\lie{h}^* \isomorphic \complex\). % TODO 4
     
     While this last paragraph is beyond what we're ready for yet it's important to start seeing the recurring pattern of this type of decomposition now.
     The fact that \(\specialLinearLie(2, \complex)\) is the simplest example of such a decomposition is why it's so important.
     In particular, every finite dimension semisimple Lie algebra over \(\complex\) of dimension at least 3 contains (many) copies of \(\specialLinearLie(2, \complex)\).
     
+    \subsection{Other Subalgebras of \texorpdfstring{\(\generalLinearLie(n, \field)\)}{gl(n, k)}}
+    There are two further subalgebras of \(\generalLinearLie(n, \field)\) which are worth mentioning.
+    \begin{dfn}{Triangular Matrices}{}
+        Denote by \(\borelLie(n, \field) \subseteq \generalLinearLie(n, \field)\) the subalgebra of upper triangular matrices, and by \(\nilpotentLie(n, \field) \subseteq \generalLinearLie(n, \field)\) the subalgebra of \emph{strictly} upper triangular matrices (meaning the diagonal is all zeros).
+    \end{dfn}
+    
+    \begin{remark}{}{}
+        Here \(\borelLie\) stands for \enquote{Borel} because \(\borelLie(n, \field)\) is a \defineindex{Borel subalgebra}, meaning it's a maximal solvable subalgebra (we'll define solvable shortly). % TODO 1
+        The \(\nilpotentLie\) stands for \enquote{nilpotent} because \(\nilpotentLie(n, \field)\) is a (maximal) nilpotent algebra.
+        
+        These properties ultimately come from the fact that taking nested commutators of (strictly) upper triangular matrices will eventually result in zero.
+        The difference in how the commutators are nested is the distinction between solvable (e.g., \(\bracket{\bracket{-}{-}}{\bracket{-}{-}}\)) and nilpotent (e.g., \(\bracket{-}{\bracket{-}{-}}\)).
+    \end{remark}
+    
+    It turns out that \(\nilpotentLie(n, \field)\) is an ideal of \(\borelLie(n, \field)\), since the product of an upper triangular matrix and a strictly upper triangular matrix is strictly upper triangular, and so the commutator is too.
+    This means we can consider the quotient \(\lie{g} = \borelLie(n, \field)/\nilpotentLie(n, \field)\).
+    Two upper triangular matrices in \(\borelLie(n, \field)\) are identified in \(\lie{g}\) if their difference is a strictly upper triangular matrix in \(\nilpotentLie(n, \field)\).
+    This means that they must have the same diagonal.
+    Suppose then that \(X, Y \in \borelLie(n, \field)\) have the same diagonal, so \(X_{ii} = Y_{ii}\) for all \(i = 1, \dotsc, n\).
+    By definition of upper triangular we also know that \(X_{ij} = Y_{ij} = 0\) if \(i > j\).
+    Basic matrix multiplication tells us an element of the diagonal of \(XY\) is
+    \begin{equation}
+        (XY)_{ii} = \sum_{j=1}^{n} X_{ij} Y_{ji}.
+    \end{equation}
+    If \(i > j\) then \(X_{ij} = 0\), and if \(i < j\) then \(Y_{ji} = 0\), so the only nonzero diagonal term comes from \(X_{ii} Y_{ii}\).
+    The same analysis can be applied to \(YX\) and we see that the only nonzero diagonal term is \((YX)_{ii} = Y_{ii} X_{ii}\).
+    In the commutator these terms cancel out, and as such \(\commutator{X}{Y} \in \nilpotentLie(n, \field)\) for all \(X, Y \in \borelLie(n, \field)\).
+    This means that in the quotient \(\lie{g}\) we identify \(\commutator{X}{Y}\) with \(\commutator{X}{Y} + \nilpotentLie(n, \field) = 0 + \nilpotentLie(n, \field)\), which is zero, and so this quotient is abelian.
+    
+    Note that as \(\field\)-vector spaces \(\dim \borelLie(n, \field) = n(n + 1)/2 = T_n\) and \(\dim \borelLie(n, \field) = n(n - 1)/2 = T_{n-1}\).
+    Thus, the quotient \(\lie{g}\) has dimension \(T_n - T_{n-1} = n\).
+    
+    % TODO: add reference to definition of solvable Lie alg in remark (TODO 1)
+    % TODO: add reference to definition of adjoint representation to discussion of sl(2, C) (TODO 2)
+    % TODO: add reference to definition of adjoint representation to discussion of Jacobi identity as derivation (TODO 3)
+    % TODO: add reference to definition of (semi)simple Lie alg to discussion of sl(2, C) (TODO 4)
 	
 	% Appdendix
 %	\appendixpage
