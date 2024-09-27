@@ -3,6 +3,10 @@
 
 \usepackage{csquotes}
 
+\usepackage{tikz}
+\usetikzlibrary{external}
+\tikzexternalize[prefix=tikz-external/]
+
 \usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes from Solitons: Differential Equations, Symmetries, Infinite Dimensional Algebras},pdfkeywords={},pdfsubject={}]{hyperref}  % Should be loaded second last (cleveref last)
 \colorlet{hyperrefcolor}{blue!60!black}
 \hypersetup{colorlinks=true, linkcolor=hyperrefcolor, urlcolor=hyperrefcolor}
@@ -32,7 +36,7 @@ noabbrev
 \date{September 26th, 2024}
 \subtitle{Notes from}
 \subsubtitle{University of Glasgow}
-\renewcommand{\abstracttext}{These are my notes from the master's course \emph{Lie Theory} taught at the University of Glasgow by Dr Dinakar Muthiah. These notes were last updated at \printtime{} on \today{}.}
+\renewcommand{\abstracttext}{These are my notes from the master's course \emph{Lie Theory} taught at the University of Glasgow by Dr Dinakar Muthiah. I also found \href{https://www.youtube.com/playlist?list=PLVMgvCDIRy1zJ6iJHLC_lWgIwY4AhviZ-}{this video series}\footnote{\url{https://www.youtube.com/playlist?list=PLVMgvCDIRy1zJ6iJHLC_lWgIwY4AhviZ-}} from Michael Penn useful. These notes were last updated at \printtime{} on \today{}.}
 
 % Commands
 % Maths
@@ -41,6 +45,7 @@ noabbrev
 \makeatletter
 \newcommand{\c@egory}[1]{\symsfup{#1}}
 \newcommand{\Vect}[1][\field]{#1\text{-}\c@egory{Vect}}
+\newcommand{\LieAlg}[1][\field]{#1\text{-}\c@egory{LieAlg}}
 \makeatother
 \DeclareMathOperator{\Hom}{Hom}
 \DeclarePairedDelimiterX{\commutator}[2]{[}{]}{#1, #2}
@@ -48,6 +53,20 @@ noabbrev
 \newcommand{\isomorphic}{\cong}
 \DeclareMathOperator{\Span}{span}
 \newcommand{\id}{\symrm{id}}
+\DeclareMathOperator{\Char}{char}
+\RenewDocumentCommand{\matrices}{o m m}{%
+    \IfNoValueTF{#1}{%
+        \symrm{Mat}(#2, #3)
+    }{%
+        \symrm{Mat}(#1 \times #2, #3)
+    }
+}
+\newcommand{\trans}{{\top}}
+\newcommand{\hermit}{*}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\im}{im}
+\newcommand{\ad}{\symrm{ad}}
 
 \begin{document}
 	\frontmatter
@@ -234,7 +253,7 @@ noabbrev
         Addition is just addition of polynomials, and scaling is simply scaling each coefficient, which we can phrase as multiplying by the corresponding constant polynomial.
         We have the subspaces
         \begin{equation}
-            U_i = \Span \{x^i\} \coloneqq \{a x^i \mid a \in \field\}
+            U_i = \Span \{x^i\} \coloneq \{a x^i \mid a \in \field\}
         \end{equation}
         and it's easy to see that
         \begin{equation}
@@ -245,6 +264,15 @@ noabbrev
             f(x) = a_0 + a_1x + a_2 x^2 + \dotsb + a_N x^N
         \end{equation}
         and \(a_0 \in U_0\), \(a_1 x \in U_1\), \(a_2 x^2 \in U_2\), and so on up to \(a_N x^N \in U_N\), so  we get a finite decomposition of \(f(x)\), and clearly this is unique, showing that \(\field[x]\) is indeed this direct sum as claimed.
+        
+        \begin{rmk}
+            There's actually more structure here.
+            First, we can multiply polynomials, so we have an algebra (see \cref{def:algebra}), not just a vector space.
+            Define \(\deg f(t)\) to be the highest power of \(t\) appearing in \(f\) with a nonzero coefficient.
+            Then \(U_i\) consists of all homogenous polynomials of degree \(i\) (homogenous meaning each term has the same degree).
+            Further, since \(x^n x^m = x^{n + m}\) we have \(\deg (x^n x^m) = n + m\), and so \(U_iU_j \coloneq \{u_i u_j \mid u_i \in U_i \text{ and } u_j \in U_j\} = U_{i + j}\).
+            When we have a decomposition like this and \(U_i U_j \subseteq U_{i + j}\) we say that \(V\) is an \(\naturals\)-graded algebra.
+        \end{rmk}
     \end{exm}
     
     \begin{remark}{}{}
@@ -258,7 +286,7 @@ noabbrev
     Let \(V\) be a finite dimensional vector space over \(\field\) with basis \(\symcal{B} = \{v_1, \dotsc, v_n\}\).
     Recall that if \(T \colon V \to V\) is a linear operator then its matrix in basis \(\symcal{B}\) is the matrix
     \begin{equation}
-        [T]_{\symcal{B}} \coloneqq 
+        [T]_{\symcal{B}} \coloneq 
         \begin{bmatrix}
             \uparrow & & \uparrow \\
             Tv_1 & \dots & Tv_n \\
@@ -332,7 +360,7 @@ noabbrev
         Let \(T \colon V \to V\) be a linear operator.
         Then for \(\alpha \in \field\) define the \defineindex{eigenspace} corresponding to \(\alpha\) to be
         \begin{equation}
-            W_\alpha \coloneqq \{w \in V \mid T(w) = \alpha w\}.
+            W_\alpha \coloneq \{w \in V \mid T(w) = \alpha w\}.
         \end{equation}
     \end{dfn}
     
@@ -429,7 +457,7 @@ noabbrev
         Let \(T \colon V \to V\) be a linear operator.
         Then for \(\alpha \in \field\) define the \defineindex{generalised eigenspace} corresponding to \(\alpha\) to be
         \begin{equation}
-            V_\alpha \coloneqq \{w \in V \mid (T - \alpha)^N(w) = 0 \text{ for some } N \in \naturals\}.
+            V_\alpha \coloneq \{w \in V \mid (T - \alpha)^N(w) = 0 \text{ for some } N \in \naturals\}.
         \end{equation}
     \end{dfn}
     
@@ -592,7 +620,596 @@ noabbrev
         \end{proof}
     \end{crl}
     
+    \chapter{Lie Algebras}
+    \section{Definition and Remarks}
+    \begin{dfn}{Lie Algebra}{}
+        Let \(\field\) be a field.
+        A \defineindex{Lie algebra} over \(\field\) is a vector space, \(\lie{g}\), over \(\field\) equipped with a bilinear map,
+        \begin{align}
+            \bracket{-}{-} \colon \lie{g} \times \lie{g} &\to \lie{g}\\
+            (X, Y) &\mapsto \bracket{X}{Y},
+        \end{align}
+        called the Lie bracket, or simply the bracket.
+        This must satisfy two properties:
+        \begin{enumerate}
+            \item \defineindex{alternating}: for all \(X \in \lie{g}\) we have \(\bracket{X}{X} = 0\);
+            \item \defineindex{Jacobi identity}: for all \(X, Y, Z \in \lie{g}\) we have
+            \begin{equation}
+                \bracket{X}{\bracket{Y}{Z}} + \bracket{Y}{\bracket{Z}{X}} + \bracket{Z}{\bracket{X}{Y}} = 0.
+            \end{equation}
+        \end{enumerate}
+    \end{dfn}
     
+    Bilinearity means that for all \(\lambda \in \field\) and \(X, Y, Z \in \lie{g}\) we have
+    \begin{align}
+        \bracket{X + \lambda Y}{Z} &= \bracket{X}{Z} + \lambda \bracket{Y}{Z},\\
+        \bracket{X}{Y + \lambda Z} &= \bracket{X}{Y} + \lambda \bracket{X}{Z}.
+    \end{align}
+    
+    We say that \(\bracket{-}{-}\) is antisymmetric if \(\bracket{X}{Y} = -\bracket{Y}{X}\).
+    It turns out that this property is almost the same as, but not quite, the alternating property, and as such the definition of a Lie algebra is often given with antisymmetry in place of alternativity, the catch being that over fields of characteristic 2 these aren't equivalent.
+    Alternativity is the \enquote{correct} condition, but if we're only looking at \(\field = \complex, \reals\), as is often the case, then there's little harm in taking antisymmetry as the defining condition.
+    
+    \begin{lma}{}{}
+        The Lie bracket is antisymmetric.
+        \begin{proof}
+            Let \(\lie{g}\) be a Lie algebra and take \(X, Y \in \lie{g}\).
+            Consider the bracket of \(X + Y\) with itself.
+            On the one hand, alternativity tells us that \(\bracket{X + Y}{X + Y} = 0\), and on the other hand using bilinearity and alternativity we have
+            \begin{align}
+                \bracket{X + Y}{X + Y} &= \bracket{X}{X} + \bracket{X}{Y} + \bracket{Y}{X} + \bracket{Y}{Y}\\
+                &= \bracket{X}{Y} + \bracket{Y}{X}
+            \end{align}
+            Now, if this is to vanish we must have
+            \begin{equation}
+                \bracket{X}{Y} = -\bracket{Y}{X}. \qedhere
+            \end{equation}
+        \end{proof}
+    \end{lma}
+    
+    \begin{lma}{}{}
+        Over a field of characteristic other than 2 antisymmetry of a bilinear bracket implies alternativity.
+        \begin{proof}
+            Let \(\lie{g}\) be a vector space over \(\field\) with \(\Char \field \ne 2\), equipped with an \emph{antisymmetric} bracket, \(\bracket{-}{-} \colon \lie{g} \times \lie{g} \to \lie{g}\).
+            Antisymmetry means that \(\bracket{X}{Y} = -\bracket{Y}{X}\) for all \(X, Y \in \lie{g}\).
+            In particular, we are free to take \(X = Y\), then we have \(\bracket{X}{X} = -\bracket{X}{X}\).
+            Rearranging this gives
+            \begin{equation}
+                \bracket{X}{X} + \bracket{X}{X} = 2 \bracket{X}{X} = 0.
+            \end{equation}
+            Now, in a field with \(2 \ne 0\) (that is, in a field of characteristic other than 2) this immediately implies \(\bracket{X}{X} = 0\).
+        \end{proof}
+    \end{lma}
+    
+    This distinction is subtle, and ultimately not that important since we'll mostly concern ourselves with \(\field = \complex\), which has characteristic 0 (and \(\Char \reals = 0\) also).
+    
+    The Jacobi identity is a bit weird the first time you see it.
+    There are a couple of ways to think about it that help to remember the definition.
+    The first is to notice that the second and third term are cyclic permutations of the first, so it's often shortened to
+    \begin{equation}
+        \bracket{X}{\bracket{Y}{Z}} + \text{cycilc permutations} = 0.
+    \end{equation}
+    The second is to write it like
+    \begin{equation}
+        \bracket{X}{\bracket{Y}{Z}} = \bracket{\bracket{X}{Y}}{Z} + \bracket{Y}{\bracket{X}{Z}},
+    \end{equation}
+    which is an equivalent form.
+    This doesn't look much simpler, but fix some \(X \in \lie{g}\) and define a linear map \(D \colon \lie{g} \to \lie{g}\) by \(D(Y) = \bracket{X}{Y}\).
+    Then this becomes
+    \begin{equation}
+        D(\bracket{Y}{Z}) = \bracket{D(Y)}{Z} + \bracket{Y}{D(Z)}.
+    \end{equation}
+    To make this even simpler, write \(A \cdot B\) in place of \(\bracket{A}{B}\), and we have
+    \begin{equation}
+        D(Y \cdot Z) = D(Y) \cdot Z + Y \cdot D(Z)
+    \end{equation}
+    and we see that this is a version of the product rule, or Leibniz rule.
+    So \(D\) acts a bit like a derivative.
+    The fancy way to say this is that the adjoint representation of \(\lie{g}\) acts on \(\lie{g}\) by derivations.
+    A derivation is just any linear map satisfying the Leibniz rule, and the \enquote{adjoint representation} is simply \(\lie{g}\) acting on itself where \(X\) acts on \(Y\) by \(X \cdot Y \mapsto \bracket{X}{Y}\).
+    
+    Now\footnote{I've brought this forwards in the notes, it feels wrong to define objects and not move on to morphisms immediately.} that we've defined Lie algebras, an algebraic object, we should define maps between them.
+    The appropriate maps will be \enquote{structure preserving}, in the same way that a group homomorphism is structure preserving (it preserves the multiplicative structure) and a linear map is structure preserving (it preserves addition and scalar multiplication).
+    The structure that we have to preserve here is the Lie bracket, as well as the underlying vector space structure of the Lie algebra.
+    
+    \begin{dfn}{Homomorphism}{}
+        Let \(\lie{g}\) be a Lie algebra with bracket \(\bracket{-}{-}_{\lie{g}}\), and let \(\lie{h}\) be a Lie algebra with bracket \(\bracket{-}{-}_{\lie{h}}\).
+        Then a \defineindex{Lie algebra homomorphism}, \(\varphi \colon \lie{g} \to \lie{h}\), is a linear map which preserves the bracket, meaning that for all \(X, Y \in \lie{g}\) we have
+        \begin{equation}
+            \varphi(\bracket{X}{Y}_{\lie{g}}) = \bracket{\varphi(X)}{\varphi(Y)}_{\lie{h}}.
+        \end{equation}
+        An invertible Lie algebra homomorphism is a \defineindex{Lie algebra isomorphism}.
+    \end{dfn}
+    
+    We'll usually just say \enquote{homomorphism}, or simply \enquote{morphism}, rather than \enquote{Lie algebra homomorphism}, and likewise we'll just speak of an \enquote{isomorphism} rather than a \enquote{Lie algebra isomorphism}.
+    We will writhe \(\lie{g} \isomorphic \lie{h}\) if there is a Lie algebra isomorphism \(\lie{g} \to \lie{h}\).
+    For notational simplicity we'll usually write \(\bracket{-}{-}\) for the bracket of both \(\lie{g}\) and \(\lie{h}\), allowing context (i.e., what elements we put into it) to make clear which we mean.
+    
+    We now prove the standard results about morphisms.
+    
+    \begin{lma}{}{}
+        If \(\varphi \colon \lie{g} \to \lie{h}\) is a Lie algebra isomorphism then \(\varphi^{-1} \colon \lie{h} \to \lie{g}\) is a Lie algebra isomorphism.
+        \begin{proof}
+            We need to show that for all \(X', Y' \in \lie{h}\) we have
+            \begin{equation}
+                \varphi^{-1}(\bracket{X'}{Y'}_{\lie{h}}) = \bracket{\varphi^{-1}(X')}{\varphi^{-1}(Y')}_{\lie{g}}.
+            \end{equation}
+            To do so note that \(\varphi^{-1}\) is an invertible linear map, and as such is a bijection.
+            This means that there exist unique \(X, Y \in \lie{g}\) such that \(\varphi(X) = X'\) and \(\varphi(Y) = Y'\).
+            Thus, we may write the left hand side as
+            \begin{equation}
+                \varphi^{-1}(\bracket{X'}{Y'}_{\lie{h}}) = \varphi^{-1}(\bracket{\varphi(X)}{\varphi(Y)}_{\lie{h}}).
+            \end{equation}
+            Using the fact that \(\varphi\) is an isomorphism, and hence is a homomorphism, we can pull the \(\varphi\) out of the bracket on the right, to give
+            \begin{equation}
+                \varphi^{-1}(\bracket{X'}{Y'}_{\lie{h}}) = \varphi^{-1}(\varphi(\bracket{X}{Y}_{\lie{g}})).
+            \end{equation}
+            Then, since by definition \(\varphi^{-1} \circ \varphi = \id_{\lie{g}}\) we have
+            \begin{equation}
+                \varphi^{-1}(\bracket{X'}{Y'}_{\lie{h}}) = \bracket{X}{Y}_{\lie{g}}.
+            \end{equation}
+            We can then invert \(X' = \varphi(X)\) and \(Y' = \varphi(Y)\) to write \(X = \varphi^{-1}(X')\) and \(Y = \varphi^{-1}(Y')\).
+            This lets us write this as
+            \begin{equation}
+                \varphi^{-1}(\bracket{X'}{Y'}_{\lie{h}}) = \bracket{\varphi^{-1}(X')}{\varphi^{-1}(Y')}_{\lie{g}},
+            \end{equation}
+            which is the result we wanted.
+        \end{proof}
+    \end{lma}
+    
+    \begin{lma}{}{}
+        The composite of Lie algebra homomorphisms is a Lie algebra homomorphism.
+        \begin{proof}
+            Let \(\lie{g}\), \(\lie{h}\), and \(\lie{l}\) be Lie algebras with brackets \(\bracket{-}{-}_{\lie{g}}\), \(\bracket{-}{-}_{\lie{h}}\), and \(\bracket{-}{-}_{\lie{l}}\) respectively.
+            Let \(\varphi \colon \lie{g} \to \lie{h}\) and \(\psi \colon \lie{h} \to \lie{l}\) be Lie algebra homomorphisms.
+            Then we may consider \(\psi \circ \varphi \colon \lie{g} \to \lie{l}\).
+            We wish to show that this is a Lie algebra homomorphism.
+            
+            First, note that \(\psi\) and \(\varphi\) are linear, so their composite is too.
+            We then need only show that for all \(X, Y \in \lie{g}\) we have
+            \begin{equation}
+                (\psi \circ \varphi)(\bracket{X}{Y}_{\lie{g}}) = \bracket{(\psi \circ \varphi)(X)}{(\psi \circ \varphi)(Y)}_{\lie{l}}.
+            \end{equation}
+            Starting with the left-hand side we can use the definition of composition to write
+            \begin{equation}
+                (\psi \circ \varphi)(\bracket{X}{Y}_{\lie{g}}) = \psi(\varphi(\bracket{X}{Y}_{\lie{g}})).
+            \end{equation}
+            Using the fact that \(\varphi\) is a Lie algebra homomorphism into \(\lie{h}\) we have \(\varphi(\bracket{X}{Y}_{\lie{g}}) = \bracket{\varphi(X)}{\varphi(Y)}_{\lie{h}}\), so we have
+            \begin{equation}
+                (\psi \circ \varphi)(\bracket{X}{Y}_{\lie{g}}) = \psi(\bracket{\varphi(X)}{\varphi(Y)}_{\lie{h}}).
+            \end{equation}
+            Now, using the fact that \(\psi\) is a Lie algebra homomorphism into \(\lie{l}\) we have \(\psi(\bracket{X'}{Y'}_{\lie{h}}) = \bracket{\psi(X')}{\psi(Y')}_{\lie{l}}\) for any \(X', Y' \in \lie{h}\), and in particular this is true when \(X' = \varphi(X)\) and \(Y' = \varphi(Y)\), giving
+            \begin{equation}
+                (\psi \circ \varphi)(\bracket{X}{Y}_{\lie{g}}) = \bracket{\psi(\varphi(X))}{\psi(\varphi(Y))}_{\lie{l}}.
+            \end{equation}
+            Finally, using the definition of composition again, we get our result,
+            \begin{equation}
+                (\psi \circ \varphi)(\bracket{X}{Y}_{\lie{g}}) = \bracket{(\psi \circ \varphi)(X)}{(\psi \circ \varphi)(Y)}_{\lie{l}}. \qedhere
+            \end{equation}
+        \end{proof}
+    \end{lma}
+    
+    Noting that function composition is associative we have the following result.
+    
+    \begin{crl}{}{}
+        For a field \(\field\) there is a category \(\LieAlg\) whose objects are Lie algebras over \(\field\) and whose morphisms are Lie algebra homomorphisms.
+    \end{crl}
+    
+    \section{Subalgebras, Ideals, and Quotients}
+    To state these definitions it's useful to abuse the notation slightly as follows.
+    Let \(U, V \subseteq \lie{g}\) be subspaces of a Lie algebra.
+    Define the subspace
+    \begin{equation}
+        \bracket{U}{V} = \Span\{\bracket{u}{v} \mid u \in U \text{ and } v \in V\}.
+    \end{equation}
+    
+    \begin{dfn}{Subalgebra}{}
+        Let \(\lie{g}\) be a Lie algebra.
+        A \defineindex{Lie subalgebra} (or just \defineindex{subalgebra}), \(\lie{h}\), is a subspace which is closed under the Lie bracket.
+        That is, \(\bracket{\lie{h}}{\lie{h}} \subseteq \lie{h}\), or equivalently for all \(h, h' \in \lie{h}\) we have \(\bracket{h}{h'} \in \lie{h}\).
+    \end{dfn}
+    
+    The notion of a Lie subalgebra is the Lie algebra analogue of a subset of a set, subspace of a vector space, subgroup of a group, or subring of a ring.
+    We can't form a quotient by an arbitrary subset, subgroup or subring, we need a set generated by an equivalence relation, a normal subgroup, or an ideal.
+    This is exactly the case with Lie algebras as well.
+    
+    Note that a Lie subalgebra, \(\lie{h}\), is necessarily a Lie algebra in its own right after restricting the bracket to \(\lie{h}\).
+    This follows immediately because the requirements for a Lie algebra are universally quantified so remain true after restricting to a subspace.
+    
+    \begin{dfn}{Ideal}{}
+        Let \(\lie{g}\) be a Lie algebra.
+        An \defineindex{ideal} of \(\lie{g}\) is a Lie subalgebra, \(\lie{i}\), such that \(\bracket{\lie{i}}{\lie{g}} \subseteq \lie{i}\), or equivalently for all \(X \in \lie{g}\) and \(I \in \lie{i}\) we have \(\bracket{X}{I} \in \lie{i}\).
+    \end{dfn}
+    
+    Note that there's no notion of left- or right-ideals, any ideal is two sided since \(\bracket{\lie{h}}{\lie{h}'} = \bracket{\lie{h}}{\lie{h}'}\), as elements of the two differ only by a sign and the fact that these are subspaces means that all the elements that differ only by a sign are also included.
+    
+    With ideals we can define quotients.
+    
+    \begin{dfn}{Quotient}{}
+        Let \(\lie{g}\) be a Lie algebra, and let \(\lie{i} \subseteq \lie{g}\) be an ideal.
+        Then the \defineindex{quotient} vector space \(\lie{g}/\lie{i}\) is a Lie algebra when we define the bracket by
+        \begin{equation}
+            \bracket{X + \lie{i}}{Y + \lie{i}} = \bracket{X}{Y} + \lie{i}.
+        \end{equation}
+    \end{dfn}
+    
+    Note that in the definition of the bracket of \(\lie{g}/\lie{i}\) the bracket \(\bracket{X + \lie{i}}{Y + \lie{i}}\) is computed in \(\lie{g}/\lie{i}\), and the bracket \(\bracket{X}{Y}\) is computed in \(\lie{g}\).
+    
+    \begin{lma}{}{}
+        The quotient algebra as defined above is a Lie algebra.
+        \begin{proof}
+            Let \(\lie{g}\) be a Lie algebra and let \(\lie{i}\) be an ideal.
+            We have three things to show:
+            \begin{enumerate}
+                \item The bracket on \(\lie{g}/\lie{i}\) is well-defined;
+                \item The bracket on \(\lie{g}/\lie{i}\) is alternating;
+                \item The bracket on \(\lie{g}/\lie{i}\) satisfies the Jacobi identity.
+            \end{enumerate}
+            The first relies on \(\lie{i}\) being an ideal, and the others are simply an exercise in algebra.
+            
+            \Step{Well-Defined}
+            Let \(X, X' \in \lie{g}\) be such that \(X + \lie{i} = X' + \lie{i}\).
+            Recall that this means \(X - X' \in \lie{i}\).
+            Then for all \(Y \in \lie{g}\) we have
+            \begin{equation}
+                \bracket{X + \lie{i}}{Y + \lie{i}} = \bracket{X}{Y} + \lie{i}
+            \end{equation}
+            and
+            \begin{equation}
+                \bracket{X' + \lie{i}}{Y + \lie{i}} = \bracket{X'}{Y} + \lie{i}.
+            \end{equation}
+            We need to show that these are equal.
+            This means we need to show that
+            \begin{equation}
+                \bracket{X}{Y} - \bracket{X'}{Y} \in \lie{i}.
+            \end{equation}
+            This is necessarily true however, since bilinearity gives us
+            \begin{equation}
+                \bracket{X}{Y} - \bracket{X'}{Y} = \bracket{X - X'}{Y}
+            \end{equation}
+            which is in \(\lie{i}\) since \(X - X' \in \lie{i}\) and \(\lie{i}\) is an ideal.
+            
+            \Step{Alternating}
+            Let \(X \in \lie{g}\), then
+            \begin{equation}
+                \bracket{X + \lie{i}}{X + \lie{i}} = \bracket{X}{X} + \lie{i} = 0 + \lie{i} = \lie{i} = 0
+            \end{equation}
+            since \(\lie{i} = 0 + \lie{i}\) is the zero vector in the quotient space \(\lie{g}/\lie{i}\).
+            
+            \Step{Jacobi Identity}
+            Let \(X, Y, Z \in \lie{g}\),
+            \begin{equation}
+                \bracket{X + \lie{i}}{\bracket{Y + \lie{i}}{Z + \lie{i}}} = \bracket{X + \lie{i}}{\bracket{Y}{Z} + \lie{i}} = \bracket{X}{\bracket{Y}{Z}} + \lie{i}.
+            \end{equation}
+            Doing this with the other terms in the Jacobi identity we see that we end up with the left hand side of the Jacobi identity in \(\lie{g}/\lie{i}\) being
+            \begin{equation}
+                (\bracket{X}{\bracket{Y}{Z}} + \lie{i}) + (\bracket{Y}{\bracket{Z}{X}} + \lie{i}) + (\bracket{Z}{\bracket{X}{Y}} + \lie{i}).
+            \end{equation}
+            Recall that addition in the quotient space is defined by \((X + \lie{i}) + (Y + \lie{i}) = (X + Y) + \lie{i}\), and so this becomes
+            \begin{equation}
+                (\bracket{X}{\bracket{Y}{Z}} + \bracket{Y}{\bracket{Z}{X}} + \bracket{Z}{\bracket{X}{Y}}) + \lie{i} = 0 + \lie{i} = 0
+            \end{equation}
+            where we've used the Jacobi identity in \(\lie{g}\), and then identified \(0 + \lie{i}\) as the zero vector in the quotient \(\lie{g}/\lie{i}\).
+        \end{proof}
+    \end{lma}
+    
+    \section{Examples of Lie Algebras}
+    We've done quite a lot now without ever actually looking at any examples of a Lie algebra, so let's change that.
+    
+    \subsection{Abelian Lie Algebra}
+    We start with the simplest example, where the bracket always vanishes.
+    
+    \begin{dfn}{Abelian Lie Algebra}{}
+        A Lie algebra, \(\lie{g}\), is \define{abelian}\index{abelian Lie algebra} if \(\bracket{\lie{g}}{\lie{g}} = 0\), that is, if \(\bracket{X}{Y} = 0\) for all \(X, Y \in \lie{g}\).
+    \end{dfn}
+    
+    The terminology here, abelian, should not be confused with this terminology referring to groups.
+    An abelian Lie algebra is not one in which the bracket is \enquote{commutative} (although it is, since every bracket is the 0 we do technically have \(\bracket{X}{Y} = \bracket{Y}{X}\)).
+    Instead, this terminology is inherited from the Lie group, an abelian Lie group will give us an abelian Lie algebra.
+    
+    Note that, up to isomorphism, there is one abelian Lie algebra of each dimension for each field.
+    Any vector space can be made into an abelian Lie algebra by equipping it with the trivial bracket, and any two such Lie algebras are isomorphic so long as the underlying vector spaces are.
+    For this reason abelian Lie algebras on their own are \enquote{boring}, we only look at them when they arise naturally as subalgebras of nonabelian Lie algebras.
+    
+    \subsection{Low Dimension}
+    In an attempt to classify Lie algebras (something we'll return to later) one might start with dimension.
+    Let's do that.
+    For dimension 0 there is one Lie algebra, the zero vector space with the trivial bracket.
+    
+    For dimension 1 (and a fixed field) there is one Lie algebra (up to isomorphism), the one-dimensional space equipped with the trivial bracket.
+    Note that there cannot be a nonabelian one-dimensional Lie algebra.
+    Suppose that \(\lie{g}\) was such a Lie algebra, then \(\lie{g} = \field X = \Span\{X\}\) for some \(X\).
+    Then if \(Y, Z \in \lie{g}\) we know that \(Y = \lambda X\) and \(Z = \mu X\), and then
+    \begin{equation}
+        \bracket{Y}{Z} = \bracket{\lambda X}{\mu X} = \lambda \mu \bracket{X}{X} = \lambda \mu \cdot 0 = 0.
+    \end{equation}
+    Thus, all one-dimensional Lie algebras are necessarily abelian.
+    
+    For dimension 2 (and a fixed field) we of course have the abelian Lie algebra, but there is another.
+    Suppose that \(\lie{g}\) is two-dimensional with basis \(\{X, Y\}\).
+    Assuming that \(\lie{g}\) is nonabelian the bracket \(\bracket{X}{Y} = -\bracket{Y}{X}\) must be nonzero.
+    This means that \(\bracket{\lie{g}}{\lie{g}}\) is a one-dimensional subspace of \(\lie{g}\), since every element of \(\bracket{\lie{g}}{\lie{g}}\) is a linear combination of brackets of elements of \(\lie{g}\), but all nonzero such brackets are multiples of \(\bracket{X}{Y}\).
+    Further, we can rescale \(X\) so that \(\bracket{X}{Y} = Y\), and this is the only 2-dimensional non-abelian Lie algebra up to isomorphism (for a fixed field).
+    So, there are two Lie algebras of dimension 2 up to isomorphism.
+    
+    In three dimensions one can make similar arguments, and it turns out that there are infinitely many isomorphism classes of three-dimensional Lie algebra, but we can still classify them.
+    Here are the isomorphism classes over \(\complex\) (or any algebraically closed field of characteristic 0):
+    \begin{itemize}
+        \item The abelian Lie algebra of dimension 3.
+        \item \(\lie{g} = \Span\{X, Y, Z\}\) with \(\bracket{X}{Y} = Z\) and \(\braket{X}{Z} = \bracket{Y}{Z} = 0\).
+        \item \(\lie{g} = \Span\{X, Y, Z\}\) with \(\bracket{X}{Y} = Y\) and \(\bracket{X}{Z} = \bracket{X}{Z} = 0\).
+        \item \(\lie{g}_b = \Span\{X, Y, Z\}\) with \(\bracket{X}{Y} = Y\), \(\bracket{Y}{Z} = bZ\), and \(\bracket{Y}{Z} = 0\) for \(b \in \complex^{\times}\).
+        Note that \(\lie{g}_b \isomorphic \lie{g}_{b'}\) if and only if \(b = b'\) or \(b = 1/b'\).
+        \item \(\lie{g} = \Span\{X, Y, Z\}\) with \(\bracket{X}{Y} = Y\), \(\bracket{X}{Z} = Y + Z\), and \(\bracket{Y}{Z} = 0\).
+        \item \(\lie{g} = \Span\{X, Y, Z\}\) with \(\bracket{X}{Y} = 2X\), \(\bracket{X}{Z} = -2Z\), and \(\bracket{Y}{Z} = X\).
+    \end{itemize}
+    Of these, by far the most important is the last one, which we'll later see is the Lie algebra known as \(\specialLinearLie(2, \complex)\).
+    
+    If we classify over \(\reals\) instead then we get another familiar example of a Lie algebra, \(\reals^3\) equipped with the bracket given by the cross-product.
+    
+    Hopefully, these examples are enough to convince you that a full classification for Lie algebras of dimension 4 is, while maybe possible, probably quite challenging.
+    
+    All hope is not lost, we do have, as we'll see later, a classification of a particularly nice type of Lie algebra, called simple Lie algebras, over \(\complex\).
+    
+    \subsection{Associative Algebras}
+    \begin{dfn}{Algebra}{def:algebra}
+        An \defineindex{algebra} is a vector space, \(A\), equipped with a bilinear product, \(\cdot \colon A \times A \to A\).
+        An \defineindex{associative algebra} is an algebra for which the product is associative.
+    \end{dfn}
+    
+    Note that Lie algebras are algebras in the above sense, but they are generally not associative.
+    Examples of associative algebras include:
+    \begin{itemize}
+        \item \(n \times n\) matrices with matrix multiplication.
+        \item \(\reals\), \(\complex\), or \(\quaternions\) (the quaternions) with their usual multiplication are associative algebras over \(\reals\).
+        In fact, these are \emph{division} algebras: an algebra, \(D\), is a division algebra if for any \(a, b \in D\) with \(b \ne 0\) there is exactly one \(x \in D\) with \(a = bx\) and exactly one \(y \in D\) with \(a = yb\).
+        It turns out that these are the only finite-dimensional associative division algebras over \(\reals\).
+        If we drop the associativity condition then we also get \(\symbb{O}\), the octonions.
+    \end{itemize}
+    
+    Our interest in associative algebras is mostly the following.
+    
+    \begin{lma}{}{}
+        If \(A\) is an associative algebra then defining the bracket by \(\commutator{X}{Y} = XY - YX\) defines a Lie algebra.
+        \begin{proof}
+            First note that we clearly have
+            \begin{equation}
+                \commutator{X}{X} = XX - XX = 0.
+            \end{equation}
+            The commutator is bilinear, here we show linearity in the second argument, taking \(X, Y, Z \in A\) and \(\lambda \in \field\)
+            \begin{align}
+                \commutator{X}{Y + \lambda Z} &= X(Y + \lambda Z) - (Y + \lambda Z)X\\
+                &= XY + \lambda XZ - YX - \lambda ZX\\
+                &= XY - YX + \lambda (XZ - ZX)\\
+                &= \commutator{X}{Y} + \lambda \commutator{X}{Z}.
+            \end{align}
+            The Jacobi identity follows by some algebra.
+            First note that
+            \begin{align}
+                \commutator{X}{\commutator{Y}{Z}} &= \commutator{X}{YZ - ZY}\\
+                &= X(YZ - ZY) - (YZ - ZY)X\\
+                &= XYZ - XZY - YZX + ZYX.
+            \end{align}
+            Then, using the fact that the other terms are simply linear combinations of these, we have that the Jacobi relation is reduced to
+            \begin{multline}
+                XYZ - XZY - YZX + ZYX + YZX - YXZ - ZXY + XZY\\
+                + ZXY - ZYX - XYZ + YXZ
+            \end{multline}
+            and these terms all cancel to give zero.
+        \end{proof}
+    \end{lma}
+    
+    When the Lie bracket can be written as \(\commutator{X}{Y} = XY - YX\) we call it the \defineindex{commutator}, because it is a measure of the failure of \(A\) to be a commutative algebra.
+    This terminology is also often used for the Lie bracket in general, but we'll try to avoid it in the general case.
+    
+    \subsection{Classical Lie Algebras}
+    The complex classical Lie algebras are some classes of Lie algebras defined with similar definitions.
+    These were first of interest because they correspond to particularly common Lie groups.
+    First, some notation.
+    
+    \begin{ntn}{}{}
+        Let \(\matrices{n}{\field}\) denote the set of \(n \times n\) matrices with entries in \(\field\).
+        
+        For \(A \in \matrices{n}{\field}\) denote the transpose by \(A^{\trans}\).
+        
+        For \(A \in \matrices{n}{\field}\) with \(\field = \reals, \complex\) denote the complex conjugate by \(\overbar{A}\).
+        
+        For \(A \in \matrices{n}{\field}\) with \(\field = \reals, \complex\) denote the Hermitian conjugate by \(A^{\hermit}\), recall that \(A^{\hermit} = \overbar{A}^{\trans} = \overline{A^{\trans}}\)
+        
+        \begin{wrn}
+            Physicists will denote the complex conjugate by \(A^*\), and the Hermitian conjugate by \(A^{\dagger}\).
+        \end{wrn}
+    \end{ntn}
+    
+    \begin{dfn}{General Linear Lie Algebra}{}
+        Let \(V\) be a vector space, and define
+        \begin{equation}
+            \generalLinearLie(V) = \End V \coloneq \{T \colon V \to V \mid T \text{ is linear}\} = \Vect(V, V).
+        \end{equation}
+        This is an associative algebra under composition of linear maps, and as such \(\generalLinearLie(V)\) is a Lie algebra under the commutator.
+    \end{dfn}
+    
+    Typically we write \(\generalLinearLie(V)\) when thinking of the Lie algebra, and \(\End V\) when thinking of the associative algebra.
+    
+    When \(V\) is finite dimensional, say \(\dim V = n\), we can fix a basis and then each linear map corresponds to an \(n \times n\) matrix with entries in \(\field\).
+    This leads us to make the following definition.
+    \begin{equation}
+        \generalLinearLie(n, \field) \coloneq \matrices{n}{\field} \isomorphic \generalLinearLie(V).
+    \end{equation}
+    Note that if \(\dim V = n\) then \(V \isomorphic \field^n\) and \(\generalLinearLie(n, \field) = \generalLinearLie(\field^n)\).
+    
+    The following are some of the subalgebras of \(\generalLinearLie(n, \complex)\) viewed as a \emph{real} vector space.
+    This is important, not all of these are closed under multiplication by arbitrary complex numbers (in particular, if \(A\) is skew-Hermitian then \(iA\) is Hermitian).
+    \begin{itemize}
+        \item \(\generalLinearLie(n, \reals) = \matrices{n}{\reals}\), the general linear Lie algebra.
+        \item \(\specialLinearLie(n, \reals) \coloneq \{A \in \generalLinearLie(n, \reals) \mid \tr A = 0\}\), the \defineindex{special linear Lie algebra};
+        \item \(\orthogonalLie(n, \reals) = \specialOrthogonalLie(n, \reals) \coloneq \{A \in \generalLinearLie(n, \reals) \mid A^{\trans} + A = 0\}\), the \defineindex{orthogonal Lie algebra} and \defineindex{special orthogonal Lie algebra}.
+        Note that these two are equal but given different names because they both come from important Lie groups which are not equal.
+        Note that \(A^{\trans} + A = 0\) means \(A\) is antisymmetric.
+        \item \(\unitaryLie(n) \coloneq \{A \in \generalLinearLie(n, \complex) \mid A^{\hermit} + A = 0\}\), the \defineindex{unitary Lie algebra}.
+        Note that \(A^{\hermit} + A = 0\) means \(A\) is skew-Hermitian.
+        \item \(\specialUnitaryLie(n) \coloneq \{A \in \generalLinearLie(n, \complex) \mid \tr A = 0 \text{ and } A^* + A = 0\}\), the \defineindex{special unitary Lie algebra};
+        \item \(\symplecticLie(n, \reals) \coloneq \{A \in \generalLinearLie(2n, \reals) \mid A^\trans J_n + J_n A = 0\}\), the \defineindex{symplectic Lie algebra}, where \(J_n \in \matrices{2n}{\reals}\) is the block matrix
+        \begin{equation}
+            \begin{bmatrix}
+                0 & I_n\\
+                -I_n & 0
+            \end{bmatrix}
+        \end{equation}
+        where \(I_n \in \matrices{n}{\reals}\) is the \(n \times n\) identity matrix.
+        The matrix \(J_n\) (or rather, the symmetric bilinear form it represents) is called a \defineindex{symplectic form}.
+    \end{itemize}
+    
+    \begin{wrn}
+        Physicists like operators to be Hermitian, for quantum mechanics, so they will define things with a few factors of \(i\) different so that \(\unitaryLie(n)\) and \(\specialUnitaryLie(n)\) consist of Hermitian matrices, as opposed to \emph{skew-}Hermitian matrices.
+        This distinction unfortunately causes these factors of \(i\) to propagate through many formulae, so be careful when looking things up that the source uses the correct convention.
+    \end{wrn}
+    
+    \begin{wrn}
+        Notation differs for the symplectic Lie algebra (and group), some authors denote it \(\symplecticLie(2n)\), it's the \(D_n\) vs \(D_{2n}\) debate all over again.
+    \end{wrn}
+    
+    The names here are all derived from the names of the associated Lie groups, \(\generalLinear(n, \reals)\) the general linear group, \(\specialLinear(n, \reals)\) the special linear group, \(\orthogonal(n, \reals)\) the orthogonal group, \(\specialOrthogonal(n, \reals)\) the special orthogonal group, \(\unitary(n)\) the unitary group, \(\specialUnitary(n)\) the special unitary group, and various different but related symplectic Lie groups.
+    
+    These are defined as follows:
+    \begin{itemize}
+        \item \(\generalLinear(n, \reals) \coloneq \{A \in \matrices{n}{\reals} \mid \det A \ne 0\}\);
+        \item \(\specialLinearLie(n, \reals) \coloneq \{A \in \generalLinear(n, \reals) \mid \det A = 1\}\);
+        \item \(\orthogonal(n, \reals) \coloneq \{A \in \generalLinear(n, \reals) \mid A^{\trans}A = I_n\}\);
+        \item \(\specialOrthogonal(n, \reals) \coloneq \{A \in \generalLinear(n, \reals) \mid A^{\trans}A = I_n \text{ and } \det A = 1\}\).
+        \item \(\unitary(n) \coloneq \{A \in \generalLinear(n, \complex) \mid U^{\hermit} U = I_n\}\);
+        \item \(\specialUnitary(n) \coloneq \{A \in \generalLinear(n, \complex) \mid U^{\hermit}U = I_n \text{ and } \det U = 1\}\);
+        \item \(\symplectic(n, \reals) \coloneq \{A \in \generalLinear(2n, \reals) \mid A^{\trans}J_nA = J_n\}\).
+    \end{itemize}
+    
+    These definitions are all about preserving some structure on \(\reals^n\) (or \(\reals^{2n}\) for the symplectic group).
+    \begin{itemize}
+        \item The general linear group preserves the vector space structure, including dimension.
+        \item The special linear group preserves volues.
+        \item The orthogonal group preserves angles.
+        \item The special orthogonal group preserves the inner product on \(\reals^n\).
+        \item The (special) unitary group is a complex analogue of the (special) orthogonal group.
+        \item The symplectic group preserves \(J_n\).
+    \end{itemize}
+    
+    Note that \enquote{special} means that we impose the condition \(\det A = 1\).
+    In the case of the Lie algebras this becomes the condition that \(\tr A = 0\).
+    This is the reason that \(\orthogonalLie(n, \reals) = \specialOrthogonalLie(n, \reals)\), the requirement that \(A\) is antisymmetric means that the diagonal of \(A\) is zero, so it automatically has trace zero.
+    In terms of Lie groups, the reason is that both \(\orthogonal(n, \reals)\) and \(\specialOrthogonal(n, \reals)\) are very similar, in particular, \(\specialOrthogonal(n, \reals) \isomorphic \orthogonal(n, \reals)/(\integers/2\integers)\) where \(\integers/2\integers\) here is \(\{\pm I_n\}\), so \(\specialOrthogonal(n, \reals)\) preserves everything that \(\orthogonal(n, \reals)\) preserves, and also preserves orientation.
+    This similarity means that \(\orthogonal(n, \reals)\) has two connected components, one preserving orientation, corresponding to the subgroup \(\specialOrthogonal(n, \reals)\), and one reversing orientation.
+    Then the Lie algebra corresponds only to the component of the Lie group connected to the identity, which is \(\specialOrthogonal(n, \reals)\) in both cases, so the Lie algebras are the same.
+    
+    In some of these cases, but not all, it is possible to extend the field to \(\complex\), giving
+    \begin{itemize}
+        \item \(\generalLinearLie(n, \complex) \coloneq \matrices{n}{\complex}\);
+        \item \(\orthogonalLie(n, \complex) \coloneq \specialOrthogonalLie(n, \complex) = \{A \in \generalLinearLie(n, \complex) \mid A^{\trans} + A\} = 0\).
+        \item \(\symplecticLie(n, \complex) \coloneq \{A \in \generalLinearLie(2n, \complex) \mid A^{\trans}J_n + J_n A = 0\}\).
+    \end{itemize}
+    
+    Showing that the classical Lie algebras are indeed Lie algebras, specifically subalgebras of \(\generalLinearLie(N, \field)\), requires a little bit of work.
+    Mostly we have to show that they are closed under the bracket, which is the commutator in all cases.
+    There are a few tricks though.
+    The first is that \(\specialLinearLie(n, \field) = \ker \tr\), when we view \(\tr \colon \generalLinearLie(n, \field) \to \generalLinearLie(n, \field)\) as a linear operator, and the kernel of a linear operator is always a subspace.
+    We also have to show that the commutator of two traceless matrices is again traceless for \(\specialLinearLie(n, \field)\) to be closed under the bracket:
+    \begin{equation}
+        \tr(\commutator{X}{Y}) = \tr(XY - YX) = \tr(XY) - \tr(YX) = \tr(XY) - \tr(XY) = 0
+    \end{equation}
+    where we've used the fact that the trace of a product is invariant under cyclic permutations of that product (henceforth, \enquote{the trace is cyclic}).
+    Notice that this doesn't actually use that \(X\) and \(Y\) are traceless, the trace of a commutator is always zero.
+    
+    \subsubsection{Dimensions}
+    An important exercise is to compute the dimensions of the classical Lie algebras.
+    We'll do it for the real ones.
+    \begin{itemize}
+        \item \(\dim \generalLinearLie(n, \reals) = n^2\), since an arbitrary element of \(\generalLinearLie(n, \reals)\) is an \(n \times n\) matrix, which is parametrised by \(n^2\) entries.
+        A basis for \(\generalLinearLie(n, \reals)\) is
+        \begin{equation}
+            \{E_{ij} \mid i = 1, \dotsc, n \text{ and } j = 1, \dotsc, n\}
+        \end{equation}
+        where \(E_{ij}\) has 1 in the \(i\)th row and \(j\)th column and \(0\) everywhere else.
+        Note that
+        \begin{equation}
+            \commutator{E_{ij}}{E_{kl}} = E_{ij}E_{kl} - E_{kl}E_{ij} = \delta_{ij}E_{il} - \delta_{il}E_{kj}.
+        \end{equation}
+        \item \(\dim \specialLinearLie(n, \reals) = n^2 - 1\), since setting \(\tr A = 0\) fixes one element on the diagonal, say the last element, by the requirement that if \(A = (a_{ij})\) then \(a_{11} + \dotsb + a_{n-1,n-1} = -a_{nn}\) to get \(\tr A = a_{11} + \dotsb + a_{n-1,n-1} + a_{nn} = 0\).
+        Alternatively, note that \(\specialLinearLie(n, \reals) = \ker \tr\), and \(\im \tr = \reals\) and so by the rank-nullity theorem we have
+        \begin{equation}
+            \dim \generalLinearLie(n, \reals) = \dim(\ker \tr) + \dim(\im \tr) = \dim \specialLinearLie(n, \reals) + 1.
+        \end{equation}
+        The result then follows from this and our calculation of \(\dim \generalLinearLie(n, \reals) = n^2\).
+        \item \(\dim \specialOrthogonalLie(n, \reals) = n(n - 1)/2\), requiring that \(A\) be antisymmetric means that \(A\) is zero on the diagonal, and below the diagonal is fixed by above the diagonal.
+        The above diagonal elements form a triangle with a base of \(n - 1\) elements, and thus the number of entries above the diagonal is the \((n-1)\)st triangle number, \(T_{n-1} = n(n-1)/2\) (\(T_n = n(n + 1)/2\)).
+        We can check this by identifying that \(\specialOrthogonal(3)\) corresponds to rotations in three dimensions, and this is a three dimensional group, since any rotation is specified by either a) three Euler angles, or b) an angle and an axis of rotation (requiring two numbers to fix the direction, the third component fixed by requiring it to be a unit vector).
+        Note that \(\dim \specialOrthogonalLie(3) = 3\) is a coincidence, we have \(\dim \specialOrthogonalLie(2) = 1\) (rotations in two dimensions are specified by just an angle) and \(\dim \specialOrthogonalLie(4) = 6\).
+        Of course, here we're using the fact that a Lie group and its associated Lie algebra have the same dimension, this is because the tangent space has the same dimension as the manifold (assuming the manifold is connected, which is always the case for at least one Lie group corresponding to a given Lie algebra).
+        \item \(\dim \unitaryLie(n) = n^2\), note that we are talking about the dimension as a real vector space, despite the entries being complex numbers.
+        This is the dimension because an arbitrary \(n \times n\) matrix with entries in \(\complex\) has \(2n^2\) real parameters (one for the real part and one for the imaginary part of each entry).
+        Requiring that the matrix is skew-Hermitian means that each entry on the diagonal must be equal to its conjugate, so it must have zero imaginary part (fixing \(n\) parameters), then the entries below the diagonal are fixed by the entries above the diagonal (fixing \(2 n(n - 1)/2 = n^2 - n\) parameters).
+        Thus, the dimension is \(2n^2 - n - (n^2 - n) = n^2\).
+        \item \(\dim \specialUnitaryLie(n) = n^2 - 1\), since any matrix in \(\specialUnitaryLie(n)\) is in \(\unitaryLie(n)\), and setting its trace to zero fixes the final entry on the diagonal (which is purely real).
+        \item \(\dim \symplecticLie(n) = 2n^2 + n\), but showing this is a bit tricky.
+        
+    \end{itemize}
+    
+    \subsubsection{\texorpdfstring{\(\specialLinearLie(2, \complex)\)}{sl(2, C)}}
+    As we've said a couple of times already the most important Lie algebra is \(\specialLinearLie(2, \complex)\), which is a Lie algebra over \(\complex\).
+    A general element of this algebra is a \(2 \times 2\) matrix with complex entries such that the trace vanishes, we can write such an element as
+    \begin{equation}
+        \begin{bmatrix}
+            a & b\\
+            c & -a
+        \end{bmatrix}
+    \end{equation}
+    for \(a, b, c \in \complex\).
+    This shows that \(\dim \specialLinearLie(2, \complex) = 3\).
+    
+    An explicit basis for \(\specialLinearLie(2, \complex)\) is
+    \begin{equation}
+        \quad H = 
+        \begin{bmatrix}
+            1 & 0\\
+            0 & -1
+        \end{bmatrix}
+        , \qquad
+        E = 
+        \begin{bmatrix}
+            0 & 1\\
+            0 & 0
+        \end{bmatrix}
+        , \qqand F = 
+        \begin{bmatrix}
+            0 & 0\\
+            1 & 0
+        \end{bmatrix}
+        .
+    \end{equation}
+    Then
+    \begin{equation}
+        \begin{bmatrix}
+            a & b\\
+            c & -a
+        \end{bmatrix}
+        = aH + bE + cF.
+    \end{equation}
+    
+    A simple calculation of commutators shows that we have the relations
+    \begin{equation}
+        \commutator{H}{E} = 2E, \qquad \commutator{H}{F} = -2F, \qqand \commutator{E}{F} = H.
+    \end{equation}
+    An important observation here is that if we define the map\footnote{This is the so called adjoint representation.} \(\ad_H \colon \specialLinearLie(2, \complex) \to \specialLinearLie(2, \complex)\) by \(\ad_H(X) = \commutator{H}{X}\) then we see that this map has \(E\) and \(F\) as eigenvectors, with eigenvalues \(2\) and \(-2\) respectively.
+    The other eigenvector of \(\ad_H\) is \(H\) itself, since \(\ad_H(H) = \commutator{H}{H} = 0 = 0H\).
+    Then we have the eigensspaces \(V_0 = \complex H = \lie{h}\), \(V_2 = \complex E\), and \(V_{-2} = \complex F\), giving the decomposition
+    \begin{equation}
+        \specialLinearLie(2, \complex) = \complex H \oplus \complex E \oplus \complex F = \lie{h} \oplus V_2 \oplus V_{-2} = \lie{h} \oplus \bigoplus_{\alpha \in \complex \setminus \{0\}} V_{\alpha}.
+    \end{equation}
+    
+    The important thing here is that we get \(\lie{h}\), which is a special subalgebra called the Cartan subalgebra which we'll see a lot later, and we get the generalised eigenspaces \(V_{\alpha}\).
+    We'll see later\footnote{so ignore any terminology here that is unfamiliar} that replacing the generalised eigenspaces with something called root spaces makes this construction generalise to finite dimensional semisimple Lie algebras over \(\complex\), and further that the subalgebras appearing in this decomposition are all simple, so a classification of simple Lie algebras extends to a classification of semisimple Lie algebras.
+    This requires replacing the indexing set \(\complex \setminus \{0\}\) with the root space \(\lie{h}^* \setminus \{0\}\), or rather we've already done that, it's just that \(\dim \lie{h} = 1\) so \(\lie{h}^* \isomorphic \lie{h}\) and \(\dim \lie{h}^* = 1\) so \(\lie{h}^* \isomorphic \complex\).
+    
+    While this last paragraph is beyond what we're ready for yet it's important to start seeing the recurring pattern of this type of decomposition now.
+    The fact that \(\specialLinearLie(2, \complex)\) is the simplest example of such a decomposition is why it's so important.
+    In particular, every finite dimension semisimple Lie algebra over \(\complex\) of dimension at least 3 contains (many) copies of \(\specialLinearLie(2, \complex)\).
     
 	
 	% Appdendix
