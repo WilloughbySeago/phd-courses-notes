@@ -11,7 +11,7 @@
 
 \usepackage{tikz-cd}
 
-\usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes from Solitons: Differential Equations, Symmetries, Infinite Dimensional Algebras},pdfkeywords={},pdfsubject={}]{hyperref}  % Should be loaded second last (cleveref last)
+\usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes from Lie Theory Course},pdfkeywords={Lie theory, Lie algebra},pdfsubject={Lie algebras}]{hyperref}  % Should be loaded second last (cleveref last)
 \colorlet{hyperrefcolor}{blue!60!black}
 \hypersetup{colorlinks=true, linkcolor=hyperrefcolor, urlcolor=hyperrefcolor}
 \usepackage[
@@ -836,7 +836,11 @@ noabbrev
     \end{equation} 
     where \(X_1 + Y_1\) and \(X_2 + Y_2\) are two arbitrary elements of \(\lie{g} \oplus \lie{h}\) decomposed into \(X_1, X_2 \in \lie{g}\) and \(Y_1, Y_2 \in \lie{h}\).
     The alternativity and Jacobi identity for \(\lie{g}\) and \(\lie{h}\) apply directly when brackets in \(\lie{g} \oplus \lie{h}\) are written as on the right-hand side here, and so these properties also hold for the bracket on \(\lie{g} \oplus \lie{h}\).
-    
+    This gives the external direct sum.
+    We can similarly give an internal direct sum by saying that if \(\lie{g}\) is a Lie algebra with subalgebras \(\lie{h}_1\) and \(\lie{h}_2\) then \(\lie{g} = \lie{h}_1 \oplus \lie{h}_2\) if \(\lie{g} = \lie{h}_1 \oplus \lie{h}_2\) as vector spaces and for all \(X \in \lie{h}_1\) and \(Y \in \lie{h}_2\) we have \(\bracket{X}{Y} = 0\).
+    The idea here is that the two parts of the direct sum should not \enquote{interact}.
+    For vector spaces this simply means that they should be disjoint except for 0, and for Lie algebras this means that elements from the two parts should commute (which is what we say when the bracket vanishes, since often the bracket is literally a commutator).
+        
     \section{Subalgebras, Ideals, and Quotients}
     To state these definitions it's useful to abuse the notation slightly as follows.
     Let \(U, V \subseteq \lie{g}\) be subspaces of a Lie algebra.
