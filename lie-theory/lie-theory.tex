@@ -52,6 +52,7 @@ noabbrev
 \newcommand{\c@egory}[1]{\symsfup{#1}}
 \newcommand{\Vect}[1][\field]{#1\text{-}\c@egory{Vect}}
 \newcommand{\LieAlg}[1][\field]{#1\text{-}\c@egory{LieAlg}}
+\newcommand{\Rep}[1][\lie{g}]{#1\text{-}\c@egory{Rep}}
 \makeatother
 \DeclareMathOperator{\Hom}{Hom}
 \DeclarePairedDelimiterX{\commutator}[2]{[}{]}{#1, #2}
@@ -76,6 +77,7 @@ noabbrev
 \newcommand{\borelLie}{\symfrak{b}}
 \newcommand{\nilpotentLie}{\symfrak{n}}
 \DeclareMathOperator{\Der}{Der}
+\DeclareMathOperator{\Perm}{Perm}
 
 \begin{document}
 	\frontmatter
@@ -982,7 +984,7 @@ noabbrev
     Here are the isomorphism classes over \(\complex\) (or any algebraically closed field of characteristic 0):
     \begin{itemize}
         \item The abelian Lie algebra of dimension 3.
-        \item \(\lie{g} = \Span\{X, Y, Z\}\) with \(\bracket{X}{Y} = Z\) and \(\braket{X}{Z} = \bracket{Y}{Z} = 0\).
+        \item \(\lie{g} = \Span\{X, Y, Z\}\) with \(\bracket{X}{Y} = Z\) and \(\bracket{X}{Z} = \bracket{Y}{Z} = 0\).
         \item \(\lie{g} = \Span\{X, Y, Z\}\) with \(\bracket{X}{Y} = Y\) and \(\bracket{X}{Z} = \bracket{X}{Z} = 0\).
         \item \(\lie{g}_b = \Span\{X, Y, Z\}\) with \(\bracket{X}{Y} = Y\), \(\bracket{Y}{Z} = bZ\), and \(\bracket{Y}{Z} = 0\) for \(b \in \complex^{\times}\).
         Note that \(\lie{g}_b \isomorphic \lie{g}_{b'}\) if and only if \(b = b'\) or \(b = 1/b'\).
@@ -1354,6 +1356,119 @@ noabbrev
     \end{align}
     \endgroup
     This shows that \(\commutator{D_1}{D_2}\) is a derivation, so \(\Der A\) is closed under the commutator.
+    
+    \chapter{Representation Theory}
+    \section{Definition}
+    \begin{dfn}{Representation}{}
+        Let \(\lie{g}\) be a Lie algebra over a field, \(\field\).
+        A \defineindex{representation} of \(\lie{g}\) is a pair, \((V, \rho)\), where \(V\) is a vector space over \(\field\) and \(\rho \colon \lie{g} \to \generalLinearLie(V)\) is a Lie algebra homomorphism.
+    \end{dfn}
+    
+    The idea behind this definition is that \(\lie{g}\) is acting on \(V\) by specifying an endomorphism \(\varphi_X = \rho(X) \in \End V = \generalLinearLie(V)\) for each \(X \in \lie{g}\).
+    Then \(X\) acts on \(v \in V\) by \(x \mapsto \varphi_X(V)\).
+    
+    This should be compared to the idea of a group action, which can similarly be specified by a map \(\rho \colon G \to \Perm(X)\) where \(\Perm(X)\) is the group of permutations of elements of \(X\).
+    If you're familiar with group representations then the idea here is the same as a group representation \((V, \rho)\) with \(\rho \colon G \to \generalLinear(V)\) a group homomorphism.
+    
+    \begin{dfn}{Modules}{}
+        Let \(\lie{g}\) be a Lie algebra over a field, \(\field\).
+        A (left) \define{\(\lie{g}\)-module}\index{g-module@\(\lie{g}\)-module}\index{module}, \(V\), is a vector space over \(\field\) equipped with a bilinear map \({-} \cdot {-} \colon \lie{g} \times V\) such that for all \(X, Y \in \lie{g}\) and \(v \in V\) we have
+        \begin{equation}
+            \bracket{X}{Y} \cdot v = X \cdot (Y \cdot v) - Y \cdot (X \cdot v).
+        \end{equation}
+    \end{dfn}
+    
+    If you're familiar with the idea of an \(R\)-module for \(R\) a ring then the idea is the same here.
+    An \(R\)-module is an abelian group equipped with an \(R\)-action, and a \(\lie{g}\)-module is a vector space equipped with a \(\lie{g}\)-action.
+    
+    \begin{prp}{}{}
+        A Lie algebra representation of \(\lie{g}\) carries the same information as a \(\lie{g}\)-module.
+        \begin{proof}
+            Let \((V, \rho)\) be a representation of \(\lie{g}\).
+            Then we may define a \(\lie{g}\)-action on \(V\) by \(X \cdot v \coloneqq \rho(X)(v)\).
+            This is linear in the first argument, \(X\), because \(\rho\) is linear, and linear in the second argument, \(v\), because \(\rho(X) \in \generalLinearLie(V)\) is linear.
+            Thus, this is a bilinear map.
+            We further have
+            \begin{align}
+                \bracket{X}{Y} \cdot v &= \rho(\bracket{X}{Y})(v)\\
+                &= \bracket{\rho(X)}{\rho(Y)}(v)\\
+                &= \rho(X)(\rho(Y)(v)) - \rho(Y)(\rho(X)(v))\\
+                &= X \cdot (Y \cdot v) - Y \cdot (X \cdot v)
+            \end{align}
+            where we've used the fact that \(\rho\) is a homomorphism and in \(\generalLinearLie(V)\) the Lie bracket is just the commutator.
+            
+            Conversely, if \(V\) is a \(\lie{g}\)-module then we may define a homomorphism \(\rho \colon \lie{g} \to \generalLinearLie(V)\) by \(X \mapsto X \cdot {-}\) which acts by \(v \mapsto X \cdot v\).
+            This is a linear map \(V \to V\) because the \(\lie{g}\)-action is bilinear in the second argument, and it's a Lie algebra homomorphism because by definition the Lie bracket acts as a commutator, which is the Lie bracket in \(\generalLinearLie(V)\).
+            
+            Thus, every representation of \(\lie{g}\) uniquely specifies a \(\lie{g}\)-module and vice versa.
+        \end{proof} 
+    \end{prp}
+    
+    The \enquote{modern} treatment of representations is mostly via the notion of modules, and we shall prefer this method.
+    
+    \subsection{Morphism of Representations}
+    \begin{dfn}{}{}
+        Let \(V_1\) and \(V_2\) be \(\lie{g}\)-modules for some Lie algebra \(\lie{g}\).
+        A \define{morphism}\index{morphism!of g-modules@morphism!of \(\lie{g}\)-modules} of \(\lie{g}\)-modules is then a linear map \(\varphi \colon V_1 \to V_2\) such that for all \(X \in \lie{g}\) and \(v \in V_1\) we have
+        \begin{equation}
+            \varphi(X \cdot v) = X \cdot v.
+        \end{equation}
+        We also call \(\varphi\) an \defineindex{equivariant map}.
+        
+        An invertible \(\lie{g}\)-module homomorphism is a \(\lie{g}\)-module isomorhpism.
+    \end{dfn}
+    
+    Writing \(X \cdot {-}\) for the map \(v \mapsto X \cdot v\) the definition above is equivalent to the commutativity of the following square for all \(X \in \lie{g}\):
+    \begin{equation}
+        \tikzexternaldisable
+        \begin{tikzcd}
+            V_1 \arrow[r, "\varphi"] \arrow[d, "X \cdot {-}"'] & V_2 \arrow[d, "X \cdot {-}"]\\
+            V_1 \arrow[r, "\varphi"'] & V_2\mathrlap{.}
+        \end{tikzcd}
+        \tikzexternalenable
+    \end{equation}
+    Note that \(X \cdot {-}\) on the left is the action of \(X\) on \(V_1\), whereas on the right it's the action of \(X\) on \(V_2\).
+    We get away with the same notation by looking at the domain of the action to specify which we mean.
+    
+    Now that we have a notion of morphisms between representations we can form a category.
+    Specifically, \(\Rep\) is the category whose objects are \(\lie{g}\)-modules (or equivalently representations of \(\lie{g}\)) and whose morhpisms are morphisms of representations.
+    Note that formally the category with representations and the category with \(\lie{g}\)-modules are different, but they are isomorphic, which is why we don't need to distinguish between them.
+    The isomorphism is given by the functor sending \((V, \rho)\) to the \(\lie{g}\)-module \(V\) with the action given by \(X \cdot v = \rho(X)(v)\).
+    
+    \begin{lma}{}{}
+        If \(\varphi \colon V_1 \to V_2\) is an isomorphism of \(\lie{g}\)-modules then \(\varphi^{-1} \colon V_1 \to V_2\) is also.
+        \begin{proof}
+            We need to show that for all \(X \in \lie{g}\) and \(v \in V_2\) we have
+            \begin{equation}
+                \varphi^{-1}(X \cdot v) = X \cdot \varphi^{-1}(v).
+            \end{equation}
+            To do so note that \(\varphi^{-1}\) is an invertible linear map, and as such is a bijection.
+            This means that there exists unique \(v' \in V_1\) such that \(\varphi(v') = v\) and \(v' = \varphi^{-1}(v)\).
+            Thus, we may write the left hand side as
+            \begin{equation}
+                \varphi^{-1}(X \cdot v) = \varphi^{-1}(X \cdot \varphi(v')).
+            \end{equation}
+            Using the fact that \(\varphi\) is a morphism of \(\lie{g}\)-modules we have
+            \begin{equation}
+                \varphi^{-1}(X \cdot v) = \varphi^{-1}(\varphi(X \cdot v')) = X \cdot v' = X \cdot \varphi^{-1}(v). \qedhere
+            \end{equation}
+        \end{proof}
+    \end{lma}
+    
+    \begin{ntn}{}{}
+        If \(M\) and \(N\) are \(\lie{g}\)-modules over \(\field\) we write
+        \begin{align}
+            \Hom_{\field}(M, N) &= \Hom(M, N) = \{T \colon M \to N \mid T \text{ is linear}\}\\
+            &= \Vect(M, N)
+        \end{align}
+        and
+        \begin{align}
+            \Hom_{\lie{g}}(M, N) &= \{T \colon M \to N \mid T \text{ is a } \lie{g} \text{-module homomorphism}\}\\
+            &= \Rep(M, N).
+        \end{align}
+        Similarly, we write \(\End_{\field}(M) = \End(M) = \Hom(M, M)\) and \(\End_{\lie{g}}(M) = \Hom_{\lie{g}}(M, M)\).
+    \end{ntn}
+    
     
     % TODO: add reference to definition of solvable Lie alg in remark (TODO 1)
     % TODO: add reference to definition of adjoint representation to discussion of sl(2, C) (TODO 2)
