@@ -1469,6 +1469,224 @@ noabbrev
         Similarly, we write \(\End_{\field}(M) = \End(M) = \Hom(M, M)\) and \(\End_{\lie{g}}(M) = \Hom_{\lie{g}}(M, M)\).
     \end{ntn}
     
+    \section{Simple Modules}
+    \begin{dfn}{Submodule}{}
+        Let \(\lie{g}\) be a Lie algebra over \(\field\) and let \(V\) be a \(\lie{g}\)-module.
+        A subspace, \(W \subseteq V\), is a \defineindex{submodule} if it is a \(\lie{g}\)-module under the restricted action of \(\lie{g}\).
+        Equivalently, \(W\) is a submodule if \(X \cdot w \in W\) for all \(X \in \lie{g}\) and for all \(w \in W\).
+        
+        A \defineindex{proper submodule} of \(V\) is a submodule that is neither \(0\) nor \(V\).
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        Let \(\varphi \colon M \to N\) be a \(\lie{g}\)-module homomorphism.
+        Then \(\ker \varphi\) is a submodule of \(M\) and \(\im \varphi\) is a submodule of \(N\).
+        \begin{proof}
+            We already know that \(\ker \varphi\) and \(\im \varphi\) are subspaces of \(M\) and \(N\) respectively, so it remains only to show that they are submodules, that they are closed under the action of \(\lie{g}\).
+            Let \(v \in \ker \varphi\), then \(\varphi(v) = 0\).
+            From this we know that
+            \begin{equation}
+                \varphi(X \cdot v) = X \cdot \varphi(v) = X \cdot 0 = 0
+            \end{equation}
+            and so \(X \cdot v \in \ker \varphi\).
+            Now, let \(w \in \im \varphi\), then there exists some \(w' \in M\) with \(\varphi(w') = w\).
+            We then have
+            \begin{equation}
+                X \cdot w = X \cdot \varphi(w') = \varphi(X \cdot w')
+            \end{equation}
+            which means \(X \cdot w \in \im \varphi\).
+        \end{proof}
+    \end{lma}
+    
+    \begin{dfn}{Simple Module}{}
+        A \define{simple \(\lie{g}\)-module}\index{simple module} is a \(\lie{g}\)-module with no proper submodules.
+        The corresponding representation is called an \defineindex{irreducible representation}, often shortened to \defineindex{irrep}.
+    \end{dfn}
+    
+    The simple \(\lie{g}\)-modules turn out to be the most important.
+    Often, but not always (but always over \(\complex\)) it is possible to write any module, \(V\), as a direct sum of simple \(\lie{g}\)-modules.
+    Because of this one of the first goals when studying representations of a given Lie algebra is to classify all simple \(\lie{g}\)-modules.
+    This is often possible, but not always easy.
+    
+    \begin{lma}{Schur's Lemma}{lma:schur}
+        Let \(V\) be a finite-dimensional \(\lie{g}\)-module over an algebraically closed field, \(\field\).
+        Then eery \(\lie{g}\)-module endomorphism of \(V\) is a multiple of the identity and \(\End_{\lie{g}}(V) \isomorphic \field\).
+        \begin{proof}
+            Let \(\varphi \colon V \to V\) be a \(\lie{g}\)-module endomorphism.
+            Then \(\varphi\) is a linear map.
+            Since \(\field\) is assumed to be algebraically closed we know that this linear map has an eigenvalue, call it \(\lambda\) and let \(v \in V\) be the associated eigenvector.
+            We know that \(v \in \ker \varphi'\) by construction.
+            The kernel is a submodule, and since it's not zero (it contains \(v\)) and \(V\) is simple the kernel must be all of \(V\).
+            Thus, \(\varphi'(w) = 0\) for all \(w \in V\), and so \(\varphi - \lambda \id\) is the zero map, and so \(\varphi = \lambda \id\) is just a scalar multiple of the identity.
+        \end{proof}
+    \end{lma}
+    
+    Note that from this we can immediately conclude that the only \(\lie{g}\)-module endomorphisms are invertible (if \(\lambda \ne 0\)) or the zero map (\(\lambda = 0\)).
+    
+    \begin{lma}{}{}
+        If \(V\) and \(W\) are non-isomorphic simple \(\lie{g}\)-modules then \(\Hom_{\lie{g}}(V, W) = 0\).
+        \begin{proof}
+            Suppose that \(\varphi \in \Hom_{\lie{g}}(V, W)\).
+            That is, \(\varphi \colon V \to W\) is a \(\lie{g}\)-module homomorphism.
+            Then we may consider the submodule \(\ker \varphi \subseteq V\).
+            Supposing that \(\varphi \ne 0\) there must be some \(v \in V\) such that \(\varphi(v) \ne 0\), thus \(\ker \varphi\) is not the whole of \(V\), and as a submodule of the simple module \(V\) it must be that \(\ker \varphi = 0\), so \(\varphi\) is injective.
+            Now consider the submodule \(\im \varphi \subseteq W\).
+            We know that \(\im \varphi \ne 0\) since \(0 \ne \varphi(v) \in \im \varphi\).
+            Thus, since \(W\) is simple, \(\im \varphi\) must be all of \(W\), so \(\varphi\) is surjective.
+            This leaves us with two cases, either \(\varphi\) is a injective and surjective, and hence an isomorphism, or \(\varphi\) is the zero map.
+            By assumption there are no isomorphisms \(V \to W\), and further \(\varphi \ne 0\).
+            Thus, there are no non-trivial morphisms \(V \to W\) as claimed.
+        \end{proof}
+    \end{lma}
+    
+    \subsection{New Modules From Old}
+    \begin{lma}{}{}
+        Let \(\lie{m}\) and \(\lie{l}\) be Lie algebras, and let \(V\) and \(W\) be simple \(\lie{m}\)- and \(\lie{l}\)-modules, respectively.
+        Then \(V \otimes W\) is made into an \((\lie{m} \oplus \lie{l})\)-module by extending the following action
+        \begin{equation}
+            (X, Y) \cdot (v \otimes w) = (X \cdot v) \otimes w + v \otimes (Y \cdot w)
+        \end{equation}
+        by linearity to non-simple tensors.
+        Note that \(X \in \lie{m}\), \(Y \in \lie{l}\), \(v \in V\) and \(w \in W\).
+        \begin{proof}
+            We first show that this action is bilinear.
+            Linearity in the first argument follows from the calculation
+            \begin{align}
+                (\lambda(X, Y)) \cdot (v \otimes w) &= (\lambda X, \lambda Y) \cdot (v \otimes w)\\
+                &= (\lambda X \cdot w) \otimes v + w \otimes (\lambda Y \cdot w)\\
+                &= \lambda ((X \cdot w) \otimes v) + \lambda (w \otimes (Y \cdot w))\\
+                &= \lambda ((X \cdot w) \otimes v + w \otimes (Y \cdot w))\\
+                &= \lambda ((X, Y) \cdot (v \otimes w))
+            \end{align}
+            and
+            \begin{align}
+                &((X, Y) + (X', Y')) \cdot (v \otimes w) = (X + X', Y + X') \cdot (v \otimes w)\\
+                &= ((X + X') \cdot v) \otimes w + v \otimes ((Y + Y') \cdot w)\\
+                &= (X \cdot v + X' \cdot v) \otimes w + v \otimes (Y \cdot w + Y' \cdot w)\\
+                &= (X \cdot v) \otimes w + (X' \cdot v) \otimes w + v \otimes (Y \cdot w) + v \otimes (Y' \cdot w)\\
+                &= (X \cdot v) \otimes w + v \otimes (Y \cdot w) + (X' \cdot v) \otimes w + v \otimes (Y' \cdot w)\\
+                &= (X, Y) \cdot (v \otimes w) + (X', Y') \cdot (v \otimes w).
+            \end{align}
+            Linearity in the second argument may be demonstrated by a similar argument.
+            We can also demonstrate that brackets act as they must:
+            \begin{align}
+                &\bracket{(X, Y)}{(X', Y')} \cdot (v \otimes w) = (\bracket{X}{X'}, \bracket{Y}{Y'}) \cdot (v \otimes w)\\
+                &= (\bracket{X}{X'} \cdot v) \otimes w + v \otimes (\bracket{Y}{Y'} \cdot w)\\
+                &= (X \cdot (X' \cdot v) - X' \cdot (X \cdot v)) \otimes w + v \otimes (Y \cdot (Y' \cdot w) + Y' \cdot (Y \cdot w)) \notag\\
+                &= (X \cdot (X' \cdot v)) \otimes w - (X' \cdot (X \cdot v)) \otimes w\\
+                &\qquad\qquad+ v \otimes (Y \cdot (Y' \cdot w)) - v \otimes (Y' \cdot (Y \cdot w)) \notag\\
+                &= (X \cdot (X' \cdot v)) \otimes w + v \otimes (Y \cdot (Y' \cdot w))\\
+                &\qquad\qquad- (X' \cdot (X \cdot v)) \otimes w - v \otimes (Y' \cdot (Y \cdot w)) \notag\\
+                &= (X, Y) \cdot ((X', Y') \cdot (v \otimes w)) - (X', Y') \cdot ((X, Y) \cdot (v \otimes w)).\notag
+            \end{align}
+            Thus, this is indeed an \((\lie{m} \oplus \lie{l})\)-module.
+        \end{proof}
+    \end{lma}
+    
+    The goal of the next couple of lemmas is to prove \cref{prp:tensor product of simple modules is simple}, that the tensor product of simple modules is again simple.
+    
+    \begin{lma}{}{lma:smallest submodule of V+V}
+        Let \(V\) be a simple \(\lie{m}\)-module and \(v_1, v_2 \in V\) such that \(v_1\) is not proportional to \(v_2\).
+        Then the smallest submodule of \(V \oplus V\) containing \((v_1, v_2)\) is \(V \oplus V\).
+        \begin{proof}
+            Let \(U \subseteq V \oplus V\) be the minimal submodule (with respect to inclusion) containing \((v_1, v_2)\).
+            Consider the inclusion map \(i \colon U \hookrightarrow V \oplus V\) and the projection maps \(p_1, p_2 \colon V \oplus V \to V\).
+            These are all module homomorphisms, and so the composites \(p_1 \circ i, p_2 \circ i \colon U \to V\) are also homomorphisms.
+            Since \(V\) is simple and \(U\) is nonzero and \(p_1 \circ i\) is a nonzero map this map must be surjective.
+            The kernel of \(p_1 \circ i\) is contained in the kernel of \(p_1\), which is \(0 \oplus V\).
+            Clearly \(\{0\} \oplus \isomorphic V\) is simple, and as such the kernel of \(p_1 \circ i\) is either \(0\), in which case \(U \isomorphic V\), or it's \(0 \oplus V\), in which case \(U = V \oplus V\).
+            Suppose that the kernel of \(p_1 \circ i\) is zero, then \(p_1 \circ i \colon U \to V\) is an isomorphism, and we can denote its inverse by \(\varphi \colon V \to U\).
+            The map \(p_1 \circ i \colon U \to V\) will also be an isomorphism in this case, and thus we can consider the composite \(p_2 \circ i \circ \varphi\), which is an isomorphism \(V \to V\).
+            Since \(V\) is simple we know by Schur's lemma (\cref{lma:schur}) that \(p_2 \circ i \circ \varphi\) is a multiple of the identity, so \(p_2 \circ i \circ \varphi(v_1) = \lambda v_1\) for some \(\lambda \in \field\).
+            However, we have \(p_2 \circ i \circ \varphi(v_1) = p_2 \circ i(v_1, v_2) = p_2(v_1, v_2) = v_2\), contradicting the assumption that \(v_2\) is not proportional to \(v_1\).
+            Thus, we are left with the case where \(U = V \oplus V\).
+        \end{proof}
+    \end{lma}
+    
+    The following lemma is then a special case of the result of \cref{prp:tensor product of simple modules is simple}.
+    
+    \begin{lma}{}{lma:tensor product of simple modules is simple if it contains a pure tensor}
+        Let \(V\) be a simple \(\lie{m}\)-module and \(W\) a simple \(\lie{l}\)-module.
+        The smallest \((\lie{m} \oplus \lie{l})\)-submodule of \(V \otimes W\) containing a pure tensor \(v \otimes w \ne 0\) is \(V \otimes W\).
+        \begin{proof}
+            The module \(V \otimes W\) is spanned by vectors of the form \(v' \otimes w'\) for \(v' \in V\) and \(w' \in W\).
+            Therefore, it suffices to show that \(v' \otimes w'\) is contained in the smallest submodule, \(U\), of \(V \otimes W\) containing \(v \otimes w\), and then necessarily \(U\) will contain all elements of \(V \otimes W\).
+            Linearity of the \(\lie{g}\)-action tells us that \(0 \cdot v = 0\) for all \(v \in V\), and thus we have
+            \begin{equation}
+                (0, Y) \cdot (v \otimes w) = (0 \cdot v) \otimes w + v \otimes (Y \cdot w) = 0 \otimes w + v \otimes (Y \cdot w) = v \otimes (Y \cdot w).
+            \end{equation}
+            This is true for all \(Y \in \lie{l} \subseteq \lie{m} \oplus \lie{l}\).
+            Now, we can generate a submodule in this way starting with \(v \otimes w\) and acting with \(Y \in \lie{l}\) as above.
+            Doing so we generate a submodule of \(W\) which is not zero, and thus must be isomorphic to all of \(W\).
+            This submodule is thus \(\field v \otimes W\) where \(\field v = \Span\{v\}\).
+            Thus, \(v \otimes w' \in U\) for any \(w' \in W\).
+            Similarly, one can show \(v' \otimes w \in U\) for any \(v' \in V\).
+            Thus, \(v' \otimes w' \in U\).
+        \end{proof}
+    \end{lma}
+    
+    We are now ready to prove our result.
+    
+    \begin{prp}{}{prp:tensor product of simple modules is simple}
+        Let \(V\) be a simple \(\lie{m}\)-module and \(W\) a simple \(\lie{l}\)-module.
+        Then \(V \otimes W\) is a simple \((\lie{m} \oplus \lie{l})\)-module.
+        \begin{proof}
+            Let \(u \in V \otimes W\) be such that \(u \ne 0\).
+            Let \(U\) be the smallest \((\lie{m} \oplus \lie{l})\)-submodule of \(V \otimes W\) containing \(u\).
+            We want to show that \(U = V \otimes W\).
+            If we know that \(0 \ne v \otimes w \in U\) then the result follows from \cref{lma:tensor product of simple modules is simple if it contains a pure tensor}.
+            As an element of \(V \otimes W\) we can express \(u\) as a sum of simple tensors,
+            \begin{equation}
+                u = \sum_{i=1}^k v_i \otimes w_i.
+            \end{equation}
+            Note that we don't need scalar factors since we can just absorb them into the definition of the \(v_i\).
+            We may further assume that the \(v_i\) are linearly independent, and that no pair of \(w_i\)s is proportional, since if \(w_i = \alpha w_j\) then \(v_i \otimes w_i + v_j \otimes w_j = (v_i + \alpha v_j) \otimes w_i\).
+            It is also possible to find some element of \(U\) in place of \(u\) such that \(k\) is minimal in making the above sum true.
+            If \(k = 1\) then \(u\) is a simple tensor and we're done.
+            Suppose then that \(k > 1\).
+            Since the \(v_i\) are linearly independent we can define an injective \(\lie{l}\)-module homomorphism \(\psi \colon W \oplus \dotsb \oplus W \to V \otimes W\) by
+            \begin{equation}
+                (w_1', \dotsc, w_k') \mapsto \sum_{i=1}^k v_i \otimes w_i'.
+            \end{equation}
+            Then \(u\) is the image of some \(\vv{w} = (w_1, \dotsc, w_k)\).
+            If \(\vv{w}'\) is some element of the smallest \(\lie{l}\)-submodule \(W'\) of \(W \oplus \dotsb \oplus W\) containing \(\vv{w}\) then \(\psi(\vv{w}') \in U\).
+            Consider the projection of \(W'\) onto the first two terms, \(W \oplus W \oplus 0 \oplus \dotsb\).
+            This is an \(\lie{l}\)-submodule of \(W \oplus W\) and contains \((w_1, w_2)\).
+            We have assumed that \(w_1\) and \(w_2\) are not proportional, and thus by \cref{lma:smallest submodule of V+V} this projection must be the whole of \(W \oplus W\).
+            In particular, \((w_1, 0)\) is in the image of the projection.
+            Let \(\vv{w}' \in W'\) be some element projecting to \((w_1, 0)\).
+            Then \(\vv{w}' = (w_1, 0, w_2', w_3', \dotsc, w_k')\).
+            This then gives us an element in \(U\) that can be formed by summing \(k - 1\) vectors of the form \(v_i \otimes w_i'\), which contradicts the minimality assumption of \(k\), and thus we must have \(k = 1\) and we are done.
+        \end{proof}
+    \end{prp}
+    
+    \begin{lma}{}{}
+        Let \(V\) and \(W\) be finite-dimensional \(\lie{g}\)-modules and let \(\Hom_{\field}(V, W)\) be the space of linear maps \(V \to W\).
+        Equipping this space with the \(\lie{g}\)-action
+        \begin{equation}
+            (X \cdot f)(v) = X \cdot f(v) - f(X \cdot v) \qquad X \in \lie{g}, v \in V, \text{ and } f \in \Hom_{\field}(V, W)
+        \end{equation}
+        defines a \(\lie{g}\)-module.
+        \begin{proof}
+            Linearity is immediate because \(f\) is linear so we may pull out any scalar factors and pull apart any sums.
+            We need only show that the bracket acts as required:
+            \begin{align}
+                &(\bracket{X}{Y} \cdot f)(v) = \bracket{X}{Y} \cdot f(v) - f(\bracket{X}{Y} \cdot f)\\
+                &= X \cdot (Y \cdot f(v)) - Y \cdot (X \cdot f(v)) - f(X \cdot (Y \cdot v) - Y \cdot (X \cdot v)) \notag\\
+                &= X \cdot (Y \cdot f(v)) - Y \cdot (X \cdot f(v)) - f(X \cdot (Y \cdot v)) + f(Y \cdot (X \cdot v)) \notag\\
+                &= X \cdot (Y \cdot f(v)) - f(X \cdot (Y \cdot v)) - (Y \cdot (X \cdot f(v)) - f(Y \cdot (X \cdot v))) \notag\\
+                &= (X \cdot (Y \cdot f))(v) - (Y \cdot (X \cdot f))(v).
+            \end{align}
+            This holds for all \(v \in V\), and thus
+            \begin{equation}
+                \bracket{X}{Y} \cdot f = X \cdot (Y \cdot f) - Y \cdot (X \cdot f)
+            \end{equation}
+            as required.
+        \end{proof}
+    \end{lma}
+    
+    Since the sum of two \(\lie{g}\)-module homomorphisms is again a \(\lie{g}\)-module homomorphism this shows that \(\Hom_{\lie{g}}(V, W)\) is a \(\lie{g}\)-submodule of \(\Hom_{\field}(V, W)\), and hence \(\Hom_{\lie{g}}(V, W)\) is a \(\lie{g}\)-module in its own right.
+    A fancy way of putting this is that \(\Rep\) is enriched over itself.
     
     % TODO: add reference to definition of solvable Lie alg in remark (TODO 1)
     % TODO: add reference to definition of adjoint representation to discussion of sl(2, C) (TODO 2)
