@@ -984,7 +984,7 @@ noabbrev
     Here are the isomorphism classes over \(\complex\) (or any algebraically closed field of characteristic 0):
     \begin{itemize}
         \item The abelian Lie algebra of dimension 3.
-        \item \(\lie{g} = \Span\{X, Y, Z\}\) with \(\bracket{X}{Y} = Z\) and \(\bracket{X}{Z} = \bracket{Y}{Z} = 0\).
+        \item \(\lie{g} = \Span\{X, Y, Z\}\) with \(\bracket{X}{Y} = Z\) and \(\bracket{X}{Z} = \bracket{Y}{Z} = 0\)\footnote{This is the three-dimensional \defineindex{Heisenberg algebra}.}.
         \item \(\lie{g} = \Span\{X, Y, Z\}\) with \(\bracket{X}{Y} = Y\) and \(\bracket{X}{Z} = \bracket{X}{Z} = 0\).
         \item \(\lie{g}_b = \Span\{X, Y, Z\}\) with \(\bracket{X}{Y} = Y\), \(\bracket{Y}{Z} = bZ\), and \(\bracket{Y}{Z} = 0\) for \(b \in \complex^{\times}\).
         Note that \(\lie{g}_b \isomorphic \lie{g}_{b'}\) if and only if \(b = b'\) or \(b = 1/b'\).
@@ -1370,6 +1370,15 @@ noabbrev
     This should be compared to the idea of a group action, which can similarly be specified by a map \(\rho \colon G \to \Perm(X)\) where \(\Perm(X)\) is the group of permutations of elements of \(X\).
     If you're familiar with group representations then the idea here is the same as a group representation \((V, \rho)\) with \(\rho \colon G \to \generalLinear(V)\) a group homomorphism.
     
+    One of the most important examples of a representation is when the Lie algebra acts on itself in the obvious way, through the bracket.
+    
+    \begin{dfn}{Adjoint Representation}{}
+        Let \(\lie{g}\) be a Lie algebra.
+        There is a Lie algebra representation called the \defineindex{adjoint representation}, \((\lie{g}, \ad)\) where \(\ad \colon \lie{g} \to \generalLinearLie(\lie{g})\) is defined by \(\ad(X) = \ad_X\) where \(\ad_X \in \generalLinearLie(\lie{g})\) is the linear map \(\ad_X \colon \lie{g} \to \lie{g}\) defined by \(\ad_X(Y) = \bracket{X}{Y}\).
+    \end{dfn}
+    
+    This is related to the adjoint action of a the corresponding Lie group on itself, which is by conjugation.
+    
     \begin{dfn}{Modules}{}
         Let \(\lie{g}\) be a Lie algebra over a field, \(\field\).
         A (left) \define{\(\lie{g}\)-module}\index{g-module@\(\lie{g}\)-module}\index{module}, \(V\), is a vector space over \(\field\) equipped with a bilinear map \({-} \cdot {-} \colon \lie{g} \times V\) such that for all \(X, Y \in \lie{g}\) and \(v \in V\) we have
@@ -1687,6 +1696,265 @@ noabbrev
     
     Since the sum of two \(\lie{g}\)-module homomorphisms is again a \(\lie{g}\)-module homomorphism this shows that \(\Hom_{\lie{g}}(V, W)\) is a \(\lie{g}\)-submodule of \(\Hom_{\field}(V, W)\), and hence \(\Hom_{\lie{g}}(V, W)\) is a \(\lie{g}\)-module in its own right.
     A fancy way of putting this is that \(\Rep\) is enriched over itself.
+    
+    \section{Representation Theory of \texorpdfstring{\(\specialLinearLie(2, \complex)\)}{sl(2, C)}}
+    Recall that the complex Lie algebra \(\specialLinearLie(2, \complex)\) can be defined as the span of \(\{E, F, H\}\) with the bracket defined by
+    \begin{equation}
+        \bracket{H}{E} = 2E, \quad \bracket{H}{F} = -2F, \qand \bracket{E}{F} = H.
+    \end{equation}
+    These relations make \(H\) a \defineindex{semisimple element}, meaning that the linear map \(X \mapsto \bracket{H}{X}\) is diagonalisable.
+    We can see this is the case because the bracket's definition above shows that \(E\) and \(F\) are eigenvectors of the map \(\bracket{H}{-}\), with eigenvalues \(+2\) and \(-2\) respectively, and alternativity tells us that \(\bracket{H}{H} = 0\), so \(H\) is an eigenvector of \(\bracket{H}{-}\) with eigenvalue \(0\).
+    
+    Let \(V\) be a finite-dimensional \(\specialLinearLie(2, \complex)\)-module.
+    Then we can decompose \(V\) into generalised eigenspaces of \(H\):
+    \begin{equation}
+        V = \bigoplus_{\alpha \in \complex} V_\alpha
+    \end{equation}
+    where
+    \begin{equation}
+        V_\alpha = \{v \in V \mid (H - \alpha)^N \cdot v = 0 \text{ for some } N \in \naturals\}.
+    \end{equation}
+    We call the \(V_\alpha\) the \define{\(\symbf{\alpha}\)-weight spaces}\index{weight space} for \(H\).
+    The \define{weight vectors}\index{weight vector} of \(V\) are those \(v \in V\) such that \(v \in V_\alpha\) for some \(\alpha \in \complex\).
+    We call \(\alpha\) the \defineindex{weight} of such a \(v\).
+    Note that not all vectors are weight vectors, any \(v \in V\) can be written as \(\sum_{\alpha \in \complex} v_\alpha\) with \(v_\alpha \in V_\alpha\), and so \(v\) is a weight vector only if \(v_\alpha = 0\) for all but one value of \(\alpha\).
+    
+    \begin{lma}{}{lma:e vecs of H are still e vecs after E and F act}
+        If \(v\) is an eigenvector of \(H\) with eigenvalue \(\alpha\) then \(E \cdot v\) (\(F \cdot v\)) is an eigenvector of \(H\) with eigenvalue \(\alpha + 2\) (\(\alpha - 2\)).
+        \begin{proof}
+            We know that \(H \cdot v = \alpha v\).
+            Using the action of a Lie bracket we have
+            \begin{align}
+                \bracket{H}{E} \cdot v &= H \cdot (E \cdot v) - E \cdot (H \cdot v)\\
+                &= H \cdot (E \cdot v) - E \cdot (\alpha v)\\
+                &= H \cdot (E \cdot v) - \alpha E\cdot v.
+            \end{align}
+            Using the defining relations of \(\specialLinearLie(2, \complex)\) we have
+            \begin{equation}
+                \bracket{H}{E} = 2E \implies 2E \cdot v = H \cdot (E \cdot v) - \alpha E \cdot v.
+            \end{equation}
+            Rearranging this we have
+            \begin{equation}
+                H \cdot (E \cdot v) = 2E \cdot v + \alpha E \cdot v = (\alpha + 2)(E \cdot v),
+            \end{equation}
+            and thus \(E \cdot v\) is an eigenvector of \(H\) with eigenvalue \(\alpha + 2\).
+            The proof for \(F \cdot v\) is analogous.
+        \end{proof}
+    \end{lma}
+    
+    This extends to the following result about generalised eigenspaces.
+    
+    \begin{lma}{}{}
+        If \(v \in V_\alpha\) is a weight vector of weight \(\alpha\) then \(E \cdot v\) (\(F \cdot v\)) is a weight vector of weight \(\alpha + 2\) (\(\alpha - 2\)).
+%        \begin{proof}
+            % TODO
+%        \end{proof}
+    \end{lma}
+    
+    If \(V_\alpha \ne 0\) but \(V_{\alpha + 2} = 0\) (\(V_{\alpha - 2} = 0\)) then this implies that \(E \cdot v = 0\) (\(F \cdot v\)) for all \(v \in V_\alpha\).
+    We call \(v \in V\) a \defineindex{highest weight} (\defineindex{lowest weight}) if \(E \cdot v = 0\) (\(F \cdot v = 0\)) and \(H \cdot v = \alpha v\).
+    
+    \begin{lma}{}{}
+        Let \(V\) be a finite-dimensional \(\specialLinearLie(2, \complex)\)-module.
+        Then \(V\) contains a highest weight vector, \(v_0\).
+        Setting \(v_{-1} = 0\) and \(v_i = \frac{1}{i!} F^i \cdot v_0\) for \(i \ge 0\) if \(v_0\) has weight \(\alpha\) then
+        \begin{equation}
+            H \cdot v_i = (\alpha - 2i)v_i, \quad E \cdot v_i  (\alpha - i + 1) v_{i-1}, \qand F \cdot v_i = (i + 1) v_{i+1}.
+        \end{equation}
+        \begin{proof}
+            \Step{\(H \cdot v_i\)}
+            First note that \(H \cdot v_0 = \alpha v_0\) so the \(i = 0\) case holds.
+            We proceed by induction.
+            For the base case, \(i = 1\), we have \(v_1 = F \cdot v_0\).
+            We then have \(H \cdot (F \cdot v_0) = (\alpha - 2)(F \cdot v_0)\) by \cref{lma:e vecs of H are still e vecs after E and F act}, and so \(H \cdot v_1 = (\alpha - 2 \cdot 1)v_1\).
+            Now suppose that the result holds for some \(k \in \naturals\), that is, we have \(H \cdot v_k = (\alpha - 2k) v_k\).
+            Consider \(H \cdot v_{k+1}\):
+            \begin{align}
+                H \cdot v_{k+1} &= H \cdot \left( \frac{1}{k + 1}F \cdot v_k \right)\\
+                &= \frac{1}{k + 1}H \cdot (F \cdot v_k)\\
+                &= \frac{1}{k + 1} (\bracket{H}{F} \cdot v_k + F \cdot (H \cdot v_k))\\
+                &= \frac{1}{k + 1} (-2F \cdot v_k + F \cdot (\alpha - 2k)v_k)\\
+                &= \frac{1}{k + 1} (-2 + (\alpha - 2k))(F \cdot v_k)\\
+                &= (\alpha - 2(k + 1)) v_{k + 1}.
+            \end{align}
+            Thus, by induction, the result holds for all \(i \in \naturals\).
+            
+            \Step{\(E \cdot v_i\)}
+            First note that \(E \cdot v_0 = 0 = (\alpha - 0 + 1)v_{0-1}\) as \(v_{-1} = 0\), so the \(i = 0\) case holds.
+            We again proceed by induction.
+            for the base case, \(i = 1\), we have \(v_1 = F \cdot v_0\).
+            We then have
+            \begin{align}
+                E \cdot v_1 &= E \cdot (F \cdot v_0)\\
+                &= \underbrace{\bracket{E}{F}}_{=H} \cdot v_0 + F \cdot \underbrace{(E \cdot v_0)}_{=0}\\
+                &= H \cdot v_0\\
+                &= \alpha v_0\\
+                &= (\alpha - 1 + 1)v_{1 - 1}.
+            \end{align}
+            Now suppose that the result holds for some \(k \in \naturals\), that is, we have \(E \cdot v_k = (\alpha - k + 1)v_{k - 1}\).
+            Consider \(E \cdot v_{k+1}\):
+            \begin{align}
+                E \cdot v_{k+1} &= \frac{1}{k + 1}E \cdot (F \cdot v_k)\\
+                &= \frac{1}{k + 1}(\bracket{E}{F} \cdot v_k + F \cdot (E \cdot v_k))\\
+                &= \frac{1}{k + 1}(H \cdot v_k + (\alpha - k + 1)F \cdot v_{k-1})\\
+                &= \frac{1}{k + 1}((\alpha - 2k)v_k + (\alpha - k + 1)(k + 1)v_k)\\
+                &= \text{\textcolor{red}{Something isn't working here}}\\ % TODO: finish this proof
+                &= (\alpha - k)v_k\\
+                &= (\alpha - (k + 1) + 1)v_k
+            \end{align}
+            
+            \Step{\(F \cdot v_i = (i + 1)v_{i+1}\)}
+            This is evident from the definition of \(v_i\).
+        \end{proof}
+    \end{lma}
+    
+    Since we have \(H \cdot v_i = (\alpha - 2i)v_i\) the vectors \(v_i\) are all in different eigenspaces of \(H\), and thus are linearly independent.
+    Since, by assumption, \(V\) is finite-dimensional there must therefore be some \(N \in \naturals\) such that \(v_N \ne 0\) but \(v_{N + 1} = 0\).
+    Considering the action of \(E\) according to the above result we have \(0 = E \cdot 0 = E \cdot v_{N+1} = (\alpha - N)v_N\) and since \(v_N \ne 0\) we must therefore have \(\alpha - N = 0\), so \(\alpha = N\), and thus the only possible eigenvalues of \(H\) are non-negative integers.
+    
+    Further assume that \(V\) is a simple module, and that \(V \ne 0\).
+    Then by simplicity the submodule \(\Span\{v_0, \dotsc, v_N\}\) must be all of \(V\), that is, \(\{v_0, \dotsc, v_N\}\) provides a basis for \(V\), and \(\dim V = N + 1\).
+    Further, the weight spaces are \(V_{N-2i}\) for \(i = 0, \dotsc, N\), and each is one-dimensional, being spanned by \(v_i\), that is \(V_{N - 2i} = \complex v_i\).
+    
+    Combining these results we have proven the following.
+    
+    \begin{thm}{Classification of Finite Dimensional Simple \(\specialLinearLie(2, \complex)\)-Modules}{}
+        Let \(V\) be a finite-dimensional simple \(\specialLinearLie(2, \complex)\)-module with a highest weight vector of weight \(\alpha\).
+        Then
+        \begin{enumerate}
+            \item \(\alpha\) is a non-negative integer, \(N\);
+            \item \(\dim V = N + 1\) and the nonzero weight spaces of \(V\) are \(V_N, V_{N-2}, \dotsc, V_{-N}\), each of which is one-dimensional.
+        \end{enumerate}
+        Conversely, for any positive integer, \(N\), there exists a unique simple \(\specialLinearLie(2, \complex)\)-module \(V(N)\) with a highest weight vector of weight \(N\).
+    \end{thm}
+    
+    This leads to the following picture of \(\specialLinearLie(2, \complex)\) representations:
+    \begin{equation}
+        \hfil
+        \tikzexternaldisable
+        \begin{tikzcd}
+            0 \\
+            V_{N} \arrow[u, "E"] \arrow[d, phantom, "\vdots"] \arrow[loop right, looseness=15, "H"]\\
+            V_{\alpha + 2} \arrow[d, shift left, "F"] \arrow[loop right, looseness=10, "H"]\\
+            V_{\alpha} \arrow[d, shift left, "F"] \arrow[u, shift left, "E"] \arrow[loop right, looseness=15, "H"]\\
+            V_{\alpha - 2} \arrow[u, shift left, "E"] \arrow[loop right, looseness=10, "H"]\\
+            V_{-N} \arrow[d, "F"] \arrow[u, phantom, "\vdots"] \arrow[loop right, looseness=10, "H"]\\
+            0
+        \end{tikzcd}
+        \tikzexternalenable
+    \end{equation}
+    
+    Consider the defining \(\specialLinearLie(2, \complex)\) module \(\complex^2\) where \(H\), \(E\), and \(F\) act as the matrices
+    \begin{equation}
+        H =
+        \begin{bmatrix}
+            1 & 0\\
+            0 & -1
+        \end{bmatrix}
+        , \quad E = 
+        \begin{bmatrix}
+            0 & 1\\
+            0 & 0
+        \end{bmatrix}
+        , \qand F = 
+        \begin{bmatrix}
+            0 & 0\\
+            1 & 0
+        \end{bmatrix}
+        .
+    \end{equation}
+    The eigenvectors of \(H\) are
+    \begin{equation}
+        e_1 = 
+        \begin{bmatrix}
+            1\\ 0
+        \end{bmatrix}
+        \qqand
+        e_2 =  
+        \begin{bmatrix}
+            0\\ 1
+        \end{bmatrix}
+        .
+    \end{equation}
+    These have eigenvalues \(+1\) and \(-1\) respectively.
+    Of these only the first vanishes when we act with \(E\), giving
+    \begin{equation}
+        \begin{bmatrix}
+            0\\ 1
+        \end{bmatrix}
+        .
+    \end{equation}
+    This means that the first eigenvector is a highest weight vector of \(\complex^2\).
+    The weight of this vector, its \(H\) eigenvalue, is \(+1\)
+    Further, this representation is simple, because if we start with some arbitrary vector then acting with \(E\) gives a vector along \(e_1\), and acting with \(F\) gives a vector along \(e_2\), spanning the whole space. So, this representation is isomorphic to \(V(1)\).
+    
+    Now consider the adjoint action of \(\specialLinearLie(2, \complex)\).
+    Recall that this is the action of \(\specialLinearLie(2, \complex)\) on itself by the bracket.
+    Then we may identify the representation space with \(\complex^3\) where
+    \begin{equation}
+        E = 
+        \begin{bmatrix}
+            1\\ 0\\ 0
+        \end{bmatrix}
+        , \quad H = 
+        \begin{bmatrix}
+            0\\ 1\\ 0
+        \end{bmatrix}
+        , \qand F = 
+        \begin{bmatrix}
+            0\\ 0\\ 1
+        \end{bmatrix}
+        .
+    \end{equation}
+    From the defining bracket relations we can see that we have
+    \begin{equation*}
+        \ad_E =
+        \begin{bmatrix}
+            0 & -2 & 0\\
+            0 & 0 & 1\\
+            0 & 0 & 0
+        \end{bmatrix}
+        , \quad
+        \ad_H = 
+        \begin{bmatrix}
+            2 & 0 & 0\\
+            0 & 0 & 0\\
+            0 & 0 & -2
+        \end{bmatrix}
+        , \qand \ad_F = 
+        \begin{bmatrix}
+            0 & 0 & 0\\
+            -1 & 0 & 0\\
+            0 & 2 & 0
+        \end{bmatrix}
+        .
+    \end{equation*}
+    These matrices are such that \(\ad_X(Y) = \bracket{X}{Y}\).
+    For example, we have
+    \begin{equation}
+        \ad_H(E) =
+        \begin{bmatrix}
+            2 & 0 & 0\\
+            0 & 0 & 0\\
+            0 & 0 & -2
+        \end{bmatrix}
+        \begin{bmatrix}
+            1\\ 0\\ 0
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            2\\ 0\\ 0
+        \end{bmatrix}
+        = 2E = \bracket{H}{E}.
+    \end{equation}
+    The eigenvectors of \(H\) are \(E\), \(H\), and \(F\), with eigenvalues \(+2\), \(0\), and \(-2\) respectively.
+    Of these, only \(E\) has the property that \(E \cdot E = \ad_E(E) = \bracket{E}{E}\) vanishes, and thus \(E\) is a highest weight vector, and it has weight \(2\).
+    Acting with \(F\) we have \(F \cdot E = \ad_F(E) = \bracket{F}{E} = -H\), and acting with \(F\) again we have \(F \cdot H = \ad_F(H) = \bracket{F}{H} = 2F\).
+    Thus, \(E\) generates the whole space, showing that any submodule containing \(E\) must be all of \(\specialLinearLie(2, \complex)\), and a similar argument holds for \(H\) or \(F\).
+    This shows that the module is simple.
+    Then this module is isomorphic to \(V(2)\).
+    
+    
     
     % TODO: add reference to definition of solvable Lie alg in remark (TODO 1)
     % TODO: add reference to definition of adjoint representation to discussion of sl(2, C) (TODO 2)
