@@ -49,6 +49,9 @@ noabbrev
 \renewcommand{\dd}[1]{\,\symrm{d}#1}
 \renewcommand{\dl}[1]{\symrm{d}#1}
 \DeclarePairedDelimiterX{\innerproduct}[2]{(}{)}{#1, #2}
+\newcommand{\pt}{\symrm{pt}}
+\newcommand{\isomorphic}{\cong}
+\DeclareMathOperator{\Aff}{Aff}
 
 \begin{document}
     \frontmatter
@@ -146,6 +149,159 @@ noabbrev
         \diffp{\varphi^a}{x^i} (g_2)_{ab} \diffp{\varphi^b}{x^j} = \Lambda (g_1)_{ij}.
     \end{equation}
     This shows that conformal transformations really do preserve angles as we were looking for.
+    
+    \section{Conformal Transformations on \(\reals^2\)}
+    We now restrict ourselves to the case \(\manifold_1 = \manifold_2 = \reals^2\) with the standard Euclidean metric.
+    In Cartesian coordinates, \((x^1, x^2)\), the metric corresponds to the matrix
+    \begin{equation}
+        \begin{pmatrix}
+            1 & 0\\
+            0 & 1
+        \end{pmatrix}
+        .
+    \end{equation}
+    It turns out that it's useful to identify \(\reals^2\) with \(\complex\) using the complex coordinates
+    \begin{equation}
+        z = x^1 + ix^2, \qqand \overbar{z} = x^1 - ix^2.
+    \end{equation}
+    In the coordinates \((z, \overbar{z})\) the metric corresponds to the matrix
+    \begin{equation}
+        \frac{1}{2}
+        \begin{pmatrix}
+            0 & 1\\
+            1 & 0
+        \end{pmatrix}
+        .
+    \end{equation}
+    To see this notice that
+    \begin{equation}
+        x^1 = \frac{1}{2}(z + \overbar{z}), \qqand x^2 = \frac{1}{2i}(z - \overbar{z}).
+    \end{equation}
+    Thus, by the chain rule, we have
+    \begin{equation}
+        \dl{x^1} = \diffp{x^1}{z} \dd{z} + \diffp{x^1}{\overbar{z}} \dd{\overbar{z}}, \qqand \dl{x^2} = \diffp{x^2}{z} \dd{z} + \diffp{x^2}{\overbar{z}}.
+    \end{equation}
+    Inserting this into the usual Euclidean metric we have
+    \begin{align}
+        g &= (\dl{x^1})^2 + (\dl{x^2})^2\\
+        &= \left( \diffp{x^1}{z}\dd{z} + \diffp{x^1}{\overbar{z}} \dd{\overbar{z}} \right)^2 + \left( \diffp{x^2}{z} \dd{z} + \diffp{x^2}{\overbar{z}} \dd{\overbar{z}} \right)^2\\
+        &= \left( \frac{1}{2} \dl{z} + \frac{1}{2}\dl{\overbar{z}} \right)^2 + \left( \frac{1}{2i} \dl{z} - \frac{1}{2i} \dl{\overbar{z}} \right)^2\\
+        &= \dl{z} \dd{\overbar{z}}.
+    \end{align}
+    Thus, we must have that
+    \begin{equation}
+        g_{zz} \dd{z} \dd{z} = g_{\overbar{z}\overbar{z}} \dd{\overbar{z}} \dd{\overbar{z}} = 0, \qand g_{z\overbar{z}}\dd{z}\dd{\overbar{z}} + g_{\overbar{z}z}\dd{\overbar{z}}\dd{z} = 1.
+    \end{equation}
+    The requirement that \(g\) is symmetric implies the matrix form must be symmetric, which is how we end up with the \(1\) evenly split between the off-diagonal elements.
+    
+    \subsection{Analytic Structure of Conformal Transformations}
+    In the complex coordinates, \((z, \overbar{z})\), we may consider a conformal transformation, \(\varphi \colon U \to V\), as consisting of two maps,
+    \begin{equation}
+        z \mapsto \varphi(z, \overbar{z}), \qqand \overbar{z} \mapsto \overbar{\varphi}(z, \overbar{z}) = \overline{\varphi(z, \overbar{z})}.
+    \end{equation}
+    Since the second is just the conjugate of the first we need only specify one of these maps.
+    
+    We can now write out the pullback condition and check what this imposes on \(\varphi\):
+    \begin{align}
+        \varphi^*(\dl{z}, \dl{\overbar{z}}) &= \dl{\varphi} \, \overline{\dl{\varphi}}\\
+        &= \left( \diffp{\varphi}{z} \dd{z} + \diffp{\varphi}{\overbar{z}} \dd{\overbar{z}} \right)\left( \diffp{\overbar{\varphi}}{z} \dd{z} + \diffp{\overbar{\varphi}}{\overbar{z}} \dd{\overbar{z}} \right)\\
+        &= \diffp{\varphi}{z}\diffp{\overbar{\varphi}}{z} (\dl{z})^2 + \diffp{\varphi}{z} \diffp{\overbar{\varphi}}{\overbar{z}} \dd{z} \dd{\overbar{z}} + \diffp{\varphi}{\overbar{z}} \diffp{\overbar{\varphi}}{z} \dd{\overbar{z}} \dd{z} + \diffp{\varphi}{\overbar{z}} \diffp{\overbar{\varphi}}{\overbar{z}} (\dl{\overbar{z}})^2 \notag\\
+        &= \left( \diffp{\varphi}{z} \diffp{\overbar{\varphi}}{\overbar{z}} + \diffp{\varphi}{\overbar{z}} \diffp{\overbar{\varphi}}{z} \right) \dd{z} \dd{\overbar{z}} + \diffp{\varphi}{z} \diffp{\overbar{\varphi}}{z} (\dl{z})^2 + \diffp{\varphi}{\overbar{z}} \diffp{\overbar{\varphi}}{\overbar{z}} (\dl{\overbar{z}})^2.
+    \end{align}
+    Introducing the notation \(\partial_w f = \difsp{f}{w}\) we can now use
+    \begin{equation}
+        \overline{\partial_w f} = \overline{\diffp{f}{w}} = \diffp{\overbar{f}}{\overbar{w}} = \partial_{\overbar{w}} \overbar{f}
+    \end{equation}
+    to rewrite this in terms of \(\difsp{\varphi}{z}\) and \(\difsp{\varphi}{\overbar{z}}\):
+    \begin{multline}
+        \varphi^*(\dl{z}, \dl{\overbar{z}}) = ( (\partial_z \varphi) (\overline{\partial_{z} \varphi}) + (\partial_{\overbar{z}} \varphi) (\overline{\partial_{\overbar{z}} \varphi}) ) \dd{z} \dd{\overbar{z}}\\
+        + (\partial_z \varphi) (\overline{\partial_{\overbar{z} \varphi}}) (\dl{z})^2 + (\partial_{\overbar{z}} \varphi) (\overline{\partial_z \varphi}) (\dl{\overbar{z}})^2.
+    \end{multline}
+    Now, if the pullback condition is to hold we must have
+    \begin{equation}
+        \varphi^*(\dl{z}, \dl{\overbar{z}}) = \Lambda(z, \overbar{z}) \dd{z} \dd{\overbar{z}}.
+    \end{equation}
+    So, we require that the \((\dl{z})^2\) and \((\dl{\overbar{z}})^2\) terms vanish, which imposes
+    \begin{equation}
+        (\partial_z \varphi) (\overline{\partial_{\overbar{z}} \varphi}) = 0.
+    \end{equation}
+    
+    \subsection{Conformal Transformations Examples}
+    We can now ask what conformal transformations \(\varphi \colon \complex \to \complex\) exist.
+    We'll also consider conformal transformations defined only on \(\complex\setminus\{\pt\}\) where \(\pt\) is some point where the transformation need not be defined.
+    
+    \subsubsection{Rigid Transformations}
+    The rigid transformations, or \define{isometries}\index{isometry} of \(\complex\) are the distance preserving transformations.
+    As such they preserve the metric, and thus are conformal with \(\Lambda = 1\).
+    It is well known that the isometries of the plane fall into three different classes.
+    
+    \paragraph{Translation}
+    A translation, \(T_b \colon \complex \to \complex\), by \(b \in \complex\) is defined by
+    \begin{equation}
+        T_b(z) = z + b.
+    \end{equation}
+    This clearly preserves the metric since the distance between \(z\) and \(w\) is \(\abs{z - w}\), and the distance between \(T_b(z)\) and \(T_b(w)\) is \(\abs{T_b(z) - T_b(w)} = \abs{z + b - w - b} = \abs{z - w}\).
+    Clearly \(T_b\) is bijective and smooth also, and it's defined everywhere, so it's a global conformal transformation.
+    
+    Translations form a group, which is simply the additive group \((\complex, +)\).
+    
+    \paragraph{Rotation}
+    An anticlockwise rotation, \(R_{\alpha, 0} \colon \complex \to \complex\), by an angle \(\alpha\) about the origin, \(0\), is defined by
+    \begin{equation}
+        R_{\alpha, 0}(z) = \e^{i\alpha}z.
+    \end{equation}
+    This preserves the metric, since \(\abs{R_{\alpha, 0}(z) - R_{\alpha, 0}(w)} = \abs{\e^{i\alpha}z - \e^{i\alpha}w} = \abs{\e^{i\alpha}(z - w)} = \abs{z - w}\).
+    Again, this is bijective, smooth, and defined everywhere, so it is also a global conformal transformation.
+    
+    Rotations about the origin form a group, which is simply \(\specialOrthogonal(2, \reals) \isomorphic \unitary(1)\).
+    
+    A rotation about some point, \(c \in \complex\), by an angle \(\alpha\) is simply given by
+    \begin{equation}
+        R_{\alpha, c} = T_c \circ R_{\alpha, 0} \circ T_{-c}.
+    \end{equation}
+    That is, we first translate the centre of rotation to the origin, then rotate, then translate back.
+    This is again a conformal transformation, as all composites of conformal transformations are.
+    
+    Rotations and translations form a group.
+    
+    \paragraph{Reflection}
+    A reflection, \(C_{0, 0} \colon \complex \to \complex\), in the real axis, that is \(x^2 = 0\), is given by conjugation
+    \begin{equation}
+        C_{0, 0}(z) = \overbar{z}.
+    \end{equation}
+    This preserves the metric, since \(\abs{C_{0, 0}(z) - C_{0, 0}(w)} = \abs{\overbar{z} - \overbar{w}} = \abs{\overline{z - w}} = \abs{z - w}\).
+    Again, this is bijective, smooth, and defined everywhere, so it is also a global conformal transformation.
+    
+    Reflections in the real axis form a group isomorphic to \(\integers/2\integers\).
+    
+    A reflection in an arbitrary line can similarly be given as a composition of previously defined conformal transformations.
+    To do so we parametrise the line by a point, \(c \in \complex\), through which it passes, and the angle, \(\alpha\), that the line makes to the positive real axis.
+    Then a reflection in this line is given by
+    \begin{equation}
+        C_{\alpha, c} = T_b \circ R_{-\alpha, 0} \circ C_{0, 0} \circ R_{\alpha, 0} \circ T_{-b}.
+    \end{equation}
+    This is again a conformal transformation.
+    
+    \subsubsection{Dilation}
+    A \defineindex{dilation} or \defineindex{dilitation} is a global conformal transformation, \(D_\rho \colon \complex \to \complex\), for \(\rho \in \reals_{>0}\), defined by
+    \begin{equation}
+        D_\rho(z) = \rho z.
+    \end{equation}
+    Intuitively, for \(\rho > 1\) this corresponds to stretching space out evenly in all directions, and for \(\rho < 1\) it's a contraction.
+    Clearly this is bijective and smooth, and it is conformal with \(\Lambda = \rho^2\), since \(\dl{\rho z} \dd{\rho \overbar{z}} = \rho^2 \dd{z}\dd{\overbar{z}}\).
+    
+    Dilations form a group, which is just the multiplicative group \((\complex^{\times}, \cdot)\).
+    
+    Just looking at the formulae we see that rotations about the origin and dilations are very similar, and in fact, we can combine them into a single transformation \(D_a \colon \complex \to \complex\) with \(a \in \complex\) and \(a = \rho \e^{i\alpha}\) for \(\rho \in \reals_{>0}\) and \(\alpha \in \reals\) and
+    \begin{equation}
+        D_a(z) = az = \rho \e^{i\alpha} z,
+    \end{equation}
+    which is a dilation by \(\rho\) and a rotation by \(\alpha\) (the order of which is not important).
+    That is, \(D_a = D_\rho \circ R_{\alpha, 0} = R_{\alpha, 0} \circ D_\rho\), and \(R_{\alpha, 0} = D_{\e^{i\alpha}}\).
+    
+    The combination of all translations, dilations, and rotations forms a group, \(\Aff(\complex)\), the affine group.
+    
+    \subsubsection{Circle Inversion}
     
     
     
