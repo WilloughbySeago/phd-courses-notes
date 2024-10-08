@@ -1,0 +1,228 @@
+% !TeX program = lualatex
+\documentclass[fleqn]{NotesClass}
+
+\strictpagecheck
+
+\usepackage{csquotes}
+\usepackage{tensor}
+
+\usepackage{tikz}
+\usetikzlibrary{external}
+\tikzexternalize[prefix=tikz-external/]
+
+\usepackage{tikz-cd}
+
+\usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes from Conformal Field Theory and Vertex Operator Algebras},pdfkeywords={conformal field theory,CFT,vertex operator algebra,voa},pdfsubject={Conformal Field Theory and Vertex Operator Algebras}]{hyperref}  % Should be loaded second last (cleveref last)
+\colorlet{hyperrefcolor}{blue!60!black}
+\hypersetup{colorlinks=true, linkcolor=hyperrefcolor, urlcolor=hyperrefcolor}
+\usepackage[
+capitalize,
+nameinlink,
+noabbrev
+]{cleveref} % Should be loaded last
+
+% My packages
+\usepackage{NotesBoxes}
+\usepackage{NotesMaths2}
+
+\setmathfont[range={\int, \oint, \otimes, \oplus, \bigotimes, \bigoplus}]{Latin Modern Math}
+
+
+% Highlight colour
+\definecolor{highlight}{HTML}{710D78}
+\definecolor{my blue}{HTML}{2A0D77}
+\definecolor{my red}{HTML}{770D38}
+\definecolor{my green}{HTML}{14770D}
+\definecolor{my yellow}{HTML}{E7BB41}
+
+% Title page info
+\title{Conformal Field Theory and Vertex Operator Algebras}
+\author{Willoughby Seago}
+\date{September 26th, 2024}
+\subtitle{Notes from}
+\subsubtitle{SMSTC}
+\renewcommand{\abstracttext}{These are my notes from the SMSTC course \emph{Conformal Field Theories and Vertex Operator Algebras} taught by Dr Anatoly Konechny. These notes were last updated at \printtime{} on \today{}.}
+
+% Commands
+% Maths
+\newcommand{\manifold}{\symcal{M}}
+\renewcommand{\dd}[1]{\,\symrm{d}#1}
+\renewcommand{\dl}[1]{\symrm{d}#1}
+\DeclarePairedDelimiterX{\innerproduct}[2]{(}{)}{#1, #2}
+
+\begin{document}
+    \frontmatter
+    \titlepage
+    \innertitlepage{}
+    \tableofcontents
+    % \listoffigures
+    \mainmatter
+    \chapter{Conformal Geometry}
+    \section{Local Conformal Maps}
+    Intuitively, we want conformal maps to preserve angles, but not necessarily distances.
+    To do so consider how the angle between two vectors in, say, \(\reals^3\) is computed,
+    \begin{equation}
+        \cos(\theta_{\vv{u}, \vv{v}}) = \frac{\vv{u} \cdot \vv{v}}{\norm{\vv{u}} \norm{\vv{v}}} .
+    \end{equation}
+    We see here that if each vector were made longer by some positive constant, \(\rho\), then we have
+    \begin{equation}
+        \cos(\theta_{\rho \vv{u}, \rho \vv{v}})\frac{\rho \vv{u} \cdot \rho \vv{v}}{\norm{\rho \vv{u}} \norm{\rho \vv{v}}} = \cos(\theta_{\vv{u}, \vv{v}}).
+    \end{equation}
+    We can think of scaling all of the vectors here by \(\rho\) as the same as scaling the metric by \(1/\rho\).
+    It's \(1/\rho\) because if we make the units of a measurement smaller then the number we measure gets bigger (hence, \emph{contravariant} vectors).
+    
+    The following is really just fancy differential-geometry-speak for this rescaling of the metric, and we also allow the scaling of the metric to depend on position.
+    
+    \begin{dfn}{Local Conformal Map}{}
+        Let \((\manifold_1, g_1)\) and \((\manifold_2, g_2)\) be \(n\)-dimensional Riemannian manifolds.
+        Let \(U_1 \subseteq \manifold_1\) and \(U_2 \subseteq \manifold_2\) be open subsets.
+        A (local) \defineindex{conformal transformation} is a smooth, injective map, \(\varphi \colon U_1 \to U_2\), satisfying the pullback condition
+        \begin{equation}
+            \varphi^*g_2 = \Lambda g_1
+        \end{equation}
+        for some function \(\Lambda \colon U_1 \to \reals_{>0}\).
+        
+        A conformal map defined on all of \(\manifold_1\) is a global conformal map.
+    \end{dfn}
+    
+    \begin{remark}{}{}
+        It is possible to relax the conditions on \(\varphi\), and require only that it is differentiable.
+        However, requiring smoothness and injectivity is common when it comes to applications, so we make it a basic requirement.
+        It's also common to further restrict to orientation-preserving maps, but we won't do that just yet.
+    \end{remark}
+    
+    We can express the pullback condition, \(\varphi^*g_2 = \Lambda g_1\), in local coordinates.
+    Let \(x = (x^1, \dotsc, x^n)\) be coordinates covering \(U_1\), and \(y = (y^1, \dotsc, y^n)\) coordinates covering \(U_2\).
+    Then \(\varphi\) is fully specified by the functions \(\varphi^i\) which are defined such that \(y^i = \varphi^i(x)\).
+    The metrics, \(g_i\), may be specified by their components, \((g_i)_{jk} \colon U_i \to \reals\).
+    In these coordinates the pullback condition becomes
+    \begin{equation}
+        \sum_{k,l} \diffp{\varphi^k}{x^i} \diffp{\varphi^l}{x^j} (g_2)_{kl}(\varphi(x)) = \Lambda(x) (g_1)_{ij}(x).
+    \end{equation}
+    Taking determinants of either side of this equation we have
+    \begin{equation}
+        \det\left( \diffp{\varphi^k}{x^i} \right) \det(g_2) \det\left( \diffp{\varphi^l}{x^j} \right) = \Lambda^n \det (g_1).
+    \end{equation}
+    Now, \(\Lambda^n \ne 0\) and \(\det(g_i) \ne 0\), so it follows that \(\det(\difsp{\varphi^k}{x^i}) \ne 0\), meaning that the matrix with components \(\difsp{\varphi^k}{x^i}\) is invertible.
+    This means that a conformal map is always \defineindex{locally invertible}.
+    That is, for any \(p \in U_1\) we have a neighbourhood \(V_1 \subseteq U_1\) with \(p \in V_1\) such that \(\varphi\) restricted to \(V_1\) is a bijection.
+    
+    Note that it's possible to be locally invertible but not fully invertible.
+    There may be a point in \(U_1 \setminus V_1\) which maps to the same point as a point in \(V_1\), so the function will not be injective.
+    
+    \subsection{Conformal Maps Preserve Angles}
+    Consider two vectors \(u, v \in T_p\manifold_1\) and some \(p \in \manifold_1\).
+    Taking some open neighbourhood of \(p\), \(U_1 \subseteq \manifold_1\), we can also take coordinates \(x = (x^1, \dotsc, x^n)\) covering \(U_1\).
+    This gives a basis \(\{\difsp{}{x^i}|_p\}\) for \(T_p\manifold_1\).
+    The angle between these vectors is given, as in \(\reals^3\), by
+    \begin{equation}
+        \cos(\theta_{u, v}) = \frac{\innerproduct{u}{v}}{\norm{u} \norm{v}} = \frac{u^i (g_1)_{ij} v^j}{\sqrt{u^l(g_1)_{lk}u^k v^p (g_1)_{pq} v^q}}.
+    \end{equation}
+    Here we've started to employ the Einstein summation convention, and we shall do so from now on.
+    Let \(\varphi \colon U_1 \to U_2\) be a conformal transformation and suppose that \(U_2\) is covered by coordinates \(y = (y^1, \dotsc, y^n)\).
+    Consider the pushforward
+    \begin{equation}
+        \dl{\varphi_p} \colon T_p \manifold_1 \to T_{\varphi(p)} \manifold_2.
+    \end{equation}
+    Under this the vectors \(u\) and \(v\) map to the vectors
+    \begin{equation}
+        \tilde{u} = \dl{\varphi_p}(u), \qqand \tilde{v} = \dl{\varphi_p}(v),
+    \end{equation}
+    which have coordinates
+    \begin{equation}
+        \tilde{u}^i = \diffp{\varphi^i}{x^j} u^j, \qqand \tilde{v}^i = \diffp{\varphi^i}{x^j} v^j.
+    \end{equation}
+    We can now calculate the angle between these vectors as follows:
+    \begin{align}
+        \cos(\theta_{\tilde{u}, \tilde{v}}) &= \frac{\innerproduct{\tilde{u}}{\tilde{v}}}{\norm{u} \norm{v}}\\
+        &= \frac{\tilde{u}^a (g_2)_{ab} \tilde{v}^b}{\sqrt{\tilde{u}^c(g_2)_{cd} \tilde{u}^d \tilde{v}^e (g_2)_{ef} \tilde{v}^f}}\\
+        &= \frac{\diffp{\varphi^a}{x^i} u^i (g_2)_{ab} \diffp{\varphi^b}{x^j} u^j}{\sqrt{\diffp{\varphi^c}{x^l} u^l (g_2)_{cd} \diffp{\varphi^d}{x^k} u^k \diffp{\varphi^e}{x^p} v^p (g_2)_{ef} \diffp{\varphi^f}{x^q}}}\\
+        &= \frac{u^i \Lambda(g_1)_{ij} v^j}{\sqrt{u^l \Lambda(g_1)_{lk}u^k v^p \Lambda(g_1)_{pq}v^q}}\\
+        &= \frac{u^i (g_1)_{ij} v^j}{\sqrt{u^l (g_1)_{lk}u^k v^p (g_1)_{pq}v^q}}\\
+        &= \cos(\theta_{u,v})
+    \end{align}
+    where we've used the pullback condition
+    \begin{equation}
+        \diffp{\varphi^a}{x^i} (g_2)_{ab} \diffp{\varphi^b}{x^j} = \Lambda (g_1)_{ij}.
+    \end{equation}
+    This shows that conformal transformations really do preserve angles as we were looking for.
+    
+    
+    
+%	 Appdendix
+	\appendixpage
+	\begin{appendices}
+    	\chapter{Differential Geometry}
+        \section{Tangent Space}
+        Let \(\manifold\) be a \(d\)-dimensional manifold.
+        The tangent space at \(p \in M\) is a \(d\)-dimensional vector space \(T_p\manifold\).
+        One definition of this is the vector space of derivations at \(p\), where a derivation is a linear map \(D \colon C^{\infty}(\manifold) \to \reals\) satisfying
+        \begin{equation}
+            D(f g) = D(f) g(x) + f(x) D(g).
+        \end{equation}
+        Clearly derivatives are derivations, this is just the product rule, and in fact given a coordinate chart \((U, x)\) with \(p \in U\) and \(x = (x^1, \dotsc, x^d)\) we have a basis for \(T_p\manifold\) given by
+        \begin{equation}
+            \left\{ \diffp{}{x^1}\bigg|_p, \dotsc, \diffp{}{x^d}\bigg|_p \right\}.
+        \end{equation}
+        
+        Once we have tangent spaces it makes sense to consider the collection of all tangent vectors at any point \(p \in \manifold\).
+        This gives us the tangent bundle
+        \begin{equation}
+            TM = \bigsqcup_{p \in \manifold} T_pM.
+        \end{equation}
+        This is a bundle since we have the natural projection \(\pi \colon TM \twoheadrightarrow \manifold\) sending a tangent vector \(v \in T_pM\) to the point \(p \in M\).
+        
+        \section{Pushforward and Pullback}
+        Let \(\varphi \colon \manifold \to \symcal{N}\) be a smooth map between manifolds.
+        The \defineindex{pushforward}, also called the \defineindex{differential}, of \(\varphi\) at \(p \in \manifold\) is the linear map
+        \begin{equation}
+            \dl{\varphi_p} \colon T_p\manifold \to T_{\varphi(p)}\symcal{N}
+        \end{equation}
+        defined to act on a derivation, \(X \colon C^{\infty}(\manifold) \to \reals\), by sending it to the derivation \(\dl{\varphi_p}(X) \colon C^{\infty}(\symcal{N}) \to \reals\) defined to act on \(f \in C^{\infty}(\symcal{N})\) by
+        \begin{equation}
+            \dl{\varphi_p}(X)(f) = X(f \circ \varphi).
+        \end{equation}
+        That is, \(\dl{\varphi_p}\) is nothing but precomposition with \(\varphi\) followed by evaluation.
+        
+        Fix charts \((U, x)\) and \(V, y\) for neighbourhoods of \(p \in \manifold\) and \(\varphi(p) \in \symcal{N}\). s
+        Then \(T_p\manifold\) and \(T_{\varphi(p)}\symcal{N}\) have bases \(\{\difsp{}{x^i}|_p\}\) and \(\{\difsp{}{y^i}|_{\varphi(p)}\}\).
+        In these bases \(\dl{\varphi_p}\) may be expressed as a matrix
+        \begin{equation}
+            \tensor{(\dl{\varphi_p})}{^i_j} = \diffp{\varphi^i}{x^j}
+        \end{equation}
+        where \(\varphi^j\) is such that \(y^j = \varphi(x^j)\).
+        
+        The \defineindex{pullback} of \(\varphi\) is the map \(\varphi^* \colon C^{\infty}(\symcal{N}) \to C^{\infty}(\manifold)\) defined by \((\varphi^*f)(x) = f(\varphi(x))\).
+        That is, \(\varphi^*\) is precomposition with \(\varphi\).
+        We can also define the pullback of a \(k\)-form, \(\omega\), as
+        \begin{equation}
+            (\varphi^*\omega)_p(X_1, \dotsc, X_k) = \omega_{\varphi(p)}(\dl{\varphi_p}(X_1), \dotsc, \dl{\varphi_p}(X_k)).
+        \end{equation}
+        This will be particularly important for a 2-form, \(g\), where we have
+        \begin{equation}
+            (\varphi^*g)_p(X_1, X_2) = g_{\varphi(p)}(\dl{\varphi_p}(X_1), \dl{\varphi_p}(X_2)).
+        \end{equation}
+        
+        
+        \section{Riemannian Manifolds}
+        A \defineindex{Riemannian manifold}, \((\manifold, g)\), is a manifold, \(\manifold\), equipped with a \defineindex{Riemannian metric}, \(g\), which assigns to each tangent space, \(T_p\manifold\), a positive-definite inner product
+        \begin{equation}
+            g_p \colon T_p\manifold \times T_p\manifold \to \reals,
+        \end{equation}
+        such that the component functions, \(g_{ij} \colon U \to \reals\), are smooth on any chart \((U, x)\).
+        These components are defined for a basis \(\{e_i\}\) of \(T_p\manifold\) by
+        \begin{equation}
+            g_{ij} = g_p(e_i, e_j).
+        \end{equation}
+        These are such that
+        \begin{equation}
+            g = \sum_{i,j} g_{ij} \dd{x^i} \dd{x^j}
+        \end{equation}
+        where \(\dl{x^i}\) is the dual basis to \(\{e_i\}\), defined by \(\dl{x^i}(e_j) = \tensor{\delta}{^{i}_j}\).
+    \end{appendices}
+
+%	\backmatter
+%	\renewcommand{\glossaryname}{Acronyms}
+%	\printglossary[acronym]
+%	\printindex
+\end{document}
