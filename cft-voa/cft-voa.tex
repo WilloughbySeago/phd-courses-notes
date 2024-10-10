@@ -52,6 +52,8 @@ noabbrev
 \newcommand{\pt}{\symrm{pt}}
 \newcommand{\isomorphic}{\cong}
 \DeclareMathOperator{\Aff}{Aff}
+\newcommand{\inversion}{\symcal{I}}
+\newcommand{\id}{\symrm{id}}
 
 \begin{document}
     \frontmatter
@@ -225,7 +227,61 @@ noabbrev
     \begin{equation}
         (\partial_z \varphi) (\overline{\partial_{\overbar{z}} \varphi}) = 0.
     \end{equation}
+    Thus, we must have
+    \begin{equation}
+        \partial_z \varphi = 0, \qqor \partial_{\overbar{z}} \varphi = 0.
+    \end{equation}
+    The second of these says that \(\varphi\) has no \(\overbar{z}\) dependence, and we know that \(\varphi\) is (at least) real differentiable, and thus \(\varphi\) is complex differentiable (with respect to \(z\)) and so \(\varphi\) is holomorphic.
+    The first of these says that \(\varphi\) has no \(z\) dependence, and we know that \(\varphi\) is (at least) real differentiable, and thus \(\varphi\) is complex differentiable with respect to \(\overbar{z}\), and so \(\varphi\) is antiholomorphic (that is, it's holomorphic as a function of \(\overbar{z}\)).
+    We therefore have two cases
+    \begin{itemize}
+        \item \(\varphi = \varphi(z)\) is holomorphic; or
+        \item \(\varphi = \varphi(\overbar{z})\) is antiholomorhpic.
+    \end{itemize}
     
+    We are then left with the condition
+    \begin{equation}
+        (\partial_z\varphi)(\overline{\partial_z\varphi} + (\partial_{\overbar{z}} \varphi) (\overline{\partial_{\overbar{z}} \varphi})) = \abs{\partial_z \varphi}^2 + \abs{\partial_{\overbar{z}} \varphi} = \Lambda(z, \overbar{z}) > 0,
+    \end{equation}
+    which must hold for all \(z \in U\).
+    
+    The differential, \(\dl{\varphi}\), of a map \(\varphi \colon U \to V\) in complex coordinates has the matrix representation
+    \begin{equation}
+        \dl{\varphi} = 
+        \begin{pmatrix}
+            \partial_z \varphi & \partial_{\overbar{z}} \varphi\\
+            \partial_z \overbar{\varphi} & \partial_{\overbar{z}} \overbar{\varphi}
+        \end{pmatrix}
+        .
+    \end{equation}
+    Thus, in the holomorphic case we have
+    \begin{equation}
+        \dl{\varphi} = 
+        \begin{pmatrix}
+            \partial_z \varphi & 0\\
+            0 & \partial_{\overbar{z}} \overbar{\varphi}
+        \end{pmatrix}
+        , \qand \det(\dl{\varphi}) = \abs{\partial_z \varphi}^2 > 0,
+    \end{equation}
+    assuming that the derivative doesn't vanish as required to have a positive scaling of the metric.
+    In the antiholomorphic case, making the same non-vanishing derivative assumption, we have
+    \begin{equation}
+        \dl{\varphi} = 
+        \begin{pmatrix}
+            0 & \partial_{\overbar{z}}\\
+            \partial_z \overbar{\varphi} & 0
+        \end{pmatrix}
+        , \qand \det(\dl{\varphi}) = - \abs{\partial_{\overbar{z}} \varphi} < 0.
+    \end{equation}
+    The interpretation of these is that holomorphic conformal maps preserve orientation, whereas antiholomorphic conformal maps reverse orientation.
+    This shouldn't be suprising, the most basic antiholomorphic map is \(z \mapsto \overbar{z}\), which is a reflection in the real axis, so reverses orientation.
+    
+    We state these results now as a theorem.
+    
+    \begin{thm}{}{}
+        Any local conformal orientation preserving (reversing) transfformation \(\varphi \colon U \to \complex\) is specified by a holomorphic (antiholomorphic) function \(z \mapsto \varphi(z)\) (\(z \mapsto \varphi(\overbar{z})\)) which is invertible everywhere on \(\varphi(U)\).
+    \end{thm}
+        
     \subsection{Conformal Transformations Examples}
     We can now ask what conformal transformations \(\varphi \colon \complex \to \complex\) exist.
     We'll also consider conformal transformations defined only on \(\complex\setminus\{\pt\}\) where \(\pt\) is some point where the transformation need not be defined.
@@ -288,7 +344,7 @@ noabbrev
         D_\rho(z) = \rho z.
     \end{equation}
     Intuitively, for \(\rho > 1\) this corresponds to stretching space out evenly in all directions, and for \(\rho < 1\) it's a contraction.
-    Clearly this is bijective and smooth, and it is conformal with \(\Lambda = \rho^2\), since \(\dl{\rho z} \dd{\rho \overbar{z}} = \rho^2 \dd{z}\dd{\overbar{z}}\).
+    Clearly this is bijective and smooth, and it is conformal with \(\Lambda = \rho^2\), since \(\dl{(\rho z)} \dd{(\rho \overbar{z})} = \rho^2 \dd{z}\dd{\overbar{z}}\).
     
     Dilations form a group, which is just the multiplicative group \((\complex^{\times}, \cdot)\).
     
@@ -302,8 +358,99 @@ noabbrev
     The combination of all translations, dilations, and rotations forms a group, \(\Aff(\complex)\), the affine group.
     
     \subsubsection{Circle Inversion}
+    One example of an antiholomorphic conformal transformation is the map \(\inversion_{0,R} \colon \complex\setminus\{0\} \to \complex\setminus\{0\}\), where \(R \in \reals_{>0}\), defined by
+    \begin{equation}
+        z \mapsto \frac{R^2}{\overbar{z}}.
+    \end{equation}
+    We can show that this is conformal by computing the metric after the transformation:
+    \begin{equation}
+        \dl{\left( \frac{R^2}{\overbar{z}} \right)} \dd{\left( \frac{R^2}{z} \right)} = \frac{R^4}{\abs{z}^4} \dd{z} \dd{\overbar{z}}.
+    \end{equation}
+    So, this is conformal with \(\Lambda = R^4/\abs{z}^4\).
     
+    This transformation has a nice geometric picture, as seen in \cref{fig:circle inversion}.
+    A point inside the unit circle is mapped to a point outside the unit circle, and that point is mapped to the original point inside the unit circle.
+    We call this \defineindex{inversion}, it swaps the inside and outside of the unit circle (removing 0 from the interior for the map to be defined).
+    This swapping can even be done geometrically.
+    Given a point, \(P\), in the unit circle draw a line through the origin, \(O\), and \(P\).
+    Then this map swaps \(P\) with the point \(P'\) which is such that \(\abs{OP}\abs{OP'} = R^2\).
     
+    \begin{figure}
+        \tikzsetnextfilename{circle-inversion}
+        \begin{tikzpicture}
+            \draw [thick] (0, 0) circle [radius=3cm];
+            \draw [thick] (0, 0) -- (30:5);
+            \fill [highlight] (30:2) circle [radius=0.075cm];
+            \node [below] at (30:2) {\(P\)};
+            \fill [highlight] (30:4.5) circle [radius=0.075cm];
+            \node [below] at (30:4.5) {\(P'\)};
+            \draw [thick] (0, 0) -- (-30:5);
+            \fill [highlight] (-30:2.5) circle [radius=0.075cm];
+            \node [below] at (-30:2.5) {\(Q\)};
+            \fill [highlight] (-30:9/2.5) circle [radius=0.075cm];
+            \node [below] at (-30:9/2.5) {\(Q'\)};
+            \node [left] at (0, 0) {\(O\)};
+        \end{tikzpicture}
+        \caption[Circle inversion]{Circle inversion, the interior and exterior of the circle are swapped. Here, for example, \(R = 3\), \(\abs{OP} = 2\), and so \(P'\) was chosen with \(\abs{OP'} = 9/2\) so that \(\abs{OP}\abs{OP'} = 9\). Similarly, \(\abs{OQ} = 2.5\) and so \(Q'\) was chosen with \(\abs{OQ'} = 9/2.5\). Notice that points closer to the origin map to points further away from the circle and points near the circle map to points near the circle.}
+        \label{fig:circle inversion}
+    \end{figure}
+    
+    Notice that \(\inversion_{0,R} \circ \inversion_{0,R} = \id_{\complex\setminus\{0\}}\), so this is invertible everywhere it's defined.
+    
+    It's possible to do an inversion in a circle centred elsewhere by translation, define \(\inversion_{c, R} \colon \complex \setminus \{c\} \to \complex \setminus \{c\}\) by \(\inversion_{c, R} = T_c \circ \inversion{0, R} \circ T_{-c}\).
+    
+    We can get a holomorphic version of this transformation by composing with \(C\), since \(C \circ \inversion_{0, R}\) acts as \(z \mapsto R^2 / z\) which is holomorphic on \(\complex \setminus \{0\}\).
+    
+    \subsubsection{Special Conformal Transformations}
+    We have covered almost all conformal transformations of the plane now.
+    It turns out that there's just one more type, known as \define{special conformal transformations}\index{special conformal transformation}.
+    To arrive at this one may consider the composite
+    \begin{equation}
+        \inversion{0, R} \circ T_a \circ \inversion_{0, R}(z) = \inversion_{0, R} \circ T_a\left( \frac{R^2}{\overbar{z}} \right) = \inversion_{0, R}\left( \frac{R^2}{\overbar{z}} + a \right) = \frac{R^2}{\overline{\frac{R^2}{\overbar{z}} + a}} = \frac{z}{\frac{\overbar{a}}{R^2}z + 1}.
+    \end{equation}
+    Since \(\overbar{a}/R^2\) can take on any complex value as \(a\) and \(R\) vary we see that a special conformal transformation, \(S_c \colon \complex \setminus \{-1/c\} \to \complex\) with \(c \in \complex \setminus \{0\}\) is given by
+    \begin{equation}
+        S_c(z) = \frac{z}{cz + 1}.
+    \end{equation}
+    For \(c = 0\) \(S_0(z) = z/(0z + 1) = z\), so \(S_0 = \id_{\complex}\) is defined everywhere.
+    
+    Note that when considering the composite \(\inversion{0, R} \circ T_a \circ \inversion_{0, R}\) we should, \textit{a priori}, remove two points from the domain, \(0\) and \(-R^2/\overbar{a}\).
+    However, after going through the calculation we see that actually the resulting expression is defined at 0.
+    Thus, we may allow 0 after all.
+    We will, in general, always take conformal transformations to be defined on the largest possible domain.
+    In this case we can think of this as an analytic continuation of the special conformal transformation to the point 0.
+    
+    \subsection{Global Conformal Transformations}
+    Restricting to orientation preserving (holomorphic) conformal transformations it turns out that the requirement that a global conformal transformation is defined everywhere is actually quite restrictive.
+    It leaves us with just rotations, dilations, and translations.
+    Together these form the affine group, \(\Aff(\complex)\).
+    A general affine transformation \(\varphi \colon \complex \to \complex\), is of the form
+    \begin{equation}
+        \varphi(z) = az + b
+    \end{equation}
+    for some \(a \in \complex^{\times}\) and \(b \in \complex\).
+    It is a result of complex analysis that these are the only orientation-preserving global conformal transformations.
+    
+    \begin{lma}{}{}
+        Affine transformations are the only orientation-preserving global conformal transformations of \(\complex\).
+        \begin{proof}
+            We know that an orientation-preserving global conformal transformation must be a holomorphic function of \(\complex\) which is invertible everywhere.
+            Such a function may not have branch cuts or singularities, as these are points at which it is undefined.
+            In a neighbourhood of an essential singularity the image of the function is the entirety of \(\complex\), thus, if the function is to be defined outside of this neighbourhood as well, and also be injective there can be no such essential singularities.
+            Thus, \(\varphi\) must be meromorphic, and so can be written as
+            \begin{equation}
+                \varphi(z) = \frac{P(z)}{Q(z)}
+            \end{equation}
+            where \(P, Q \in \complex[z]\) are polynomials, and we may assume that they don't share any common factors.
+            Since we aren't allowed any poles we must actually have that \(Q(z) = c\) is just a constant polynomial, and we can rescale \(P\) to take \(Q(z) = 1\).
+            So, \(\varphi(z) = P(z)\) is a polynomial.
+            This polynomial cannot have more than one distinct zero, since this would violate the injectivity requirement.
+            Hence, \(\varphi(z) = P(z) = a(z - z_0)^n\) for some \(a, z_0 \in \complex\) and \(n \in \integers_{>0}\).
+            We can show that actually we must have \(n \le 1\), since if \(n \ge 2\) then such a map is not injective, mapping both \(z = z_0 + 1\) and \(z = z_0 - 1\) to \(1\).
+            Thus, \(\varphi(z) = P(z) = a(z - z_0)^n\) for \(n = 0, 1\), and thus \(\varphi(z)\) is linear.
+            One further application of injectivity tells us that \(\varphi(z) = b\) (\(b \in \complex\)) is not an acceptable solution, and thus \(\varphi(z) = az + b\) for some \(a \in \complex^{\times}\) and \(b \in \complex\), so \(\varphi\) is an affine transformation.
+        \end{proof}
+    \end{lma}
     
 %	 Appdendix
 	\appendixpage
