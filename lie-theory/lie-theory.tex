@@ -887,9 +887,10 @@ noabbrev
         The quotient algebra as defined above is a Lie algebra.
         \begin{proof}
             Let \(\lie{g}\) be a Lie algebra and let \(\lie{i}\) be an ideal.
-            We have three things to show:
+            We have four things to show:
             \begin{enumerate}
                 \item The bracket on \(\lie{g}/\lie{i}\) is well-defined;
+                \item The bracket on \(\lie{g}/\lie{i}\) is bilinear;
                 \item The bracket on \(\lie{g}/\lie{i}\) is alternating;
                 \item The bracket on \(\lie{g}/\lie{i}\) satisfies the Jacobi identity.
             \end{enumerate}
@@ -916,6 +917,24 @@ noabbrev
                 \bracket{X}{Y} - \bracket{X'}{Y} = \bracket{X - X'}{Y}
             \end{equation}
             which is in \(\lie{i}\) since \(X - X' \in \lie{i}\) and \(\lie{i}\) is an ideal.
+            
+            \Step{Bilinear}
+            We will demonstrate linearity in the first argument.
+            Linearity in the second argument then follows from a similar argument, or in a field of characteristic other than 2 it follows from linearity in the first argument and alternativity, which implies anticommutativity.
+            Let \(X, X', Y \in \lie{g}\), then
+            \begin{align}
+                \bracket{(X + \lie{i}) + (X' + \lie{i})}{Y + \lie{i}} &= \bracket{(X + X') + \lie{i}}{Y + \lie{i}}\\
+                &= \bracket{X + X'}{Y} + \lie{i}\\
+                &= (\bracket{X}{Y} + \bracket{X'}{Y}) + \lie{i}\\
+                &= (\bracket{X}{Y} + \lie{i}) + (\bracket{X'}{Y} + \lie{i}).
+            \end{align}
+            Further, take \(\lambda \in \field\) and we have
+            \begin{align}
+                \bracket{(\lambda X) + \lie{i}}{Y + \lie{i}} &= \bracket{\lambda X}{Y} + \lie{i}\\
+                &= (\lambda \bracket{X}{Y}) + \lie{i}\\
+                &= \lambda(\bracket{X}{Y} + \lie{i}).
+            \end{align}
+            Thus, the bracket is linear in the first argument.
             
             \Step{Alternating}
             Let \(X \in \lie{g}\), then
@@ -1551,7 +1570,7 @@ noabbrev
     \subsection{New Modules From Old}
     \begin{lma}{}{}
         Let \(\lie{m}\) and \(\lie{l}\) be Lie algebras, and let \(V\) and \(W\) be simple \(\lie{m}\)- and \(\lie{l}\)-modules, respectively.
-        Then \(V \otimes W\) is made into an \((\lie{m} \oplus \lie{l})\)-module by extending the following action
+        Then \(V \otimes W\) is made into an \((\lie{m} \oplus \lie{l})\)-module by extending the action
         \begin{equation}
             (X, Y) \cdot (v \otimes w) = (X \cdot v) \otimes w + v \otimes (Y \cdot w)
         \end{equation}

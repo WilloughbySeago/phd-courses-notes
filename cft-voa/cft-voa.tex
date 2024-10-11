@@ -54,6 +54,8 @@ noabbrev
 \DeclareMathOperator{\Aff}{Aff}
 \newcommand{\inversion}{\symcal{I}}
 \newcommand{\id}{\symrm{id}}
+\DeclareMathOperator{\projectiveSpecialLinear}{PSL}
+\newcommand{\identityMatrix}{\symbb{1}}
 
 \begin{document}
     \frontmatter
@@ -414,11 +416,12 @@ noabbrev
     \end{equation}
     For \(c = 0\) \(S_0(z) = z/(0z + 1) = z\), so \(S_0 = \id_{\complex}\) is defined everywhere.
     
-    Note that when considering the composite \(\inversion{0, R} \circ T_a \circ \inversion_{0, R}\) we should, \textit{a priori}, remove two points from the domain, \(0\) and \(-R^2/\overbar{a}\).
+    Note that when considering the composite \(\inversion_{0, R} \circ T_a \circ \inversion_{0, R}\) we should, \textit{a priori}, remove two points from the domain, \(0\) and \(-R^2/\overbar{a}\).
     However, after going through the calculation we see that actually the resulting expression is defined at 0.
     Thus, we may allow 0 after all.
     We will, in general, always take conformal transformations to be defined on the largest possible domain.
     In this case we can think of this as an analytic continuation of the special conformal transformation to the point 0.
+    This is a hint that we need to better handle these undefined points, which we do in . % TODO: add reference to compactification/C_infty
     
     \subsection{Global Conformal Transformations}
     Restricting to orientation preserving (holomorphic) conformal transformations it turns out that the requirement that a global conformal transformation is defined everywhere is actually quite restrictive.
@@ -451,6 +454,205 @@ noabbrev
             One further application of injectivity tells us that \(\varphi(z) = b\) (\(b \in \complex\)) is not an acceptable solution, and thus \(\varphi(z) = az + b\) for some \(a \in \complex^{\times}\) and \(b \in \complex\), so \(\varphi\) is an affine transformation.
         \end{proof}
     \end{lma}
+    
+    If we instead allow global transformations to be defined on \(\complex\) minus a finite set of points then we can expand the allowed transformations a little bit.
+    As with the proof above branch cuts aren't allowed, they require infinitely many undefined points.
+    We also don't allow essential singularities by the same argument on injectivity as in the proof.
+    Thus, we're left with \(\varphi(z) = P(z)/Q(z)\) where \(P\) and \(Q\) are polynomials.
+    We require that the set of zeros of \(Q\) coincides with the set of removed points.
+    Injectivity requires that \(P\) has a unique zero of order 1, so it must be linear.
+    Injectivity also requires that \(Q\) has a unique zero, if it had more than one then a small circle around the corresponding poles would map to a large circle, and it would be possible to choose circles around two different poles which mapped to the same large circle.
+    Further, the order of this zero of \(Q\) must be 1, else a small circle around the corresponding pole would map to a circle that winds around more than once, again, failing to be injective.
+    Thus, \(P\) and \(Q\) must be linear, and we are left only with transformations
+    \begin{equation}
+        z \mapsto \frac{az + b}{cz + d} \quad \text{where} \quad ad - bc \ne 0.
+    \end{equation}
+    These are called \define{M\"obius transformations}\index{M\"obius transformation}.
+    The condition that \(ad - bc \ne 0\) is required for this map to be invertible.
+    Such a transformation is defined on \(\complex \setminus \{-d/c\}\) if \(c \ne 0\), or \(\complex\) if \(c = 0\).
+    
+    If we have M\"obius transformations
+    \begin{equation}
+        z \mapsto \frac{az + b}{cz + d}, \qqand z \mapsto \frac{ez + f}{gz + h}
+    \end{equation}
+    with \(a, b, c, d, e, f, g, h \in \complex\) such that \(ab - cd \ne 0\) and \(eh - fg \ne 0\) then the composite performed in the order above is
+    \begin{equation}
+        z \mapsto \frac{(ae + bg)z + (af + bh)}{(ce + dg)z + (cf + dh)}.
+    \end{equation}
+    We see that this is again a M\"obius transformation since we can show that the condition on invertibility is \((bc - ad)(fg - eg) \ne 0\), which is true.
+    Note that while these M\"obius transformations are individually defined on \(\complex \setminus \{-d/c\}\) and \(\complex \setminus \{-h/g\}\) the composite may be taken to be defined on \(\complex \setminus \{-(cf + dh)/(ce + dg)\}\), despite passing through undefined points in the composite.
+    
+    Noticing that \(ad - bc\) looks like a determinant we recognise that we may package the parameters of the M\"obius transformation into a matrix,
+    \begin{equation}
+        A = 
+        \begin{pmatrix}
+            a & b\\
+            c & d
+        \end{pmatrix}
+    \end{equation}
+    with \(\det A \ne 0\).
+    That is, \(A \in \generalLinear(2, \complex)\).
+    Further, a simple calculation shows that if we have two such matrices then their product exactly corresponds to the composition of the corresponding matrices.
+    That is, we have a homomorphism \(\generalLinear(2, \complex) \to G\) where \(G\) is the group of all M\"obius transformations under composition.
+    
+    This mapping is surjective, but not injective, since, for example, with \(A \in \generalLinear(2, \complex)\) both \(A\) and \(\lambda A\) (for \(\lambda \in \complex^{\times}\)) map to the same M\"obius transformations since
+    \begin{equation}
+        \frac{az + b}{cz + d} = \frac{\lambda az + \lambda b}{\lambda cz + \lambda d}.
+    \end{equation}
+    We can use this rescaling to always choose our parameters such that \(ad - bc = 1\).
+    That is, we can restrict our consideration to matrices of unit determinant.
+    This gives a homomorphism \(\specialLinear(2, \complex) \to G\).
+    Note that under this correspondence the following are a translation, \(z \mapsto z + b\), dilation, \(z \mapsto az\), special conformal transformation, \(z \mapsto z/(cz + 1)\), and orientation-preserving inversion, \(z \mapsto 1/z\):
+    \begin{equation}
+        \begin{pmatrix}
+            1 & b\\
+            0 & 1
+        \end{pmatrix}
+        , \quad 
+        \begin{pmatrix}
+            a^{1/2} & 0\\
+            0 & a^{-1/2}
+        \end{pmatrix}
+        , \quad
+        \begin{pmatrix}
+            1 & 0\\
+            c & 1
+        \end{pmatrix}
+        , \qand 
+        \begin{pmatrix}
+            0 & i\\
+            i & 0
+        \end{pmatrix}
+        .
+    \end{equation}
+    
+    This map is still not injective.
+    If \(A \in \specialLinear(2, \complex)\) then \(-A \in \specialLinear(2, \complex)\) both \(A\) and \(-A\) map to the same M\"obius transformation.
+    The solution is to consider the group\footnote{\(\identityMatrix\) is the identity matrix.}
+    \begin{equation}
+        \projectiveSpecialLinear(2, \complex) \coloneqq \specialLinear(2, \complex) / \{\pm \identityMatrix\}
+    \end{equation}
+    called the \defineindex{projective special linear group}.
+    Then we finally have \(\projectiveSpecialLinear(2, \complex) \isomorphic G\).
+    For the most part we will look at matrices in \(\specialLinear(2, \complex)\), sine it's easier than working with the cosets of \(\projectiveSpecialLinear(2, \complex)\), and we'll just remember that we have this overall freedom in the sign of the matrix.
+    
+    We will call translations, rotations/dilations, special conformal transformations, and the inversion \(z \mapsto 1/z\) the \define{elementary conformal transformations}\index{elementary conformal transformation}.
+    Any M\"obius transformation is generated by these elementary transformations.
+    
+    An important fact about M\"obius transformations is that any M\"obius transformation maps a circle on the plane to either another circle, or a line (which we may view as a circle of infinite radius).
+    This is really a fact about inversions and special conformal transformations, since translations, rotations, and dilations trivially map circles to circles.
+    
+    \subsubsection{Dealing With Infinity}
+    Here we look at two ways to deal with infinity.
+    The first is simpler, but doesn't really give us anything new.
+    The second is more complicated, but gives us a new way to view the plane.
+    
+    \paragraph{Extended Complex Numbers}
+    Define the set
+    \begin{equation}
+        \complex_{\infty} \coloneqq \complex \cup \{\infty\}
+    \end{equation}
+    where \(\infty\) is a formal symbol.
+    We can extend the natural structure of \(\complex\) to \(\complex_{\infty}\) by making the following definitions for \(z \in \complex\):
+    \begin{equation}
+        z + \infty = \infty + z = \infty, \quad \infty z = \infty, \quad \frac{1}{\infty} = 0, \qand \frac{1}{0} = \infty.
+    \end{equation}
+    Then if we have a M\"obius transformation, \(\varphi\), defined by
+    \begin{equation}
+        \varphi(z) = \frac{az + b}{cz + d}
+    \end{equation}
+    we can take it as a function \(\complex_{\infty} \to \complex_{\infty}\) by defining
+    \begin{equation}
+        \varphi(-d/c) = \infty, \qqand \varphi(\infty) = \frac{a}{c}.
+    \end{equation}
+    Further, since this is now defined at \(-d/c\) and \(\infty\) we see that this is a bijection of \(\complex_{\infty}\).
+    
+    This definition works for our set-theoretical concerns, but it doesn't really help with the geometry.
+    Where is this point, \(\infty\), with respect to the other points of \(\complex\)?
+    It should be \enquote{infinitely far away}, but in what direction?
+    The solution to these problems is to use the next method of dealing with infinity.
+    
+    \paragraph{Conformal Compactification}
+    The Riemann sphere from complex analysis gives a bijection mapping of \(\complex_{\infty}\) to the unit sphere, \(S^2\).
+    This mapping is by stereographic projection.
+    The construction is as follows:
+    \begin{itemize}
+        \item Embed the plane in \(\reals^3\) with coordinates \((u, v, w)\) as the \(w = 0\) plane.
+        \item Embed the sphere in \(\reals^3\) as the set \(\{(u, v, w) \in \reals^3 \mid u^2 + v^2 + w^2 = 1\}\).
+        \item To map a point of the plane, \((u, v, w)\), to a point on the sphere draw a line from the point to the point \((0, 0, 1)\), which we think of as the north pole of the sphere.
+        This line intersects the sphere in two points, the north pole and one other.
+        Map \((u, v, w)\) to this other point.
+        \item To map the other way draw a line from the north pole to a point on the sphere (not equal to the north pole) and where this line intersects the plane is where the point on the sphere maps.
+        The north pole maps to \(\infty\).
+    \end{itemize}
+    We call \(S^2\) cosntructed in this way the conformal compactification of the plane, or the one-point compactification of the sphere.
+    Conformal because, as we'll show shortly, this mapping is conformal, and one-point because we add a point corresponding to the north pole.
+    Compactification because the sphere is compact when the plane wasn't.
+    
+    After some geometry we end up with a map
+    \begin{align}
+        s \colon S^2 \setminus \{N\} &\to \complex\\
+        (u, v, w) &\mapsto \frac{u + iv}{1 - w}
+    \end{align}
+    where we've identified the \(w = 0\) plane with \(\complex\) taking the \(u\) and \(v\) axes as the real and imaginary axes respectively.
+    The inverse of this mapping is
+    \begin{equation}
+        s^{-1}(x + iy) = \left( \frac{2x}{x^2 + y^2 + 1}, \frac{2y}{x^2 + y^2 + 1}, \frac{x^2 + y^2 - 1}{x^2 + y^2 + 1} \right).
+    \end{equation}
+    
+    This mapping is conformal with respect to the standard metrics on \(S^2\) and \(\complex\).
+    The standard metric on \(S^2\) is just the pullback of the Euclidean metric on \(\reals^3\) along the embedding map.
+    So, to check that \(s\) is conformal it is sufficient to calculate the pullback \((s^{-1})^*\) of the standard metric of \(\reals^3\).
+    The calculation is straightforward, but a little heavy on the algebra.
+    The result is that
+    \begin{align}
+        (\dl{u})^2 + (\dl{v})^2 + (\dl{w})^2 &= \left( \frac{2\dd{x}}{r^2 + 1} - \frac{2x \dd{r^2}}{(r^2 + 1)^2} \right)^2 + \left( \frac{2\dd{x}}{r^2 + 1} - \frac{2y \dd{r^2}}{(r^2 + 1)^2} \right)^2 \notag\\
+        &\qquad + \left( \dd{\left( \frac{r^2 - 1}{r^2 + 1} \right)} \right)^2\\
+        &= \frac{4}{(r^2 + 1)^2}(\dl{x^2} + \dl{y^2})\\
+        &= \frac{4}{(\abs{z}^2 + 1)^2} \dd{z}\dd{\overbar{z}}.
+    \end{align}
+    Here \(r^2 = x^2 + y^2\).
+    This shows that \(s^{-1}\) is conformal with
+    \begin{equation}
+        \Lambda = \frac{4}{(\abs{z}^2 + 1)^2}.
+    \end{equation}
+    
+    This means that if we have a M\"obius transformation defined on \(\complex\setminus\{p\}\) we can uniquely extend it to a M\"obius transformation defined on \(S^2\) by taking \(\hat{\varphi} = s^{-1} \circ \varphi \circ s\) on \(S^2 \setminus \{N, s^{-1}(p)\}\), and then defining
+    \begin{equation}
+        \hat{\varphi}(N) = s^{-1}(a / c), \qand \hat{\varphi}(s^{-1}(p)) = N.
+    \end{equation}
+    This allows us to identify \(N\) with \(\infty\) from \(\complex_{\infty}\).
+    Further, it can be shown that all conformal transformations of the sphere arise in this way, so we don't lose or gain anything by looking at \(S^2\) in place of \(\complex\) or \(\reals^2\).
+    
+    One way to view this process is that \((\complex, s)\) is a coordinate chart on \(S^2\) covering all points except \(N\).
+    We can then get another coordinate chart \((\complex, \tilde{s})\) by repeating the stereographic projection process but with the south pole instead.
+    These two charts cover the sphere and the transition maps between them are smooth on their intersection, and as such \(S^2\) is a manifold.
+    On the overlap of these two charts they are related by the inversion \(z \mapsto 1/z\).
+    To see this note that if a point is on the top hemisphere of the sphere then stereographic projection from the north pole takes it to the outside of the circle in the plane, and if it is on the bottom hemisphere of the sphere then stereographic projection maps it to a point inside the circle.
+    The equator maps to the circle.
+    Projecting from the south pole instead reverses this.
+    
+    Using this manifold structure we can look at the neighbourhood of the north pole by working in the \((\complex, \tilde{s})\) chart.
+    This let's us do things like take the tangent space \(T_NS^2\).
+    This is an advantage over \(\complex_{\infty}\) where we don't have a sensible notion of a tangent space at infinity.
+    
+    This relation between the two charts further shows that the standard metric on \(S^2\) is locally conformally flat on \(S^2\), in particular, it's flat on \(S^2 \setminus \{N\}\).
+    By this we simply mean that a conformal transformation takes the sphere metric on \(S^2\setminus\{N\}\) to the standard flat metric on \(\complex\).
+    In a sense, we can push all of the curvature to a single point, \(N\).
+    Locallity is important here, there is no globally conformally flat metric, as there is a theorem of differential geometry (the Gauss--Bonnet theorem) that says that the curvature of a manifold, \(M\), is \(2\pi \chi(M)\) where \(\chi\) is the Euler characteristic, which is 2 for \(S^2\), and so there cannot be globally zero curvature.
+    This is fine in our case because the curvature is given by the integral
+    \begin{equation}
+        \int_M \sqrt{g} R \dd{A}
+    \end{equation}
+    where \(R\) is the Ricci scalar.
+    Taking \(R\) to be an appropriately scaled Dirac delta supported at \(N\) allows this to evaluate to \(4\pi\) as needed while retaining zero curvature on \(S^2\setminus\{N\}\).
+    
+    We will swap back and forth between \(\complex\), \(\complex_{\infty}\), and \(S^2\) as needed, and probably refer to all three as \enquote{the plane} and by each others names.
+    
+    \section{Infinitesimal Conformal Transformations}
+    
+    
+    
     
 %	 Appdendix
 	\appendixpage
