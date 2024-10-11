@@ -78,6 +78,7 @@ noabbrev
 \newcommand{\nilpotentLie}{\symfrak{n}}
 \DeclareMathOperator{\Der}{Der}
 \DeclareMathOperator{\Perm}{Perm}
+\newcommand{\centre}{\symfrak{z}}
 
 \begin{document}
 	\frontmatter
@@ -1972,6 +1973,149 @@ noabbrev
     Thus, \(E\) generates the whole space, showing that any submodule containing \(E\) must be all of \(\specialLinearLie(2, \complex)\), and a similar argument holds for \(H\) or \(F\).
     This shows that the module is simple.
     Then this module is isomorphic to \(V(2)\).
+    
+    \chapter{The Structure of Lie Algebras}
+    In this chapter we will analyse the structure of general Lie algebras.
+    We do this by looking at some special types of Lie algebras which we define here.
+    
+    \section{Centre}
+    \begin{dfn}{}{}
+        Let \(\lie{g}\) be a Lie algebra.
+        Its \defineindex{centre}, \(\centre(\lie{g})\), is the ideal
+        \begin{equation}
+            \centre(\lie{g}) \coloneqq \{X \in \lie{g} \mid \bracket{X}{Y} = 0 \forall Y \in \lie{g}\}.
+        \end{equation} 
+    \end{dfn}
+    
+    When we interpret the bracket as a commutator the centre is exactly the collection of all elements which commute with all other elements of the Lie algebra when viewed as an associative algebra.
+    In general we say that two elements commute if their bracket vanishes.
+    This definition is then analogous to the centre of a group, which is all elements that commute with all other elements of the group.
+    
+    \begin{exm}{}{}
+        We have that \(\centre(\generalLinearLie(n, \complex)) = \Span_{\complex}\{I_n\}\), this is just Schur's lemma (\cref{lma:schur}).
+    \end{exm}
+    
+    \begin{lma}{}{}
+        The centre of a Lie algebra is an ideal.
+        \begin{proof}
+            Let \(\lie{g}\) be a Lie algebra and \(\centre(\lie{g})\) its centre.
+            If \(X, Y \in \centre(\lie{g})\) then we have
+            \begin{equation}
+                \bracket{X + Y}{Z} = \bracket{X}{Z} + \bracket{Y}{Z} = 0
+            \end{equation}
+            for all \(Z \in \lie{g}\), and so \(\centre(\lie{g})\) is closed under addition.
+            Similarly, if \(\lambda \in \field\) and \(X \in \centre(\lie{g})\) then we have
+            \begin{equation}
+                \bracket{\lambda X}{Y} = \lambda \bracket{X}{Y} = 0
+            \end{equation}
+            for all \(Y \in \lie{g}\), so \(\centre(\lie{g})\) is closed under scalar multiplication.
+            Thus, \(\centre(\lie{g})\) is a subspace of \(\lie{g}\).
+            Now notice that if \(X \in \centre(\lie{g})\) and \(Y \in \lie{g}\) then for all \(Z \in \lie{g}\) we have
+            \begin{equation}
+                \bracket{\bracket{X}{Y}}{Z} = \bracket{0}{Z} = 0,
+            \end{equation}
+            and so \(\bracket{X}{Y} \in \centre(\lie{g})\) so \(\centre(\lie{g})\) is an ideal.
+        \end{proof}
+    \end{lma}
+    
+    Notice that a Lie algebra, \(\lie{g}\), is abelian if and only if we have \(\lie{g} = \centre(\lie{g})\).
+    
+    \section{Simple Lie Algebra}
+    \begin{dfn}{}{}
+        A Lie algebra, \(\lie{g}\), is \defineindex{simple} if it is nonabelian has no proper ideals.
+    \end{dfn}
+    
+    We exclude abelian Lie algebras in part because this excludes the one-dimensional Lie algebra, which doesn't poses all of the properties that we want from simple Lie algebras.
+    These properties will become clear later.
+    
+    \begin{exm}{}{}
+        The Lie algebra \(\specialLinearLie(n, \complex)\) is simple.
+    \end{exm}
+    
+    \section{Solvable and Nilpotent Lie Algebras}
+    \begin{dfn}{Nilpotent Lie Algebra}{}
+        The \defineindex{lower central series} of a Lie algebra, \(\lie{g}\), is the series of subalgebras
+        \begin{equation}
+            \lie{g} = \lie{g}_0 \subseteq \lie{g}_1 \subseteq \lie{g}_2 \subseteq \dotsb.
+        \end{equation}
+        These are defined recursively by
+        \begin{equation}
+            \lie{g}_0 = \lie{g}, \quad \lie{g}_1 = \bracket{\lie{g}}{\lie{g}}, \qand \lie{g}_{k+1} = \bracket{\lie{g}}{\lie{g}_k}.
+        \end{equation}
+        
+        A Lie algebra is \defineindex{nilpotent} if its lower central series eventually terminates with \(0\).
+        That is, there is some \(n \in \naturals\) such that \(\lie{g}_n = 0\).
+    \end{dfn}
+    
+    \begin{exm}{}{}
+        The Lie algebra \(\nilpotentLie(n, \complex)\) consisting of strictly upper triangular matrices is nilpotent.
+        To see this note that the product of any two strictly upper triangular matrices has zero on both the diagonal and the superdiagonal.
+        Then the product of any such matrix with a strictly upper triangular matrix has zero on the leading diagonal and the two diagonals above it.
+        Continuing on like this we must eventually have all zeros, since the matrices are finite, and thus the lower central series terminates.
+    \end{exm}
+    
+    \begin{lma}{}{}
+        Each term in the lower central series is an ideal of \(\lie{g}\).
+        \begin{proof}
+            Since \(\bracket{\lie{g}}{\lie{g}}\) is defined to be the span of all elements of the form \(\bracket{X}{Y}\) with \(X, Y \in \lie{g}\) it is clearly a subspace of \(\lie{g}\).
+            Further, since the bracket of two brackets is just a bracket of elements of \(\lie{g}\) it is again found in \(\bracket{\lie{g}}{\lie{g}}\).
+            Thus, \(\bracket{\lie{g}}{\lie{g}}\) is a subalgebra of \(\lie{g}\).
+            Now suppose that \(X, Y, Z \in \lie{g}\), then \(\bracket{X}{\bracket{Y}{Z}}\) is clearly an element of \(\bracket{\lie{g}}{\lie{g}}\), and by linearity this is also true if we replace \(\bracket{Y}{Z}\) with a linear combination of brackets, thus \(\bracket{\lie{g}}{\lie{g}}\) is an ideal of \(\lie{g}\).
+            The same proof shows that \(\lie{g_2}\) is an ideal of \(\lie{g}_1\) and so on, and hence all of these are ideals of \(\lie{g}\) since an ideal of an ideal is again an ideal.
+        \end{proof}
+    \end{lma}
+    
+    \begin{dfn}{Solvable Lie Algebra}{}
+        The \defineindex{derived series} or \defineindex{upper central series} of a Lie algebra, \(\lie{g}\), is the series of subalgebras
+        \begin{equation}
+            \lie{g} = \lie{g}^0 \subseteq \lie{g}^1 \subseteq \lie{g}^2 \subseteq \dotsb.
+        \end{equation}
+        These are defined recursively by
+        \begin{equation}
+            \lie{g}_0 = \lie{g}, \quad \lie{g}^1 = \bracket{\lie{g}}{\lie{g}}, \qand \lie{g}^{k+1} = \bracket{\lie{g}^k}{\lie{g}^k}.
+        \end{equation}
+        The Lie subalgebra \(\lie{g}^1 = \lie{g}' = \bracket{\lie{g}}{\lie{g}}\) is sometimes called the \defineindex{derived subalgebra} of \(\lie{g}\).
+        
+        A Lie algebra is \defineindex{solvable} if its derived series eventually terminates with \(0\).
+        That is, there is some \(n \in \naturals\) such that \(\lie{g}^n = 0\).
+    \end{dfn}
+    
+    Note the difference between this definition and the lower central series, we have
+    \begin{equation}
+        \lie{g}_2 = \bracket{\lie{g}}{\lie{g}_1} = \bracket{\lie{g}}{\bracket{\lie{g}}{\lie{g}}}
+    \end{equation}
+    for the lower central series, and
+    \begin{equation}
+        \lie{g}^2 = \bracket{\lie{g}^1}{\lie{g}^1} = \bracket{\bracket{\lie{g}}{\lie{g}}}{\bracket{\lie{g}}{\lie{g}}}
+    \end{equation}
+    for the derived series.
+    
+    \begin{exm}{}{}
+        The Lie algebra \(\borelLie(n, \complex)\) consisting of upper triangular matrices is nilpotent.
+        To see this note that the commutator of two upper triangular matrices is strictly upper triangular, and the commutator of two strictly upper triangular matrices has zero on the leading diagonal and super diagonal, and the commutator of any two such matrices has three diagonals of zero, and so on.
+        Thus, the derived series eventually terminates with 0.
+    \end{exm}
+    
+    \begin{lma}{}{}
+        Every nilpotent algebra is solvable.
+        \begin{proof}
+            Suppose that \(\lie{g}\) is a nilpotent Lie algebra.
+            Then its upper central series terminates.
+            This means that we eventually have
+            \begin{equation}
+                \bracket{\lie{g}}{\bracket{\lie{g}}{\bracket{\dotsb}{\lie{g}}}} = 0.
+            \end{equation}
+            This then necessitates that if the rightmost copy of \(\lie{g}\) is replaced with any subalgebra of \(\lie{g}\) we still have \(0\), and in particular we may replace it with some subalgebra given by iterated commutators to achieve an element of the derived series, and thus the derived series terminates.
+        \end{proof}
+    \end{lma}
+    
+    \begin{lma}{}{}
+        If \(\lie{g}\) is a Lie algebra with an ideal \(\lie{i}\) such that \(\lie{i}\) is solvable and \(\lie{g}/\lie{i}\) is solvable then \(\lie{g}\) is solvable.
+    \end{lma}
+    
+    \begin{lma}{}{}
+        If \(\lie{g}\) is a Lie algebra with solvable ideals \(\lie{i}\) and \(\lie{j}\) then \(\lie{i} + \lie{j}\) is a solvable ideal of \(\lie{g}\).
+    \end{lma}
     
     
     
