@@ -38,7 +38,7 @@ noabbrev
 % Title page info
 \title{Conformal Field Theory and Vertex Operator Algebras}
 \author{Willoughby Seago}
-\date{September 26th, 2024}
+\date{October 8th, 2024}
 \subtitle{Notes from}
 \subsubtitle{SMSTC}
 \renewcommand{\abstracttext}{These are my notes from the SMSTC course \emph{Conformal Field Theories and Vertex Operator Algebras} taught by Dr Anatoly Konechny. These notes were last updated at \printtime{} on \today{}.}
@@ -56,6 +56,9 @@ noabbrev
 \newcommand{\id}{\symrm{id}}
 \DeclareMathOperator{\projectiveSpecialLinear}{PSL}
 \newcommand{\identityMatrix}{\symbb{1}}
+\newcommand{\lieDerivative}{\symcal{L}}
+\DeclarePairedDelimiterX{\bracket}[2]{[}{]}{#1, #2}
+\newcommand{\Witt}{\symrm{Witt}}
 
 \begin{document}
     \frontmatter
@@ -650,6 +653,158 @@ noabbrev
     We will swap back and forth between \(\complex\), \(\complex_{\infty}\), and \(S^2\) as needed, and probably refer to all three as \enquote{the plane} and by each others names.
     
     \section{Infinitesimal Conformal Transformations}
+    Given an open subset, \(U \subseteq \reals^2\) a \defineindex{vector field} on \(U\) is a map
+    \begin{equation}
+        \varepsilon \colon U \to T\reals^2
+    \end{equation}
+    where \(T\reals^2\) is the tangent bundle.
+    That is, \(\varepsilon\) assigns a tangent vector, \(\varepsilon_p\), to each point \(p \in U\).
+    Let \(x = (x^1, x^2)\) be coordinates covering \(U\).
+    Then we can take the standard basis for \(T_p\reals^2\), given by \(\{\difsp{}{x^i}|_p\}\), although we'll drop the \(|_p\) from the notation.
+    Then in these coordinates the vector field \(\varepsilon\) may be expressed as
+    \begin{equation}
+        \varepsilon^i(x) \diffp{}{x^i}
+    \end{equation}
+    where \(\varepsilon^i \colon U \to \reals\) are smooth functions (assuming we want a smooth vector field).
+    
+    This operator (as with all tangent vectors) acts on functions defined on \(U\).
+    This action can be exponentiated to obtain a finite transformation, which is done by solving the differential equation
+    \begin{equation}
+        \diff{}{t} \varphi^{\varepsilon}(x, t) = \varepsilon(\varphi^\varepsilon(x, t))
+    \end{equation}
+    where \(\varphi^\varepsilon \colon U \times I_0\to \reals\) is a one-parameter group of finite transformations labelled by a parameter \(t \in I_0 = (a, b) \subseteq \reals\) and we assume \(0 \in I_0\).
+    Moving to coordinates this gives us the differential equation
+    \begin{equation}
+        \diff{}{t} \varphi^j(x, t) = \varepsilon^i(x) \diffp{}{x^i} \varphi^j(x, t).
+    \end{equation}
+    We impose the initial condition that \(\varphi^j(x, 0) = x^j\), so we start at the desired point.
+    This has a solution so long as \(\abs{t} < \delta\) for some positive \(\delta\).
+    This solution can be expressed formally as
+    \begin{equation}
+        \varphi^j(x, t) = \e^{t \varepsilon^i(x) \partial_i}x^j
+    \end{equation}
+    where the exponential is understood via its Taylor series.
+    The finite transformation we end up with is
+    \begin{equation}
+        x^j \mapsto \varphi^j(x, t).
+    \end{equation}
+    The infinitesimal transformation is given by truncating the power series after the first order term:
+    \begin{equation}
+        x^j \mapsto x^j + t\varepsilon^j(x).
+    \end{equation}
+    
+    A vector field, \(X\), is called a \defineindex{conformal Killing vector field} if the transformations \(\varphi^X(x, t)\) are local conformal transformations for sufficiently small intervals of \(t\) containing \(t = 0\).
+    Using this definition one can show that this is equivalent to the equation
+    \begin{equation}
+        \lieDerivative_\varepsilon g = \lambda g
+    \end{equation}
+    where \(\lieDerivative_\varepsilon\) is the Lie derivative, \(g\) is the standard metric on \(\reals^2\), and \(\lambda \colon U \to \reals\) is a (not necessarily positive) function on \(U\).
+    This is the infinitesimal version of the pullback requirement.
+    
+    In coordinates we can take the transformation \(x^j \mapsto x^j + t\varepsilon^j(x)\) and compute the change in coordinates of the metric.
+    Dropping all higher order terms we are left with
+    \begin{equation}
+        \partial_i \varepsilon_j + \partial_j \varepsilon_i = \lambda(x) \delta_{ij}.
+    \end{equation}
+    Note that we are freely lowering all indices here since the standard metric is \(\delta_{ij}\).
+    This is the coordinate version of the above statement with the Lie derivative having substituted \(\delta_{ij}\) for the components of the standard metric.
+    Taking the trace of this equation we are left with
+    \begin{equation}
+        \partial_i \varepsilon^i = \lambda(x).
+    \end{equation}
+    Substituting this back into the previous equation we have
+    \begin{equation}
+        \partial_1 \varepsilon^2 = -\partial_2 \varepsilon^1, \qand \partial_1 \varepsilon^1 = \partial_2 \varepsilon^2.
+    \end{equation}
+    If we take our coordinates to be \(x\) and \(y\) and let \(\varepsilon = u(x, y) + iv(x, y)\) then we can see that these are exactly the Cauchy--Riemann equations of complex analysis.
+    This means that the complex coordinate components \(\varepsilon^z = \varepsilon(z)\) and \(\varepsilon^{\overbar{z}} = \overline{\varepsilon(z)}\) must be holomorphic.
+    Note that we don't get antiholomorphic solutions.
+    This is because the orientation reversing conformal transformations do not have infinitesimal versions, which is because they are in a different connected component of the Lie group of conformal transformations.
+    
+    An infinitesimal local conformal transformation is then written as
+    \begin{equation}
+        z \mapsto z + \varepsilon(z), \qand \overbar{z} \mapsto \overbar{z} + \overline{\varepsilon(z)}
+    \end{equation}
+    on some open set, \(U\).
+    The collection of all conformal Killing vector fields forms a real vector space, \(V_0\).
+    We know that \(\varepsilon(z)\) is holomorphic, and so analytic on \(U\).
+    This means that in a neighbourhood of any point \(\varepsilon\) has a convergent Taylor series.
+    For the following we'll take \(U\) to be the punctured disc at the origin, 
+    \begin{equation}
+        U = \{z \mid \abs{z} < r \text{ and } z \ne 0\} \qwhere r > 0,
+    \end{equation}
+    but, this will hold for any sufficiently nice \(U\).
+    We take the puncture disc to allow for \(\varepsilon\) to have a pole at 0.
+    Then \(\varepsilon\) has a Laurent series in a neighbourhood of \(z = 0\) given by
+    \begin{equation}
+        \varepsilon(z) = \sum_{n \in \integers} c_n z^{n + 1}.
+    \end{equation}
+    The fact that we have \(z^{n + 1}\) rather than \(z^n\) is just a convention to make other notation line up later, since the sum is over all of \(\integers\) this doesn't change the sum at all.
+    The coefficients \(c_n\) with \(n \ll 0\) must vanish, since we assume that we only have a simple pole.
+    The corresponding vector field is then given in the basis \(\{\partial_z, \partial_{\overbar{z}}\}\) for the tangent space at \(z\) by
+    \begin{equation}
+        \varepsilon^z \partial_z + \varepsilon^{\overbar{z}} \partial_{\overbar{z}} = -\sum_{n \in \integers} (c_n l_n + \overbar{c}_n \overbar{l}_n)
+    \end{equation}
+    where the \(l_n\) and \(\overbar{l}_n\) are the differential operators
+    \begin{equation}
+        l_n = -z^{n + 1} \partial_z, \qand \overbar{l}_n = -\overbar{z}^{n + 1} \partial_{\overbar{z}}.
+    \end{equation}
+    These operators are such that \(\{l_n + \overbar{l}_n, i(l_n - \overbar{l}_n)\}_{n \in \integers}\) forms a (real) basis for \(V_0\).
+    
+    A quick calculation shows that \(V_0\) is closed under the commutator.
+    As such \(V_0\) is an (infinite-dimensional) real Lie algebra.
+    The commutation relations of the basis vectors \(l_n + \overbar{l}_n\) and \(i(l_n - \overbar{l}_n)\) can be computed in a straightforward way, but they're somewhat complicated.
+    It is nicer to state the commutation relations for \(l_n\) and \(\overbar{l}_n\) separately.
+    We can then reconstruct the commutation relations for \(l_n + \overbar{l}_n\) using linearity.
+    To reconstruct the commutation relations for \(i(l_n - \overbar{l}_n)\) we need to allow complex scalars, which results in us looking at the complexification \(V_0^{\complex} \isomorphic V_0 \oplus iV_0 \isomorphic V_0 \otimes_{\reals} \complex\).
+    The corresponding Lie algebra then has the (complex) basis \(\{l_n, \overbar{l}_n\}_{n \in \integers}\).
+    These satisfy the commutation relations
+    \begin{equation}
+        \bracket{l_n}{l_m} = (n - m)l_{n + m}, \quad \bracket{\overbar{l}_n}{\overbar{l}_m} = (n - m) \overbar{l}_{n + m}, \qand \bracket{l_n}{\overbar{l}_m} = 0.
+    \end{equation}
+    We see from this that what we actually have is that \(V_0^{\complex}\) consists of two commuting copies of the Lie algebra \(\{l_n\}_{n \in \integers}\), where the second copy is marked with a bar to distinguish it.
+    From basic Lie theory we recognise that this means that \(V_0^{\complex}\) may be written as a direct sum
+    \begin{equation}
+        V_0^{\complex} = \Witt \oplus \Witt.
+    \end{equation}
+    Here \(\Witt\) is the \defineindex{Witt} algebra, which abstractly is defined as the complex Lie algebra generated by \(\{l_n\}_{n \in \integers}\) with the commutation relation \(\bracket{l_n}{l_m} = (n - m)l_{n + m}\).
+    Less abstractly the Witt algebra is the algebra of derivations of the space of Laurent polynomials \(\complex[z, z^{-1}]\).
+    
+    Restricting to just the Witt algebra briefly we can look at the subalgebra generated by \(\{l_{-1}, l_0, l_1\}\).
+    This subalgebra is isomorphic to \(\specialLinearLie(2, \complex)\), which can be shown by taking the basis
+    \begin{equation}
+        e_{-1} = 
+        \begin{pmatrix}
+            0 & 0\\
+            -1 & 0
+        \end{pmatrix}
+        = -f, 
+        , \quad e_0 = \frac{1}{2}
+        \begin{pmatrix}
+            -1 & 0\\
+            0 & 1
+        \end{pmatrix}
+        = -\frac{1}{2}h, \qand e_1 = 
+        \begin{pmatrix}
+            0 & 1\\
+            0 & 0
+        \end{pmatrix}
+        = e
+    \end{equation}
+    for \(\specialLinearLie(2, \complex)\), and we can then show, either from the matrices or from the standard commutation relations of \(\{h, e, f\}\), that we have \(\bracket{e_n}{e_m} = (n - m)e_{n + m}\).
+    
+    Considering both Witt algebras now, still restricting to \(n = -1, 0, 1\), we can compute the following exponentials for \(a, b, c \in \complex\):
+    \begin{align}
+        \e^{-bl_{-1} - \overbar{b}\overbar{l}_{-1}}z = \e^{b \partial_z}z &= z + b\\
+        \e^{-al_0 - \overbar{a}\overbar{l}_0}z = \e^{az\partial_z}z = \e^az\\
+        \e^{cl_1 + \overbar{c}\overbar{l}_1}z = \e^{-cz^2\partial_z} = \frac{z}{cz + 1}
+    \end{align}
+    The first two expressions here are standard using the power series, the third follows by summing the power series using the geometric series when \(\abs{zc} < 1\), and then analytically continuing to \(\complex \setminus \{-1/c\}\).
+    We see that we generate the translations, rotations/dilations (since \(a \in \complex\) so \(\e^a \in \complex^{\times}\)) and special conformal transformations from this subalgebra of \(V_0^{\complex}\).
+    By moving to the universal enveloping algebra, allowing us to consider products such as \(l_0l_1\), we get composites of these conformal transformations upon exponentiation, and thus we generate all M\"obius transformations this way.
+    
+    
+    
     
     
     

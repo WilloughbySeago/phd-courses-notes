@@ -1,0 +1,249 @@
+% !TeX program = lualatex
+\documentclass[fleqn]{NotesClass}
+
+\strictpagecheck
+
+\usepackage{csquotes}
+\usepackage{tensor}
+
+\usepackage{tikz}
+\usetikzlibrary{external}
+\tikzexternalize[prefix=tikz-external/]
+
+\usepackage{tikz-cd}
+
+\usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes from differential topology},pdfkeywords={differential topology, manifold, tangent space, homology, cohomology},pdfsubject={Differential Topology}]{hyperref}  % Should be loaded second last (cleveref last)
+\colorlet{hyperrefcolor}{blue!60!black}
+\hypersetup{colorlinks=true, linkcolor=hyperrefcolor, urlcolor=hyperrefcolor}
+\usepackage[
+capitalize,
+nameinlink,
+noabbrev
+]{cleveref} % Should be loaded last
+
+% My packages
+\usepackage{NotesBoxes}
+\usepackage{NotesMaths2}
+
+\setmathfont[range={\int, \oint, \otimes, \oplus, \bigotimes, \bigoplus}]{Latin Modern Math}
+
+
+% Highlight colour
+\definecolor{highlight}{HTML}{710D78}
+\definecolor{my blue}{HTML}{2A0D77}
+\definecolor{my red}{HTML}{770D38}
+\definecolor{my green}{HTML}{14770D}
+\definecolor{my yellow}{HTML}{E7BB41}
+
+% Title page info
+\title{Differential Topology}
+\author{Willoughby Seago}
+\date{October 10th, 2024}
+\subtitle{Notes from}
+\subsubtitle{SMSTC}
+\renewcommand{\abstracttext}{These are my notes from the SMSTC course \emph{Differential Topology} taught by Proff Murad Alim. These notes were last updated at \printtime{} on \today{}.}
+
+% Commands
+% Maths
+\renewcommand{\dl}{\symrm{d}}
+\newcommand{\id}{\symrm{id}}
+\newcommand{\atlas}{\symcal{A}}
+\newcommand{\torus}{\symbb{T}}
+\newcommand{\isomorphic}{\cong}
+
+\begin{document}
+    \frontmatter
+    \titlepage
+    \innertitlepage{}
+    \tableofcontents
+    % \listoffigures
+    \mainmatter
+    
+    \chapter{Smooth Manifolds}
+    \section{Definitions in \texorpdfstring{\(\reals^n\)}{Rn}}
+    \begin{dfn}{Smooth Map}{dfn:smooth map euclidean spaces}
+        Let \(U \subseteq \reals^m\) and \(V \subseteq \reals^n\) be open sets\footnote{Here, and throughout, we assume the standard topology on Euclidean space, \(\reals^m\), so a set, \(U\), is open if and only if every point \(x \in U\) there is an open ball centred on \(x\) contained entirely within \(U\).}.
+        A map \(f \colon U \to V\) is \define{smooth}\index{smooth!map of Euclidean spaces} is called \defineindex{smooth} if it is infinitely differentiable.
+        That is, all partial derivatives of all orders\footnote{we take \(0 \in \naturals\)},
+        \begin{equation}
+            \partial^\alpha f = \frac{\partial^{\alpha_1 + \dotsb + \alpha_k}}{\partial x_1^{\alpha_1} \dotsm \partial x_k^{\alpha_k}}, \qqwhere \alpha = (\alpha_1, \dotsc, \alpha_k) \in \naturals^{k}
+        \end{equation}
+        exist and are continuous.
+    \end{dfn}
+    
+    \begin{dfn}{}{}
+        Let \(U \subseteq \reals^m\) and \(V \subseteq \reals^n\) be open sets.
+        For a smooth map \(f = (f_1, \dotsc, f_n) \colon U \to V\) and a point \(x \in U\) the \defineindex{derivative}, \defineindex{differential}, or \defineindex{pushforward} of \(f\) at \(x\) is the linear map
+        \begin{equation}
+            \dl f_x = \dl f(x) \colon \reals^m \to \reals^n
+        \end{equation}
+        defined by acting on \(\xi \in \reals^m\) according to
+        \begin{equation}
+            \dl f_x(\xi) = \dl(f)(x)\xi = \diff{}{t}\bigg|_{t = 0} f(x + t\xi) = \lim_{t \to 0} \frac{f(x + t\xi) - f(x)}{t}.
+        \end{equation}
+    \end{dfn}
+    
+    Fixing coordinates \(x = (x^1, \dotsc, x^m)\) the differential is represented by the Jacobian matrix
+    \begin{equation}
+        (\dl f(x))_{ij} = \left( \diffp{f_i}{x^j} \right) = 
+        \begin{pmatrix}
+            \diffp{f_1}{x^1}(x) & \dots & \diffp{f_1}{x^m}(x)\\
+            \vdots & \ddots & \vdots\\
+            \diffp{f_n}{x^1}(x) & \dots & \diffp{f_n}{x^m}(x)
+        \end{pmatrix}
+        \in \matrices[n]{m}{\reals}.
+    \end{equation}
+    
+    The differential is defined in terms of a derivative of a function \(\reals \to \reals\) (that function is \(t \mapsto f(x + t\xi)\)), and as such has many of the properties of this derivative, including linearity and the chain rule.
+    That is, if \(U \subseteq \reals^m\), \(V \subseteq \reals^n\), and \(W \subseteq \reals^p\) are open and \(f \colon U \to V\) and \(g \colon V \to W\) are smooth then the differential of \(g \circ f \colon U \to W\) at \(x \in U\) is the linear map \(\dl (g \circ f)(x) \colon \reals^m \to \reals^p\) given by
+    \begin{equation}
+        \dl (g \circ f)(x) = \dl g(f(x)) \circ \dl f(x).
+    \end{equation}
+    
+    The identity map \(\id_U \colon U \to U\), given by \(x \mapsto x\), is smooth, its derivatives all vanish.
+    Thus, we have
+    \begin{equation}
+        \dl \id_U (x) = \diff{}{t} \bigg|_{t = 0} \id_U(x + t\xi) = \diff{}{t} \bigg|_{t = 0} (x + t\xi) = \xi,
+    \end{equation}
+    and so \(\dl \id_U(x) = \id_{\reals^n}\).
+    
+    If \(f \colon U \to V\) is a \defineindex{diffeomorphism} (smooth map with smooth inverse) then for \(x \in V\) we can use the above result to get
+    \begin{align}
+        \dl (f \circ f^{-1})(x) = \dl \id_U(x) = \id_{\reals^n}(x) = x,
+    \end{align}
+    and we can use the chain rule to get
+    \begin{equation}
+        \dl (f \circ f^{-1})(x) = \dl f(f^{-1}(x)) \circ \dl f^{-1}(x).
+    \end{equation}
+    Thus, we may conclude that
+    \begin{equation}
+        \dl f(f^{-1}(x)) \circ \dl f^{-1}(x) = \id_{\reals^n}
+    \end{equation}
+    which tells us that \(\dl f(x)\) is invertible, with inverse \(\dl f(f^{-1}(x))\).
+    This requires that \(m = n\).
+    
+    \section{Smooth Manifold}
+    A smooth manifold is a space that locally looks like \(\reals^m\) for some fixed \(m\).
+    
+    \begin{dfn}{Smooth Manifold}{}
+        A \defineindex{smooth manifold}, \((M, \atlas)\), of dimension \(m \in \naturals\), is a topological space, \(M\), equipped with an open cover, \(\{U_\alpha\}_{\alpha \in A}\) for some indexing set \(A\).
+        This open cover must be equipped with a collection of homeomorphisms, \(\varphi_\alpha \colon U_\alpha \to \Omega_{\alpha}\), where \(\Omega_\alpha \subseteq \reals^m\) is open.
+        These maps must be such that for any \(\alpha, \beta \in A\) the \defineindex{transition map}
+        \begin{equation}
+            \varphi_{\beta \alpha} \coloneq \varphi_\beta \circ \varphi_\alpha^{-1} \colon \varphi_\alpha(U_\alpha \cap U_\beta) \to \varphi_\beta(U_\alpha \cap U_\beta)
+        \end{equation}
+        is smooth\footnote{Note that this is a map between open subsets of \(\reals^m\), so \cref{dfn:smooth map euclidean spaces} applies}.
+        We call the pair \((U_\alpha, \varphi_\alpha)\) a \defineindex{coordinate chart}, and the collection \(\atlas = \{(U_\alpha, \varphi_\alpha)\}_{\alpha \in A}\) is called an atlas.
+    \end{dfn}
+    
+    The requirement that the transition maps are diffeomorphisms is why we call these manifolds \emph{smooth}.
+    If we just require that they by homeomorphisms then we get the notion of a topological manifold, and if we require they're \(k\)-times differentiable we get a \(C^k\)-manifold.
+    It's also possible to replace \(\reals\) with \(\complex\) in all of our previous definitions and consider complex manifolds.
+    This is mostly done when we then require that the transition maps are holomorphic, and we get a holomorphic manifold.
+    
+    It can be shown that \(U \subseteq M\) is open if and only if \(\varphi_\alpha(U \cap U_\alpha)\) is open in \(\reals^m\) for all \(\alpha \in A\).
+    Thus, the charts uniquely determine the topology on \(M\) and vice versa.
+    
+    If we have a homeomorphism \(\psi \colon V \to \Omega\) for \(V \subseteq M\) and \(\Omega \subseteq \reals^m\) open then we call \((\psi, V)\) \defineindex{compatible} with the atlas \(\atlas\) if the transition map \(\varphi_\alpha \circ \varphi^{-1} \colon \psi(V \cap U_\alpha) \to \varphi_\alpha(U \cap U_\alpha)\) is a diffeomorphism for all \(\alpha \in A\).
+    
+    We call the atlas \(\atlas\) \define{maximal}\index{maximal atlas} if it contains every chart that is compatible with all of its members.
+    It can be shown that every atlas is contained in a unique maximal atlas, \(\overbar{\atlas}\).
+    Sometimes it's useful to assume that an atlas is maximal, and we can always do this because adding compatible charts to an atlas doesn't change the smooth structure of the manifold.
+    We can extend the notion of compatibility to whole atlases, and we say that two atlases are compatible if their union is an atlas, and in this case both induce the same smooth structure on \(M\), and the maximal atlas containing them is the same.
+    
+    \begin{exm}{}{}
+        \begin{itemize}
+            \item \item \(\reals^m\) is a manifold of dimension \(m\) and it has an atlas given by the single chart \((\reals^m, \id_{\reals^m})\).
+            \item The sphere, \(S^n = \{(x_1, \dotsc, x_{n + 1}) \in \reals^{n+1} \mid x_1^2 + \dotsb + x_{n+1}^2 = 1\}\), is a manifold of dimension \(n\), and it is covered by two charts \((S^n \setminus \{(1, 0, \dotsc, 0)\}, s_+)\) and \((S^n \setminus \{(-1, 0, \dotsc, 0)\}, s_-)\) where \(s_+\) and \(s_-\) are stereographic projection from the points \((\pm 1, 0, \dotsc, 0)\).
+            \item The \(m\)-torus, \(\torus^m \coloneqq \reals^m/\integers^m\) (with the quotient topology, and \(\integers^m\) has the discrete topology, which is also the subset topology as a subset of \(\reals^m\) with the standard topology) is a manifold.
+            Two vectors \(x, y \in \reals^m\) project to the same point in \(\torus^m\) if their difference, \(x - y\), is an integer vector (that is, it's in \(\integers^m\)).
+            Denote the projection by \(\pi \colon \reals^m \twoheadrightarrow \torus^m\), and this acts on \(x \in \reals^m\) by \(\pi(x) = [x] = x + \integers^m\).
+            A set \(U \subseteq \torus^m\) is open if and only if \(\pi^{-1}(U)\) is open in \(\reals^m\) (this is just the definition of the quotient topology).
+            An atlas on \(\torus^m\) is given by taking the \(\reals^m\)-indexed open cover
+            \begin{equation}
+                U_\alpha = \{[x] \mid x \in \reals^m \text{ and } \abs{x - \alpha} < 1/2\},
+            \end{equation}
+            and the corresponding coordinate maps \(\varphi_\alpha \colon U_\alpha \to \reals^m\) defined by
+            \begin{equation}
+                \varphi_\alpha([x]) = x
+            \end{equation}
+            for \(x \in \reals^m\) with \(\abs{x - \alpha} < 1/2\).
+            This is well defined since by the construction of the \(U_\alpha\) there is only one \(x \in \reals^m\) satisfying this distance constraint.
+            It can be shown that the transition maps are translation by an integer vector.
+            One way to think of the quotient torus \(\reals^m/\integers^m\) is as a fixed \(1 \times 1 \times \dotsb \times 1\) cube in \(\reals^m\) with periodic boundary conditions, which we can view as the cube repeating in all directions forever.
+            Then the transition maps just move us from one cube to the same point in some other cube.
+            Finally, note that the torus may equivalently be defined as \(\torus^m = S^1 \times \dotsb \times S^1\) with \(m\) copies of the circle, \(S^1\), and the product topology.
+            \item Fixing a smooth function \(f \colon U \to \reals^n\) from some open subset \(U \subseteq \reals^m\) the curve \(\{(x, f(x)) \in U \times \reals^n \mid x \in U\}\) is a smooth manifold.
+            \item \(\generalLinear(n, \reals) \coloneqq \{A \in \matrices{n}{\reals} \mid \det A \ne 0\}\) is a smooth manifold.
+            One way to show this is to realise that \(\generalLinear(n, \reals) = \det^{-1}(\reals \setminus \{0\})\).
+            That is, \(\generalLinear(n, \reals)\) is the preimage of the set \(\reals \setminus \{0\}\) under the determinant.
+            The determinant is a smooth map \(\reals^{n^2} \to \reals\) (note that \(\matrices{n}{\reals} \isomorphic \reals^{n^2}\) as vector spaces), since the determinant is just a polynomial in the entries in the matrix, which are the components of the vectors in \(\reals^{n^2}\).
+            The set \(\reals \setminus \{0\}\) is open.
+            It is known that the preimage of an open set under a smooth map is open.
+            Thus, we may consider \(\generalLinear(n, \reals) \subseteq \reals^{n^2}\) as an open subset, and it is known that any open subset of \(\reals^k\) is a manifold (more generally, an open subset of a manifold is again a manifold).
+        \end{itemize}
+    \end{exm}
+    
+    One important thing about manifolds is that they have a well defined notion of dimension.
+    If some space is locally homeomorphic to \(\reals^m\) in some area, but locally homeomorphic to \(\reals^n\) in another and \(m \ne n\) then it cannot be a manifold.
+    For example, consider a pair of lines that cross at a point.
+    Each line is a manifold on its own, but their union isn't, since we can't really define dimension in a neighbourhood of the intersection.
+    
+    \section{Smooth Maps}
+    \begin{dfn}{Smooth Map}{}
+        Let \((M, \{(U_\alpha, \varphi_\alpha)\}_{\alpha \in A})\) and \((N, \{(V_\beta, \psi_\beta)\}_{\beta \in B})\) be smooth manifolds of dimension \(m\) and \(n\) respectively.
+        A \define{smooth map}\index{smooth map!between manifolds}, \(f \colon M \to N\), is a function such that for all charts \((U_\alpha, \varphi_\alpha)\) and \((V_\beta, \psi_\beta)\) the map \(\psi_\beta \circ f \circ \varphi_\alpha^{-1}\) is smooth as a map between the open sets \(\varphi_\alpha(U_\alpha) \subseteq \reals^m\) and \(\psi_\beta(V_\beta) \subseteq \reals^n\).
+    \end{dfn}
+    
+    The idea here is that we can pass smoothness of a map between manifolds to smoothness of corresponding patches of Euclidean space, where we can use \cref{dfn:smooth map euclidean spaces}.
+    The important thing here is that we have the commutative diagram
+    \begin{equation}
+        \tikzexternaldisable
+        \begin{tikzcd}[column sep=small]
+            & U_\alpha \arrow[rrr, "f"] \arrow[d, "\varphi_\alpha"'] &&& V_\beta \arrow[d, "\psi_\beta"]\\
+            \reals^m \arrow[r, phantom, "\supseteq"] & \varphi_\alpha(U_\alpha) \arrow[rrr, "\psi_\beta \circ f \circ \varphi_\alpha^{-1}"'{yshift=-0.05cm}] &&& \psi_\beta(V_\beta) \arrow[r, phantom, "\subseteq"] & \reals^n
+        \end{tikzcd}
+        \tikzexternalenable
+    \end{equation}
+    
+    \section{Tangent Space}
+    The tangent space to a manifold is most immediate when we view that manifold as a subset of \(\reals^n\).
+    For example, the tangent space to the circle, \(S^1\), at some point \(p\) is just the tangent line to that point.
+    This line is a copy of \(\reals\), and so comes with lots of structure, and in particular is a vector space.
+    If we go up a dimension we can consider the sphere, \(S^2\), and the tangent space at some point \(p\) is the tangent plane at that point.
+    This plane is a copy of \(\reals^2\), and is, again, a vector space.
+    
+    The formal definition of the tangent space just formalises this by defining the tangent space to be the space of all tangent curves through \(p\).
+    
+    \begin{dfn}{Tangent Space}{}
+        Let \((M, \{(U_\alpha, \varphi_\alpha)\}_{\alpha \in A})\) be a smooth manifold.
+        Fix some point \(p \in M\).
+        The tangent space of \(M\) at \(p\) is the quotient space
+        \begin{equation}
+            T_pM \coloneqq \bigsqcup_{\alpha \text{ s.t. }p \in U_\alpha} \reals^m / {\sim}.
+        \end{equation}
+        Here we use the disjoint union, but we could instead use the normal union and explicitly label each point in \(\reals^m\) with \(\alpha\) from the corresponding term in the union:
+        \begin{equation}
+            T_pM = \bigsqcup_{\alpha \text{ s.t. } p \in U_\alpha} (\{\alpha\} \times \reals^m)/{\sim}.
+        \end{equation}
+        Then the corresponding equivalence relation is
+        \begin{equation}
+            (\alpha, \xi) \sim (\beta, \eta) \iff \dl(\varphi_\beta \circ \varphi_\alpha^{-1})(x)\xi = \eta, \ x = \varphi_\alpha(p).
+        \end{equation}
+        That is, two pairs \((\alpha, \xi)\) and \((\beta, \eta)\) are equivalent if one is the pushforward of the other along the transition maps.
+        The equivalence class of \((\alpha, \xi) \in A \times \reals^m\) with \(p \in U_\alpha\) is denoted \([\alpha, \xi]_p\).
+    \end{dfn}
+    
+    This quotient space, \(T_pM\), is a real vector space of dimension \(m\).
+
+    % Appdendix
+%    \appendixpage
+%    \begin{appendices}
+%        
+%    \end{appendices}
+%
+%	\backmatter
+%	\renewcommand{\glossaryname}{Acronyms}
+%	\printglossary[acronym]
+%	\printindex
+\end{document}
