@@ -79,6 +79,7 @@ noabbrev
 \DeclareMathOperator{\Der}{Der}
 \DeclareMathOperator{\Perm}{Perm}
 \newcommand{\centre}{\symfrak{z}}
+\DeclareMathOperator{\rad}{rad}
 
 \begin{document}
 	\frontmatter
@@ -2109,14 +2110,90 @@ noabbrev
         \end{proof}
     \end{lma}
     
-    \begin{lma}{}{}
+    \begin{lma}{}{lma:i and g/i solvable implies g solvable}
         If \(\lie{g}\) is a Lie algebra with an ideal \(\lie{i}\) such that \(\lie{i}\) is solvable and \(\lie{g}/\lie{i}\) is solvable then \(\lie{g}\) is solvable.
+        \begin{proof}
+            \Step{\((\lie{g}/\lie{i})^n \isomorphic (\lie{g}^n + \lie{i})/\lie{i}\)}
+            We prove this by induction on \(n\).
+            The base case, \(n = 0\), is that \(\lie{l}/\lie{i} \isomorphic (\lie{g} + \lie{i})/\lie{i}\).
+            This is true because the second isomorphism theorem tells us that \((\lie{g} + \lie{i})/\lie{i} \isomorphic \lie{l}/(\lie{g} \cap \lie{i})\), and since \(\lie{i} \subseteq \lie{g}\) we have \(\lie{g} \cap \lie{i} = \lie{i}\), so we have \((\lie{g} + \lie{i})/\lie{i} \isomorphic \lie{l}/\lie{i}\).
+            
+            For the inductive step suppose the result holds for some \(k \in \naturals\), that is, \((\lie{g}/\lie{i})^k \isomorphic (\lie{g}^k + \lie{i})/\lie{i}\).
+            Then we have
+            \begin{alignat}{2}
+                (\lie{g}/\lie{i})^{k + 1} &= ((\lie{g}/\lie{i})^k)' \qquad && \text{definition of derived subalgebra} \notag\\
+                &\isomorphic ((\lie{g}^k + \lie{i})/\lie{i})' \qquad && \text{induction hypothesis}\\
+                &\isomorphic ((\lie{g}^k + \lie{i})' + \lie{i})/\lie{i} \qquad && \text{base case}\\
+                &\isomorphic (\lie{g}^{k + 1} + \lie{i}' + \lie{i})/\lie{i} \qquad && \lie{i}' \subseteq \lie{i}\\
+                &= (\lie{g}^{k + 1} + \lie{i})/\lie{i}
+            \end{alignat}
+            and the result holds for all \(n \in \naturals\).
+            
+            \Step{\((\lie{g}^n)^m = \lie{g}^{n + m}\)}
+            We prove this by induction on \(m\).
+            For the base case we take \(m = 1\), then we have \((\lie{g}^n)^m = (\lie{g}^n)^1 = (\lie{g}^n)' = \lie{g}^{n+1}\) by definition.
+            Now suppose that for some \(k \in \naturals\) we have \((\lie{g}^n)^k = \lie{g}^{n + k}\).
+            Then consider \(k + 1\), we have \((\lie{g}^n)^{k + 1} = ((\lie{g}^n)^k)' = (\lie{g}^{n + k})' = \lie{g}^{n + k + 1}\), and so the result holds for all \(m \in \naturals\).
+            
+            \Step{\(\lie{g}\) is Solvable}
+            By assumption \(\lie{i}\) and \(\lie{g}/\lie{i}\) are solvable, so there exist \(M, N \in \naturals\) such that \(\lie{i}^M = 0\) and \((\lie{g}/\lie{i})^N = 0\).
+            We therefore have \(0 = (\lie{g}/\lie{i})^N \isomorphic (\lie{g}^N + \lie{i})/\lie{i}\).
+            From this it follows that \(\lie{g}^N + \lie{i} \subseteq \lie{i}\), because this is the condition for a quotient to be zero.
+            Thus, we must have \(\lie{g}^N \subseteq \lie{i}\).
+            Taking the \(M\)th derived subalgebra of each side we have \((\lie{g}^N)^M \subseteq \lie{i}^M = 0\), and thus \(\lie{g}^{N + M} = (\lie{g}^N)^M = 0\), so \(\lie{g}\) is solvable.
+        \end{proof}
     \end{lma}
     
     \begin{lma}{}{}
         If \(\lie{g}\) is a Lie algebra with solvable ideals \(\lie{i}\) and \(\lie{j}\) then \(\lie{i} + \lie{j}\) is a solvable ideal of \(\lie{g}\).
+        \begin{proof}
+            Since \(\lie{i}\) and \(\lie{j}\) are solvable there exist \(M, N \in \naturals\) such that \(\lie{i}^N = 0\) and \(\lie{j}^M = 0\).
+            By the second isomorphism theorem we have \((\lie{i} + \lie{j})/\lie{j} \isomorphic \lie{i}/(\lie{i} \cap \lie{j})\), and taking the \(M\)th derived subalgebra of each side we get \(((\lie{i} + \lie{j})/\lie{j})^M = (\lie{i}/(\lie{i} \cap \lie{j}))^M\).
+            By the first step in the proof of \cref{lma:i and g/i solvable implies g solvable} we know that \((\lie{i} / (\lie{i} \cap \lie{j}))^M \isomorphic (\lie{i}^M + (\lie{i} \cap \lie{j}))/(\lie{i} \cap \lie{j}) = (0 + (\lie{i} \cap \lie{j}))/(\lie{i} \cap \lie{j}) = (\lie{i} \cap \lie{j})/(\lie{i} \cap \lie{j}) = 0\).
+            Thus, \(((\lie{i} + \lie{j})/\lie{j})^M = 0\), so \((\lie{i} + \lie{j})/\lie{j}\) is solvable.
+            Hence, by \cref{lma:i and g/i solvable implies g solvable} we know that \(\lie{i} + \lie{j}\) is solvable. 
+        \end{proof}
     \end{lma}
     
+    \begin{dfn}{Semisimple Lie Algebra}{}
+        A Lie algebra, \(\lie{g}\), is semisimple if it contains no proper solvable ideals.
+    \end{dfn}
+    
+    We immediately see that every simple Lie algebra is semisimple, since a simple Lie algebra contains no nonzero proper ideals, so it certainly doesn't contain any solvable ideals.
+    Note that this is not true if we relax the definition of simple Lie algebras to allow abelian Lie algebras.
+    
+    \begin{lma}{}{}
+        Let \(\lie{g}\) be a finite dimensional Lie algebra.
+        Then there exists a maximal (with respect to inclusion) solvable ideal of \(\lie{g}\) called the \defineindex{radical} of \(\lie{g}\), denoted \(\rad \lie{g}\).
+        \begin{proof}
+            Let \(\{\lie{i}_{\alpha}\}_{\alpha \in A}\) be the collection of all solvable ideals.
+            Define
+            \begin{equation}
+                \lie{i} = \sum_{\alpha \in A} \lie{i}_\alpha = \bigg\{\sum_{\alpha \in A} i_\alpha \mid i_\alpha \in \lie{i}_\alpha \text{ and } i_\alpha = 0 \text{ for all but finitely many } \alpha \in A\}.
+            \end{equation}
+            This is a subspace of \(\lie{g}\) since it is a sum of subspaces.
+            
+            We claim that we actually have
+            \begin{equation}
+                \lie{i} = \lie{i}_{\alpha_1} + \dotsb + \lie{i}_{\alpha_n}
+            \end{equation}
+            for some finite indexing subset \(\{\alpha_1, \dotsc, \alpha_n\} \subseteq A\).
+            This is the case because \(\lie{g}\) is finite dimensional, so \(\lie{i}\) must also be finite dimensional.
+            If \(\lie{i} = \lie{i}_{\alpha_1}\) for some \(\alpha_1 \in A\) then we are done.
+            If this is not the case then we can find some \(\alpha_2 \in A\) such that \(\lie{i}_{\alpha_1} + \lie{i}_{\alpha_2} \ne \lie{i}_{\alpha_1}\).
+            If \(\lie{i} = \lie{i}_{\alpha_1} + \lie{i}_{\alpha_2}\) we are done.
+            Iterating this process we see that since we get a new subspace each time we add an \(\lie{i}_{\alpha_k}\) and we clearly have \(\lie{i}_{\alpha_1} + \dotsb \lie{i}_{\alpha_{k-1}} \subseteq \lie{i}_{\alpha_1} + \dotsb + \lie{i}_{\alpha_{k-1}} + \lie{i}_{\alpha_k}\) the dimension must increase at each step, and thus this process must terminate for \(\lie{i}\) to be finite dimensional.
+            
+            By construction any solvable ideal, \(\lie{j}\), can be found in \(\lie{i}\), since we have \(\lie{j} = \lie{i}_{\alpha}\) for some \(\alpha \in A\) and we therefore have terms of the form \(j = 0 + \dotsb + 0 + j + 0 + \dotsb + 0 \in \lie{i}\) for each \(j \in \lie{j}\).
+            Thus, \(\lie{i}\) is a maximal subspace of \(\lie{g}\) containing all solvable ideals.
+            
+            We now need only show that \(\lie{i}\) is an ideal.
+            That it is a subalgebra follows by linearity of the bracket and the fact that \(\lie{i}\) is defined as a sum of subalgebras.
+            That it is an ideal follows because each ideal in the sum defining \(\lie{i}\) has the absorbing property, and so the whole sum has the absorbing property.
+        \end{proof}
+    \end{lma}
+    
+    This result tells us that \(\lie{g}\) is semisimple if and only if \(\rad \lie{g} = 0\).
     
     
     % TODO: add reference to definition of solvable Lie alg in remark (TODO 1)
