@@ -2044,7 +2044,7 @@ noabbrev
             \lie{g}_0 = \lie{g}, \quad \lie{g}_1 = \bracket{\lie{g}}{\lie{g}}, \qand \lie{g}_{k+1} = \bracket{\lie{g}}{\lie{g}_k}.
         \end{equation}
         
-        A Lie algebra is \defineindex{nilpotent} if its lower central series eventually terminates with \(0\).
+        A Lie algebra is \define{nilpotent}\index{nilpotent!Lie algebra} if its lower central series eventually terminates with \(0\).
         That is, there is some \(n \in \naturals\) such that \(\lie{g}_n = 0\).
     \end{dfn}
     
@@ -2194,7 +2194,173 @@ noabbrev
     \end{lma}
     
     This result tells us that \(\lie{g}\) is semisimple if and only if \(\rad \lie{g} = 0\).
+    One thing we can say is that \(\lie{g}/\rad \lie{g}\) is semisimple.
+    This is because an ideal of the quotient \(\lie{g}/\rad \lie{g}\) is of the form \(\lie{i}/\rad \lie{g}\) where \(\lie{i} \supseteq \rad \lie{g}\) is an ideal of \(\lie{i}\).
+    Supposing that \(\lie{i}/\rad\lie{g}\) is solvable, and knowing that \(\rad\lie{g}\) is solvable we must have that \(\lie{i}\) is solvable, meaning that \(\lie{i} \subseteq \rad\lie{g}\).
+    Thus, we have \(\lie{i} = \rad\lie{g}\), and so \(\lie{i}/\rad\lie{g} = \lie{i}/\lie{i} = 0\).
+    Thus, there are no nontrivial proper solvable ideals of \(\lie{g}/\rad\lie{g}\), so \(\lie{g}/\rad\lie{g}\) is semisimple.
     
+    \section{Engel's Theorem}
+    Let \(V\) be a vector space.
+    A \define{nilpotent}\index{nilpotent!endomorphism} of \(V\) is a linear map \(\varphi \colon V \to V\) such that there exists some \(N \in \naturals\) such that \(\varphi^N\) is the zero map.
+    That is, \(\varphi^N(v) = 0\) for all \(v \in V\).
+    
+    Let \(\lie{g}\) be a Lie algebra.
+    An element, \(X\), of \(\lie{g}\) is called \define{\(\symbf{\ad}\)-nilpotent}\index{ad-nilpotent@\(\ad\)-nilpotent}\index{nilpotent!element of a Lie algebra} if \(\ad_X\) is a nilpotent endomorphism of \(\lie{g}\).
+    
+    Before we can prove the big result of this section, Engel's theorem, we need a couple of lemmas.
+    The proof of the first is quite a lot of algebra, manipulating various sums, the details of the proof aren't important, so I'd suggest skipping it.
+    
+    \begin{lma}{}{lma:power of the adjoint action}
+        Let \(A\) be an associative algebra with the Lie algebra structure given by the commutator.
+        Then for \(n \in \naturals\) and \(X, Y \in A\) we have
+        \begin{equation}
+            \ad_X^n(Y) = \sum_{k=0}^n (-1)^k \binom{n}{k} x^{n-k}yx^k.
+        \end{equation}
+        \begin{proof}
+            The proof is by induction on \(n\).
+            For \(n = 1\) we have
+            \begin{align}
+                \sum_{k=0}^1 (-1)^{k} \binom{2}{k} X^{1 - k}YX^k &= (-1)^0 \binom{2}{0}XY + (-1)^1 \binom{2}{1}YX\\
+                &= XY - YX\\
+                &= \bracket{X}{Y}\\
+                &= \ad_X^1(Y).
+            \end{align}
+            Now suppose that the result holds for some \(m \in \naturals\).
+            Consider the following calculation
+            \begin{align}
+                \ad_X^{m + 1}(Y) &= \bracket{x}{\ad_X^m(Y)}\\
+                &= \bracket*{X}{\sum_{k=0}^m (-1)^k \binom{m}{k} X^{m-k}YX^k}\\
+                &= \sum_{k=0}^m (-1)^k \binom{m}{k} \bracket{X}{X^{m-k}YX^k}\\
+                &= \sum_{k=0}^m (-1)^k \binom{m}{k} (XX^{m-k}YX^k - X^{m-k}YX^kX)\\
+                &= \sum_{k=0}^m (-1)^k \binom{m}{k} (X^{m-k+1}YX^k - X^{m-k}YX^{k+1})\\
+                &= \sum_{k=0}^m (-1)^k \binom{m}{k} X^{m-k+1}YX^k - \sum_{k=0}^m (-1)^k \binom{m}{k} X^{m-k}YX^{k+1}. \notag
+            \end{align}
+            We can reindex the second sum so that \(k\) runs from \(1\) to \(m + 1\).
+            To do so we replace each \(k\) in the second sum with \(k - 1\):
+            \begin{equation}
+                \sum_{k=0}^m (-1)^k \binom{m}{k} X^{m-k}YX^{k+1} = \sum_{k=1}^{m+1} (-1)^{k-1} \binom{m}{k-1} X^{m-k+1}YX^k. 
+            \end{equation}
+            Thus, we have
+            \begingroup
+            \allowdisplaybreaks
+            \begin{align}
+                \ad_X^{m+1}(Y) &= \sum_{k=0}^m (-1)^k \binom{m}{k} X^{m-k+1}YX^k\\
+                &\quad - \sum_{k=1}^{m+1} (-1)^{k-1} \binom{m}{k-1} X^{m-k+1}YX^k \notag\\
+                &= (-1)^0 \binom{m}{0} X^{m+1}YX^0 + \sum_{k=1}^m (-1)^k \binom{m}{k} X^{m-k+1}YX^k \notag\\
+                &\quad- \sum_{k-1}^m (-1)^{k-1}\binom{m}{k-1}X^{m-k-1}YX^k - (-1)^m \binom{m}{m} X^0YX^{m+1} \notag\\
+                &= X^{m+1}Y + \sum_{k=1}^m (-1)^k \binom{m}{k} X^{m-k+1}YX^k\\
+                &\quad- \sum_{k-1}^m (-1)^{k-1}\binom{m}{k-1}X^{m-k-1}YX^k - (-1)^m YX^{m+1} \notag\\
+                &= \sum_{k=1}^m \left( (-1)^k \binom{m}{k} + (-1)^k \binom{m}{k - 1} \right) X^{m-k+1}YX^k \notag\\
+                &\quad+ X^{m+1}Y - (-1)^mYX^{m+1}\\
+                &= \sum_{k=1}^m (-1)^k \binom{m + 1}{k} X^{m-k+1}YX^k + X^{m+1}Y - (-1)^mYX^{m+1}\notag
+            \end{align}
+            \endgroup
+            where we've used the result
+            \begin{equation}
+                \binom{m}{k} + \binom{m}{k - 1} = \frac{m + 1}{k},
+            \end{equation}
+            which can be proved by manipulating some factorials.
+            We can then recognise that the two terms not in the sum are just the \(k = 0\) term and the \(k = m + 1\) term, so that we have
+            \begin{equation}
+                \ad_X^{m+1}(Y) = \sum_{k=0}^{m+1} (-1)^k \binom{m+1}{k} X^{m + 1 - k} Y X^k.
+            \end{equation}
+            So, the result holds for all \(n \in \naturals\).
+        \end{proof}
+    \end{lma}
+    
+    \begin{lma}{}{lma:nilpotent implies ad-nilpotent}
+        Let \(V\) be a finite dimensional vector space and let \(X \in \generalLinearLie(V)\) be a nilpotent endomorphism.
+        Then \(X\) is \(\ad\)-nilpotent.
+        Further, if \(n \in \naturals\) is the smallest positive integer making \(X^n = 0\) then \(2n + 1\) is such that \(\ad_X^{2n + 1} = 0\).
+        \begin{proof}
+            Let \(X \in \generalLinearLie(V)\) be a nilpotent endomorphism.
+            That is, there is some \(n \in \naturals\) such that \(X^n = 0\).
+            Since \(\generalLinearLie(V)\) is a Lie algebra under the commutator we may apply the results of \cref{lma:power of the adjoint action}.
+            For all \(X, Y \in \generalLinearLie(V)\) we have
+            \begin{equation}
+                \ad_X^{2n+1}(Y) = \sum_{k=0}^{2n+1} (-1)^k \binom{2n+1}{k} X^{2n + 1 - k}YX^k.
+            \end{equation}
+            This always vanishes, and we can show this by showing that every term must vanish:
+            \begin{itemize}
+                \item if \(k \ge n\) then the term contains \(X^k = 0\); or
+                \item if \(k < n\) then \(2n + 1 - k > n\) then the term contains \(X^{2n + 1 - k} = 0\).
+            \end{itemize}
+            So, every term is zero, and the whole expression vanishes.
+        \end{proof}
+    \end{lma}
+    
+    \begin{thm}{}{}
+        Let \(V\) be a finite dimensional vector space with \(V \ne 0\).
+        Let \(\nilpotentLie\) be a subalgebra of \(\generalLinearLie(V)\) such that all elements of \(\nilpotentLie\) are nilpotent endomorphisms of \(V\).
+        Then there exists some vector \(v \in V\) with \(v \ne 0\) such that \(\nilpotentLie \cdot v = 0\), that is, \(v \in \ker \varphi\) for all \(\varphi \in \nilpotentLie\).
+        \begin{proof}
+            The proof is by induction on \(\dim \nilpotentLie\).
+            
+            \Step{Base Case}
+            The base case is \(\dim \nilpotentLie = 1\).
+            In this case we know that \(\nilpotentLie = \complex X\) for some (in fact, any) \(X \in \nilpotentLie \setminus \{0\}\).
+            We know that \(X\) is nilpotent by assumption.
+            So, there exists some minimal \(n \in \naturals\) such that \(X^n = 0\), and since \(X \ne 0\) we know that \(n \ge 2\).
+            By the assumption that \(n\) is minimal we know that \(X^{n-1} \ne 0\).
+            Recalling that \(X^{n-1}\) is an element of \(\generalLinearLie(V)\) this means that there exists some \(w \in V\) such that \(X^{n-1}(w) \ne 0\).
+            However, we have that
+            \begin{equation}
+                X(X^{n-1}(w)) = X^n(W) = 0(w) = 0,
+            \end{equation}
+            and so \(X^{n-1}(w) \in \ker X\).
+            Thus, \(v = X^{n-1}(w)\) is as needed, and we are done with the base case.
+            
+            \Step{Induction}
+            Suppose that the result holds when \(\dim \nilpotentLie = k\) for some \(k \in \naturals\).
+            We first show that there is an ideal of \(\nilpotentLie\) of codimension 1.
+            That is, there is an ideal, \(\lie{l} \subseteq \nilpotentLie\) such that \(\dim \lie{l} = k - 1\).
+            
+            To do this we first suppose that \(\lie{l} \subseteq \nilpotentLie\) is a maximal proper subalgebra of \(\nilpotentLie\).
+            This makes sense because
+            \begin{itemize}
+                \item \(\nilpotentLie\) definitely has subalgebras, any one-dimensional subspace is a subalgebra; and
+                \item \(\dim \nilpotentLie\) is finite, and so the dimension of \(\lie{l}\) is bounded, and as such we can simply take all subalgebras and pick one with maximal dimension.
+            \end{itemize}
+            
+            Since \(\nilpotentLie\) is a vector space and \(\lie{l} \subseteq \nilpotentLie\) is a subspace we can form the quotient \emph{vector space} \(\nilpotentLie/\lie{l}\).
+            We do now know if this is a quotient \emph{Lie algebra}, since we only know that \(\lie{l}\) is a subalgebra, not that it's an ideal.
+            Consider the adjoint action of \(\nilpotentLie\) on itself.
+            We can restrict this to consider the action of \(\lie{l}\) on \(\nilpotentLie\), given by \(X \cdot Y = \bracket{X}{Y}\) for \(X \in \lie{l}\) and \(Y \in \nilpotentLie\).
+            This makes \(\nilpotentLie\) an \(\lie{l}\)-module.
+            Since \(\lie{l}\) is a subalgebra we have \(\bracket{\lie{l}}{\lie{l}} \subseteq \lie{l}\), which means that this action naturally gives the quotient vector space, \(\nilpotentLie/\lie{l}\), an \(\lie{l}\)-module structure given by
+            \begin{equation}
+                X \cdot (Y + \lie{l}) = \bracket{X}{Y} + \lie{l}
+            \end{equation}
+            for \(X \lie{l}\) and \(Y \in \nilpotentLie\).
+            
+            By assumption elements of \(\nilpotentLie\) are nilpotent, and thus by \cref{lma:nilpotent implies ad-nilpotent} they are also \(\ad\)-nilpotent.
+            Hence, \(\ad(\lie{l}) = \{\ad_X \mid X \in \lie{l}\}\) consists of nilpotent endomorphisms in \(\generalLinearLie(\nilpotentLie)\), and \(\ad(\lie{l})\) is a Lie algebra under the commutator.
+            Since \(\lie{l}\) is a proper subalgebra of \(\nilpotentLie\) we know that \(\dim \lie{l} < \dim \nilpotentLie\), and hence \(\dim \ad(\lie{l}) < \dim \nilpotentLie = k\).
+            Hence, we can apply the inductive hypothesis to \(\ad(\lie{l})\), meaning that there is some \(\overbar{Y} \in \nilpotentLie/\lie{l}\) such that \(\overbar{Y} \ne 0\) and \(\lie{l} \cdot \overbar{Y} = 0\).
+            
+            Let \(Y \in \nilpotentLie\) be a representative of \(\overbar{Y}\).
+            That is, \(\overbar{Y} = Y + \nilpotentLie\).
+            Then we have \(\bracket{\lie{l}}{Y} \subseteq \lie{l}\) and \(\).
+            This implies that \(\bracket{\lie{l} \oplus \complex Y}{\lie{l} \oplus \complex Y} \subseteq \lie{l} \oplus \complex Y\).
+            This means that \(\lie{l} \oplus \complex \lie{l}\) is a subalgebra of \(\nilpotentLie\).
+            Now, \(\dim(\lie{l} \oplus \complex Y) = \dim(\lie{l}) + 1\), and so by the assumption that \(\lie{l}\) is a \emph{maximal} proper subalgebra we must have that \(\lie{l} \oplus \complex Y = \nilpotentLie\).
+            This proves that \(\dim \lie{l} = \dim(\nilpotentLie) - 1\).
+            It also implies that \(\lie{l}\) is an ideal, since all elements in \(\nilpotentLie\) which are not in \(\lie{l}\) are just scalar multiples of \(Y\), and we've seen that \(\bracket{\lie{l}}{Y} \in \lie{l}\), so \(\lie{l}\) has the required absorbing property.
+            
+            Since \(\dim \lie{l} < \dim \nilpotentLie\) we can apply the induction hypothesis, and we know that there is some \(v \in \lie{l}\) with \(v \ne 0\) such that \(\lie{l} \cdot v = 0\).
+            Let \(W \subseteq V\) be the subspace of all vectors with this property.
+            Taking the decomposition \(\nilpotentLie = \lie{l} \oplus \complex Y\) it is sufficient to show that there is some \(w \in W\) with \(w \ne 0\) such that \(Y(w) = 0\), since then we will certainly have \((X + Y)(w) = X(w) + Y(w) = 0 + 0 = 0\) for \(X \in \lie{l}\).
+            To show that such a \(w\) exists take \(X \in \lie{l}\), then since the bracket in \(\generalLinearLie(V)\) is just the commutator we can evaluate at some \(w \in W\) and we have
+            \begin{equation}
+                XY(w) = YX(w) + \bracket{X}{Y}(w) = 0,
+            \end{equation}
+            where we've used the fact that \(X, \bracket{X}{Y} \in \lie{l}\) (since \(\lie{l}\) is an ideal) and thus \(X(w) = \bracket{X}{Y}(w) = 0\) by definition of \(W\).
+            Therefore, \(Y(W) \subseteq W\).
+            Since \(Y\) is a nilpotent endomorphism of \(V\) and preserves \(W\) it restricts to a nilpotent endomorphism of \(W\).
+            Thus, there exists some \(w \in W\) with \(w \ne 0\) such that \(Y(w) = 0\).
+        \end{proof}
+    \end{thm}
     
     % TODO: add reference to definition of solvable Lie alg in remark (TODO 1)
     % TODO: add reference to definition of adjoint representation to discussion of sl(2, C) (TODO 2)
