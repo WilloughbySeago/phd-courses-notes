@@ -59,6 +59,10 @@ noabbrev
 \newcommand{\lieDerivative}{\symcal{L}}
 \DeclarePairedDelimiterX{\bracket}[2]{[}{]}{#1, #2}
 \newcommand{\Witt}{\symrm{Witt}}
+\newcommand{\quantumField}[1]{\symcal{#1}}
+\newcommand{\DL}{\symcal{D}}
+\newcommand{\DD}{\,\symcal{D}}
+\DeclarePairedDelimiter{\correlator}{\langle}{\rangle}
 
 \begin{document}
     \frontmatter
@@ -803,8 +807,129 @@ noabbrev
     We see that we generate the translations, rotations/dilations (since \(a \in \complex\) so \(\e^a \in \complex^{\times}\)) and special conformal transformations from this subalgebra of \(V_0^{\complex}\).
     By moving to the universal enveloping algebra, allowing us to consider products such as \(l_0l_1\), we get composites of these conformal transformations upon exponentiation, and thus we generate all M\"obius transformations this way.
     
+    \chapter{Quantum Field Theory}
+    In this chapter we look at quantum field theory in general.
+    We do not impose any conformal symmetry.
+    We will develop QFT axiomatically, mostly focusing on some special functions called correlators.
+    We do not interest ourselves with the physical interpretation of any of the objects discussed.
+    We will introduce functional integration (also known as path integrals), which is just one of two main ways that a QFT can be constructed, the other being second quantisation, which we won't look at.
+    The path integral construction is, at best, ill-defined, but we won't let this bother us and work with the path integrals as formal objects possessing the desired properties.
     
+    \section{Correlation Functions}
+    A quantum field theory is a quantum theory regarding fields, which are generally operator-valued functions of spacetime.
+    We shall restrict our study to Euclidean QFTs in two-dimensions, where spacetime is \(\reals^2\) with the standard metric, or equivalently, \(\complex\) with the standard metric.
     
+    We follow the standard physics practice of not really specifying what our fields are, or what they act on, and just say that we have some fields, which we'll denote with a calligraphic font for now, so \(\quantumField{O}\), \(\quantumField{A}\), and so on (later we'll see \(\DL\), which is not a field).
+    We call these \define{local fields}\index{local field}, because they depend on the position of a single point.
+    
+    While we don't specify what the fields are as functions of spacetime they do have a natural notion of addition and scaling, and so it's natural to assume that we have a vector space, \(W\), of fields.
+    We can take \(W\) to be a real or complex vector space.
+    If we take \(W\) to be a real vector space then we can always complexify to get \(W^{\complex}\) and identifying \(W\) as a real subspace of this complex vector space.
+    This allows us to always assume that \(W\) is a vector space over \(\complex\).
+    
+    \begin{dfn}{Correlator}{}
+        Let \(W\) be the vector space of local fields, and let \(\quantumField{O}_1, \dotsc, \quantumField{O}_n \in W\) be local fields.
+        Define the set
+        \begin{equation}
+            \Delta_n \coloneqq \{(z_1, \dotsc, z_n) \in (\reals^2)^n \mid z_i = z_j \text{ for some } i \ne j\},
+        \end{equation}
+        this consists of all \(n\)-tuples of elements of \(\reals^2\) where two (or more) elements are equal.
+        Then we define the \define{\(\symbf{n}\)-point correlation function}\index{correlation function} (or correlator) as a function
+        \begin{equation}
+            \reals^{2n} \setminus \Delta_n \to \complex
+        \end{equation}
+        defined by
+        \begin{equation}
+            (z_1, \dotsc, z_n) \mapsto \correlator{\quantumField{O}_1(z_1) \dotsm \quantumField{O}_n(z_n)} \in \complex.
+        \end{equation}
+        We will identify \(\reals^2\) with \(\complex\) and then we instead have
+        \begin{equation}
+            \Delta_n = \{(z_1, \dotsc, z_n) \in \complex^n \mid z_i = z_j \text{ for some } i \ne j\}
+        \end{equation}
+        and the correlation functions are functions
+        \begin{equation}
+            \complex^n \setminus \Delta_n \to \complex.
+        \end{equation}
+    \end{dfn}
+    
+    Note that while we write \(\quantumField{O}_i(z_i)\) we do not require that the \(\quantumField{O}_i\) are complex-analytic, and could just as well write \(\quantumField{O}_i(z_i, \overbar{z}_i)\), but we'll soon see that expressions in QFT already get quite large, so we don't want to add even more symbols.
+    
+    We do not specify how the correlation function is evaluated, for now it's just notation.
+    We'll look at one way to evaluate it later.
+    For now we just demand that these functions have some desirable properties.
+    
+    The first property is that the correlators are independent of the order in which we write the \(\quantumField{O}_i(z_i)\).
+    That is, for \(\pi \in S_n\) we should have
+    \begin{equation}
+        \correlator{\quantumField{O}_1(z_1) \dotsm \quantumField{O}_n(z_n)} = \correlator{\quantumField{O}_{\pi(1)}(z_{\pi(1)}) \dotsm \quantumField{O}_{\pi(n)}(z_{\pi(n)})}.
+    \end{equation}
+    Note that we have to permute both the fields and the evaluation points to get the equality\footnote{The correlator may be thought of as a function of the product of the fields. When we think of the fields as operators as in second quantisation we do not assume that they commute. However, when in a correlator we are either doing path integrals, in which case the fields are taken to commute, or if we are doing second quantisation then for these expressions to make sense we must normal order the terms in the product, and this fixes an ordering independently of the order we write.}.
+    
+    The second property that we require is linearity in the fields.
+    That is, if \(\quantumField{O}_1 = \quantumField{A}_1 + \lambda \quantumField{B}_1\) for \(\lambda \in \complex\) and \(\quantumField{A}_1, \quantumField{B}_1 \in W\) then we have
+    \begin{multline}
+        \correlator{\quantumField{O}_1(z_1) \quantumField{O}_2(z_2) \dotsm \quantumField{O}_n(z_n)}\\
+        = \correlator{\quantumField{A}_1(z_1) \quantumField{O}_2(z_2) \dotsm \quantumField{O}_n(z_n)} + \lambda \correlator{\quantumField{B}_1 \quantumField{O}_2(z_1) \dotsm \quantumField{O}_n(z_n)}.
+    \end{multline}
+    
+    By requiring that the correlators are functions \(\complex^n\setminus \Delta_n \to \complex\) we are requiring that they achieve finite values everywhere on \(\complex^n\setminus \Delta_n\).
+    However, we can naturally extend the correlators to all of \(\complex^n\) by considering them as functions \(\complex^n \to \complex_{\infty}\) which are allowed to have singularities only at elements of \(\Delta_n\).
+    The assumption that we have poles only at coincident points is called the \defineindex{locallity assumption}.
+    Physically the idea is that the fields evaluated at different points can't interact with each other, but by evaluating the fields at the same point they can interact, and often do to produce divergent results.
+    In a Euclidean QFT the result of this is that the local fields must be real analytic in a neighbourhood free of points in \(\Delta_n\).
+    This means that they have a convergent power series on such neighbourhoods.
+    It does not mean that they are \emph{complex} analytic, and so there is no general requirement that the local fields are in any way holomorphic or antiholomorphic.
+    
+    It is natural to require that as well as the fields \(\quantumField{O}_i\) being in \(W\) there are also fields \(\partial^m\overbar{\partial}^n\quantumField{O}_i\) in \(W\) which can reasonably be interpreted as the derivatives of the fields \(\quantumField{O}_i\).
+    We don't define the derivative of a field, we simply require that the following holds:
+    \begin{align}
+        \correlator{\partial^m \overbar{\partial}^n \quantumField{O}_1(z_1) \dotsm \quantumField{O}_k(z_k)} &= \correlator{\partial_{z_1}^m \partial_{\overbar{z}_1}^n \quantumField{O}_1(z_1) \dotsm \quantumField{O}_k(z_k)}\\
+        &= \partial_{z_1}^m \partial_{\overbar{z}_1}^n \correlator{\quantumField{O}_1(z_1) \dotsm \quantumField{O}_k(z_k)}.
+    \end{align}
+    Here the derivatives on the right are just normal derivatives of a complex function in \(z_1\) and \(\overbar{z}_1\).
+    Note that this defines the derivative of any field, since by the symmetry of fields within the correlator we are always free to reorder the fields to get the one we're taking the derivative of at the front.
+    
+    \begin{ntn}{}{}
+        Derivatives are assumed to have higher precedence than multiplication.
+        Thus, \(\partial_xfg\) is always interpreted as \((\partial_xf)g\), rather than \(\partial_x(fg)\).
+    \end{ntn}
+    
+    \section{Distributions}
+    Now that we've got derivatives it's natural to consider integrals.
+    Unfortunately, the singularities cause problems when it comes to defining integrals.
+    The solution is to replace functions with distributions.
+    
+    \begin{dfn}{Distribution}{}
+        Let \(X\) be a topological space, and \(U \subseteq X\) open.
+        Let \(K(U)\) denote the set of all smooth functions \(f \colon U \to \complex\) with compact support (that is, the subset of \(U\) on which \(f(x) \ne 0\) is compact).
+        We call \(K(U)\) the space of test functions, and \(f \in K(U)\) a \defineindex{test function}.
+        There is a natural topology on \(K(U)\) called the canonical LF-topology.
+        
+        A \defineindex{distribution} is a continuous (with respect to the canonical LF-topology) linear functional \(F \in K(U)^*\), that is \(F \colon K(U) \to \complex\).
+    \end{dfn}
+    
+    We are interested in the case \(X = \complex^n\), and we assume that test functions are defined on all of \(\complex^n\), but we'll only ask that they have properties locally.
+    Given a test function, \(f \in K(\complex^n)\), and a distribution, \(\phi \in K(U)^*\), if \(f\) is locally integrable, meaning that
+    \begin{equation}
+        \int_U f(z) \dd^nz
+    \end{equation}
+    exists for open \(U \subseteq \complex^n\), then there is a canonical way to evaluate the action of the distribution on \(f\), namely
+    \begin{equation}
+        \innerproduct{\varphi}{f} = \int_U \varphi(z) f(z) \dd^nz.
+    \end{equation}
+    
+    We assume that \(U\) is a region without boundary, or that at least \(f\) vanishes on the boundary of \(U\), which allows us to use integration by parts to show that
+    \begin{equation}
+        \innerproduct{\varphi}{\partial_\mu f} = \int_U \varphi(z) \partial_\mu f(z) \dd{^nz} = -\int_U (\partial_\mu \varphi(z)) f(z) \dd{^nz}
+    \end{equation}
+    where the boundary term,
+    \begin{equation}
+        \int_{\partial U} \varphi(z)f(z) \dd{A},
+    \end{equation}
+    vanishes for one of the above reasons.
+    
+    This is quite a formal way to do distributions, which we'll quickly abandon and start considering them to be functions.
+    The general rule is that whenever there's a distribution (usually a Dirac delta) it only really makes sense under an integral, even if we don't write the integral.
     
     
     
