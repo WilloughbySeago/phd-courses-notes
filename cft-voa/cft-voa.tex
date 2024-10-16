@@ -63,6 +63,12 @@ noabbrev
 \newcommand{\DL}{\symcal{D}}
 \newcommand{\DD}{\,\symcal{D}}
 \DeclarePairedDelimiter{\correlator}{\langle}{\rangle}
+\difdef{f, s}{gd}{op-symbol=\delta}
+\NewDocumentCommand{\diffd}{m m}{\diff.gd.{#1}{#2}}
+\NewDocumentCommand{\difsd}{m m}{\difs.gd.{#1}{#2}}
+\newcommand{\lagrangian}{\symcal{L}}
+\newcommand{\freeboson}{\symrm{fb}}
+\newcommand{\dalembertian}{\partial^2}
 
 \begin{document}
     \frontmatter
@@ -928,8 +934,257 @@ noabbrev
     \end{equation}
     vanishes for one of the above reasons.
     
-    This is quite a formal way to do distributions, which we'll quickly abandon and start considering them to be functions.
+    An alternative requirement to compact support for test functions is that test functions must decay to zero at infinity faster than any polynomial.
+    This allows, for example, \(z \mapsto \e^{-\abs{z}^2}\), to be a test function, despite being everywhere non-zero.
+    
+    This is quite a formal way to do distributions, which we'll quickly abandon and start considering them to be functions-but-weird.
     The general rule is that whenever there's a distribution (usually a Dirac delta) it only really makes sense under an integral, even if we don't write the integral.
+    So everywhere I write a Dirac delta just assume that it's under an appropriate integral.
+    
+    \section{Functional Integration}
+    One way to produce correlation functions is through \defineindex{functional integration}, the integration of distributions.
+    Physicists call these \define{path integrals}\index{path integral}, not to be confused with a contour integral, because when these integrals first arose in physics the domain of the functions was all possible paths between two points in space.
+    
+    We won't define path integrals properly, mostly because there isn't a consistent definition that works in all scenarios.
+    Instead, we'll motivate them by analogy with normal integrals, then we'll treat them as formal objects that we can learn to manipulate in ways that mirror the properties of normal integrals (maybe you're already seeing the similarity to how we treat correlators).
+    
+    An ordinary integral looks like
+    \begin{equation}
+        \int_D f(x) \dd{^nx}
+    \end{equation}
+    where \(\manifold\) is some manifold, \(D \subseteq \manifold\) is a region of that manifold, \(f \colon D \to \complex\) is an integrable function, and \(\dl{^nx}\) is an appropriate measure, where we've already assumed that \(D\) can be covered by some coordinates\footnote{If this is not the case then we need to split \(D\) up into regions and be careful about where they overlap using partitions of unity.} \(x\).
+    
+    A functional integral looks like
+    \begin{equation}
+        \int_C F[\phi] \DD\phi
+    \end{equation}
+    where \(C\) is some set of functions \(\phi \colon \manifold \to \complex\) (with \(\manifold\) a manifold), \(F \colon C \to \complex\) is some functional, and \(\DL\phi\) is an appropriate (usually ill-defined) measure.
+    
+    \begin{exm}{}{}
+        Consider the interval, \(I = [0, 1] \subseteq \reals\), and define
+        \begin{equation}
+            C(I) = \{\phi \mid I \to \reals \mid \phi \text{is continuous}\}.
+        \end{equation}
+        We can approximate any such function by a piecewise linear function, \(\phi_N \in P_N(I) \subset C(I)\), where \(P_N(I)\) is the set of all continuous functions which are linear on the intervals \([i/N, (i+1)/N]\) for \(i = 0, 1, \dotsc, N - 1\).
+        The space \(C(I)\) is infinite dimensional, whereas the space \(P_N(I)\) is finite dimensional
+        To specify an element of \(P_N(I)\) we need only specify \(N + 1\) real numbers, typically the endpoints of each line segment, which are \(\phi(0), \phi(1/N), \phi(2/N), \dotsc, \phi(1)\).
+        Given a functional \(F \colon C(I) \to \reals\) we can define the functional integral as the \enquote{limit} of the integral over the \(N + 1\) dimensional space as we take \(N \to \infty\):
+        \begin{equation}
+            \int_{C(I)} F[\phi] \DD\phi = \lim_{N \to \infty} \int \dotsi \int F[\phi_N] \dd\phi(0) \dotsm \dl \varphi(1).
+        \end{equation}
+        Proving that this limit exists and is independent of the way we approximate the space \(C(I)\) by finite-dimensional subspaces is hard, and has only been done rigorously in a few cases.
+    \end{exm}
+    
+    So, abandoning all hope of a rigorous definition of functional integrals we proceed to list some properties that we would like functional integrals to possess.
+    The first is that, like normal integrals, functional integrals should be linear in the integrand.
+    So, if \(F_1\) and \(F_2\) are functionals and \(\lambda \in \complex\) is a scalar then we require the following:
+    \begin{equation}
+        \int_C (F_1[\phi] + \lambda F_2[\phi]) \DL\phi = \int_C F_1[\phi] \DD\phi + \lambda \int_C F_2[\phi] \DD\phi.
+    \end{equation}
+    
+    Now consider a normal integral over an unbounded region, or where the integrand vanishes on the boundary.
+    Then by integration by parts we have
+    \begin{equation}
+        \int_D \diffp{f}{x} \dd{^nx} = \int_D 1 \cdot \diffp{f}{x} \dd{^nx} = - \int_D \diffp{1}{x} f(x) \dd{^nx} = 0.
+    \end{equation}
+    We therefore demand the equivalent result for functional integrals, namely
+    \begin{equation}
+        \int_C \diffd{F}{\phi(x)} \DD\phi = 0.
+    \end{equation}
+    Of course, we need to define the \defineindex{functional derivative}, \(\difsd{F}{\phi(X)}\).
+    This can be done formally as a limit, but again, we just look at the properties it has, including linearity,
+    \begin{equation}
+        \diffd{(F_1 + \lambda F_2)}{\phi(x)} = \diffd{F_1}{\phi(x)} + \lambda \diffd{F_2}{\phi(x)},
+    \end{equation}
+    and the product rule,
+    \begin{equation}
+        \diffd{F_1F_2}{\phi(x)} = \diffd{F_1}{\phi(x)} F_2[\phi] + F_1[\varphi] \diffd{F_2}{\phi(x)}.
+    \end{equation}
+    Another important property is the functional version of
+    \begin{equation}
+        \diffp{x^i}{x^j} = \tensor{\delta}{^i_j},
+    \end{equation}
+    which is
+    \begin{equation}
+        \diffd{\varphi(x)}{\varphi(y)} = \delta(x - y).
+    \end{equation}
+    
+    The final property that we assume for functional integrals is invariance under a suitable change of variables.
+    We'll go into more detail on how this is done later.
+    
+    \section{Path Integrals}
+    In this section we will look at how QFT uses functional integrals (which I'll call path integrals in this context).
+    We assume the simplest case, which is that there's only one field, \(\phi\), and it is a scalar field.
+    This means that the corresponding particle will have zero spin.
+    We won't worry about what this means, and in later sections we'll introduce other types of field which do have spin.
+    
+    Looking at the properties that correlators and functional integrals possess we see that they match, and so it makes sense to define the correlators to be the result of evaluating specific path integrals.
+    Specifically, we can define the \(n\)-point correlator by\footnote{We work in Euclidean spacetime. In Minkowski spacetime the exponent is \(iS[\phi]\). Also, we're working in units where \(\hbar = 1\), else we'd need a \(1/\hbar\) in the exponent to give us a dimensionless quantity, with \(\hbar = 1\) the action is dimensionless.}
+    \begin{equation}
+        \correlator{\phi(z_1) \dotsm \phi(z_n)} = \frac{1}{Z} \int_C \e^{-S[\phi]} \phi(z_1) \dotsb \phi(z_n) \DD\phi.
+    \end{equation}
+    Here \(\phi \in W\) is just a particular field, called the \defineindex{fundamental field}.
+    We will assume that most of our fields are built out of \(\phi\) and its derivatives.
+    In this \(Z\) is the \defineindex{partition functional}, defined as
+    \begin{equation}
+        Z = \int_C \e^{-S[\phi]} \DD\phi.
+    \end{equation}
+    It is just a normalisation factor.
+    In these we have the \defineindex{action functional}, \(S\), which is usually defined via an integral
+    \begin{equation}
+        S[\phi] = \int_D \lagrangian(\phi, \partial_\mu \varphi, t) \dd{t}\dd{^nx}
+    \end{equation}
+    where we're working in \((n + 1)\)-dimensional spacetime.
+    The function \(\lagrangian\) is called the \defineindex{Lagrangian} (or more properly, the Lagrangian density as we integrate it over time and space).
+    Most QFT theories are specified by defining the Lagrangian.
+    The simplest case is a the Lagrangian corresponding to a free scalar massless boson.
+    Breaking this down:
+    \begin{itemize}
+        \item free means that there are no interactions between particles, which in QFT means that the Lagrangian doesn't have any terms higher than second order in \(\phi\);
+        \item scalar boson means that the particle has spin zero, and the corresponding field is just scalar valued (as opposed to a spinor or vector valued field, which we'll see later);
+        \item massless means that the particle has no mass, which in QFT means that the Lagrangian has no \(\phi^2\) term.
+    \end{itemize}
+    The Lagrangian is then
+    \begin{equation}
+        \lagrangian = \frac{1}{8\pi}\partial_\mu \varphi \partial^\mu \varphi.
+    \end{equation}
+    The single term here is called the kinetic term, and it controls how the particle moves through spacetime.
+    The factor of \(1/(8\pi)\) is included here because it will be nice later.
+    A more standard choice is just a factor of \(1/2\).
+    The action functional is then
+    \begin{equation}
+        S_{\freeboson}[\phi] = \frac{1}{8\pi} \int_C \partial_\mu \varphi \partial^\mu \varphi \dd{^2x}.
+    \end{equation}
+    Here we assume that we're working in two dimensional spacetime.
+    
+    At this point we note that taking a product of composite fields, such as \(\varphi(z)\varphi(z)\), is often going to lead to divergences in our correlators, because here we have two fields evaluated at the same point.
+    The usual way we get around this is to consider such a product as short-hand for
+    \begin{equation}
+        \lim_{\varepsilon \to 0} \varphi(z)\varphi(z + \varepsilon),
+    \end{equation}
+    or something similar which prevents these coincident evaluation points, and then only take the limit when it is safe to do so.
+    Sometimes we still get infinities this way, but physics has a whole system for subtracting these off in a consistent way called \defineindex{renormalisation}.
+    In physics it's common to take \(\varphi(x)\varphi(x + i\varepsilon)\), with an extra factor of \(i\), because the poles we're usually wanting to avoid are on the real axis. and so this is often called the \define{\(\symbf{i\varepsilon}\) prescription}\index{ie prescription@\(i\varepsilon\) prescription}.
+    
+    It should also be noted that we can take many fundamental fields, for example, if we have \(n\) fundamental fields, \(\phi_1, \dotsc, \phi_n\), with \(\phi_i \in C_i\) then we may define the correlator of \(n\) fields as
+    \begin{equation*}
+        \correlator{\phi_1(z_1) \dotsm \phi_n(z_n)} = \frac{1}{Z}\int_{C_1 \otimes \dotsb \otimes C_n} \e^{-S[\phi_1, \dotsc, \phi_n]} \phi_1(z_1) \dotsm \phi_n(z_n) \DD\phi_1 \dotsm \DD\phi_n
+    \end{equation*}
+    where
+    \begin{equation}
+        Z = \correlator{\phi_1(z_1) \dotsm \phi_n(z_n)} = \frac{1}{Z}\int_{C_1 \otimes \dotsb \otimes C_n} \e^{-S[\phi_1, \dotsc, \phi_n]} \DD\phi_1 \dotsm \DD\phi_n.
+    \end{equation}
+    
+    \subsection{Computing Correlators for the Free Boson}
+    In this section we'll look at how, despite the fact that the path integrals aren't really defined, we can still use them to evaluate the correlators.
+    We'll do this for the free massless scalar boson, which has the action functional\footnote{We start to use the physics convention where the measure is put before the integrand. This assumes that integration binds less tightly than multiplication but more tightly than addition, so \(\int \dl{x} \, fg = \int \dl{x} \, (fg) = \int fg \dd{x}\) and \(\int \dl{x} \, f + g = \left( \int \dl{x} \, f \right) + g = \int f \dd{x} + g = g + \int f \dd{x}\).}
+    \begin{equation}
+        S_{\freeboson}[\phi] = \frac{1}{8\pi} \int_C \dl{^2x} \, \partial_\mu \varphi \partial^\mu \varphi.
+    \end{equation}
+    
+    One important property that this has is that the integrand (which is the Lagrangian) is invariant under the map
+    \begin{equation}
+        \phi(x) \mapsto -\phi(x).
+    \end{equation}
+    In fact, we actually have a full-blown \(\unitary(1)\) symmetry
+    \begin{equation}
+        \phi(x) \mapsto \e^{i\alpha}\phi(x), \quad \alpha \in [0, 2\pi),
+    \end{equation}
+    but this is more than we need right now.
+    This symmetry is important because it means that if the measure, \(\DL{\varphi}\), is also invariant under this mapping then we have
+    \begin{equation}
+        \correlator{\phi(z_1) \dotsm \phi(z_n)} \mapsto (-1)^n \correlator{\phi(z_1) \dotsm \phi(z_n)}
+    \end{equation}
+    which tells us that if \(n\) is odd then the \(n\)-point correlator must vanish.
+    
+    Physically, what this tells us is that there are no \(n\)-point interactions for \(n\) odd.
+    An \(n\)-point interaction (in a general QFT) being some particles coming in, interacting, and some (possibly different) particles going out, such that the total number of particles going in plus the total number of particles going out is \(n\).
+    The reason that there cannot be \(n\)-point interactions (\(n\) odd) for the free boson is that there are no interactions, and so it is not possible to create or destroy particles, and as such the particles going into an interaction (in which nothing can happen, because we've got free particles) must be the same particles that go out, so if we have \(k\) particles coming in we have \(k\) going out, so we have a \(2k\)-point interaction.
+    
+    Now we can use another property of functional integrals, the integral of a derivative vanishes, which tells us that
+    \begin{equation}
+        \label{eqn:free boson 2-correlator step 1}
+        \int \diffd{}{\phi(x)} \left( \e^{-S_{\freeboson}[\phi]}\phi(y) \right) \DL\phi = 0.
+    \end{equation}
+    Now, we can use the product rule, chain rule, and Dirac delta properties to take the derivative and we find that
+    \begin{align}
+        \diffd{}{\phi(x)} \left( \e^{-S_{\freeboson}[\phi]} \phi(y) \right) &= \left( \diffd{}{\phi(x)} \e^{-S_{\freeboson}[\phi]} \right) \phi(y) + \e^{-S_{\freeboson}[\phi]} \diffd{\phi(y)}{\phi(x)}\\
+        &= -\diffd{S[\phi]}{\phi(x)} \e^{-S_{\freeboson}[\phi]} \phi(y) + \e^{-S_{\freeboson}[\phi]} \delta(x - y).
+    \end{align}
+    Of course, we're assuming that functional derivatives of exponentials work just as they do for normal derivatives, and this is indeed the case.
+    Now all we have to do is compute the derivative of \(S_{\freeboson}[\phi]\):
+    \begin{equation}
+        \diffd{}{\phi(x)} S_{\freeboson}[\phi] = \diffd{}{\phi(x)} \frac{1}{8\pi} \int \dl{^2\tilde{x}} \, \partial_\mu^{\tilde{x}} \phi(\tilde{x}) \partial^\mu_{\tilde{x}} \phi(\tilde{x}).
+    \end{equation}
+    Here we're introducing \(\tilde{x}\) as a dummy variable distinct from \(x\).
+    The first step is to assume that the integral and the functional derivative commute, giving us
+    \begin{equation}
+        \diffd{}{\phi(x)} S_{\freeboson}[\phi] = \frac{1}{8\pi} \int \dl^2\tilde{x} \, \diffd{}{\phi(x)} [\partial_\mu^{\tilde{x}} \phi(\tilde{x}) \partial^\mu_{\tilde{x}} \phi(\tilde{x})].
+    \end{equation}
+    Next we apply the chain rule to get
+    \begin{equation}
+        \diffd{}{\phi(x)} S_{\freeboson}[\phi] = \frac{1}{8\pi} \int \dl^2\tilde{x} \, \left[ \diffd{\partial_\mu^{\tilde{x}} \phi(\tilde{x})}{\phi(x)} \partial^\mu_{\tilde{x}}\phi(\tilde{x}) + \partial_\mu^{\tilde{x}}\phi(\tilde{x}) \diffd{\partial^\mu_{\tilde{x}}\phi(\tilde{x})}{\phi(x)} \right].
+    \end{equation}
+    Now we assume that the partial derivatives commute with the functional derivative, so we have
+    \begin{equation}
+        \diffd{}{\phi(x)} S_{\freeboson}[\phi] = \frac{1}{8\pi} \int \dl^2\tilde{x} \, \left[ \left( \partial_\mu^{\tilde{x}} \diffd{\phi(\tilde{x})}{\phi(x)} \right) \partial^\mu_{\tilde{x}}\phi(\tilde{x}) + \partial_\mu^{\tilde{x}}\phi(\tilde{x}) \left(\partial^\mu_{\tilde{x}} \diffd{\phi(\tilde{x})}{\phi(x)} \right) \right].
+    \end{equation}
+    Now, we the derivatives \(\difsd{\phi(\tilde{x})}{\phi(x)}\) give Dirac deltas, \(\delta(\tilde{x} - x)\), and we can't really take the derivative of these.
+    Instead, we use integration by parts to move the derivative onto the other term at the cost of a minus sign, giving
+    \begin{align}
+        \diffd{}{\phi(x)} S_{\freeboson}[\phi] &= -\frac{1}{8\pi} \int \dl^2\tilde{x} \, \left[ \diffd{\phi(\tilde{x})}{\phi(x)} \partial_\mu^{\tilde{x}}\partial^\mu_{\tilde{x}}\phi(\tilde{x}) + \partial^\mu_{\tilde{x}} \partial_\mu^{\tilde{x}} \phi(\tilde{x})  \diffd{\phi(\tilde{x})}{\phi(x)} \right]\\
+        &= -\frac{1}{8\pi} \int \dl^2\tilde{x} \, \left[ \delta(\tilde{x} - x) \partial_\mu^{\tilde{x}}\partial^\mu_{\tilde{x}}\phi(\tilde{x}) + \partial^\mu_{\tilde{x}} \partial_\mu^{\tilde{x}} \phi(\tilde{x}) \delta(\tilde{x} - x) \right] \notag\\
+        &= -\frac{1}{8\pi} (\partial_\mu^{x}\partial^\mu_{x}\phi(x) + \partial^\mu_{x} \partial_\mu^{x} \phi(x))\\
+        &= -\frac{1}{8\pi} (\partial_\mu^{x}\partial^\mu_{x}\phi(x) + \partial_\mu^{x} \partial^\mu_{x} \phi(x))\\
+        &= -\frac{1}{4\pi} \partial_\mu^x\partial^\mu_x\phi(x).
+    \end{align}
+    
+    Using this work to compute the derivative in \cref{eqn:free boson 2-correlator step 1} we get
+    \begin{equation}
+        0 = \int \DL\phi \left( \frac{1}{4\pi} \phi(y) \partial_\mu^x\partial^\mu_x\phi(x) + \delta(x - y) \right) \e^{-S_{\freeboson}[\phi]}.
+    \end{equation}
+    This tells us that
+    \begin{equation}
+        \int \DL\phi \,\phi(y) \partial_\mu^x\partial^\mu_x\phi(x) \e^{-S_{\freeboson}[\phi]} = -4\pi \int \DL\phi \, \delta(x - y) \e^{-S_{\freeboson}[\phi]}.
+    \end{equation}
+    We can write this a bit more compactly by pulling the \(\delta(x - y)\) out of the integral, which is valid as \(\delta(x - y)\) doesn't depend on \(\phi\).
+    Of course, a Dirac delta on its own doesn't make sense, so the following result only holds when we're within the integrand of some integral over \(x\) or \(y\):
+    \begin{equation}
+        \int \DL\phi \, \phi(y) \partial_\mu^x \partial^\mu_x\phi(x) \e^{-S_{\freeboson}[\phi]} = -4\pi \delta(x - y) \int \DL\phi \, \e^{-S_{\freeboson}[\phi]} = -4\pi\delta(x - y) Z
+    \end{equation}
+    where \(Z\) is the partition functional.
+    If we once again assume that the integral commutes with the derivatives then we can write the left-hand side as
+    \begin{multline}
+        \int \DL\phi \, \phi(y) \partial_\mu^x \partial^\mu_x \phi(x) \e^{-S_{\freeboson}[\phi]}\\
+        = \partial_\mu^x \partial^\mu_x \int \DL\phi \, \phi(y)\phi(x) \e^{-S_{\freeboson[\phi]}} = \partial_\mu^x\partial^\mu_x \correlator{\phi(x)\phi(y)}.
+    \end{multline}
+    Thus, we're left with the equality (under an integral)
+    \begin{equation}\label{eqn:correlator as greens function}
+        \partial_\mu^x\partial^\mu_x\correlator{\phi(x)\phi(y)} = -4\pi\delta(x - y).
+    \end{equation}
+    Writing \(G(x, y) = \correlator{\phi(x)\phi(y)}\) and writing out the derivatives in more detail this becomes
+    \begin{equation}
+        \left( \diffp[2]{}{x^1} + \diffp[2]{}{x^2} \right) G(x, y) = -4\pi\delta(x - y).
+    \end{equation}
+    We therefore see that \(G\) is (up to some arbitrary choice of an overall constant factor) the Green's function for Laplace's equation
+    \begin{equation}
+        \laplacian f = 0
+    \end{equation}
+    in two dimensional Euclidean spacetime.
+    
+    It is a general fact in QFT that the two-point correlators are Green's functions for the differential operator, \(D\), appearing in the kinetic and mass terms when we write these two terms as \(\phi D \phi\).
+    One of the first examples of this in most QFT courses is given (in Minkowski space) by adding a mass term, \(-m^2\phi^2/2\), to the Lagrangian.
+    The resulting two-point correlator of the massive free scalar boson is the Green's function of the Klein--Gordon operator \(\dalembertian + m^2\), where\footnote{This operator, called the d'Alembert operator or d'Alembertian, is also notated \(\square\), and, confusingly, \(\square^2\) (in analogy with \(\laplacian\))} \(\dalembertian = \partial^\mu \partial_\mu\) is the Laplacian operator in Minkowski space.
+    The example we have here is the two-dimensional Euclidean version of this in the \(m = 0\) case.
+    
+    The reason that this is useful is that we\footnote{well, someone's worked it out} know what the Green's function for Laplace's equation in two-dimensions is, and so we know what the 2-point correlator is, it's
+    \begin{equation}
+        \correlator{\phi(x)\phi(y)} = -\ln((x^1 - y^1)^2 + (x^2 - y^2)^2) = -2\ln(\abs{x - y})^2,
+    \end{equation}
+    or, in complex coordinates \(z_1 = x^1 + ix^2\) and \(z_2 = y^1 + iy^2\),
+    \begin{equation}
+        \correlator{\phi(z_1)\phi(z_2)} = -\ln(\abs{z_1 - z_2}^2).
+    \end{equation}
     
     
     
