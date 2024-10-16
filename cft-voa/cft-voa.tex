@@ -12,6 +12,8 @@
 
 \usepackage{tikz-cd}
 
+\usepackage{simpler-wick}
+
 \usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes from Conformal Field Theory and Vertex Operator Algebras},pdfkeywords={conformal field theory,CFT,vertex operator algebra,voa},pdfsubject={Conformal Field Theory and Vertex Operator Algebras}]{hyperref}  % Should be loaded second last (cleveref last)
 \colorlet{hyperrefcolor}{blue!60!black}
 \hypersetup{colorlinks=true, linkcolor=hyperrefcolor, urlcolor=hyperrefcolor}
@@ -864,7 +866,7 @@ noabbrev
     We'll look at one way to evaluate it later.
     For now we just demand that these functions have some desirable properties.
     
-    The first property is that the correlators are independent of the order in which we write the \(\quantumField{O}_i(z_i)\).
+    The first property is that the correlators are independent\footnote{Here we assume that the fields represent bosons (particles with integer spin). If instead they represent fermions (particles with half-integer spin) then exchanging two fermionic fields should pick up a minus sign. The result is that in the following formula we need a \(\sgn \pi\) factor for fermionic fields.} of the order in which we write the \(\quantumField{O}_i(z_i)\).
     That is, for \(\pi \in S_n\) we should have
     \begin{equation}
         \correlator{\quantumField{O}_1(z_1) \dotsm \quantumField{O}_n(z_n)} = \correlator{\quantumField{O}_{\pi(1)}(z_{\pi(1)}) \dotsm \quantumField{O}_{\pi(n)}(z_{\pi(n)})}.
@@ -1082,6 +1084,7 @@ noabbrev
         S_{\freeboson}[\phi] = \frac{1}{8\pi} \int_C \dl{^2x} \, \partial_\mu \varphi \partial^\mu \varphi.
     \end{equation}
     
+    \subsubsection{Odd Correlators}
     One important property that this has is that the integrand (which is the Lagrangian) is invariant under the map
     \begin{equation}
         \phi(x) \mapsto -\phi(x).
@@ -1101,6 +1104,7 @@ noabbrev
     An \(n\)-point interaction (in a general QFT) being some particles coming in, interacting, and some (possibly different) particles going out, such that the total number of particles going in plus the total number of particles going out is \(n\).
     The reason that there cannot be \(n\)-point interactions (\(n\) odd) for the free boson is that there are no interactions, and so it is not possible to create or destroy particles, and as such the particles going into an interaction (in which nothing can happen, because we've got free particles) must be the same particles that go out, so if we have \(k\) particles coming in we have \(k\) going out, so we have a \(2k\)-point interaction.
     
+    \subsubsection{2-Point Correlators}
     Now we can use another property of functional integrals, the integral of a derivative vanishes, which tells us that
     \begin{equation}
         \label{eqn:free boson 2-correlator step 1}
@@ -1172,10 +1176,12 @@ noabbrev
     \end{equation}
     in two dimensional Euclidean spacetime.
     
-    It is a general fact in QFT that the two-point correlators are Green's functions for the differential operator, \(D\), appearing in the kinetic and mass terms when we write these two terms as \(\phi D \phi\).
-    One of the first examples of this in most QFT courses is given (in Minkowski space) by adding a mass term, \(-m^2\phi^2/2\), to the Lagrangian.
-    The resulting two-point correlator of the massive free scalar boson is the Green's function of the Klein--Gordon operator \(\dalembertian + m^2\), where\footnote{This operator, called the d'Alembert operator or d'Alembertian, is also notated \(\square\), and, confusingly, \(\square^2\) (in analogy with \(\laplacian\))} \(\dalembertian = \partial^\mu \partial_\mu\) is the Laplacian operator in Minkowski space.
-    The example we have here is the two-dimensional Euclidean version of this in the \(m = 0\) case.
+    \begin{remark}{}{}
+        It is a general fact in QFT that the two-point correlators are Green's functions for the differential operator, \(D\), appearing in the kinetic and mass terms when we write these two terms as \(\phi D \phi\).
+        One of the first examples of this in most QFT courses is given (in Minkowski space) by adding a mass term, \(-m^2\phi^2/2\), to the Lagrangian.
+        The resulting two-point correlator of the massive free scalar boson is the Green's function of the Klein--Gordon operator \(\dalembertian + m^2\), where\footnote{This operator, called the d'Alembert operator or d'Alembertian, is also written as \(\square\), and, confusingly, \(\square^2\) (in analogy with \(\laplacian\)).} \(\dalembertian = \partial^\mu \partial_\mu\) is the Laplacian operator in Minkowski space.
+        The example we have here is the two-dimensional Euclidean version of this in the \(m = 0\) case.
+    \end{remark}
     
     The reason that this is useful is that we\footnote{well, someone's worked it out} know what the Green's function for Laplace's equation in two-dimensions is, and so we know what the 2-point correlator is, it's
     \begin{equation}
@@ -1183,10 +1189,151 @@ noabbrev
     \end{equation}
     or, in complex coordinates \(z_1 = x^1 + ix^2\) and \(z_2 = y^1 + iy^2\),
     \begin{equation}
+        \label{eqn:free boson 2-point correlator}
         \correlator{\phi(z_1)\phi(z_2)} = -\ln(\abs{z_1 - z_2}^2).
     \end{equation}
     
+    We can check, with a bit of work, that this is indeed a solution to \cref{eqn:correlator as greens function} by integrating \cref{eqn:correlator as greens function} using Stoke's theorem.
+    This is easiest to do in complex coordinates.
+    To do this we'll need to use
+    \begin{equation}
+        \partial_\mu \partial^\mu = 4\partial_z \partial_{\overbar{z}}
+    \end{equation}
+    which follows from the fact that in complex coordinates the inverse metric is
+    \begin{equation}
+        g^{\mu\nu} = 
+        \begin{pmatrix}
+            0 & 2\\
+            2 & 0
+        \end{pmatrix}
+    \end{equation}
+    so
+    \begin{align}
+        \partial_\mu \partial^\mu &= g^{\mu\nu} \partial_\mu \partial_\nu\\
+        &= g^{zz} \partial_z \partial_z + g^{z\overbar{z}} \partial_z \partial_{\overbar{z}} + g^{\overbar{z}z} \partial_{\overbar{z}} \partial_z + g^{\overbar{z}\overbar{z}} \partial_{\overbar{z}} \partial_{\overbar{z}}\\
+        &= 2\partial_z \partial_{\overbar{z}} + 2\partial_{\overbar{z}} \partial_z\\
+        &= 4\partial_z \partial_{\overbar{z}}.
+    \end{align}
+    Using this we can write \cref{eqn:correlator as greens function} as
+    \begin{equation}
+        \label{eqn:correlator as greens function complex coordinates}
+        \partial_{z_1} \partial_{\overbar{z}_1} \correlator{\phi(z_1)\phi(z_2)} = -\pi\delta(z_1 - z_2).
+    \end{equation}
+    Stoke's theorem in complex coordinates is
+    \begin{equation}
+        \iint_D \partial_{\overbar{z}} F(z, \overbar{z}) \dd{^2z} = -\frac{i}{2} \oint_{\partial D} F(z, \overbar{z}) \dd{z}.
+    \end{equation}
+    The contour integral is along the boundary of \(D\) and oriented anticlockwise.
+    Taking a region \(D\) containing \(z_2\) we can integrate the left hand side of \cref{eqn:correlator as greens function complex coordinates} to get
+    \begin{equation}
+        \iint_D \partial_{\overbar{z}_1} \partial_{z_1} \correlator{\phi(z_1)\phi(z_2)} \dd{z_1} = -\frac{i}{2}\oint_{\partial D} \partial_{z_1} \correlator{\phi(z_1)\phi(z_2)} \dd{z_1}
+    \end{equation}
+    and on the right we can use the Dirac delta to simply get
+    \begin{equation}
+        -\pi \iint_D \delta(z_1 - z_2) \dd{^2z_1} = -\pi.
+    \end{equation}
+    Thus, we have
+    \begin{equation}
+        \frac{i}{2}\oint_{\partial D} \partial_{z_1} \correlator{\phi(z_1)\phi(z_2)} \dd{z_1} = \pi.
+    \end{equation}
+    Now we can substitute in \cref{eqn:free boson 2-point correlator} and we have
+    \begin{equation}
+        \partial_{z_1} \correlator{\phi(z_1)\phi(z_2)} = - \partial_{z_1} \ln(\abs{z_1 - z_2}^2) = -\frac{2}{z_1 - z_2}
+    \end{equation}
+    and so we have
+    \begin{equation}
+        -i \oint_{\partial D} \frac{1}{z_1 - z_2} \dd{z_1} = \pi.
+    \end{equation}
+    This is true by Cauchy's integral formula,
+    \begin{equation}
+        f(a) = \frac{1}{2\pi i} \oint_{\partial D} \frac{f(z_1)}{z_1 - z_2} \dd{z_1}
+    \end{equation}
+    for \(f(z) = 1\).
     
+    \subsubsection{4-Point Correlators}
+    We can compute 4-point correlation functions now, but we won't because the 2-point correlator took long enough.
+    We start again with the integral of a derivative vanishing:
+    \begin{equation}
+        \int \diffd{}{\phi(z_1)} (\e^{-S_{\freeboson}[\phi]} \phi(z_2) \phi(z_3) \phi(z_4)) \DD\phi = 0.
+    \end{equation}
+    We then compute the derivative and go through the same steps as for the 2-point correlator and we find that
+    \begin{align}
+        \partial_\mu^{z_1} \partial^\mu_{z_1} \correlator{\phi(z_1)\phi(z_2)\phi(z_3)\phi(z_4)} &= -\pi \delta(z_1 - z_2) \correlator{\phi(z_3)\phi(z_4)}\\
+        &- \pi \delta(z_1 - z_3) \correlator{\phi(z_2)\phi(z_4)}\\
+        &- \pi \delta(z_1 - z_4) \correlator{\phi(z_2)\phi(z_3)}.
+    \end{align}
+    This, and equations like it, are called either
+    \begin{itemize}
+        \item \define{Schwinger--Dyson equations}\index{Schwinger--Dyson equation}; or
+        \item \define{quantum equations of motion}\index{quantum equation of motion}.
+    \end{itemize}
+    The second comes from identifying that the classical equations of motion, as one would find from the Euler--Lagrange equations, which come from requiring that \(\delta S[\phi] = 0\), are in this case just the usual Laplace equation, \(\partial_z \partial_{\overbar{z}} \phi = 0\).
+    The quantum equations of motion then agree with this (replacing the field with the correlator) at all points, except where we have two coincident field evaluations in the correlator, where we instead get Dirac deltas.
+    These are called \define{contact terms}\index{contact term}, and the physical intuition is that these infinities arise because we're trying to put two particles in the same place, allowing them to interfere with each other.
+    
+    We can substitute in the known 2-point correlators and we get
+    \begin{align}
+        \partial_\mu^{z_1}\partial^\mu_{z_1} \correlator{\phi(z_1)\phi(z_2)\phi(z_3)\phi(z_4)} &= \ln(\abs{z_1 - z_2}^2)\ln(\abs{z_3 - z_4}^2)\\
+        &+ \ln(\abs{z_1 - z_3}^2)\ln(\abs{z_2 - z_4}^2)\\
+        &+ \ln(\abs{z_1 - z_4}^2)\ln(\abs{z_2 - z_3}^2).
+    \end{align}
+    
+    \subsubsection{Wick's Theorem}
+    This process generalises to \(n\)-point correlators for any even \(n\), and we find that we have the following general result.
+    
+    \begin{thm}{Wick's Theorem For A Free Massless Scalar Boson}{}
+        The \(n\)-point correlator of a free massles scalar boson field is either 0, if \(n\) is odd, or
+        \begin{equation*}
+            \correlator{\phi(z_1) \dotsm \phi(z_{2k})} = \sum_{\mathclap{\text{pairs } (i_\ell, j_{\ell})}} (-1)^k \ln(\abs{z_{i_1} - z_{j_1}}) \ln(\abs{z_{i_2} - z_{j_2}}) \dotsm \ln(\abs{z_{i_k} - z_{j_k}})
+        \end{equation*}
+        if \(n = 2k\) is even.
+        The sum here is taken over ways of partitioning the indices \(\{1, \dotsc, 2k\}\) into pairs of indices with no repeated indices.
+        We consider two partitions into pairs to be the same if they differ only by the order of the pairs or the order of the two indices within a pair.
+    \end{thm}
+    
+    To demonstrate what we mean by the pairs thing in the \(n = 2\) case we simply have a single pair, \((1, 2)\), and in the \(n = 4\) case the sum has three terms, corresponding to the pairs \((1, 2)(3, 4)\), \((1, 3)(2, 4)\), and \((1, 4)(2, 3)\).
+    We do not consider \((1, 2)(4, 3)\), because this is the same as \((1, 2)(3, 4)\), and we do not consider \((3, 4)(1, 2)\), because this is the same as \((1, 2)(3, 4)\).
+    
+    \begin{remark}{Wick Contractions and Generalisations}{}
+        Noting that the logarithms here are just 2-point correlators and writing
+        \begin{equation}
+            \wick{\c{\phi}(z_1)\c{\phi}(z_2)} = \correlator{\phi(z_1)\phi(z_2)},
+        \end{equation}
+        which we call a \defineindex{Wick contraction}, it is common to write these results using this notation, for example if \(n = 4\) we write
+        \begin{align}
+            \correlator{\phi(z_1) \dotsm \phi(z_{4})} &= \wick{\c{\phi}(z_1)\c{\phi}(z_2)\c{\phi}(z_3)\c{\phi}(z_4)}\\
+            &+ \wick{\c1{\phi}(z_1)\c2{\phi}(z_2)\c1{\phi}(z_3)\c2{\phi}(z_4)}\\
+            &+ \wick{\c2{\phi}(z_1)\c1{\phi}(z_2)\c1{\phi}(z_3)\c2{\phi}(z_4)}
+        \end{align}
+        
+        It should be noted that in the full generalisation of Wick's theorem for a non-free field there is no reason that the odd correlators should vanish.
+        Instead, the odd correlators typically have some product of contracted fields, and some non-contracted fields.
+        For a fully general result of \(n = 2k\) or \(n = 2k + 1\) interacting fields we have to sum over all terms with \(2\ell\) contracted fields where \(\ell = 1, \dotsc, k\).
+        Because this leaves us with other fields we also have to normal order the non-contracted fields.
+        This also assumes that the original fields are time ordered.
+        
+        In Feynman diagrams the contracted fields correspond to propagators between the points of evaluation.
+        Uncontracted fields correspond to vertices.
+        So in the free theory since all fields are contracted there are no vertices, which makes sense because the vertices are interactions, and all of the particles just propagate from start to end.
+        The reason that we end up with multiple terms is that the particles are indistinguishable, so in the \(n = 4\) case if we assume that 1 and 2 refer to the incoming particles and 3 and 4 the outgoing particles we can't tell which of the three following diagrams in \cref{fig:swapping bosons} actually corresponds to what is actually happening.
+        
+        (Obligatory \enquote{in QFT Feynman diagrams aren't real, the particles aren't real, and they aren't really following nice paths on the page, instead the Feynman diagrams correspond to integrals in a big series expansion for the scattering matrix and shouldn't be interpreted physically}. Despite this everyone does think of the Feynman diagrams as physical, after all, the fields aren't really any more \enquote{real} than the particles are.)
+    \end{remark}
+    
+    \begin{figure}
+        \tikzsetnextfilename{swapping-bosons}
+        \begin{tikzpicture}
+            \draw [thick] (0, 6) arc (-90:90:1);
+            \draw [thick] (3, 6) arc (270:90:1);
+            \draw [thick] (0, 3) -- ++ (3, 0);
+            \draw [thick] (0, 5) -- ++ (3, 0);
+            \draw [thick] (0, 2) -- ++ (3, -2);
+            \draw [line width=2mm, white] (0, 0) -- ++ (3, 2);
+            \draw [thick] (0, 0) -- ++ (3, 2);
+        \end{tikzpicture}
+        \caption{The three ways to have two particles enter on the left and two particles leave on the right (to first order, we can have weird loops at higher order, but higher orders are hard and (usually) less relevant than first order). This corresponds to the three different ways to contract four fields.}
+        \label{fig:swapping bosons}
+    \end{figure}
     
     
 %	 Appdendix
