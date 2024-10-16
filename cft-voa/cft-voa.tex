@@ -71,6 +71,7 @@ noabbrev
 \newcommand{\lagrangian}{\symcal{L}}
 \newcommand{\freeboson}{\symrm{fb}}
 \newcommand{\dalembertian}{\partial^2}
+\newcommand{\order}{\symcal{O}}
 
 \begin{document}
     \frontmatter
@@ -815,6 +816,9 @@ noabbrev
     We see that we generate the translations, rotations/dilations (since \(a \in \complex\) so \(\e^a \in \complex^{\times}\)) and special conformal transformations from this subalgebra of \(V_0^{\complex}\).
     By moving to the universal enveloping algebra, allowing us to consider products such as \(l_0l_1\), we get composites of these conformal transformations upon exponentiation, and thus we generate all M\"obius transformations this way.
     
+    The fact that the algebra \(W^{\complex}\) is infinite-dimensional is special to two dimensions.
+    In \(d\) dimensions with \(d > 2\) it turns out that the conformal algebra is \(\specialOrthogonalLie(d + 2)\), which is finite dimensional (the dimension is actually \((d + 2)(d + 3)/2\)).
+    
     \chapter{Quantum Field Theory}
     In this chapter we look at quantum field theory in general.
     We do not impose any conformal symmetry.
@@ -1278,6 +1282,8 @@ noabbrev
         &+ \ln(\abs{z_1 - z_4}^2)\ln(\abs{z_2 - z_3}^2).
     \end{align}
     
+    In general if we choose a more complicated theory, in particular one with interactions, the Schwinger--Dyson equations will not be solvable.
+    
     \subsubsection{Wick's Theorem}
     This process generalises to \(n\)-point correlators for any even \(n\), and we find that we have the following general result.
     
@@ -1335,6 +1341,123 @@ noabbrev
         \label{fig:swapping bosons}
     \end{figure}
     
+    Despite having spent all of this time on functional integrals they turn out not to be that useful in CFT.
+    Instead we will work with the correlation functions directly.
+    We will impose upon them conditions that arise from demanding a conformal symmetry.
+    This, plus a few more assumptions on which local fields appear, allows us to solve these the Schwinger--Dyson equations to obtain correlation functions.
+    
+    
+    \section{Continuous Symmetries}
+    A continuous symmetry in QFT is given by taking \(W\), the space of fields, to be a representation of some Lie group such that the action functional, \(S\), is invariant under this action.
+    Since we have a Lie group the natural thing to do is consider the Lie algebra, and look at infinitesimal transformations.
+    Suppose that we have \(m\) fundamental fields, \(\phi_1, \dotsc, \phi_m\), upon which our action functional depends.
+    Then an infinitesimal transformation of these fields is a map
+    \begin{equation}
+        \phi_i(x) \mapsto \phi_i(x) + \omega^a \delta_a\phi_i(x).
+    \end{equation}
+    Here \(\omega^a \in \reals\) are some parameters (assuming a real Lie group, \(\complex\) for a complex Lie group), and we shall typically assume these parameters to be \enquote{small}, in the way that physicists do, meaning that anything of second order in \(\omega^a\) is negligible.
+    The \(\delta_a \phi_i(x)\) are some other fields which may depend on \(i\) or \(x\).
+    If \(\delta_a \phi_i(x)\) is independent of \(x\) and \(i\), so it's just a constant, then we call this a \defineindex{global symmetry}.
+    Note that this is a different use of \enquote{global} to that in global conformal symmetry, which simply means that it's defined everywhere.
+    If \(\delta_a \phi_i(x)\) depends on \(x\) then it is called a \defineindex{local symmetry}.
+    Finally, if \(\delta_a \phi_i(x)\) depends on \(i\) then it is called an internal symmetry.
+    
+    The change in the action functional under an arbitrary infinitesimal transformation is
+    \begin{equation}
+        \delta S = \int \dl{^2x} \omega^a \delta_a \phi_i(x) \diffd{S}{\phi_i(x)}.
+    \end{equation}
+    The infinitesimal transformation is a symmetry (by which we mean it exponentiates to a symmetry) if and only if \(\delta S = 0\).
+    
+    \begin{exm}{}{}
+        Consider the free massless scalar boson with action functional
+        \begin{equation}
+            S_{\freeboson}[\phi] = \frac{1}{8\pi}\int \dl{^2x} \partial_\mu \phi \partial^\mu \phi.
+        \end{equation}
+        This is invariant under a translation
+        \begin{equation}
+            \phi(x) \mapsto \phi(x + \omega)
+        \end{equation}
+        for some constant \(\omega \in \reals^2\) (working in 2-dimensional Euclidean space).
+        The infinitesimal version of this is
+        \begin{equation}
+            \phi(x) \mapsto \phi(x) + \omega^\mu \partial_\mu \phi(x).
+        \end{equation}
+        This follows by Taylor expanding,
+        \begin{equation}
+            \phi(x + \omega) = \phi(x) + \omega^\mu \partial_\mu \phi(x) + \order(\omega^2),
+        \end{equation}
+        and truncating after the first order term.
+        To see that this is a symmetry we can compute the variation in the action:
+        \begin{align}
+            \delta S_{\freeboson} &= \frac{1}{8\pi}\int \dl^2x \, \omega^\mu \partial_\mu \phi(x) \diffd{S}{\phi(x)}\\
+            &= -\frac{1}{4\pi} \int \dl^2x \, \omega^\mu \partial_\mu \phi(x) \partial_\nu \partial^\nu \phi(x)\\
+            &= \frac{1}{4\pi} \int \dl^2x \, \omega^\mu \partial_\mu \partial_\nu \phi(x) \partial^\nu \phi(x)\\
+            &= \frac{1}{8\pi} \omega^\mu \int \dl^2x \, \partial_\mu (\partial_\nu \phi(x) \partial^\nu \phi(x))\\
+            &= 0.
+         \end{align}
+         The second line follows by similar calculations to the 2-point correlator after \cref{eqn:free boson 2-correlator step 1}.
+         The next line is integration by parts to move one of the derivatives across.
+         The line after that is just the product rule,
+         \begin{align}
+             \partial_\mu(\partial_\nu \phi \partial^\nu \phi) &= \partial_\mu \partial_\nu \phi \partial^\nu \phi + \partial_\nu \phi \partial_\mu \partial^\nu\phi\\
+             &= \partial_\mu \partial_\nu \phi \partial^\nu \phi + \partial^\nu \phi \partial_\mu \partial^\nu\phi\\
+             &= 2\partial_\mu \partial_\nu \phi \partial^\nu \phi,
+         \end{align}
+         and finally the whole expression is zero because it's the integral of a total derivative, and this vanishes by integration by parts with a constant function and vanishing on the boundary.
+    \end{exm}
+    
+    \begin{exm}{}{}
+        Consider the action functional for three free massless scalar boson fields
+        \begin{equation}
+            S_{\freeboson}^{(3)}[\phi_1, \phi_2, \phi_3] = \frac{1}{8\pi} \int \dl{^2x} \, \partial_\mu \phi_a \partial^\mu \phi_a.
+        \end{equation}
+        We sum over both \(\mu = 1, 2\) and \(a = 1, 2, 3\) here.
+        This is invariant under the mapping
+        \begin{equation}
+            \phi_a(x) \mapsto M_{ab}\phi_b(x)
+        \end{equation}
+        for \(M_{ab} \in \orthogonal(3)\).
+        To see this write the three fields as a vector
+        \begin{equation}
+            \phi = 
+            \begin{pmatrix}
+                \phi_1\\ \phi_2\\ \phi_3
+            \end{pmatrix}
+        \end{equation}
+        and then the action functional becomes
+        \begin{equation}
+            S_{\freeboson}^{(3)}[\phi_1, \phi_2, \phi_3] = \frac{1}{8\pi} \int \dl{^2x} \, (\partial_\mu \phi) \cdot (\partial^\mu \phi)
+        \end{equation}
+        where the dot product is exactly what you'd expect:
+        \begin{equation}
+            \Phi \cdot \Phi = \Phi_1^2 + \Phi_2^2 + \Phi_3^2 \quad \text{for} \quad \Phi = (\Phi_1, \Phi_2, \Phi_3).
+        \end{equation}
+        The action functional is clearly invariant under \(\phi \mapsto M\phi\) since by definition \(M\Phi \cdot M\Phi = \Phi \cdot \Phi\) for \(M \in \orthogonal(3)\), and this holds for the derivative terms also.
+        It is then natural to think of \(M\) as rotating the fields into each other, since after acting with \(M\) the first component of \(\phi\) will generally depend on \(\phi_1\), \(\phi_2\), and \(\phi_3\).
+        In fact, it's common to think of all symmetries of the form \(\phi \mapsto U \phi\) for \(U\) in some matrix Lie group as \enquote{rotating} the fields into each other.
+        
+        Note that this only works if \(M\) is constant (i.e., a global symmetry), if \(M\) depends on \(x\) then the derivative terms get messed up.
+        There is a canonical way to fix this, we replace the derivatives \(\partial_\mu\) with \enquote{gauge covariant derivatives} \(D_\mu = \partial_\mu - \alpha A_\mu\) for some constant\footnote{constant with respect to spacetime, it turns out that \(\alpha\) is generally not constant with respect to the energy of the interaction, this is known as running of the gauge coupling, and is one of the weird things about QFT. It leads to cool sounding things like \enquote{asymptotic freedom} in QCD.} \(\alpha\) and some vector field \(A_\mu\), which is chosen to also transform in such a way that the extra terms arising from the derivatives of \(M(x)\) perfectly cancel with the extra terms arising from \(A_\mu\)'s transformation.
+        In this case this requires that \(A_\mu\) transforms as \(A_\mu(x) \mapsto A_\mu(x) + \alpha^{-1}\partial_\mu M(x)\).
+        
+        The infinitesimal version of this transformation is
+        \begin{equation}
+            \phi_a(x) \mapsto \phi_a(x) + \omega^b \varepsilon_{abc} \phi_c(x)
+        \end{equation}
+        where \(\varepsilon_{abc}\) is the Levi-Civita totally antisymmetric 3-nr defined by \(\varepsilon_{123} = 1\).
+        This comes from the fact that \(\varepsilon_{abc}\) are the structure constants of the \(\orthogonalLie(3)\) Lie algebra, which consists of antisymmetric \(3 \times 3\) real matrices.
+        Fixing \(b\) we can think of \(\varepsilon_{abc}\) as a \(3 \times 3\) matrix with components \(A_{ac} = \varepsilon_{abc}\), and these matrices form a basis for \(\orthogonalLie(3)\), so \(\omega^b\varepsilon_{abc}\) is just an arbitrary element of \(\orthogonalLie(3)\) expressed in this basis.
+        
+        We can see that this is a symmetry by computing \(\delta S_{\freeboson}^{(3)}\):
+        \begin{align}
+            \delta S_{\freeboson}^{(3)} &= - \frac{1}{4\pi} \int \dl{^2x} \, \varepsilon_{abc} \omega^b \phi_c(x) \partial_\nu \partial^\nu \phi_a(x)\\
+            &= \frac{1}{4\pi} \int \dl^2x \, \omega_{abc} \omega^b \partial_\nu \phi_c(x) \partial^\nu \phi_a(x)\\
+            &= 0.
+        \end{align}
+        Here the first equality follows from the same calculations that we used to compute the 2-point correlators following \cref{eqn:free boson 2-correlator step 1}.
+        The second equality is integration by parts to move the derivative across at the cost of a sign.
+        The third equality is because \(\varepsilon_{abc}\) is antisymmetric in \(a\) and \(c\), and \(\partial_\nu \phi_c(x) \partial^\nu \phi_a(x)\) is symmetric in \(a\) and \(c\).
+    \end{exm}
     
 %	 Appdendix
 	\appendixpage
