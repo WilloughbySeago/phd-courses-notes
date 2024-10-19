@@ -1368,7 +1368,7 @@ noabbrev
     \end{equation}
     The infinitesimal transformation is a symmetry (by which we mean it exponentiates to a symmetry) if and only if \(\delta S = 0\).
     
-    \begin{exm}{}{}
+    \begin{exm}{}{exm:translation symmetry}
         Consider the free massless scalar boson with action functional
         \begin{equation}
             S_{\freeboson}[\phi] = \frac{1}{8\pi}\int \dl{^2x} \partial_\mu \phi \partial^\mu \phi.
@@ -1406,7 +1406,7 @@ noabbrev
          and finally the whole expression is zero because it's the integral of a total derivative, and this vanishes by integration by parts with a constant function and vanishing on the boundary.
     \end{exm}
     
-    \begin{exm}{}{}
+    \begin{exm}{}{exm:rotational symmetry}
         Consider the action functional for three free massless scalar boson fields
         \begin{equation}
             S_{\freeboson}^{(3)}[\phi_1, \phi_2, \phi_3] = \frac{1}{8\pi} \int \dl{^2x} \, \partial_\mu \phi_a \partial^\mu \phi_a.
@@ -1416,7 +1416,7 @@ noabbrev
         \begin{equation}
             \phi_a(x) \mapsto M_{ab}\phi_b(x)
         \end{equation}
-        for \(M_{ab} \in \orthogonal(3)\).
+        for \(M \in \orthogonal(3)\).
         To see this write the three fields as a vector
         \begin{equation}
             \phi = 
@@ -1442,10 +1442,10 @@ noabbrev
         
         The infinitesimal version of this transformation is
         \begin{equation}
-            \phi_a(x) \mapsto \phi_a(x) + \omega^b \varepsilon_{abc} \phi_c(x)
+            \phi_a(x) \mapsto \phi_a(x) + M_{ab}\phi_b(x) = \phi_a(x) + \omega^b \varepsilon_{abc} \phi_c(x)
         \end{equation}
-        where \(\varepsilon_{abc}\) is the Levi-Civita totally antisymmetric 3-nr defined by \(\varepsilon_{123} = 1\).
-        This comes from the fact that \(\varepsilon_{abc}\) are the structure constants of the \(\orthogonalLie(3)\) Lie algebra, which consists of antisymmetric \(3 \times 3\) real matrices.
+        where \(M_{ab} \in \specialOrthogonalLie(3)\) and \(\varepsilon_{abc}\) is the Levi-Civita totally antisymmetric 3-nr defined by \(\varepsilon_{123} = 1\).
+        The equality follows from the fact that \(\varepsilon_{abc}\) are the structure constants of the \(\orthogonalLie(3)\) Lie algebra, which consists of antisymmetric \(3 \times 3\) real matrices.
         Fixing \(b\) we can think of \(\varepsilon_{abc}\) as a \(3 \times 3\) matrix with components \(A_{ac} = \varepsilon_{abc}\), and these matrices form a basis for \(\orthogonalLie(3)\), so \(\omega^b\varepsilon_{abc}\) is just an arbitrary element of \(\orthogonalLie(3)\) expressed in this basis.
         
         We can see that this is a symmetry by computing \(\delta S_{\freeboson}^{(3)}\):
@@ -1458,6 +1458,304 @@ noabbrev
         The second equality is integration by parts to move the derivative across at the cost of a sign.
         The third equality is because \(\varepsilon_{abc}\) is antisymmetric in \(a\) and \(c\), and \(\partial_\nu \phi_c(x) \partial^\nu \phi_a(x)\) is symmetric in \(a\) and \(c\).
     \end{exm}
+    
+    The reason we care about symmetries in QFT is Noether's theorem, a result that tells us that each continuous symmetry gives rise to a conservation law, and we like conservation laws in physics because they give us equations we can work with.
+    
+    \begin{thm}{Noether}{}
+        Let \(\lagrangian\) be a Lagrangian in the fields \(\phi_i\) and suppose we have an infinitesimal transformation
+        \begin{equation}
+            \phi_i(x) \mapsto \phi_i(x) + \omega^a(x) \delta_a \phi_i(x).
+        \end{equation}
+        This is a symmetry of the equations of motion if under this transformation
+        \begin{equation}
+            \lagrangian \mapsto \lagrangian + \omega^a \partial_\mu X^\mu_a.
+        \end{equation}
+        for some smooth vector field \(X_a\).
+        When this is the case the current density, also called the \defineindex{Noether current},
+        \begin{equation}
+            j^\mu_a = X^\mu_a - \diffp{\lagrangian}{(\partial_\mu \phi_i)} \delta_a\phi_i
+        \end{equation}
+        is conserved, meaning \(\partial_\mu j^\mu = 0\).
+    \end{thm}
+    
+    This is a rather abstract statement of the result.
+    Most of the time we're interested in the case where \(\delta \lagrangian = 0\), so \(X^\mu_a = 0\).
+    However, since what we really want is that the action is invariant we allow this divergence term, \(\partial_\mu X^\mu_a\), since the divergence theorem allows us to write this as a boundary term, which we always assume vanishes.
+    
+    The reason that this gives a conserved quantity is that we are promoting \(\omega^a\) to depend on position.
+    This means that the variation in the action is no longer zero, and is instead given by
+    \begin{equation}
+        \delta S = -\int \dl^2x \, j^\mu_a(x) \partial_\mu \omega^a(x).
+    \end{equation}
+    Integrating by parts we then have
+    \begin{equation}
+        \delta S = \int \dl^2x \, \partial_\mu j^\mu_a(x) \omega^a(x).
+    \end{equation}
+    Since \(\omega^a\) is in general non-zero this will vanish, as the variation in the action must, only if \(\partial_\mu j^\mu_a = 0\).
+    
+    \begin{exm}{}{}
+        Consider the free massless scalar boson.
+        As discussed in \cref{exm:translation symmetry} this admits a translational symmetry
+        \begin{equation}
+            \phi(x) \mapsto \phi(x) + \omega^\nu \partial_\nu \phi(x).
+        \end{equation}
+        Here the conserved current is
+        \begin{equation}
+            j^{\mu\nu} = \frac{1}{8\pi} (\delta^{\mu\nu} \partial_\rho \phi \partial^\rho \phi - 2\partial^\nu \phi \partial^\mu \phi).
+        \end{equation}
+        Note that in this the index \(a\) for the symmetry is actually a spacetime index, \(\nu\).
+        Despite this formal difference between how the indices \(\mu\) and \(\nu\) arise this quantity is actually symmetric in these indices.
+        
+        We can fairly easily show that \(j^{\mu\nu}\) is conserved by considering the equations of motion for \(\phi\), which can be derived from the Euler--Lagrange equations,
+        \begin{equation}
+            \partial_\mu\left( \diffp{\lagrangian}{(\partial_\mu \phi)} \right) = \diffp{\lagrangian}{\phi}.
+        \end{equation}
+        In this case the Lagrangian is
+        \begin{equation}
+            \lagrangian = \frac{1}{8\pi} \partial_\nu \phi \partial^\nu \phi,
+        \end{equation}
+        and as we always do in the Lagrangian formalism we treat \(\phi\) and its derivatives as independent, meaning we have
+        \begin{equation}
+            \diffp{\lagrangian}{\phi} = 0, \qqand \diffp{\lagrangian}{(\partial_\mu \phi)} = \frac{1}{8\pi}2\partial^\mu \phi.
+        \end{equation}
+        Thus, we have the equation of motion
+        \begin{equation}
+            \partial_\mu \partial^\mu \phi = 0,
+        \end{equation}
+        which is just Laplace's equation.
+        Now we compute the divergence of \(j^{\mu\nu}\):
+        \begin{align}
+            \partial_\mu j^{\mu\nu} &= \frac{1}{8\pi} (\delta^{\mu\nu} \partial_\mu \partial_\rho \phi \partial^\rho \phi + \delta^{\mu\nu} \partial_\rho \phi \partial_\mu \partial^\rho \phi \notag\\
+            &\qquad - 2 \partial_\mu \partial^\nu \phi \partial^\mu \phi - 2\partial^\nu \phi \underbrace{\partial_\mu \partial^\mu \phi}_{=0})\\
+            &= \frac{1}{8\pi}(\partial^\nu \partial_\rho\phi \partial^\rho\phi + \partial_\rho \phi \partial^\nu \partial^\rho \phi - 2\partial_\mu \partial^\nu \phi \partial^\mu \phi)\\
+            &= \frac{1}{8\pi}(\partial^\nu \partial^\rho \phi \partial_\rho \phi + \partial^\nu \partial^\rho\phi \partial_\rho\phi - 2\partial^\nu \partial^\rho \phi \partial^\rho\phi)\\
+            &= 0.
+        \end{align}
+    \end{exm}
+    
+    \begin{exm}{}{}
+        Consider the three free massless scalar boson of \cref{exm:rotational symmetry} where we showed that we have a rotational symmetry
+        \begin{equation}
+            \phi_a(x) \mapsto M_{ab}\phi_b(x)
+        \end{equation}
+        for \(M \in \orthogonal(3)\).
+        The Lagrangian in this case is
+        \begin{equation}
+            \lagrangian = \frac{1}{8\pi} \int \dl^2c \, \partial_\mu \phi_a \partial^\mu \phi_a.
+        \end{equation}
+        Some computations tell us that
+        \begin{equation}
+            \diffp{\lagrangian}{\phi_a} = 0, \qqand \diffp{\lagrangian}{(\partial_\mu \phi_a)} = \frac{1}{8\pi}2\partial^\mu \phi_a.
+        \end{equation}
+        Thus, the equations of motion are
+        \begin{equation}
+            \partial_\mu \partial^\mu \phi_a = 0
+        \end{equation}
+        for each index \(a = 1, 2, 3\).
+        The Lagrangian is invariant under this symmetry.
+        The corresponding conserved current is
+        \begin{equation}
+            j^\mu_a = - \diffp{\lagrangian}{(\partial_\mu \phi_a)} M_{ab}\phi_b = -\partial^\mu \phi_a M_{ab} \phi_b.
+        \end{equation}
+        This is conserved since
+        \begin{align}
+            \partial_\mu j^\mu_a = -\partial_\mu \partial^\mu \phi_a M_{ab} \phi_b - \partial^\mu \phi_a M_{ab} \partial_\mu \phi_b.
+        \end{align}
+        The first term vanishes by the equations of motion.
+        The second term vanishes because \(M \in \specialOrthogonalLie(3)\) is antisymmetric in \(a\) and \(b\), whereas the \(\partial^\mu \phi_a \partial_\mu \phi_b\) factor is symmetric in \(a\) and \(b\).
+    \end{exm}
+    
+    \section{Ward--Takahashi Identities}
+    Our goal in this section is to take the previous section's work on continuous symmetries and use it to impose relations between correlators.
+    To do so we start with some arbitrary action functional, \(S[\phi]\), which we assume is invariant under some infinitesimal transformation
+    \begin{equation}
+        \phi \mapsto \phi' = \phi + \omega^a \delta_a \phi.
+    \end{equation}
+    We treat this as a change of integration variable in our functional integral.
+    Demanding that functional integrals are invariant under change of integration variable we should therefore have
+    \begin{equation}
+        \int \e^{-S[\phi]}\phi(z_1) \dotsm \phi(z_n) \DD\phi = \int \e^{-S[\phi']} \phi'(z_1) \dotsm \phi'(z_n) \DD\phi'.
+    \end{equation}
+    We now assume that the integration measure, \(\DL\phi\), is invariant under this change of variables, so \(\DL\phi = \DL\phi'\).
+    This is certainly true for a normal integral where a change of variables \(x \mapsto x + c\) for a constant \(c\) doesn't change the integration measure.
+    So, using the definition of the infinitesimal transformation we are left with
+    \begin{multline}
+        \int \exp\left\{ -S[\phi] - \int \dl{^2x} \, \partial_\mu j^\mu_a(x) \omega^a(x) \right\}\\
+        \times(\phi(z_1) + \omega^a(z_1) \delta_a\phi(z_1)) \dotsm (\phi(z_n) + \omega^a(z_n) \delta_a\phi(z_n)) \DD\phi.
+    \end{multline}
+    Now, expand the exponential to first order in \(\omega^a\):
+    \begin{multline}
+        \int \left( 1 - S[\phi] - \int \dl{^2x} \partial_\mu j^\mu_a(x) \omega^a(x) \right)\\
+        \times(\phi(z_1) + \omega^a(z_1) \delta_a\phi(z_1)) \dotsm (\phi(z_n) + \omega^a(z_n) \delta_a\phi(z_n)) \DD\phi.
+    \end{multline}
+    Since we're expanding only to first order in \(\omega^a\) we should expand the brackets and drop any terms with more than one factor of \(\omega^a\).
+    This gives
+    \begin{multline}
+        \int \left( 1 - S[\phi] - \int \dl^2x \partial_\mu j^\mu_a(x) \omega^a(x) \right) (\phi(z_1) \dotsm \phi(z_n)\\
+        + \phi(z_1) \dotsm \phi(z_{n-1}) \omega^a(z_n)\delta_a\phi(z_n) + \dotsb + \omega^a(z_1)\delta_a\phi(z_1) \phi(z_2) \dotsm \phi(z_n)) \DD\phi.
+    \end{multline}
+    Expanding the bracket further, and still keeping only first order terms in \(\omega^a\), we get
+    \begin{multline*}
+        \int (1 - S[\phi])\bigg( \phi(z_1) \dotsm \phi(z_n) + \phi(z_1) \dotsm \phi(z_{n-1}) \omega^a(z_n)\delta_a\phi(z_n) + \dotsb\\
+         + \omega^a(z_1)\delta_a\phi(z_1)\phi(z_2) \dotsm \phi(z_n) - \left( \int \dl^2x \partial_\mu j^\mu_a(x)\omega^a(x) \phi(z_1) \dotsm \phi(z_n)  \right) \bigg) \DD\phi.
+    \end{multline*}
+    We now take the functional derivative with respect to \(\omega^a(y)\).
+    This turns each \(\omega^a(z)\) into \(\delta(y - z)\) and we are then left with
+    \begin{multline*}
+        \int\left( 1 - S[\phi] \right) \bigg( 0 + \phi(z_1) \dotsm \phi(z_{n-1}) \delta(y - z_n)\delta_a\phi(z_n) + \dotsb\\
+        + \delta(y - z_1)\delta_a\phi(z_1)\phi(z_2) \dotsm \phi(z_n) - \left( \int \dl{^2x} \, \partial_\mu j^\mu_a(x) \delta(y - x) \phi(z_1) \dotsm \phi(z_n) \right)\bigg).
+    \end{multline*}
+    We can use the Dirac delta to perform the inner integral, giving
+    \begin{multline*}
+        \int\left( 1 - S[\phi] \right) \bigg( \phi(z_1) \dotsm \phi(z_{n-1}) \delta(y - z_n)\delta_a\phi(z_n) + \dotsb\\
+        + \delta(y - z_1)\delta_a\phi(z_1)\phi(z_2) \dotsm \phi(z_n) - \left( \partial_\mu j^\mu_a(y)\phi(z_1) \dotsm \phi(z_n) \right)\bigg).
+    \end{multline*}
+    We now make the assumption that \(1 - S[\phi] = \exp\{-S[\phi]\}\), allowing us to write this as
+    \begin{multline*}
+        \int \e^{-S[\phi]} ( \phi(z_1) \dotsm \phi(z_{n-1}) \delta(y - z_n)\delta_a\phi(z_n) + \dotsb\\
+        + \delta(y - z_1)\delta_a\phi(z_1) \phi(z_2) \dotsm \phi(z_n) - \partial_\mu j^\mu_a(y) \phi(z_1) \dotsm \phi(z_n) ).
+    \end{multline*}
+    We can expand this and use the linearity of the integral to recognise that this is a sum of correlators (after dividing by \(Z\) for normalisation).
+    Further, this sum must vanish, because we took the derivative with respect to \(\omega^a\) and when considering the initial expression in \(\phi\) it is independent of \(\omega^a\).
+    Rearranging these correlators slightly, and using linearity to pull the \(\delta(y - z)\) terms out, and finally renaming \(y\) to \(x\), we have
+    \begin{align}
+        \correlator{\partial_\mu j^\mu_a(x) \phi(z_1) \dotsm \phi(z_n)} &= \delta(x - z_1) \correlator{\delta_a\phi(z_1)\phi(z_2) \dotsm \phi(z_n)}\\
+        &+ \dotsb \notag\\
+        &+ \delta(x - z_n)\correlator{\phi(z_1) \dotsm \phi(z_{n-1}) \delta_a\phi(z_n)}. \notag
+    \end{align}
+    This is called the \defineindex{Ward--Takahashi identity}, or sometimes just the \defineindex{Ward identity}.
+    
+    This is the QFT version of the classical conservation law \(\partial_\mu j^\mu_a = 0\).
+    The idea is, much like the Schwinger--Dyson/quantum equations of motion, this reduces to \(\partial_\mu j^\mu_a = 0\) in almost all cases, whenever \(x \ne z_i\), but when \(x = z_i\) we get these \enquote{contact terms} in the form of the infinite Dirac deltas.
+    
+    Note that to use \(Z\) we had to use the fact that
+    \begin{equation}
+        Z' = Z + Z \int \dl{^2x} \correlator{\omega^a(x) \partial_\mu j^\mu_a(x)} = Z + Z\int \dl^2x \omega^a(x) \partial_\mu \correlator{j^\mu_a(x)} = Z
+    \end{equation}
+    where the first equality follows by linearity of the correlators and the derivative rule for the correlators.
+    The final equality follows assuming that \(\correlator{j^\mu_a(x)} = 0\), which is the case by rotational invariance.
+    Basically, if this result was non-zero then it would give us a distinguished direction in spacetime, the direction this correlator points in, and that is not something we have.
+    
+    Further, note that if we replace our fundamental field with \(n\) (scalar) fields \(\quantumField{O}_i \in W\) with the infinitesimal transformations
+    \begin{equation}
+        \quantumField{O}_i(x) \mapsto \quantumField{O}_i(x) + \omega^a \delta_a\quantumField{O}_i(x)
+    \end{equation}
+    where \(\delta_i\quantumField{O}_i \in W\) with corresponding conserved currents \(j^\mu_a \in W\) then
+    \begin{align}
+        \correlator{\partial_\mu j^\mu_a(x) \quantumField{O}_1(z_1) \dotsm \quantumField{O}_n(z_n)} &= \delta(x - z_1) \correlator{\delta_a\quantumField{O}_1(z_1)\quantumField{O}_2(z_2) \dotsm \quantumField{O}_n(z_n)}\\
+        &+ \dotsb \notag\\
+        &+ \delta(x - z_n)\correlator{\quantumField{O}_1(z_1) \dotsm \quantumField{O}_{n-1}(z_{n-1}) \delta_a\quantumField{O}_n(z_n)}, \notag
+    \end{align}
+    and the proof of this is identical to the proof where \(\quantumField{O}_i = \phi\).
+    
+    \section{Diffeomorphism Covariance and Change of Metric}
+    To do conformal field theory we need to consider correlation functions on \(\complex_{\infty}\) with a general metric, \(g_{\mu\nu}\).
+    We can define a QFT via a path integral and action functional \(S[\phi, g_{\mu\nu}]\).
+    It is important to distinguish here that \(\phi\) is the quantum field, and \(g_{\mu\nu}\) is just there because we're now including explicit metric dependence.
+    Crucially we do not attempt to do a functional integral over \(g_{\mu\nu}\), to do so would be to step into the realms of quantum gravity, something we are not equipped for or interested in.
+    
+    For example, the free massless scalar boson should be modified by taking
+    \begin{equation}
+        S_{\freeboson}[\phi, g_{\mu\nu}] = \frac{1}{8\pi} \int \dl{^2x} \, \sqrt{g} g^{\mu\nu} \partial_\mu \phi \partial_\nu \phi = \frac{1}{8\pi} \int \dl^2x \, \sqrt{g} \partial^\mu \phi \partial_\mu \phi.
+    \end{equation}
+    Here \(g = \det(g_{\mu\nu})\), and \(\dl{^2x}\sqrt{g}\) is the volume form.
+    
+    Our correlators are then given by
+    \begin{equation}
+        \correlator{\phi(x_1) \dotsm \phi(x_n)}_{g_{\mu\nu}} = \frac{1}{Z[g_{\mu\nu}]} \int \e^{-S[\phi, g_{\mu\nu}]} \phi(x_1) \dotsm \phi(x_n) \DD\phi.
+    \end{equation}
+    Here
+    \begin{equation}
+        Z[g_{\mu\nu}] = \correlator{1}_{g_{\mu\nu}} = \int \e^{-S[\phi, g_{\mu\nu}]} \DD\phi
+    \end{equation}
+    is the partition functional in this general metric.
+    We can be more general and replace each \(\phi\) with a field \(\quantumField{O}_i\).
+    
+    Now consider a diffeomorphism \(\varphi \colon \complex_{\infty} \to \complex_{\infty}\).
+    In physics parlance this is just a smooth change of coordinates in our space.
+    We should get the result that
+    \begin{equation}
+        \correlator{\quantumField{O}_1(\varphi(x_1)) \dotsm \quantumField{O}_n}_{g_{\mu\nu}} = \correlator{\quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}_{\varphi^*g_{\mu\nu}}.
+    \end{equation}
+    Note that here we take \(g_{\mu\nu}\) to be the metric of codomain of \(\varphi\), if instead we take it to be the metric of the domain then we should have
+    \begin{equation}
+        \correlator{\quantumField{O}_1(\varphi(x_1)) \dotsm \quantumField{O}_n}_{(\varphi^{-1})^*g_{\mu\nu}} = \correlator{\quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}_{g_{\mu\nu}}.
+    \end{equation}
+    This is a bit like how in a change of coordinates given by translating \(x\) by \(a\) we actually evaluate our functions at \(x - a\).
+    
+    We demand that the action functional is invariant under this ,
+    \begin{equation}
+        Z[g_{\mu\nu}] = \correlator{1}_{g_{\mu\nu}} = \correlator{1}_{\varphi^*g_{\mu\nu}} = Z[\varphi^*g_{\mu\nu}].
+    \end{equation}
+    
+    We can think of this diffeomorphism/coordinate change as a symmetry of our QFT.
+    This symmetry is
+    \begin{equation}
+        x^\mu \mapsto \varphi^\mu(x).
+    \end{equation}
+    We also have
+    \begin{equation}
+        (\varphi^*g)_{\mu\nu} = \diffp{\varphi^\alpha}{x^\mu} \diffp{\varphi^\beta}{x^\nu} g_{\alpha\beta}(\varphi(x)).
+    \end{equation}
+    Note that, for now, we're assuming that our local fields transform as scalars, later we'll generalise to vectors, tensors, and even spinors.
+    
+    Suppose that the corresponding infinitesimal change of the metric is by addition of a special local field, \(T^{\mu\nu} \in W\), called the \defineindex{energy-momentum tensor} (or \defineindex{stress-energy tensor}).
+    This field's defining property is that
+    \begin{multline}
+        \label{eqn:defining property of energy momentum tensor}
+        2^m \frac{1}{Z[g_{\mu\nu}]} \frac{\delta^m}{\delta g_{\mu_1\nu_1}(y_1) \dotsm \delta_{\mu_m\nu_m}(y_m)} Z[g_{\mu\nu}]\correlator{\quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}_{g_{\mu\nu}}\\
+        = \left( \prod_{i=1}^m \sqrt{g(y_i)} \right) \correlator{T^{\mu_1\nu_1}(y_1) \dotsm T^{\mu_m\nu_m}(y_m) \quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}_{g_{\mu\nu}}.
+    \end{multline}
+    
+    For the \(m = 1\) case we have
+    \begin{multline}
+        2 \frac{1}{Z[g_{\mu\nu}]} \diffd{}{g_{\mu\nu}(y)} (Z[g_{\mu\nu}] \correlator{\quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}_{g_{\mu\nu}})\\
+        = \sqrt{g(y)} \correlator{T^{\mu\nu}(y) \quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}_{g_{\mu\nu}}.
+    \end{multline}
+    This has the equivalent integral version
+    \begin{multline*}
+        Z[g_{\mu\nu} + \delta g_{\mu\nu}] \correlator{\quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}_{g_{\mu\nu} + \delta g_{\mu\nu}}\\
+        = Z[g_{\mu\nu}] \correlator{\quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}_{g_{\mu\nu}}\\
+        + \frac{1}{2} \int \dl{^2y} \, \sqrt{g} \correlator{T^{\mu\nu}(y) \delta g_{\mu\nu}(y) \quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}_{g_{\mu\nu}}.
+    \end{multline*}
+    Here we're taking an infinitesimal transformation
+    \begin{equation}
+        g_{\mu\nu} \mapsto g'_{\mu\nu} = g_{\mu\nu} + \delta g_{\mu\nu}.
+    \end{equation}
+    Using \((g')_{\mu\alpha}(g')^{\alpha\nu} = \tensor{\delta}{^\nu_\mu}\) we have
+    \begin{align}
+        \tensor{\delta}{^\nu_\mu} &= (g_{\mu\alpha} + \delta g_{\mu\alpha})(g^{\alpha\nu} + \delta g^{\alpha\nu})\\
+        &= g_{\mu\alpha} g^{\alpha\nu} + g_{\mu\alpha} \delta g^{\alpha\nu} + g^{\alpha\nu} \delta g_{\mu\alpha} + \delta g_{\mu\alpha} \delta g_{\alpha\nu}\\
+        &= \tensor{\delta}{^\nu_\mu} + g_{\mu\alpha} \delta g^{\alpha\nu} + g^{\alpha\nu} \delta g_{\mu\alpha} + \order(\delta g^2)
+    \end{align}
+    which means we must have
+    \begin{equation}
+        g_{\mu\alpha} \delta g^{\alpha\nu} + g^{\alpha\nu} \delta g_{\mu\alpha} = 0 \implies g_{\mu\alpha} \delta g^{\alpha\nu} = -g^{\alpha\nu} \delta g_{\mu\alpha}.
+    \end{equation}
+    Multiplying this by \(g^{\mu\beta}\) we have
+    \begin{equation}
+        g^{\mu\beta} g_{\mu\alpha} \delta g^{\alpha\nu} = - g^{\mu\beta} g^{\alpha\nu} \delta g_{\mu\alpha}
+    \end{equation}
+    which simplifies to
+    \begin{equation}
+        \tensor{\delta}{^\beta_\alpha} \delta g^{\alpha\nu} = - g^{\mu\beta} g^{\alpha\nu} \delta g_{\mu \alpha}
+    \end{equation}
+    and so
+    \begin{equation}
+        \delta g^{\beta\nu} = - g^{\mu\beta} g^{\alpha\nu} \delta g_{\mu \alpha}.
+    \end{equation}
+    The minus sign is important here, it means that in equations like \cref{eqn:defining property of energy momentum tensor} we can replace \(\delta g^{\alpha\beta}\) on the left with \(\delta g_{\alpha\beta}\) as long as we swap \(T_{\alpha\beta}\) for \(-T^{\alpha\beta}\) on the right.
+    This means we don't have to specify any derivatives with respect to \(g^{\alpha\beta}\), just the derivatives with respect to \(g_{\alpha\beta}\) in \cref{eqn:defining property of energy momentum tensor} are sufficient.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
 %	 Appdendix
 	\appendixpage
