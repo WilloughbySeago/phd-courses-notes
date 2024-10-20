@@ -2163,7 +2163,7 @@ noabbrev
     
     \begin{lma}{}{}
         Let \(\lie{g}\) be a finite dimensional Lie algebra.
-        Then there exists a maximal (with respect to inclusion) solvable ideal of \(\lie{g}\) called the \defineindex{radical} of \(\lie{g}\), denoted \(\rad \lie{g}\).
+        Then there exists a maximal (with respect to inclusion) solvable ideal of \(\lie{g}\) called the \define{radical}\index{radical!of a Lie algebra} of \(\lie{g}\), denoted \(\rad \lie{g}\).
         \begin{proof}
             Let \(\{\lie{i}_{\alpha}\}_{\alpha \in A}\) be the collection of all solvable ideals.
             Define
@@ -2290,7 +2290,7 @@ noabbrev
     \end{lma}
     
     \begin{thm}{}{thm:engel}
-        Let \(V\) be a finite dimensional vector space with \(V \ne 0\).
+        Let \(V\) be a finite dimensional vector space over \(\field\) with \(V \ne 0\).
         Let \(\nilpotentLie\) be a subalgebra of \(\generalLinearLie(V)\) such that all elements of \(\nilpotentLie\) are nilpotent endomorphisms of \(V\).
         Then there exists some vector \(v \in V\) with \(v \ne 0\) such that \(\nilpotentLie \cdot v = 0\), that is, \(v \in \ker \varphi\) for all \(\varphi \in \nilpotentLie\).
         \begin{proof}
@@ -2298,7 +2298,7 @@ noabbrev
             
             \Step{Base Case}
             The base case is \(\dim \nilpotentLie = 1\).
-            In this case we know that \(\nilpotentLie = \complex X\) for some (in fact, any) \(X \in \nilpotentLie \setminus \{0\}\).
+            In this case we know that \(\nilpotentLie = \field X\) for some (in fact, any) \(X \in \nilpotentLie \setminus \{0\}\).
             We know that \(X\) is nilpotent by assumption.
             So, there exists some minimal \(n \in \naturals\) such that \(X^n = 0\), and since \(X \ne 0\) we know that \(n \ge 2\).
             By the assumption that \(n\) is minimal we know that \(X^{n-1} \ne 0\).
@@ -2341,15 +2341,15 @@ noabbrev
             Let \(Y \in \nilpotentLie\) be a representative of \(\overbar{Y}\).
             That is, \(\overbar{Y} = Y + \nilpotentLie\).
             Then we have \(\bracket{\lie{l}}{Y} \subseteq \lie{l}\) and \(\).
-            This implies that \(\bracket{\lie{l} \oplus \complex Y}{\lie{l} \oplus \complex Y} \subseteq \lie{l} \oplus \complex Y\).
-            This means that \(\lie{l} \oplus \complex \lie{l}\) is a subalgebra of \(\nilpotentLie\).
-            Now, \(\dim(\lie{l} \oplus \complex Y) = \dim(\lie{l}) + 1\), and so by the assumption that \(\lie{l}\) is a \emph{maximal} proper subalgebra we must have that \(\lie{l} \oplus \complex Y = \nilpotentLie\).
+            This implies that \(\bracket{\lie{l} \oplus \field Y}{\lie{l} \oplus \field Y} \subseteq \lie{l} \oplus \field Y\).
+            This means that \(\lie{l} \oplus \field \lie{l}\) is a subalgebra of \(\nilpotentLie\).
+            Now, \(\dim(\lie{l} \oplus \field Y) = \dim(\lie{l}) + 1\), and so by the assumption that \(\lie{l}\) is a \emph{maximal} proper subalgebra we must have that \(\lie{l} \oplus \field Y = \nilpotentLie\).
             This proves that \(\dim \lie{l} = \dim(\nilpotentLie) - 1\).
             It also implies that \(\lie{l}\) is an ideal, since all elements in \(\nilpotentLie\) which are not in \(\lie{l}\) are just scalar multiples of \(Y\), and we've seen that \(\bracket{\lie{l}}{Y} \in \lie{l}\), so \(\lie{l}\) has the required absorbing property.
             
             Since \(\dim \lie{l} < \dim \nilpotentLie\) we can apply the induction hypothesis, and we know that there is some \(v \in \lie{l}\) with \(v \ne 0\) such that \(\lie{l} \cdot v = 0\).
             Let \(W \subseteq V\) be the subspace of all vectors with this property.
-            Taking the decomposition \(\nilpotentLie = \lie{l} \oplus \complex Y\) it is sufficient to show that there is some \(w \in W\) with \(w \ne 0\) such that \(Y(w) = 0\), since then we will certainly have \((X + Y)(w) = X(w) + Y(w) = 0 + 0 = 0\) for \(X \in \lie{l}\).
+            Taking the decomposition \(\nilpotentLie = \lie{l} \oplus \field Y\) it is sufficient to show that there is some \(w \in W\) with \(w \ne 0\) such that \(Y(w) = 0\), since then we will certainly have \((X + Y)(w) = X(w) + Y(w) = 0 + 0 = 0\) for \(X \in \lie{l}\).
             To show that such a \(w\) exists take \(X \in \lie{l}\), then since the bracket in \(\generalLinearLie(V)\) is just the commutator we can evaluate at some \(w \in W\) and we have
             \begin{equation}
                 XY(w) = YX(w) + \bracket{X}{Y}(w) = 0,
@@ -2397,7 +2397,7 @@ noabbrev
     Note that each basis choice gives us a (not necessarily unique) algebra \(\borelLie(n, \complex)\) (called a Borel subalgebra), of matrices which are upper triangular when expressed in that basis.
     While this pairing of bases to Borel subalgebras is not a bijection the pairing of standard flags to Borel subalgebras is, since two bases give the same Borel subalgebra if and only if they are related by rescaling the basis elements, if and only if they correspond to the same standard flag.
     
-    \begin{crl}{}{}
+    \begin{crl}{}{crl:nilpotent always corresponds to strictly upper triangular}
         Let \(V\) be a finite dimensional vector space with \(V \ne 0\).
         Let \(\nilpotentLie\) be a subalgebra of \(\generalLinearLie(V)\) such that all elements of \(\nilpotentLie\) are nilpotent endomorphisms of \(V\).
         Then there exists a basis of \(V\) such that all elements of \(\nilpotentLie\) correspond to strictly upper triangular matrices in this basis.
@@ -2439,6 +2439,317 @@ noabbrev
             Thus, this flag is as required.
         \end{proof}
     \end{crl}
+    
+    We now have another lemma before we can prove another corollary of Engel's theorem, which is really a corollary of this corollary.
+    
+    \begin{lma}{}{lma:nilpotent when quotiented by centre implies nilpotent}
+        Let \(\nilpotentLie\) be a Lie algebra such that \(\nilpotentLie/\centre(\nilpotentLie)\) is nilpotent.
+        Then \(\nilpotentLie\) is nilpotent.
+        \begin{proof}
+            For \(\lie{g}\) a Lie algebra and \(\lie{i} \subseteq \lie{g}\) an ideal we have \((\lie{g}/\lie{i})_n = \lie{g}_n + \lie{i}/\lie{i}\).
+            Taking \(\lie{g} = \nilpotentLie\) and \(\lie{i} = \centre(\nilpotentLie)\) we have \((\nilpotentLie_n + \centre(\nilpotentLie))/\centre(\nilpotentLie) = (\nilpotentLie/\centre(\nilpotentLie))_n\).
+            By assumption \(\nilpotentLie/\centre(\nilpotentLie)\) is nilpotent, so there is some \(N \in \naturals\) such that \((\nilpotentLie/\centre(\nilpotentLie))_N = 0\).
+            We therefore have \((\nilpotentLie_N + \centre(\nilpotentLie))/\centre(\nilpotentLie) = 0\), which is only possible if \(\nilpotentLie_N = 0\), which means that \(\nilpotentLie\) is nilpotent.
+        \end{proof}
+    \end{lma}
+    
+    This result is useful because we always have the adjoint action, \(\ad \colon \lie{g} \to \generalLinearLie(\lie{g})\), and by definition \(\ker \ad = \centre(\lie{g})\).
+    Then using the first isomorphism theorem we have \(\ad(\lie{g}) \isomorphic \lie{g} / \centre(\lie{g})\).
+    This means that we always have an embedding of \(\lie{g}/\centre(\lie{g})\) into \(\generalLinearLie(\lie{g})\) for any Lie algebra, nilpotent or not.
+    This lets us study \(\lie{g}\) by studying \(\generalLinearLie(\lie{g})\), so long as we're prepared to set all central elements to zero.
+    
+    \begin{crl}{}{crl:ad-nilpotent implies nilpotent}
+        Let \(\nilpotentLie\) be a finite dimensional Lie algebra.
+        If every element of \(\nilpotentLie\) is \(\ad\)-nilpotent then \(\nilpotentLie\) is nilpotent.
+        \begin{proof}
+            By \cref{lma:nilpotent when quotiented by centre implies nilpotent} it is sufficient to prove that \(\nilpotentLie/\centre(\nilpotentLie)\).
+            By the remark following \cref{lma:nilpotent when quotiented by centre implies nilpotent} we have that \(\nilpotentLie/\centre(\nilpotentLie) \isomorphic \ad(\nilpotentLie) \subseteq \generalLinearLie(\nilpotentLie)\).
+            By \cref{crl:nilpotent always corresponds to strictly upper triangular} there exists a basis for \(\nilpotentLie\) such that elements of \(\ad(\nilpotentLie)\) are strictly upper triangular matrices in this basis.
+            This implies that, in this basis, \(\ad(\nilpotentLie) \subseteq \nilpotentLie(n, \complex)\), and this implies that \(\nilpotentLie/\centre(\nilpotentLie)\) is nilpotent, so \(\nilpotentLie\) is nilpotent by \cref{lma:nilpotent when quotiented by centre implies nilpotent}.
+        \end{proof}
+    \end{crl}
+    
+    \section{Lie's Theorem}
+    Given the notation setup in the statement of Engel's theorem (\cref{thm:engel}) we may state the conclusion as \enquote{there is a common eigenvector, \(v \in V\), for all endomorphisms \(X \in \nilpotentLie\) such that the eigenvalue of \(v\) for \(X\) is zero}.
+    Lie's theorem is the analogue for solvable Lie algebras.
+    It states that there is a common eigenvector, but does not force the eigenvalue to be zero.
+    Let \(\lie{g} \subseteq \generalLinearLie(V)\) be some Lie algebra.
+    Then \(v \in V\) is an eigenvector of all \(X \in \lie{g}\) if there exist scalars \(\alpha_X \in \field\) for each \(X \in \lie{g}\) such that \(Xv = \alpha_X v\).
+    We can then view this as a map \(\alpha \colon \lie{g} \to \field\), \(X \mapsto \alpha_X\).
+    Further, this map is linear since \(\alpha_{X + Y}\) is the eigenvalue of \(v\) under the operation \(X + Y\) and \((X + Y)v = Xv + Yv = \alpha_X v + \alpha_Y v\) so we can identify \(\alpha_{X + Y} = \alpha_X + \alpha_Y\), and similarly, \((\lambda X)v = \lambda(Xv) = \lambda \alpha_X v\) so \(\alpha_{\lambda X} = \lambda \alpha_X\).
+    Thus, \(\alpha \in \lie{g}^*\).
+    So, \(v \in V\) with \(v \ne 0\) is a common eigenvalue of all elements of \(\lie{g}\) if and only if there exists some \(\alpha \in \lie{g}^*\) such that \(Xv = \alpha(X)v\) for all \(X \in \lie{g}\).
+    
+    \begin{thm}{Lie}{thm:lie}
+        Let \(V\) be a finite-dimensional vector space over an algebraically closed field of characteristic zero (so basically, \(\field = \complex\)), \(\field\), with \(V \ne 0\), and let \(\lie{s}\) a solvable subalgebra of \(\generalLinearLie(V)\).
+        Then there exists a common eigenvector for all endomorphisms in \(\lie{s}\).
+        \begin{proof}
+            The steps taken in this proof are the same as in Enge's theorem (\cref{thm:engel}), but the justifications for why each step holds differ slightly.
+            
+            The proof is by induction on \(\dim \lie{s}\).
+            For the base case, \(\dim \lie{s} = 1\), the result is trivial as \(\lie{s} = \complex X\) for some nonzero endomorphism \(X \in \generalLinearLie(V)\), and by the assumption that we work over an algebraically closed field \(X\) has an eigenvector, \(v \in V\) with \(v \ne 0\), so \(Xv = \alpha v\) for some \(\alpha \in \field\), and this is an eigenvector of all \(Y \in \lie{s}\) since \(Y = yX\) for some \(y \in \field\), since \(Yv = yXv = y\alpha v\), so \(v\) is an eigenvector of \(Y\) with eigenvalue \(y\alpha\).
+            
+            Now suppose that \(\dim\lie{s} > 1\) and that the hypothesis holds for all solvable Lie algebras of dimension less than \(\dim \lie{s}\).
+            Since \(\lie{s}\) is solvable the derived subalgebra, \(\bracket{\lie{s}}{\lie{s}}\) is either zero or a proper ideal of \(\lie{s}\).
+            Importantly, \(\bracket{\lie{s}}{\lie{s}} \ne \lie{s}\), since then the derived series would never terminate.
+            If \(\bracket{\lie{s}}{\lie{s}} = 0\) then \(\lie{s}\) is abelian and \(\lie{s}/\bracket{\lie{s}}{\lie{s}} = \lie{s} / 0 = \lie{s}\) is abelian.
+            If \(\bracket{\lie{s}}{\lie{s}}\) is a proper ideal of \(\lie{s}\) then \(\lie{s}/\bracket{\lie{s}}{\lie{s}}\) is abelian since for all \(X, Y \in \lie{s}\) we have
+            \begin{equation}
+                \bracket{X + \lie{s}'}{Y + \lie{s}'} = \bracket{X}{Y} + \lie{s}' = \lie{s}'
+            \end{equation}
+            where \(\lie{s}' = \bracket{\lie{s}}{\lie{s}}\) and \(\bracket{X}{Y} \in \lie{s}'\) gives us the final equality.
+            This means that regardless of whether \(\lie{s}'\) is zero or a proper ideal \(\lie{s}/\lie{s}'\) is abelian and hence every subspace of \(\lie{s}/\lie{s}'\) is an ideal.
+            
+            Take some subspace of codimension 1, that is a subspace with dimension \(\dim(\lie{s}/\lie{s}') - 1\).
+            Call this subspace \(\overbar{\nilpotentLie}\), and note that this is an ideal of \(\lie{s}/\lie{s}'\).
+            Denote by \(\nilpotentLie\) the preimage of \(\overbar{\nilpotentLie}\) under the quotient map.
+            This is an ideal of \(\lie{s}\) of codimension 1.
+            This holds because the preimage of an ideal under a homomorphism is always an ideal and the projection map is surjective, so the dimensions match up as needed.
+            By induction we may posit that there is some common eigenvector for all elements of \(\nilpotentLie\), since it has dimension strictly less than \(\dim\lie{s}\) and is solvable as a subalgebra of a solvable algebra.
+            Then there exists some \(\alpha \in \nilpotentLie^*\) such that \(Xv = \alpha(X)v\) for all \(X \in \nilpotentLie\).
+            
+            Now consider the subspace \(W = \{w \in V \mid Xw = \alpha(X)w \forall X \in \nilpotentLie\}\).
+            This subspace can be thought of as the space of all candidates for a common eigenvector of \(\lie{s}\), we just need to find some element of this subspace that is also an eigenvector of some vector spanning the missing dimension that \(\lie{s}\) has but \(\nilpotentLie\) doesn't.
+            We know by the previous paragraph that \(W\) is nonempty, and thus by the following lemma (\cref{lma:lie's theorem lemma}) we know that \(W\) is an \(\lie{s}\)-submodule of \(V\).
+            Choose some \(Y \in \lie{s} \setminus \nilpotentLie\), so \(\lie{s} = \nilpotentLie \oplus \complex Y\).
+            Then \(Y(W) \subseteq W\), as otherwise \(W\) would not be a \(\lie{s}\)-submodule.
+            Thus, there exists some \(w \in W\) with \(w \ne 0\) such that \(w\) is an eigenvector of \(Y\), and so \(w\) is an eigenvalue of all elements of \(\lie{s}\).
+        \end{proof}
+    \end{thm}
+    
+    \begin{lma}{}{lma:lie's theorem lemma}
+        Work over an algebraically closed field of characteristic zero.
+        Let \(\nilpotentLie\) be an ideal of a Lie algebra \(\lie{s}\) and let \(V\) be an \(\lie{s}\)-submodule and \(\alpha \in \lie{s}^*\).
+        Let
+        \begin{equation}
+            W = \{v \in V \mid Xv = \alpha(X)v \forall X \in \nilpotentLie\}.
+        \end{equation}
+        Then \(W\) is an \(\lie{s}\)-submodule of \(V\).
+        \begin{proof}
+            We need to show that \(Y(W) \subseteq W\) for all \(Y \in \lie{s}\).
+            If \(Y \in \nilpotentLie\) then this is clearly true since \(Y\) just acts on \(W\) by scaling by \(\alpha(Y)\).
+            We need to show in general that \(Yw \in W\) for all \(w \in W\).
+            This means we need to show that \(X(Yw) = \alpha(X)Yw\) for all \(X \in \nilpotentLie\).
+            We can do this using the definition of how the bracket acts and the fact that \(w\) is an \(X\) eigenvector:
+            \begin{align}
+                X(Yw) &= Y(Xw) + \bracket{X}{Y}w\\
+                &= Y(\alpha(X)w) + \alpha(\bracket{X}{Y})w\\
+                &= \alpha(X)Yw + \alpha(\bracket{X}{Y})w.\label{eqn:bracket eigenvector}
+            \end{align}
+            Here we've used the fact that \(\bracket{X}{Y} \in \nilpotentLie\) since \(\nilpotentLie\) is an ideal of \(\lie{s}\), and so the action of the bracket is determined by \(\alpha\).
+            We are then left to show that \(\alpha(\bracket{X}{Y}) = 0\).
+            
+            Let \(U\) be the subspace of \(V\) spanned by \(\{w, Yw, Y^2w, \dotsc\}\).
+            Then \(Y(U)\) is the subspace spanned by \(\{Yw, Y^2w, Y^3w, \dotsc\}\), which is clearly a subspace of \(U\), so \(Y(U) \subseteq U\).
+            We claim that \(U\) is also an \(\nilpotentLie\)-submodule of \(V\).
+            That is, we claim that \(X(U) \subseteq U\) for all \(X \in \nilpotentLie\).
+            Clearly we have \(X(w) = \alpha(X)w \in U\), and \cref{eqn:bracket eigenvector} shows that \(X(Yw)\) is a linear combination of \(Yw\) and \(w\), so is an element of \(U\).
+            We take this as the base case for an induction proof where we wish now to show that \(X(Y^nw) \in U\) for some \(n \in \naturals\) and we assume that \(X(Y^kw) \in U\) for all \(k < n\).
+            Then we have
+            \begin{equation}
+                XY^nw = YXY^{n-1}w + \bracket{X}{Y}Y^{n-1}w
+            \end{equation}
+            and since \(\nilpotentLie\) is an ideal and \(X \in \nilpotentLie\) we have \(\bracket{X}{Y} \in \nilpotentLie\), so by the induction hypothesis \(\bracket{X}{Y}Y^{n-1}w \in U\).
+            Thus, \(XY^nw \in U\) as it's a linear combination of elements of \(U\).
+            This shows that \(XY^nw\) is given by \(\alpha(X)Y^nw\) plus terms involving \(Y^kw\) with \(k < n\).
+            Thus, there is a basis for \(U\) in which \(X\) is upper triangular, with the diagonals given by \(\alpha(X)\).
+            In particular, we have that \(\tr(X|_U) = \alpha(X) \dim U\).
+            The same is true fo \(\bracket{X}{Y} \in \nilpotentLie\), \(\tr(\bracket{X}{Y}|_U) = \alpha(\bracket{X}{Y}) \dim U\).
+            However, the trace of a commutator must vanish by the cyclic property of the trace, and thus we have \(\alpha(\bracket{X}{Y}) = 0\).
+        \end{proof}
+    \end{lma}
+    
+    Note that we require characteristic zero to conclude from \(0 = \alpha(\bracket{X}{Y}) \dim U\) that \(\alpha(\bracket{X}{Y}) = 0\), since in a field of characteristic dividing \(\dim U\) this will hold with nonzero \(\alpha(\bracket{X}{Y})\).
+    We need algebraic closure to guarantee the existence of an eigenvector in the one-dimensional base case.
+    So, Lie's theorem pretty much holds only over \(\complex\), and a few other more \enquote{constructed} fields, such as \(\overbar{\rationals}\), the algebraic closure of \(\rationals\).
+    
+    \begin{crl}{}{}
+        There exists a basis of \(V\) such that any solvable subalgebra \(\lie{s} \subseteq \generalLinearLie(V)\) is a subalgebra of \(\borelLie(n, \complex)\).
+        \begin{proof}
+            This is the same as \cref{crl:nilpotent always corresponds to strictly upper triangular} but with solvable and upper triangular in place of nilpotent and strictly upper triangular.
+        \end{proof}
+    \end{crl}
+    
+    What we have shown with Engel and Lie's theorems is the following:
+    \begin{itemize}
+        \item A nilpotent subalgebra of \(\generalLinearLie(V)\) is (up to isomorphism) a subalgebra of \(\nilpotentLie(n, \complex)\).
+        \item A solvable subalgebra of \(\generalLinearLie(V)\) is (up to isomorphism) a subalgebra of \(\borelLie(n, \complex)\).
+    \end{itemize}
+    This is the sense in which \(\nilpotentLie(n, \complex)\) and \(\borelLie(n, \complex)\) are the maximal nilpotent and solvable subalgebras of \(\generalLinearLie(V)\).
+    
+    Further clarifying nilpotent and solvable subalgebras is hard to impossible, and so we shan't try.
+    We move our focus to the classifiable semisimple Lie algebras.
+    
+    \chapter{Killing Form}
+    In this chapter we develop one of the key tools in working with semisimple Lie algebras, the Killing form.
+    Before we define the Killing form we'll have a short introduction to bilinear forms.
+    
+    \section{Bilinear Forms}
+    \begin{dfn}{}{def:bilinear form}
+        Let \(V\) be a \(\field\)-vector space.
+        A \defineindex{bilinear form}, \(\eta\), is a map \(\eta \colon V \times V \to \field\) which is linear in both arguments.
+        That is, for all \(u, v, w \in V\) and \(\lambda \in \field\) we have
+        \begin{equation}
+            \eta(u + \lambda v, w) = \eta(u, w) + \lambda \eta(v, w), \qqand \eta(u, v + \lambda w) = \eta(u, v) + \lambda \eta(u, w).
+        \end{equation}
+        
+        A bilinear form, \(\eta\), is \define{symmetric}\index{symmetric bilinear form} if for all \(u, v \in V\) we have \(\eta(u, v) = \eta(v, u)\).
+        
+        A symmetric bilinear form is \define{non-degenerate}\index{non-degenerate bilinear form} if for all \(u \in V\) with \(u \ne 0\) there exists some \(v \in V\) such that \(\eta(u, v) \ne 0\).
+    \end{dfn}
+    
+    Note that for \(\field = \reals\) non-degeneracy is equivalent to requiring that \(\eta(u, u) \ne 0\) for all \(u \ne 0\).
+    The notion of a non-degenerate bilinear form can also be extended to non-symmetric bilinear forms, but we do not have need of this.
+    We just have to repeat the definition with \(u\) and \(v\) swapped.
+    
+    Suppose that \(\eta \colon V \times V \to \field\) is a symmetric bilinear form.
+    Then we can partially evaluate at some \(u \in V\) and consider a map \(\eta(u, -) \colon V \to \field\) given by \(v \mapsto \eta(u, v)\).
+    This is linear since \(\eta\) is linear in the second argument, so \(\eta(u, -) \in V^*\).
+    Likewise, \(\eta(-, v) \colon V \to \field\) defined by \(u \mapsto \eta(u, v)\) is linear and so \(\eta(-, v) \in V^*\).
+    Of course, since \(\eta\) is symmetric these two maps are actually the same.
+    
+    So, each symmetric\footnote{a non-symmetric bilinear form gives rise to two such maps, and we have to choose one, so we lose the \enquote{canonical} part of this map.} bilinear form, \(\eta\), gives rise to a canonical linear map, \(\iota_\eta \colon V \to V^*\), given by \(\iota_\eta(u) = \eta(u, -)\).
+    We can use this to restate the non-degeneracy condition as saying that \(\ker \iota_\eta = 0\) if and only if \(\eta\) is non-degenerate.
+    To see this first let \(v \in \ker \iota_\eta\) so \(\iota_\eta(v) = 0\), which means \(\eta(v, -)\) is the zero map, so for all \(u \in V\) we have \(\eta(v, u) = 0\), so if \(\eta\) is non-degenerate we must have \(v = 0\) and vice-versa if \(\eta(v, -)\) is not the zero map then there exists some \(u \in V\) such that \(\eta(v, u) \ne 0\), and so \(\eta\) is non-degenerate.
+    
+    Further, in the finite dimensional case if \(\eta\) is non-degenerate then \(\iota_\eta\) is an isomorphism, since we showed above that \(\iota_\eta\) is an injection \(V \hookrightarrow V^*\), and it is a well-known fact that \(\dim V = \dim V^*\) for finite-dimensional \(V\), and so an injective linear map between spaces of the same dimension is automatically an isomorphism.
+    
+    So, a non-degenerate bilinear form gives a canonical isomorphism \(V \isomorphic V^*\).
+    Note that we always have \emph{an} isomorphism \(V \isomorphic V^*\), it's just that in general there are many such isomorphisms and no reason to prefer one over another.
+    This particular canonical isomorphism is important when our space is a Hilbert space, in which case this result is called the riesz representation theorem.
+    
+    \begin{dfn}{Radical}{}
+        Let \(\eta\) be a bilinear form on \(V\).
+        The \define{radical}\index{radical!of a bilinear form} is \(\rad \eta = \ker \iota_\kappa \subseteq V\).
+    \end{dfn}
+    
+    \section{Killing Form}
+    \begin{dfn}{}{}
+        Let \(\lie{g}\) be a Lie algebra.
+        Then the \defineindex{Killing form} on \(\lie{g}\) is the symmetric bilinear form
+        \begin{align}
+            \kappa \colon \lie{g} \times \lie{g} &\to \field\\
+            (X, Y) &\mapsto \kappa(X, Y) = \tr(\ad_X \circ \ad_Y).
+        \end{align}
+    \end{dfn}
+    
+    Note that symmetry of the Killing form follows immediately from the cyclic property of the trace, namely that \(\tr(AB) = \tr(BA)\), and linearity follows immediately from the linearity of the trace and composition of endomorphisms.
+    
+    The most important property of the Killing form is arguably that it gives us a way to show that a finite-dimensional Lie algebra is semisimple.
+    Recall that a Lie algebra is semisimple if it contains no proper solvable ideals.
+    
+    \begin{lma}{Associativity of the Killing Form}{lma:associativity of killing form}
+        Let \(\lie{g}\) be a Lie algebra and \(\kappa\) the Killing form on \(\lie{g}\), then
+        \begin{equation}
+            \kappa(X, \bracket{Y}{Z}) = \kappa(\bracket{X}{Y}, Z)
+        \end{equation}
+        for all \(X, Y, Z \in \lie{g}\).
+        \begin{proof}
+            This follows by a quick calculation using the fact that \(\ad\) is a representation and some properties of the trace:
+            \begin{align}
+                \kappa(X, \bracket{Y}{Z}) &= \tr(\ad_X \circ \ad_{\bracket{Y}{Z}})\\
+                &= \tr(\ad_X \circ \bracket{\ad_Y}{\ad_Z})\\
+                &= \tr(\ad_X \circ (\ad_Y \circ \ad_Z - \ad_Z \circ \ad_Y))\\
+                &= \tr(\ad_X \circ \ad_Y \circ \ad_Z - \ad_X \circ \ad_Z \circ \ad_Y)\\
+                &= \tr(\ad_X \circ \ad_Y \circ \ad_Z - \ad_Y \circ \ad_X \circ \ad_Z)\\
+                &= \tr((\ad_X \circ \ad_Y - \ad_Y \circ \ad_X) \circ \ad_Z)\\
+                &= \tr(\bracket{\ad_X}{\ad_Y} \circ \ad_Z)\\
+                &= \tr(\ad_{\bracket{X}{Y}} \circ \ad_Z)\\
+                &= \kappa(\bracket{X}{Y}, Z). \qedhere
+            \end{align}
+        \end{proof}
+    \end{lma}
+    
+    \begin{thm}{Cartan's First Criterion}{thm:cartans first criterion}
+        A finite-dimensional Lie algebra, \(\lie{g}\), over \(\complex\) is solvable if and only if \(\kappa(X, Y) = 0\) for all \(X \in \lie{g}'\) and \(Y \in \lie{g}\).
+        \begin{proof}
+            Suppose that \(\lie{g}\) is solvable.
+            Then Lie's theorem tells us that there is a basis, \(\symcal{B}\), for \(\lie{g}\) such that if \(W \in \lie{g}\) then \([\ad_W]_{\symcal{B}}\) is upper triangular.
+            This implies that \([\bracket{\ad_X}{\ad_Y}]_{\symcal{B}} = \bracket{[\ad_X]_{\symcal{B}}}{[\ad_Y]_{\symcal{B}}}\) is \emph{strictly} upper triangular for \(X, Y \in \lie{g}\), since the commutator of upper triangular matrices is strictly upper triangular.
+            This then implies that \(\kappa(\bracket{X}{Y}, Z) = \tr(\bracket{\ad_X}{\ad_Y}\circ \ad_Z) = 0\) using similar calculations to \cref{lma:associativity of killing form}.
+            Note then that \(\bracket{X}{Y}\) is exactly an element of \(\lie{g}'\) and \(Z\) an element of \(\lie{g}\).
+            
+            Now suppose that \(X, Y, Z \in \lie{g}\) are such that \(\kappa(\bracket{X}{Y}, Z) = 0\).
+            If \(L' = \bracket{\lie{g}}{\lie{g}}\) is nilpotent then \(L\) is solvable by Engel's theorem.
+            Notice that if \(W = \bracket{X}{Y} \in \lie{g}'\) then \(\kappa(W, Z) = 0\).
+            We can now use the Jordan decomposition to write
+            \begin{equation}
+                \ad_W = (\ad_W)_{\symrm{d}} + (\ad_W)_{\symrm{n}} \eqqcolon W_{\symrm{d}} + W_{\symrm{n}}
+            \end{equation}
+            where \(W_{\symrm{d}}\) is diagonalisable and \(W_{\symrm{n}}\) is nilpotent, meaning that in some basis \(W_{\symrm{n}}\) is upper triangular, and so has vanishing trace.
+            Then we have
+            \begin{equation}
+                \tr(W\overbar{W}_{\symrm{d}}) = \tr((W_{\symrm{d}} + W_{\symrm{n}})\overbar{W}_{\symrm{d}}) = \tr(W_{\symrm{d}}\overbar{W}_{\symrm{d}}) + \tr(W_{\symrm{n}}\overbar{W}_{\symrm{d}}) = \tr(W_{\symrm{d}}\overbar{W}_{\symrm{d}})
+            \end{equation}
+            where we've used the fact that the product \(W_{\symrm{n}}\overbar{W}_{\symrm{d}}\) will be strictly upper triangular in whichever basis \(W_{\symrm{n}}\) is strictly upper triangular in, and as such has trace zero.
+            Writing \(\lambda_i\) with \(i = 1, \dotsc, m\) for the eigenvalues of \(\ad_W\) we have
+            \begin{equation}
+                \tr(W\overbar{W}_{\symrm{d}}) = \tr(W_{\symrm{d}}\overbar{W}_{\symrm{d}}) = \abs{\lambda_1}^2 + \dotsb + \abs{\lambda_m}^2
+            \end{equation}
+            since \(W_{\symrm{d}}\) and \(\overbar{W}_{\symrm{d}}\) are diagonal with entries \(\lambda_i\) and \(\overbar{\lambda}_i\) as the \(i\)th diagonal entry respectively.
+            We also have
+            \begin{align}
+                \tr(W\overbar{W}_{\symrm{d}}) &= \tr(\ad_W\circ (\ad_{\overbar{W}})_{\symrm{d}})\\
+                &= \tr(\ad_{\bracket{X}{Y}} (\ad_{\overbar{W}})_{\symrm{d}})\\
+                &= \tr(\ad_X \circ (\ad_{\bracket{Y}{\overbar{W}}})_{\symrm{d}})\\
+                &= 0
+            \end{align}
+            where we've used similar calculations to the proof of \cref{lma:associativity of killing form} in the last step.
+            
+            So, we must have that \(\abs{\lambda_1}^2 + \dotsb + \abs{\lambda_m}^2 = 0\), which implies that \(\lambda_i = 0\) for all \(i = 1, \dotsc, m\).
+            Thus, \(W_{\symrm{d}} = 0\) so \(\ad_W = W_{\symrm{n}}\), and hence \(W\) is nilpotent, because this shows it is \(\ad\)-nilpotent so we can apply \cref{crl:ad-nilpotent implies nilpotent}.
+            Since \(W\) was chosen as an arbitrary element of \(\lie{g}'\) this shows that \(\lie{g}'\) is nilpotent, and hence that \(\lie{g}\) is solvable by Engel's theorem.
+        \end{proof}
+    \end{thm}
+    
+    \begin{lma}{}{}
+        Every nonzero solvable ideal of a finite dimensional Lie algebra, \(\lie{g}\), contains a nonzero abelian ideal of \(\lie{g}\).
+        \begin{proof}
+            Let \(\lie{l}\) be a solvable ideal of \(\lie{g}\) such that \(\lie{l}^n = 0\).
+            Consider \(\lie{l}^{n-1}\).
+            This is such that \(\bracket{\lie{l}^{n-1}}{\lie{l}^{n-1}} = \lie{l}^n = 0\), and so \(\lie{l}^{n-1}\) is abelian, and it's also an ideal.
+        \end{proof}
+    \end{lma}
+    
+    \begin{lma}{}{}
+        Let \(\lie{s}\) be a Lie algebra.
+        Then \(\lie{s}\) is solvable if and only if \(\ad(\lie{s}) \subseteq \generalLinearLie(\lie{s})\) is solvable.
+        \begin{proof}
+            Suppose \(\ad(\lie{s})\) is solvable.
+            We have seen that \(\ad(\lie{s}) \isomorphic \lie{s}/\centre(\lie{s})\).
+            The centre, \(\centre(\lie{s})\) is abelian, and thus solvable, and this isomorphism tells us that \(\lie{s}/\centre(\lie{s})\) is solvable, and so it follows by \cref{lma:i and g/i solvable implies g solvable} that \(\lie{s}\) is solvable.
+        \end{proof}
+    \end{lma}
+    
+    \begin{lma}{}{lma:radical of killing form is ideal}
+        Let \(\lie{g}\) be a Lie algebra and let \(\lie{s} = \rad\kappa\) be the radical of the Killing form.
+        Then \(\lie{s}\) is a solveable ideal of \(\lie{g}\).
+        \begin{proof}
+            Recall that \(\lie{s} = \rad\kappa = \ker \iota_\kappa\) where \(\iota_\kappa \colon\lie{g} \to \lie{g}^*\) is the map \(X \mapsto \kappa(X, -)\).
+            Suppose that \(X \in \lie{s}\) and \(Y \in \lie{g}\).
+            Then we want to show that \(\bracket{Y}{X} \in \lie{s}\).
+            That is, we want to show that \(\kappa(\bracket{Y}{X}, -)\) is the zero map, which means showing that \(\kappa(\bracket{Y}{X}, Z) = 0\) for all \(Z \in \lie{g}\).
+            This is true by \cref{lma:associativity of killing form} because we have
+            \begin{equation}
+                \kappa(\bracket{Y}{X}, Z) = \kappa(Y, \bracket{X}{Z}) = 0
+            \end{equation}
+            with the last equality following because \(\lie{s}\) is solvable, which follows because \(\kappa(X, X') = 0\) for \(X, X' \in \lie{s}\) proving solvability by Cartan's first criterion (\cref{thm:cartans first criterion}).
+        \end{proof}
+    \end{lma}
+    
+    \begin{thm}{Cartan's Second Criterion}{}
+        A Lie algebra, \(\lie{g}\), over \(\complex\) is semisimple if and only if the Killing form is non-degenerate.
+        \begin{proof}
+            Suppose that \(\lie{g}\) is semisimple, then we want to show that \(\kappa\) is non-degenerate.
+            Since \(\lie{g}\) is semisimple it has no solveable ideals, and by \cref{lma:radical of killing form is ideal} is a solvable ideal, which means that we must have \(\lie{s} = 0\), and thus \(\kappa\) is non-degenerate as this shows that \(\iota_\kappa\) is an injection so the discussion following \cref{def:bilinear form} applies.
+            
+            Now suppose that \(\kappa\) is non-degenerate.
+        \end{proof}
+    \end{thm}
+    
+    
+    
+    
 	
 	% Appdendix
 %	\appendixpage
@@ -2446,8 +2757,8 @@ noabbrev
 %	
 %	\end{appendices}
 	
-%	\backmatter
-%	\renewcommand{\glossaryname}{Acronyms}
-%	\printglossary[acronym]
-%	\printindex
+	\backmatter
+	\renewcommand{\glossaryname}{Acronyms}
+	\printglossary[acronym]
+	\printindex
 \end{document}
