@@ -50,6 +50,7 @@ noabbrev
 \newcommand{\atlas}{\symcal{A}}
 \newcommand{\torus}{\symbb{T}}
 \newcommand{\isomorphic}{\cong}
+\newcommand{\tangrel}[1][p]{\mathrel{\stackrel{\scriptscriptstyle #1}{\sim}}}
 
 \begin{document}
     \frontmatter
@@ -71,15 +72,15 @@ noabbrev
         exist and are continuous.
     \end{dfn}
     
-    \begin{dfn}{}{}
+    \begin{dfn}{}{def:differential of map between Rn}
         Let \(U \subseteq \reals^m\) and \(V \subseteq \reals^n\) be open sets.
         For a smooth map \(f = (f_1, \dotsc, f_n) \colon U \to V\) and a point \(x \in U\) the \defineindex{derivative}, \defineindex{differential}, or \defineindex{pushforward} of \(f\) at \(x\) is the linear map
         \begin{equation}
-            \dl f_x = \dl f(x) \colon \reals^m \to \reals^n
+            f_*(x) = \dl f_x = \dl f(x) \colon \reals^m \to \reals^n
         \end{equation}
         defined by acting on \(\xi \in \reals^m\) according to
         \begin{equation}
-            \dl f_x(\xi) = \dl(f)(x)\xi = \diff{}{t}\bigg|_{t = 0} f(x + t\xi) = \lim_{t \to 0} \frac{f(x + t\xi) - f(x)}{t}.
+            f_*(x)\xi = \dl f_x(\xi) = \dl(f)(x)\xi = \diff{}{t}\bigg|_{t = 0} f(x + t\xi) = \lim_{t \to 0} \frac{f(x + t\xi) - f(x)}{t}.
         \end{equation}
     \end{dfn}
     
@@ -103,9 +104,9 @@ noabbrev
     The identity map \(\id_U \colon U \to U\), given by \(x \mapsto x\), is smooth, its derivatives all vanish.
     Thus, we have
     \begin{equation}
-        \dl \id_U (x) = \diff{}{t} \bigg|_{t = 0} \id_U(x + t\xi) = \diff{}{t} \bigg|_{t = 0} (x + t\xi) = \xi,
+        \dl (\id_U) (x) = \diff{}{t} \bigg|_{t = 0} \id_U(x + t\xi) = \diff{}{t} \bigg|_{t = 0} (x + t\xi) = \xi,
     \end{equation}
-    and so \(\dl \id_U(x) = \id_{\reals^n}\).
+    and so \(\dl (\id_U)(x) = \id_{\reals^n}\).
     
     If \(f \colon U \to V\) is a \defineindex{diffeomorphism} (smooth map with smooth inverse) then for \(x \in V\) we can use the above result to get
     \begin{align}
@@ -153,7 +154,7 @@ noabbrev
     
     \begin{exm}{}{}
         \begin{itemize}
-            \item \item \(\reals^m\) is a manifold of dimension \(m\) and it has an atlas given by the single chart \((\reals^m, \id_{\reals^m})\).
+            \item \(\reals^m\) is a manifold of dimension \(m\) and it has an atlas given by the single chart \((\reals^m, \id_{\reals^m})\).
             \item The sphere, \(S^n = \{(x_1, \dotsc, x_{n + 1}) \in \reals^{n+1} \mid x_1^2 + \dotsb + x_{n+1}^2 = 1\}\), is a manifold of dimension \(n\), and it is covered by two charts \((S^n \setminus \{(1, 0, \dotsc, 0)\}, s_+)\) and \((S^n \setminus \{(-1, 0, \dotsc, 0)\}, s_-)\) where \(s_+\) and \(s_-\) are stereographic projection from the points \((\pm 1, 0, \dotsc, 0)\).
             \item The \(m\)-torus, \(\torus^m \coloneqq \reals^m/\integers^m\) (with the quotient topology, and \(\integers^m\) has the discrete topology, which is also the subset topology as a subset of \(\reals^m\) with the standard topology) is a manifold.
             Two vectors \(x, y \in \reals^m\) project to the same point in \(\torus^m\) if their difference, \(x - y\), is an integer vector (that is, it's in \(\integers^m\)).
@@ -220,21 +221,146 @@ noabbrev
         Fix some point \(p \in M\).
         The tangent space of \(M\) at \(p\) is the quotient space
         \begin{equation}
-            T_pM \coloneqq \bigsqcup_{\alpha \text{ s.t. }p \in U_\alpha} \reals^m / {\sim}.
+            T_pM \coloneqq \bigsqcup_{\alpha \text{ s.t. }p \in U_\alpha} \reals^m / {\tangrel}.
         \end{equation}
         Here we use the disjoint union, but we could instead use the normal union and explicitly label each point in \(\reals^m\) with \(\alpha\) from the corresponding term in the union:
         \begin{equation}
-            T_pM = \bigsqcup_{\alpha \text{ s.t. } p \in U_\alpha} (\{\alpha\} \times \reals^m)/{\sim}.
+            T_pM = \bigcup_{\alpha \text{ s.t. } p \in U_\alpha} (\{\alpha\} \times \reals^m)/{\tangrel}.
         \end{equation}
         Then the corresponding equivalence relation is
         \begin{equation}
-            (\alpha, \xi) \sim (\beta, \eta) \iff \dl(\varphi_\beta \circ \varphi_\alpha^{-1})(x)\xi = \eta, \ x = \varphi_\alpha(p).
+            (\alpha, \xi) {\tangrel} (\beta, \eta) \iff \dl(\varphi_\beta \circ \varphi_\alpha^{-1})(x)\xi = \eta, \quad x = \varphi_\alpha(p).
         \end{equation}
         That is, two pairs \((\alpha, \xi)\) and \((\beta, \eta)\) are equivalent if one is the pushforward of the other along the transition maps.
         The equivalence class of \((\alpha, \xi) \in A \times \reals^m\) with \(p \in U_\alpha\) is denoted \([\alpha, \xi]_p\).
     \end{dfn}
     
     This quotient space, \(T_pM\), is a real vector space of dimension \(m\).
+    
+    \begin{exm}{}{}
+        Consider the circle, \(S^1 = \{(x, y) \in \reals^2 \mid x^2 + y^2 = 1\}\), with the charts \(U_{\pm} = S^1 \setminus \{(0, \mp 1)\}\) where
+        \begin{equation}
+            \varphi_+(x, y) = \frac{x}{1 + y}, \qand \varphi_-(x, y) = \frac{x}{1 - y}.
+        \end{equation}
+        We have
+        \begin{equation}
+            \varphi_-^{-1}(t) = \left( \frac{2t}{t^2 + 1}, \frac{t^2 - 1}{t^2 + 1} \right), \qand \varphi_+^{-1}(t) = \left( \frac{2t}{t^2 + 1}, \frac{1 - t^2}{t^2 + 1} \right).
+        \end{equation}
+        
+        Take the point \(p = (\sqrt{3}/2, 1/2) \in S^1\).
+        Then we have
+        \begin{equation}
+            \varphi_-(p) = \sqrt{3}, \quad \varphi_+(p) = \frac{1}{\sqrt{3}}.
+        \end{equation}
+        The transition maps are
+        \begin{equation}
+            \varphi_+ \circ \varphi_-^{-1}(t) = \frac{1}{t} = \varphi_- \circ \varphi_+^{-1}(t).
+        \end{equation}
+        
+        Consider the pair \((-, q) \in A \times \reals\) where \(A = \{{+}, {-}\}\) is the index set of the chart and \(\reals\) is the one-dimensional vector space corresponding to the tangent space to the one-dimensional manifold \(S^1\).
+        What is the equivalence class of \((-, q)\) in the tangent space at \(p\)?
+        That is, what is \([-, q]_p\)?
+        
+        To compute this we take the definition of the equivalence relation, that \((-, q) \tangrel (+, \tilde{q})\) if and only if
+        \begin{equation}
+            \dl (\varphi_+ \circ \varphi_-^{-1})(x)q = \tilde{q}
+        \end{equation}
+        where \(x = \varphi_-(p) = \sqrt{3}\).
+        Then we are looking for some real number, \(\tilde{q}\), given by evaluating
+        \begin{equation}
+            \dl(\varphi_+ \circ \varphi_-^{-1})(\sqrt{3})q.
+        \end{equation}
+        Using the definition of the differential we have that
+        \begin{align}
+            \dl(\varphi_+ \circ \varphi_-^{-1})(x)q &= \diff{}{t}\bigg|_{t=0} \varphi_+ \circ \varphi_-^{-1}(x + tq)\\
+            &= \diff{}{t}\bigg|_{t=0} \frac{1}{x + tq}\\
+            &= -\frac{q}{(x + tq)^2}\bigg|_{t = 0}\\
+            &= -\frac{q}{x^2}
+        \end{align}
+        and so taking \(x = \sqrt{3}\) we get
+        \begin{equation}
+            \dl(\varphi_+ \circ \varphi_-^{-1})(\sqrt{3})q = -\frac{q}{3}.
+        \end{equation}
+        So, \((-, q) \tangrel (+, -q/3)\), and so
+        \begin{equation}
+            [-, q]_p = \{(-, q), (+, -q/3)\}.
+        \end{equation}
+        Thus, the tangent space to the circle at \(p = (\sqrt{3}/2, 1/2)\) is
+        \begin{align}
+            T_{(\sqrt{3}/2, 1/2)}S^1 &= \{[-, q]_{(\sqrt{3}/2, 1/2)} \mid p \in \reals\}\\
+            &= \{\{(-, q), (+, -q/3)\} \mid p \in \reals\}.
+        \end{align}
+    \end{exm}
+    
+    Often we want to consider all of the tangent spaces at once.
+    To do this we construct the tangent bundle.
+    
+    \begin{dfn}{Tangent Bundle}{}
+        The \defineindex{tangent bundle} of a manifold \(M\) is
+        \begin{equation}
+            TM \coloneqq \bigsqcap_{p \in M} T_pM.
+        \end{equation}
+    \end{dfn}
+    
+    The tangent bundle of an \(m\)-dimensional smooth manifold is a \(2m\)-dimensional smooth manifold in a way that we shall define later once we have some more machinery.
+    
+    \section{Derivatives}
+    Suppose that we have two smooth manifolds, \((M, \{(U_\alpha, \varphi_\alpha)\}_{\alpha \in A})\) and \((N, \{(V_\beta, \psi_B	)\}_{\beta \in B})\), of dimensions \(m\) and \(n\) respectively, and a smooth map \(f \colon M \to N\).
+    Can we construct a map
+    \begin{equation}
+        T_pM \to T_{f(p)}N?
+    \end{equation}
+    The answer is yes, and to derive\footnote{no pun intended} a sensible definition of this map we should look at what maps we really have available to us.
+    
+    The map we're after is \([\alpha, \xi]_p \mapsto [\beta, \eta]_{f(p)}\), we just need to specify what \(\eta\) is, it should in general depend on \(\xi\), \(\alpha\), \(\beta\), \(p\), and \(f\).
+    Note that it only makes sense to consider \(\alpha\) and \(\beta\) such that \(p \in U_\alpha\) and \(f(p) \in V_\beta\), and we may further assume that \(p\) has a neighbourhood that is contained entirely in \(V_\beta\), so we'll assume that \(f(U_\alpha) \subseteq V_\beta\).
+    
+    The maps we have involving the manifolds directly may be summarised in the following diagram:
+    \begin{equation}
+        \tikzexternaldisable
+        \begin{tikzcd}[column sep=2.5cm]
+            U_\alpha \arrow[r, "f"] \arrow[d, "\varphi_\alpha"'] & V_\beta \arrow[d, "\psi_\beta"]\\
+            \varphi_\alpha(U_\alpha) \arrow[r, "\psi_\beta \circ f \circ \varphi_\alpha^{-1} = f_{\beta\alpha}"'] & \psi_\beta(V_\beta)\mathrlap{.}
+        \end{tikzcd}
+        \tikzexternalenable
+    \end{equation}
+    The action of these maps is
+    \begin{equation}
+        \tikzexternaldisable
+        \begin{tikzcd}
+            p \arrow[r, mapsto] \arrow[d, mapsto] & f(p) \arrow[d, mapsto]\\
+            \varphi_\alpha(p) \arrow[r, mapsto] & \psi_\beta(f(p))\mathrlap{.}
+        \end{tikzcd}
+        \tikzexternalenable
+    \end{equation}
+    The map \(f_{\beta\alpha}\) is between an open subset of \(\reals^m\) and an open subset of \(\reals^n\).
+    This allows us to consider its differential, \(\dl f_{\beta\alpha}\), as defined in \cref{def:differential of map between Rn}.
+    That is, we have the map
+    \begin{equation}
+        \dl f_{\beta\alpha}(x) \colon \reals^m \to \reals^n.
+    \end{equation}
+    So, given some \(x \in \reals^m\), we can define \(\eta\) to be \(\dl f_{\beta\alpha}(x)\xi\).
+    The only question then is what \(x\) should we use.
+    The only piece of data we haven't yet used is \(p\), so we should take \(x = \varphi_\alpha(p)\).
+    This leads to us defining
+    \begin{equation}
+        \eta = \dl f_{\beta\alpha}(\varphi_\alpha(p))\xi.
+    \end{equation}
+    
+    \begin{dfn}{Derivative}{}
+        Let \((M, \{(U_\alpha, \varphi_\alpha)\}_{\alpha \in A})\) and \((N, \{(V_\beta, \psi_B	)\}_{\beta \in B})\) be smooth manifolds, and let \(f \colon M \to N\) be a smooth map.
+        We define the \defineindex{derivative}, \defineindex{differential}, or \defineindex{pushforward} of \(f\) at \(p\) as the linear map
+        \begin{equation}
+            f_*(p) = \dl{f}_p = \dl{f}(p) \colon T_pM \to T_{f(p)}N 
+        \end{equation}
+        given by
+        \begin{equation}
+            \dl{f}(p)[\alpha, \xi]_p \coloneqq [\beta, \dl{f_{\beta\alpha}}(\varphi_\alpha(p))\xi]_{f(p)}
+        \end{equation}
+        where \(p \in U_\alpha\) and \(f(p) \in V_\beta\) and \(f_{\beta\alpha} = \psi_\beta \circ f \circ \varphi_\alpha^{-1}\).
+        Note that \(\dl{f_{\beta\alpha}}\) is as defined in \cref{def:differential of map between Rn}.
+    \end{dfn}
+    
 
     % Appdendix
 %    \appendixpage

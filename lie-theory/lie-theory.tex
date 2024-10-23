@@ -2744,6 +2744,28 @@ noabbrev
             Since \(\lie{g}\) is semisimple it has no solveable ideals, and by \cref{lma:radical of killing form is ideal} is a solvable ideal, which means that we must have \(\lie{s} = 0\), and thus \(\kappa\) is non-degenerate as this shows that \(\iota_\kappa\) is an injection so the discussion following \cref{def:bilinear form} applies.
             
             Now suppose that \(\kappa\) is non-degenerate.
+            Then \(\lie{s} = 0\).
+            Let \(I \subseteq \lie{g}\) be a solveable ideal.
+            By ... we know that \(I\) contains an abelian ideal, \(\lie{l}\).
+            We will show that \(\lie{l} \subseteq \lie{s}\) and thus \(\lie{l} = 0\) and so \(I = 0\).
+            Take elements \(X \in \lie{l}\) and \(Y \in \lie{g}\).
+            We want to show that \(\kappa(X, Y) = 0\), since this implies that \(\lie{l} \subseteq \lie{s}\).
+            To do this we consider the map \(\ad_X \circ \ad_Y \colon \lie{g} \to \lie{g}\), the trace of which is \(\kappa(X, Y)\).
+            For any \(Z \in \lie{g}\) we always have that \(\bracket{X}{\bracket{Y}{Z}} \in \lie{l}\) because \(X \in \lie{l}\) and \(\lie{l}\) is an ideal.
+            Further, since \(\lie{l}\) is abelian we have
+            \begin{equation}
+                \bracket{X}{\bracket{Y}{\bracket{X}{\bracket{Y}{Z}}}} = 0
+            \end{equation}
+            since \(X \in \lie{l}\) and \(\bracket{Y}{\bracket{X}{\bracket{Y}{Z}}} \in \lie{l}\) (since \(\bracket{X}{\bracket{Y}{Z}} \in \lie{l}\) and \(\lie{l}\) is an ideal), so this is indeed the bracket of two elements of the abelian ideal \(\lie{l}\) and so vanishes.
+            We can then identify the operator \(\ad_X \circ \ad_Y\) in the above, as what we have here is
+            \begin{equation}
+                (\ad_X \circ \ad_Y)^2(Z) = 0.
+            \end{equation}
+            This holds for all \(Z \in \lie{g}\) and so we can conclude that \((\ad_X \circ \ad_Y)^2 = 0\).
+            So, \(\ad_X\circ\ad_Y\) is a nilpotent operator.
+            This means that \(\ad_X \circ \ad_Y\) has trace zero, since this is true of all nilpotent operators, and so we are done.
+            This general fact follows because nilpotent operators are strictly upper triangular in some basis, and computing the trace in this basis must give zero, and trace is basis independent.
+            An alternative proof of this general fact is that the minimal polynomial of \(T \colon V \to V\) if \(T^n = 0\) (and \(n\) is minimal in this respect) is \(m(t) = t^n\), and the roots of this are zero, and the roots of the minimal polynomial are the eigenvalues (without multiplicity) of the operator, and the trace is the sum of the eigenvalues (with multiplicity), and so here all the eigenvalues are zero and so their sum vanishes.
         \end{proof}
     \end{thm}
     
