@@ -51,6 +51,11 @@ noabbrev
 \newcommand{\torus}{\symbb{T}}
 \newcommand{\isomorphic}{\cong}
 \newcommand{\tangrel}[1][p]{\mathrel{\stackrel{\scriptscriptstyle #1}{\sim}}}
+\newcommand{\vectorFields}{\symfrak{X}}
+\DeclarePairedDelimiterX{\bracket}[2]{[}{]}{#1, #2}
+\DeclareMathOperator{\Der}{Der}
+\newcommand{\derivations}{\Der}
+\DeclareMathOperator{\End}{End}
 
 \begin{document}
     \frontmatter
@@ -62,7 +67,7 @@ noabbrev
     
     \chapter{Smooth Manifolds}
     \section{Definitions in \texorpdfstring{\(\reals^n\)}{Rn}}
-    \begin{dfn}{Smooth Map}{dfn:smooth map euclidean spaces}
+    \begin{dfn}{Smooth Map}{def:smooth map euclidean spaces}
         Let \(U \subseteq \reals^m\) and \(V \subseteq \reals^n\) be open sets\footnote{Here, and throughout, we assume the standard topology on Euclidean space, \(\reals^m\), so a set, \(U\), is open if and only if every point \(x \in U\) there is an open ball centred on \(x\) contained entirely within \(U\).}.
         A map \(f \colon U \to V\) is \define{smooth}\index{smooth!map of Euclidean spaces} is called \defineindex{smooth} if it is infinitely differentiable.
         That is, all partial derivatives of all orders\footnote{we take \(0 \in \naturals\)},
@@ -133,7 +138,7 @@ noabbrev
         \begin{equation}
             \varphi_{\beta \alpha} \coloneq \varphi_\beta \circ \varphi_\alpha^{-1} \colon \varphi_\alpha(U_\alpha \cap U_\beta) \to \varphi_\beta(U_\alpha \cap U_\beta)
         \end{equation}
-        is smooth\footnote{Note that this is a map between open subsets of \(\reals^m\), so \cref{dfn:smooth map euclidean spaces} applies}.
+        is smooth\footnote{Note that this is a map between open subsets of \(\reals^m\), so \cref{def:smooth map euclidean spaces} applies}.
         We call the pair \((U_\alpha, \varphi_\alpha)\) a \defineindex{coordinate chart}, and the collection \(\atlas = \{(U_\alpha, \varphi_\alpha)\}_{\alpha \in A}\) is called an atlas.
     \end{dfn}
     
@@ -196,7 +201,7 @@ noabbrev
         A \define{smooth map}\index{smooth map!between manifolds}, \(f \colon M \to N\), is a function such that for all charts \((U_\alpha, \varphi_\alpha)\) and \((V_\beta, \psi_\beta)\) the map \(\psi_\beta \circ f \circ \varphi_\alpha^{-1}\) is smooth as a map between the open sets \(\varphi_\alpha(U_\alpha) \subseteq \reals^m\) and \(\psi_\beta(V_\beta) \subseteq \reals^n\).
     \end{dfn}
     
-    The idea here is that we can pass smoothness of a map between manifolds to smoothness of corresponding patches of Euclidean space, where we can use \cref{dfn:smooth map euclidean spaces}.
+    The idea here is that we can pass smoothness of a map between manifolds to smoothness of corresponding patches of Euclidean space, where we can use \cref{def:smooth map euclidean spaces}.
     The important thing here is that we have the commutative diagram
     \begin{equation}
         \tikzexternaldisable
@@ -361,7 +366,229 @@ noabbrev
         Note that \(\dl{f_{\beta\alpha}}\) is as defined in \cref{def:differential of map between Rn}.
     \end{dfn}
     
+    \begin{exm}{}{exm:derivative of map into Rn}
+        Consider the special case of the derivative when \(N = (\reals^n, \{(\reals^n, \id_{\reals^n})\})\) is \(\reals^n\) with a single chart.
+        This means that the indexing set for charts on \(N\) is the singleton, \(B = \{\bullet\}\).
+        Then for \(q \in N\) we can identify \([\bullet, \eta]_q \in T_qN\) with \(\eta \in \reals^n\), since there's only one label \(\bullet\), giving us a canonical isomorphism \(T_qN \isomorphic \reals^n\).
+        If \(f \colon M \to N\) is smooth in this case, given \(p \in M\) and \([a, \xi]_p \in T_pM\), we have the derivative
+        \begin{equation}
+            \dl{f}(p)[a, \xi]_p = [\bullet, \dl{f_{\beta\alpha}}(\varphi_\alpha(p))\xi]_{f(p)}.
+        \end{equation}
+        Using this canonical isomorphism we identify this with
+        \begin{equation}
+            \dl{f}(p)[a, \xi]_p = \dl{f_{\bullet\alpha}}(\varphi_\alpha(p))\chi.
+        \end{equation}
+        This further simplifies since \(f_{\bullet\alpha} = \psi_\bullet \circ f \circ \varphi_\alpha^{-1} = \id_{\reals^n} \circ f \circ \varphi_\alpha^{-1} = f \circ \varphi_\alpha^{-1}\), and so, after identifying \(T_{f(p)}N\) and \(\reals^n\), we have
+        \begin{equation}
+            \dl{f}(p)[a, \xi]_p = \dl{(f \circ \varphi_\alpha^{-1})}(\varphi_\alpha(p))\xi.
+        \end{equation}
+        Once \(f\) is known this can be calculated using \cref{def:differential of map between Rn}.
+    \end{exm}
 
+    \begin{exm}{}{}
+        We can apply this formula to maps defined on just an open subset of \(M\), rather than all of \(M\).
+        The most important case of this is when the smooth map in consideration is a chart map, \(f = \varphi_{\tilde{\alpha}} \colon U_{\tilde{\alpha}} \to \reals^m\).
+        In this case we may still identify \(N\) as \((\reals^n, \{(\reals^n, \id_{\reals^m})\})\), and so the results of \cref{exm:derivative of map into Rn} apply.
+        In particular, after identifying \(T_{\varphi_{\tilde{\alpha}}}N\) with \(\reals^n\) we have
+        \begin{equation}
+            \dl{\varphi_{\tilde{\alpha}}}(p)[\alpha, \xi]_p = \dl{(\varphi_{\tilde{\alpha}} \circ \varphi_\alpha^{-1})}(\varphi_\alpha(p))\xi.
+        \end{equation}
+        This isn't that interesting, unless we take \(\alpha = \tilde{\alpha}\), then we have
+        \begin{align}
+            \dl{\varphi_\alpha}(p)[\alpha, \xi]_p &= \dl{(\varphi_\alpha\circ \varphi_\alpha^{-1})}(\varphi_\alpha(p))\xi\\
+            &= \diff{}{t}\bigg|_{t=0} (\varphi_\alpha \circ \varphi_\alpha^{-1})(\varphi_\alpha(p) + t\xi)\\
+            &= \diff{}{t}\bigg|_{t=0} \id(\varphi_\alpha(p) + t\xi)\\
+            &= \diff{}{t}\bigg|_{t=0} (\varphi_\alpha(p) + t\xi)\\
+            &= \xi.
+        \end{align}
+        This allows us to identify \([\alpha, \xi]_p \in T_pM\) with \(\xi \in \reals^m\), giving an isomorphism \(T_pM \isomorphic \reals^m\).
+        So, \(\dl{\varphi_\alpha}\) is the canonical vector space isomorphism determined by \(\alpha\).
+    \end{exm}
+    
+    \begin{ntn}{}{}
+        Let \(\{e_i\}_{i \in \{1, \dotsc, m\}}\) be the standard basis for \(\reals^m\).
+        Then for the tangent vector \([\alpha, e_i]_p \in T_pM\) we write
+        \begin{equation}
+            [\alpha, e_i]_p = \diffp{}{x^i}(p) = \diffp{}{x^i}\bigg|_p.
+        \end{equation}
+        This is (for now) just notation, we're not thinking of these as derivatives.
+        We'll see why this is a sensible notation shortly.
+    \end{ntn}
+    
+    \section{Submersions, Immersions, and Embeddings}
+    In this section we state some definitions and results which are standard in the theory of smooth manifolds, but for which we will have little use.
+    
+    \begin{dfn}{Submersion}{}
+        A \defineindex{submersion} of a smooth manifold, \(M\), in a smooth manifold, \(N\), is a smooth map, \(f \colon M \to N\), whose derivative, \(\dl{f}\), exists and is a surjective linear map
+        \begin{equation}
+            \dl{f}(p) \colon T_pM \to T_{f(p)}N
+        \end{equation}
+        for all \(p \in M\).
+        
+        Points \(p \in M\) at which \(\dl{f}(p)\) is a surjective linear map are called \define{regular points}\index{regular point}.
+        So, a submersion is a map for which every \(p \in M\) is regular.
+    \end{dfn}
+    
+    \begin{dfn}{Immersion}{}
+        An \defineindex{immersion} of a smooth manifold, \(M\), in a smooth manifold, \(N\), is a smooth map, \(f \colon M \to N\), whose derivative, \(\dl{f}\), exists and is an injective linear map
+        \begin{equation}
+            \dl{f}(p) \colon T_pM \to T_{f(p)}N
+        \end{equation}
+        for all \(p \in M\).
+        
+        If an immersion is also a topological embedding, meaning that \(f(M)\) (with the subspace topology in \(N\)) is homeomorphic to \(M\), then we call \(f\) an \defineindex{embedding}.
+    \end{dfn}
+    
+    The notion of an embedding uses the fact that \(f(M)\) is a topological space in its own right, and in fact, it's a manifold in its own right.
+    This leads to the notion of a submanifold.
+    
+    \begin{dfn}{Submanifold}{}
+        An \defineindex{embedded submanifold} of \(M\) is a subset, \(S \subseteq M\), which is itself a manifold and for which the inclusion \(S \hookrightarrow M\) is an embedding.
+        
+        More explicitly, \(S\) is a topological space in the subspace topology such that for every \(p \in S\) there exists a neighbourhood, \(U_\alpha\), of \(p \in M\) making a chart \((U_\alpha, \varphi_\alpha \colon U_\alpha \to \Omega_\alpha \subseteq \reals^m)\) (in some maximal atlas for \(M\)) such that \(S \cap U_\alpha = \varphi_\alpha^{-1}(\reals^k \cap \Omega_\alpha)\) for some fixed \(k \in \naturals\), which is the dimension of the submanifold, \(S\).
+        Note that there is some freedom in how we embed \(\reals^k\) in \(\reals^m\) in order to take this intersection, and in general we only require that there is an embedding that makes this work, not that it works for all embeddings.
+    \end{dfn}
+    
+    There is a weaker notion of an immersed submanifold in which the inclusion is merely required to be an immersion.
+    
+    A classic example of a submanifold is a smooth curve on some surface.
+    This will correspond to the intersection \(\reals \cap \Omega_\alpha\).
+    
+    \begin{thm}{Regular Value Theorem}{}
+        If \(f \colon M \to N\) is a smooth map of manifolds then \(f^{-1}(y)\) (that is, the preimage of some point \(y \in N\)) is a smooth submanifold of \(M\) for every \(y \in N\) if \(y\) is a regular value.
+    \end{thm}
+    
+    \chapter{Vector Fields}
+    \section{Definitions}
+    \begin{dfn}{Vector Field}{}
+        Let \(M\) be a smooth manifold.
+        A \defineindex{vector field} on \(M\) is an assignment of a tangent vector, \(X(p) \in T_pM\), to each \(p \in M\).
+        Thus, a vector field on \(M\) is a map \(X \colon M \to TM\) such that \(X(p) = X_p \in T_pM\) for all \(p \in M\).
+    \end{dfn}
+    
+    \begin{exm}{}{exm:vector fields on Rn}
+        Consider a chart \((U_\alpha, \varphi_\alpha \colon U_\alpha \to \Omega_\alpha \subseteq \reals^m)\) for the manifold \(M\).
+        Let \(X\) be a vector field on \(M\).
+        For each chart index, \(\alpha\), there is a corresponding vector field, \(X_\alpha \colon \Omega_\alpha \to \reals^m\) (identifying each \(T_pM\) with \(\reals^m\)), defined by
+        \begin{equation}
+            X_\alpha(\varphi_\alpha(p)) = \dl{\varphi_\alpha}(X(p)).
+        \end{equation}
+        Note that this is a vector field on \(\Omega_\alpha\) viewed as a submanifold of \(\reals^m\).
+    \end{exm}
+    
+    \begin{dfn}{Smooth Vector Field}{}
+        Let \(M\) be a manifold and \(X\) a vector field on \(M\).
+        Then \(X\) is a \defineindex{smooth vector field} if \(X_\alpha\) (as defined in \cref{exm:vector fields on Rn}) is a smooth map between subsets of Euclidean space.
+        Equivalently, \(X\) is smooth if \(X \colon M \to TM\) is a smooth map between manifolds.
+        
+        The set of all smooth vector fields on \(M\) is denoted \(\vectorFields(M)\). 
+    \end{dfn}
+    
+    Since \(X \colon M \to TM\) takes values in \(T_pM \isomorphic \reals^m\) we inherit a lot of structure from \(\reals^m\).
+    In particular, we can define pointwise addition,
+    \begin{equation}
+        (X + Y)(p) = X(p) + Y(p),
+    \end{equation}
+    and scalar multiplication,
+    \begin{equation}
+        (\lambda X)(p) = \lambda \mkern2mu X(p),
+    \end{equation}
+    for \(X, Y \in \vectorFields(M)\) and \(\lambda \in \reals\), and the results are still smooth vector fields.
+    Since we also have the zero vector field, defined by \(0(p) = 0 \in \reals^m\), and negation (take \(\lambda = -1\)) we can easily see that \(\vectorFields(M)\) is a real vector space.
+    
+    Further, we can define multiplication by a smooth function, \(f \in C^{\infty}(M)\), by
+    \begin{equation}
+        (fX)(p) = f(p) X(p),
+    \end{equation}
+    and the result is again a smooth vector field.
+    This is a bit like scaling, but now we scale by a different amount at each point of the manifold.
+    This, combined with addition of vector fields tells us is that \(\vectorFields(M)\) is a \(C^{\infty}(M)\)-module.
+    The vector space structure is then a special case where we restrict only to constant functions in \(C^{\infty}(M)\).
+    
+    \begin{exm}{}{}
+        Let \(\{e_i\}_{i \in \{1, \dotsc, m\}}\) be the standard basis of \(\reals^m\).
+        Let \(M\) be an \(m\)-dimensional smooth manifold with coordinate chart \((U_\alpha, \varphi_\alpha \colon U_\alpha \to \Omega_\alpha \subseteq \reals^m)\).
+        We can define a vector field on \(U_\alpha\),
+        \begin{equation}
+            \diffp{}{x^i} \colon U_\alpha \to TM,
+        \end{equation}
+        by taking
+        \begin{equation}
+            \diffp{}{x^i}(p) = [\alpha, e_i]_p.
+        \end{equation}
+        This is such that
+        \begin{equation}
+            (\dl{\varphi_\alpha}(p))\left( \diffp{}{x^i}(p) \right) = e_i
+        \end{equation}
+        for all \(p \in U_\alpha\).
+        Since \(\dl{\varphi_\alpha}(p)\) is always an isomorphism \(T_pM \to \reals^m\) we see that \(\{\difsp{}{x^i}(p)\}_{i\in \{1, \dotsc, m\}}\) is a basis for \(T_pM\), since it's mapped to a basis by an isomorphism.
+        We call \(\{\difsp{}{x^i}\}_{i \in \{1,\dotsc, m\}}\) a local \defineindex{frame} on \(U_\alpha\), since it assigns to each point a basis vector.
+        
+        We write \(e_i\) for the constant vector field that assigns to each point in \(M\) the constant vector \(e_i \in T_pM\).
+        We may then express any constant vector field as \(\sum_i X^ie_i\) for some real constants \(X^i\), and any smooth vector field as \(\sum_i X^i e_i\) where the \(X^i\) are smooth functions \(M \to \reals\).
+    \end{exm}
+    
+    \section{Algebras}
+    \begin{dfn}{Algebra}{}
+        An \defineindex{algebra} over a field, \(\field\), is a vector space, \(A\), equipped with a bilinear map \(\cdot \colon A \times A \to A\).
+    \end{dfn}
+    
+    \begin{dfn}{Derivation}{}
+        If \(A\) is an algebra then a \defineindex{derivation} is a linear map \(D \colon A \to A\) satisfying the \defineindex{Leibniz rule} for all \(a, b \in A\):
+        \begin{equation}
+            D(a \cdot b) = D(a) \cdot b + a \cdot D(b).
+        \end{equation}
+    \end{dfn}
+    
+    The classic example of a derivation is, of course, a derivative acting on some algebra of functions, such as \(C^{\infty}(\reals)\), where the Leibniz rule is exactly the product rule.
+    
+    \begin{dfn}{Lie Algebra}{}
+        A \defineindex{Lie algebra}, \(\lie{g}\), is a vector space over \(\field\), equipped with a bilinear map, \(\bracket{-}{-} \colon \lie{g} \times \lie{g} \to \lie{g}\), which is alternating, meaning \(\bracket{x}{x} = 0\) for all \(x \in \lie{g}\), and the Jacobi identity, that for all \(x, y, z \in \lie{g}\)
+        \begin{equation}
+            \bracket{x}{\bracket{y}{z}} + \bracket{y}{\bracket{z}{x}} + \bracket{z}{\bracket{x}{y}} = 0.
+        \end{equation}
+        
+        A homomorphism of Lie algebras is a linear map \(\varphi \colon \lie{g} \to \lie{h}\) which preserves the bracket, so \(\varphi(\bracket{x}{y}) = \bracket{\varphi(x)}{\varphi(y)}\).
+    \end{dfn}
+    
+    Let \(V\) be a vector space, then \(\End V\) is a Lie algebra where we define the bracket by \(\bracket{\varphi}{\psi} = \varphi \circ \psi - \psi \circ \varphi\).
+    Let \(A\) be an algebra and write \(\derivations A\) for the subset of \(\End A\) consisting of derivations.
+    Then it can be shown that \(\derivations A\) is a subalgebra of the Lie algebra \(\End A\).
+    To do so one only needs to show that the commutator of two derivations is again a derivation.
+    
+    \begin{thm}{}{}
+        Write \(\derivations(C^{\infty}(M))\) for the Lie algebra of derivations of the algebra of smooth functions. There is an isomorphism of \(C^{\infty}(M)\)-modules, \(\Phi \colon \vectorFields(M) \to \derivations(\complex^{\infty}(M))\), and this equips \(\vectorFields(M)\) with a natural Lie algebra structure.
+        \begin{proof}
+            Let \(\Omega \subseteq \reals^m\) be open and \(p \in \Omega\).
+            Let \(X = \sum_i X^i e_i\) be a smooth vector field on \(\Omega\) expressed in the standard basis.
+            Let \(f \colon \Omega \to \reals\) be a smooth function.
+            We define another smooth function, \(\partial_Xf\), on \(\Omega\) by
+            \begin{align}
+                (\partial_X f)(p) &= \dl{f}_p(X_p)\\
+                &= \dl{f}_p\left( {\textstyle\sum_i} X^i(p)e_i(p) \right)\\
+                &= \sum_{i=1}^m \diffp{f}{x^i}(p) X^i(p).
+            \end{align}
+            This is smooth since it's a product of smooth functions \(\difsp{f}{x^i}, X^i \colon \Omega \to \reals\).
+            Further, the map \(f \mapsto \partial_X f\) is a derivation on \(C^{\infty}(\Omega)\), since we have
+            \begin{equation}
+                \partial_X(fg) = \dl{(fg)}X = f \dd{g}X + g \dd{f}X = f\partial_Xg + g\partial_Xf.
+            \end{equation}
+            Now taking \(X\) to be a vector field on some smooth manifold, \(M\), and \(f \in C^{\infty}(M)\) we can define \(\partial_Xf(p) = \dl{f_p}X_p\), which we may also write as\(\partial_{X_p}f\).
+            The map \(X \mapsto \partial_X\) is a morphism of \(C^{\infty}(M)\)-modules \(\vectorFields(M) \to \derivations(C^{\infty}(M))\).
+            It is an isomorphism because % TODO: why is it an isomorphism?
+        \end{proof}
+    \end{thm}
+    
+    Using this result it is standard to identify a smooth vector field, \(X\), with the corresponding derivation\footnote{In fact, this is a standard way to define a vector field, and then one proves the above in reverse.}, \(\partial_X \in \derivations(C^{\infty}(M))\).
+    Note that every tangent vector at a point, \(X_p\), defines a linear map \(\partial_{X_p} \colon C^{\infty}(M) \to \reals\) satisfying
+    \begin{equation}
+        \partial_{X_p}(fg) = g(p) \partial_{X_p}(f) + f(p) \partial_{X_p}(g),
+    \end{equation}
+    which is almost the Leibniz rule, except for the fact that \(\partial_{X_p}\) isn't an endomorphism.
+    
+    
+    
+    
     % Appdendix
 %    \appendixpage
 %    \begin{appendices}
