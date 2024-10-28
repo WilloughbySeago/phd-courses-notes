@@ -28,6 +28,7 @@ noabbrev
 \usepackage{NotesMaths2}
 
 \setmathfont[range={\int, \oint, \otimes, \oplus, \bigotimes, \bigoplus}]{Latin Modern Math}
+\setmathfont{STIX Two Math}[range={scr,bfscr},StylisticSet=01]
 
 
 % Highlight colour
@@ -71,7 +72,7 @@ noabbrev
 \newcommand{\lagrangian}{\symcal{L}}
 \newcommand{\freeboson}{\symrm{fb}}
 \newcommand{\dalembertian}{\partial^2}
-\newcommand{\order}{\symcal{O}}
+\newcommand{\order}{\symscr{O}}
 
 \begin{document}
     \frontmatter
@@ -1682,6 +1683,7 @@ noabbrev
         \correlator{\quantumField{O}_1(\varphi(x_1)) \dotsm \quantumField{O}_n}_{(\varphi^{-1})^*g_{\mu\nu}} = \correlator{\quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}_{g_{\mu\nu}}.
     \end{equation}
     This is a bit like how in a change of coordinates given by translating \(x\) by \(a\) we actually evaluate our functions at \(x - a\).
+    Note that this behaves well under composition of diffeomorphisms since \((\varphi \psi)^* = \psi^* \varphi^*\).
     
     We demand that the action functional is invariant under this ,
     \begin{equation}
@@ -1747,7 +1749,271 @@ noabbrev
     The minus sign is important here, it means that in equations like \cref{eqn:defining property of energy momentum tensor} we can replace \(\delta g^{\alpha\beta}\) on the left with \(\delta g_{\alpha\beta}\) as long as we swap \(T_{\alpha\beta}\) for \(-T^{\alpha\beta}\) on the right.
     This means we don't have to specify any derivatives with respect to \(g^{\alpha\beta}\), just the derivatives with respect to \(g_{\alpha\beta}\) in \cref{eqn:defining property of energy momentum tensor} are sufficient.
     
+    Consider an infinitesimal diffeomorphism, \(\varphi \colon \complex_{\infty} \to \complex_{\infty}\) where we start with the flat metric, \(g_{\mu\nu} = \delta_{\mu\nu}\).
+    By infinitesimal we mean that the coordinate transformation is
+    \begin{equation}
+        x^\mu \mapsto \varphi^\mu(x) = x^\mu + \varepsilon^\mu(x)
+    \end{equation}
+    where the components \(\varepsilon^\mu(x)\) are sufficiently small that we can work to leading order in \(\varepsilon\).
+    For correlators in the flat metric we'll simply write \(\correlator{-}_{\delta_{\mu\nu}} = \correlator{-}\).
+    Given a field, \(\quantumField{O}_i\), we need to evaluate this field at \(\varphi(x)\) in order to evaluate correlators, and we can do this with a Taylor expansion:
+    \begin{equation}
+        \quantumField{O}_i(x_i + \varepsilon(x_i)) = \quantumField{O}_i(x_i) + \varepsilon^\mu \partial_\mu \quantumField{O}_i(x_i) + \order(\varepsilon^2).
+    \end{equation}
+    Under this transformation the metric transforms as
+    \begin{align}
+        \varphi^*g_{\mu\nu} &= \diffp{\varphi^\rho}{x^\mu} \diffp{\varphi^\sigma}{x^\nu} g_{\rho\sigma}\\
+        &= (\tensor{\delta}{^\rho_\mu} + \partial_\mu \varepsilon^\rho)(\tensor{\delta}{^\sigma_\nu} + \partial_\nu \varepsilon^\sigma)g_{\rho\sigma}\\
+        &= \tensor{\delta}{^\rho_\mu} \tensor{\delta}{^\sigma_\nu} g_{\rho\sigma} + \tensor{\delta}{^\rho_\mu} \partial_\nu \varepsilon^\sigma g_{\rho\sigma} + \partial_\mu \varepsilon^\rho \tensor{\delta}{^\sigma_\nu} g_{\rho\sigma} + \order(\varepsilon^2)\\
+        &= g_{\mu\nu} + \partial_\nu \varepsilon_\mu + \partial_\mu \varepsilon_\nu + \order(\varepsilon^2).
+    \end{align}
+    Here we've used
+    \begin{equation}
+        \diffp{\varphi^\rho}{x^\mu} = \diffp{}{x^\mu}(x^\rho + \varepsilon^\rho) = \diffp{x^\rho}{x^\mu} + \diffp{\varepsilon^\rho}{x^\mu} = \tensor{\delta}{^\rho_\mu} + \partial_\mu \varepsilon^\rho.
+    \end{equation}
     
+    If we now consider the expression for the correlators transforming under a diffeomorphism and keep only terms up to first order in \(\varepsilon\) then we get
+    \begin{align}
+        \label{eqn:correlator after infinitesimal diffeo}
+        &\correlator{\quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}_{\delta_{\mu\nu} + \partial_\nu \varepsilon_\mu + \partial_\mu \varepsilon_\nu}\\
+        &= \correlator{(\quantumField{O}_1(x_1) + \varepsilon^\mu \partial_\mu^{x_1} \quantumField{O}_1(x_1)) \dotsm (\quantumField{O}_n(x_n) + \varepsilon^\mu \partial_\mu^{x_n} \quantumField{O}_n(x_n))}_{\delta_{\mu\nu}} \notag\\
+        &=\left( 1 + \sum_{i=1}^n \varepsilon^\mu(x_i) \diffp{}{x_i^\mu} \right) \correlator{\quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}_{\delta_{\mu\nu}} \notag\\
+        &= \correlator{\quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}_{\delta_{\mu\nu}} \notag\\
+        &\qquad\qquad+ \frac{1}{2} \int \dl{^2x} (\partial_\nu \varepsilon_\mu(x) + \partial_\mu \varepsilon_\nu(x)) \correlator{T^{\mu\nu} \quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}_{\delta_{\mu\nu}}. \notag 
+    \end{align}
+    
+    We assume that this integral exists, which requires that \(\varepsilon\) should decay to zero sufficiently fast at infinity.
+    Since we're choosing \(\varphi\) we're actually free to choose \(\varepsilon\), so we can assume that \(\varepsilon\) has compact support.
+    Doing this we can integrate by parts (taking the boundary to be outside of the support of \(\varepsilon\)).
+    In doing so the derivatives move from the \(\varepsilon\)s to the correlator, and we end up with both terms being the same, cancelling the factor of \(1/2\) and giving the integral
+    \begin{equation}
+        \int \dl{^2x} \varepsilon_\nu(x) \partial_\mu \correlator{T^{\mu\nu}(x) \quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}.
+    \end{equation}
+    Note that combining the terms relies on the symmetry of these terms under exchange of \(\mu\) and \(\nu\).
+    We \emph{do not} presuppose that the energy momentum tensor is symmetric.
+    Instead we recognise that \(\partial_\mu \varepsilon_\nu + \partial_\nu \varepsilon_\mu\) is symmetric in \(\mu\) and \(\nu\) and as such we may ignore any antisymmetric part of the correlator.
+    
+    Now that we have this we can take the functional derivative \(\difsd{}{\varepsilon_\rho(y)}\) of the last line of \cref{eqn:correlator after infinitesimal diffeo} and we get \(\difsd{\varepsilon_\nu(x)}{\varepsilon_\rho(y)} = \tensor{\delta}{^\rho_\nu}\delta(x - y)\).
+    We can then use the Dirac delta to perform the integral and we get
+    \begin{equation}
+        \tensor{\delta}{^\rho_\nu} \partial_\mu \correlator{T^{\mu\nu}(y) \quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}.
+    \end{equation}
+    If we take the same derivative on the penultimate line of \cref{eqn:correlator after infinitesimal diffeo} then the sum over all \(\varepsilon^\mu(x_i)\partial_\mu^{x_i}\) becomes a sum of the terms \(\tensor{\delta}{^\rho_\nu} \delta(x_i - y)\), and the constant term vanishes.
+    Thus, we have
+    \begin{align}
+        \label{eqn:ward identity for energy momentum tensor}
+        &\partial_\mu \correlator{T^{\mu\nu}(y) \quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)}\\
+        &= - \delta(x_1 - y) \correlator{\partial^\mu_{x_1}\quantumField{O}_1(x_1) \dotsm \quantumField{O}_n(x_n)} - \dotsb - \delta(x_n - y) \correlator{\quantumField{O}_1(x_1) \dotsm \partial^\mu_{x_n} \quantumField{O}_n(x_n)}. \notag
+    \end{align}
+    This is the Ward identity for \(T^{\mu\nu}\).
+    
+    \chapter{Conformal Field Theories}
+    \section{Setup}
+    In this chapter we will now look specifically at conformal field theories.
+    A conformal field theory is, first and foremost, a quantum field theory.
+    This means that we can specify the required data by specifying some collection of local fields, \(W\), and correlators.
+    We will also require that there is an energy-momentum tensor, \(T^{\mu\nu} \in W\).
+    The primary fields we consider are \(\quantumField{O}_{h_i, \overbar{h}_i} \in W\) where \(h_i, \overbar{h}_i \in \reals\) are called \define{conformal weights}\index{conformal weight}.
+    The requirement on \(h_i\) and \(\overbar{h}_i\) is that \(h_i - \overbar{h}_i = s \in \integers\).
+    The integer \(s\) is called the \defineindex{spin} of the field.
+    We will restrict much of our study to the spin-zero case, where \(h_i = \overbar{h}_i\), and when in this regime we make our notation more compact by writing \(\quantumField{O}_{h_i}\) for \(\quantumField{O}_{h_i,\overbar{h}_i}\).
+    
+    Note that, in general, many primary fields may have the same value of \(h_i\), and we distinguish them by the index \(i\) rather than the value of \(h_i\).
+    If we every want to fix a value of \(h_i\) then we should also attach the label \(i\) to the resulting field in some way.
+    
+    We assume that a CFT comes with a set of correlatoion functions of the primary fields, which we'll take to be defined on \(\complex_{\infty}\) (possibly diverging to \(\infty\) when \(x_i = x_j\) for \(i \ne j\)) with arbitrary metric, \(g_{\mu\nu}\).
+    We'll denote these correlators by
+    \begin{equation}
+        \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}_{g_{\mu\nu}}
+    \end{equation}
+    and among these is the zero-point correlator
+    \begin{equation}
+        Z[g_{\mu\nu}] = \correlator{1}_{g_{\mu\nu}}.
+    \end{equation}
+    Further, we assume that correlators involving the energy-momentum tensor, such as
+    \begin{equation}
+        \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}_{g_{\mu\nu}T^{\mu_1\nu_1}(y_1) \dotsm T^{\mu_m\nu_m}(y_m)},
+    \end{equation}
+    are specified.
+    These need not be finite for any values of \(y_i\), even if all the \(y_i\)s are distinct, so when there are energy-momentum tensors involved in the correlators we should always treat them as distributions.
+    
+    \section{Weyl Transformation}
+    A \defineindex{Weyl transformation} is a coordinate transformation (that is a diffeomorphism \(\complex_{\infty} \to \complex_{\infty}\)) which results in a rescaling of the metric:
+    \begin{equation}
+        g_{\mu\nu}(x) \mapsto \Lambda(x)g_{\mu\nu}(x), \qquad \Lambda(x) > 0.
+    \end{equation}
+    We postulate in CFT that primary spin-zero fields transform under Weyl transformations in such a way that we have the identity
+    \begin{equation}
+        \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}_{\Lambda g_{\mu\nu}} = \prod_{i=1}^{n} \Lambda^{-h_i}(x_i) \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}g_{\mu\nu}.
+    \end{equation}
+    All that this result says is that a Weyl transformation scales the metric at each point and the fields also scale by some power of this scaling factor, and this power defines \(h_i\).
+    Non-primary, or non-spin-zero, fields need not transform so simply.
+    
+    The partition function, \(Z[g_{\mu\nu}]\), transforms under Weyl transformations in a more complicated way,
+    \begin{equation}
+        Z[\Lambda g_{\mu\nu}] = \e^{S[\Lambda, g_{\mu\nu}]} Z[g_{\mu\nu}]
+    \end{equation}
+    where \(S[\Lambda, g_{\mu\nu}]\) is called the \defineindex{Liouville functional}, defined by
+    \begin{equation}
+        S[\Lambda, g_{\mu\nu}] = \frac{c}{96\pi} \int \dl{^2x} \sqrt{g} (g^{\mu\nu} \partial_\mu (\ln \Lambda) \partial_\nu (\ln \Lambda) + 2R_2(\ln \Lambda))
+    \end{equation}
+    where
+    \begin{itemize}
+        \item \(R_2\) is the Ricci scalar curvature (which is twice the Gaussian curvature);
+        \item \(c\) is the central charge, a parameter that depends on the CFT (and relates to a choice of representation of the Virasoro algebra).
+    \end{itemize}
+    
+    Consider an infinitesimal Weyl transformation in flat space,
+    \begin{equation}
+        \delta_{\mu\nu} \mapsto (1 + \delta \Lambda(x)) \delta_{\mu\nu},
+    \end{equation}
+    that is, \(\delta g_{\mu\nu} = \delta \Lambda \, \delta_{\mu\nu}\).
+    We then have
+    \begin{align}
+        &\correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}_{(1 + \delta \Lambda) \delta_{\mu\nu}} = \prod_{i=1}^{n} (1 + \delta \Lambda)^{-h_i} \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)} \notag\\
+        &\qquad\qquad\approx \prod_{i=1}^n (1 - h_i \delta \Lambda) \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}\\
+        &\qquad\qquad\approx (1 - h_1 - \dotsb - h_n) \delta\Lambda \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}.
+    \end{align}
+    Here we've used the Taylor series \((1 + \delta \Lambda)^{-h} = 1 - h \delta \Lambda + \order(\delta \Lambda^2)\), then we've expanded the product keeping only terms up to first order in \(\delta \Lambda\).
+    
+    For the Liouville functional we have
+    \begin{itemize}
+        \item \(\sqrt{g} = \sqrt{\delta} = \sqrt{\det I_2} = 1\);
+        \item \(R_2 = 0\) since \(\delta_{\mu\nu}\) is the flat metric;
+        \item \(\ln \Lambda = \ln(1 + \delta \Lambda) \approx \delta \Lambda\).
+    \end{itemize}
+    From this we can see that the Liouville functional goes as \(\partial_\mu \delta \Lambda \partial_\nu \delta \Lambda\) which we can assume vanishes as it's second order in \(\delta \Lambda\).
+    Thus, for an infinitesimal transformation we have
+    \begin{equation}
+        Z[(1 + \delta \Lambda)\delta_{\mu\nu}] = \e^0 Z[\delta_{\mu\nu}] = Z[\delta_{\mu\nu}].
+    \end{equation}
+    This agrees with previous observations where we calculated the partition function to be
+    \begin{equation}
+        Z[\delta_{\mu\nu} + \delta \Lambda \delta_{\mu\nu}] = Z[\delta_{\mu\nu}] + \int \dl{^2x} \delta_{\mu\nu} \correlator{T^{\mu\nu}}
+    \end{equation}
+    which is the same since \(\delta_{\mu\nu}T^{\mu\nu} = \tensor{T}{^\mu_\mu}\) and \(\correlator{\tensor{T}{^\mu_\nu}} = 0\).
+    
+    For an infinitesimal transformation Weyl transformation we therefore have the correlator relation
+    \begin{align}
+        &\correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}_{(1 + \delta\Lambda)\delta_{\mu\nu}}\\
+        &\qquad\qquad= \frac{1}{2} \int \dl{^2x} \, \delta \Lambda(x) \delta_{\mu\nu}\correlator{T^{\mu\nu}(x)\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}\\
+        &\qquad\qquad= \left( 1 - \sum_{i=1}^n h_i \delta \Lambda(x) \right) \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}.
+    \end{align}
+    Taking the functional derivative \(\difsd{}{(\delta \Lambda(y))}\) above the integral gets a \(\delta(x - y)\) term, allowing us to compute the integral as
+    \begin{equation}
+        \frac{1}{2} \delta_{\mu\nu}\correlator{T^{\mu\nu}(y)\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}
+    \end{equation}
+    and in the last line the constant term vanishes and we get a sum over the terms \(h_i \delta(x - y)\), and combining these results we have
+    \begin{equation}
+        \label{eqn:energy momentum tensor trace contact terms}
+        \correlator{\tensor{T}{^\mu_\mu}(y)\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)} = -2 \sum_{i=1}^n h_i \delta(x - y) \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}.
+    \end{equation}
+    We call this the \enquote{Ward identity} for the Weyl transformation.
+    The quotation marks are because this doesn't take the usual form of a Ward identity, namely a divergence term being equal to some contact terms.
+    However, we can combine this with the translation Ward identities to get the Ward identity
+    \begin{multline}
+        \partial_\nu \correlator{\tensor{T}{^\nu_\mu}(y) y^\mu \quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}\\
+        = -\sum_{i=1}^n \left( x_i^\mu \diffp{}{x_i^\mu} + 2h_i \right) \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}.
+    \end{multline}
+    This is the Ward identity for dilations, because the vector field \(x^\mu \partial_\mu\) generates dilations.
+    
+    Note that while \(\correlator{\tensor{T}{^\mu_\mu}} = 0\) we do not, in general, have \(\correlator{\tensor{T}{^\mu_\mu}\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)} = 0\).
+    
+    We can generalise this result to the observation that in a CFT inside a correlation function with a flat metric we have that
+    \begin{equation}
+        \tensor{T}{^\mu_\mu} = 0 \qquad \text{up to contact terms}.
+    \end{equation}
+    This property is characteristic of CFTs amongst QFTs.
+    
+    \subsection{Infinitesimal Conformal Transformation}
+    Now consider an infinitesimal conformal transformation
+    \begin{equation}
+        x^\mu \mapsto x^\mu + \varepsilon^\mu(x)
+    \end{equation}
+    for which
+    \begin{equation}
+        \label{eqn:infinitesimal cft condition}
+        \partial_\mu \varepsilon_\nu + \partial_\nu \varepsilon_\mu = (\partial_\alpha \varepsilon^\alpha) \delta_{\mu\nu}.
+    \end{equation}
+    We then have
+    \begin{align}
+        \partial_\mu (T^{\mu\nu}\varepsilon_\nu) &= (\partial_\mu T^{\mu\nu})\varepsilon_\nu + T^{\mu\nu}\partial_\mu \varepsilon_\nu\\
+        &= (\partial_\mu T^{\mu\nu})\varepsilon_\nu + \frac{1}{2}T^{\mu\nu}(\partial_\mu \varepsilon_\nu + \partial_\nu \varepsilon_\mu) + \frac{1}{2}T^{\mu\nu}(\partial_\mu \varepsilon_\nu - \partial_\nu \varepsilon_\mu)
+    \end{align}
+    where we've split \(\partial_\mu \varepsilon_\nu\) up into its symmetric and antisymmetric part.
+    We can then use \cref{eqn:infinitesimal cft condition} to write this as
+    \begin{align}
+        \partial_\mu (T^{\mu\nu}\varepsilon_\nu) &= (\partial_\mu T^{\mu\nu})\varepsilon_\nu + \frac{1}{2}T^{\mu\nu}(\partial_\alpha \varepsilon^\alpha)\delta_{\mu\nu} + \frac{1}{2}T^{\mu\nu}(\partial_\mu \varepsilon_\nu - \partial_\nu \varepsilon_\mu)\\
+        &= (\partial_\mu T^{\mu\nu})\varepsilon_\nu + \frac{1}{2}\tensor{T}{^\mu_\mu}(\partial_\alpha \varepsilon^\alpha) + \frac{1}{2}T^{\mu\nu}(\partial_\mu \varepsilon_\nu - \partial_\nu \varepsilon_\mu).
+    \end{align}
+    Now notice that \(\partial_\mu \varepsilon_\nu - \partial_\nu \varepsilon_\mu\) is antisymmetric, and so we can discard the symmetric part of the \(T^{\mu\nu}\) in the final term, giving
+    \begin{equation}
+        \partial_\mu (T^{\mu\nu}\varepsilon_\nu) = (\partial_\mu T^{\mu\nu})\varepsilon_\nu + \frac{1}{2}\tensor{T}{^\mu_\mu}(\partial_\alpha \varepsilon^\alpha) + \frac{1}{4}(T^{\mu\nu} - T^{\nu\mu})(\partial_\mu \varepsilon_\nu - \partial_\nu \varepsilon_\mu).
+    \end{equation}
+    Now, \(T^{\mu\nu}\) inside a correlation function of spin-zero primary fields is defined in terms of a variation of the metric, and so in such a setting \(T^{\mu\nu}\) is symmetric in its indices, meaning that
+    \begin{equation}
+        \label{eqn:energy momentum tensor symmetric in correlators}
+        \correlator{(T^{\mu\nu}(x) - T^{\nu\mu}(x)) \quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)} = 0.
+    \end{equation}
+    Taking correlators of this equation and then applying the Ward identities for \(\partial_\mu T^{\mu\nu}\) and \(\tensor{T}{^\mu_\nu}\) (\cref{eqn:energy momentum tensor trace contact terms,eqn:ward identity for energy momentum tensor}) gives us the Ward identity
+    \begin{align}
+        &\correlator{\partial_\mu(T^{\mu\nu}(x)\varepsilon_\nu(x)) \quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}\\
+        &= -\sum_{i=1}^n \delta(x - x_i) \left( \varepsilon^\mu(x) \diffp{}{x_i^\mu} + h_i \partial_\alpha \varepsilon^\alpha(x) \right) \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}\\
+        &= -\sum_{i=1}^n \delta(x - x_i)(\varepsilon^\mu(x_i) \diffp{}{x_i^\mu} + h_i \partial_\alpha \varepsilon^\alpha(x_i)) \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}.
+    \end{align}
+    Note that in the last line we've used the presence of the \(\delta(x - x_i)\) to replace \(x\)s with \(x_i\)s.
+    This result is called the \defineindex{conformal Ward identity} for spinless primary fields.
+    The conformal Killing vector field, \(\varepsilon^\mu\), has to be well-defined at the insertion points, \(x = x_i\), but otherwise is only constrained by \cref{eqn:infinitesimal cft condition}.
+    
+    Now make a change to complex coordinates.
+    We know that a conformal Killing vector is specified by a holomorphic change of coordinates
+    \begin{equation}
+        z \mapsto z + \varepsilon(z)
+    \end{equation}
+    where
+    \begin{equation}
+        \varepsilon(z) = \varepsilon^z(z) = 2\varepsilon_{\overbar{z}}(z).
+    \end{equation}
+    The 2 here comes from the off-diagonal terms in the inverse metric when raising the \(\overbar{z}\) index.
+    In complex coordinates the trace is
+    \begin{align}
+        \tensor{T}{^\mu_\mu} &= g^{\mu\nu}T_{\mu\nu}\\
+        &= 2T_{z\overbar{z}} + 2T_{\overbar{z}z}\\
+        &= g_{\mu\nu}T^{\mu\nu}\\
+        &= \frac{1}{2}T^{z\overbar{z}} + \frac{1}{2}T^{\overbar{z}z}
+    \end{align}
+    and so we have
+    \begin{equation}
+        \tensor{T}{^\mu_\mu} = 2(T_{z\overbar{z}} + T_{\overbar{z}z}) = \frac{1}{2}(T^{z\overbar{z}} + T^{\overbar{z}z}) = 0 \quad \text{up to contact terms}.
+    \end{equation}
+    The assumption that \(T^{\mu\nu}\) is symmetric in correlators (\cref{eqn:energy momentum tensor symmetric in correlators}) holds more generally for primary fields of non-zero spin \emph{up to contact terms}, and so
+    \begin{equation}
+        2(T_{z\overbar{z}} - T_{\overbar{z}z}) = \frac{1}{2}(T^{\overbar{z}z} - T^{z\overbar{z}}) = 0 \quad \text{up to contact terms}.
+    \end{equation}
+    This constraint corresponds to a rotation invariance of our theory, which we will always assume holds.
+    Combining these two results we have that
+    \begin{equation}
+        T_{z\overbar{z}} = T_{\overbar{z}z} = 0 \quad \text{up to contact terms}.
+    \end{equation}
+    This should hold in any (rotationally symmetric) 2D CFT.
+    This leaves only two components of the energy-momentum tensor which have nonzero contribution at finite separation, namely \(T_{zz}\) and \(T_{\overbar{z}\overbar{z}}\).
+    These components are constrained by the conservation equation
+    \begin{equation}
+        \partial_\mu T^{\mu\nu} = 0,
+    \end{equation}
+    which can be shown to hold inside a correlation function with any primary fields, not only spin-zero fields.
+    Taking \(\nu = z\) we get
+    \begin{equation}
+        \partial_\mu T^{\mu z} = \partial_z T^{zz} + \partial_{\overbar{z}} T^{\overbar{z}z} = \partial_z T^{zz} \quad \text{up to contact terms}.
+    \end{equation}
+    This, and the same result for \(\partial_{\overbar{z}}T^{\overbar{z}\nu}\), implies that
+    \begin{equation}
+        \partial_{z}T^{zz} = 0, \qand \partial_{\overbar{z}}T^{\overbar{z}\overbar{z}} = 0 \quad \text{up to contact terms}.
+    \end{equation}
+    Lowering some indices this gives
+    \begin{equation}
+        \partial_z T_{\overbar{z}\overbar{z}} = 0, \qand \partial_{\overbar{z}} T_{zz} = 0 \quad \text{up to contact terms}.
+    \end{equation}
     
     
     
