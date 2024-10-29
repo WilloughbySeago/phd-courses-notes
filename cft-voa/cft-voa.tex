@@ -73,6 +73,7 @@ noabbrev
 \newcommand{\freeboson}{\symrm{fb}}
 \newcommand{\dalembertian}{\partial^2}
 \newcommand{\order}{\symscr{O}}
+\newcommand{\identity}{\symbb{1}}
 
 \begin{document}
     \frontmatter
@@ -1844,7 +1845,7 @@ noabbrev
     \end{equation}
     We postulate in CFT that primary spin-zero fields transform under Weyl transformations in such a way that we have the identity
     \begin{equation}
-        \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}_{\Lambda g_{\mu\nu}} = \prod_{i=1}^{n} \Lambda^{-h_i}(x_i) \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}g_{\mu\nu}.
+        \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}_{\Lambda g_{\mu\nu}} = \prod_{i=1}^{n} \Lambda^{-h_i}(x_i) \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}_{g_{\mu\nu}}.
     \end{equation}
     All that this result says is that a Weyl transformation scales the metric at each point and the fields also scale by some power of this scaling factor, and this power defines \(h_i\).
     Non-primary, or non-spin-zero, fields need not transform so simply.
@@ -1957,9 +1958,10 @@ noabbrev
     \end{equation}
     Taking correlators of this equation and then applying the Ward identities for \(\partial_\mu T^{\mu\nu}\) and \(\tensor{T}{^\mu_\nu}\) (\cref{eqn:energy momentum tensor trace contact terms,eqn:ward identity for energy momentum tensor}) gives us the Ward identity
     \begin{align}
+        \label{eqn:conformal ward identity}
         &\correlator{\partial_\mu(T^{\mu\nu}(x)\varepsilon_\nu(x)) \quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}\\
         &= -\sum_{i=1}^n \delta(x - x_i) \left( \varepsilon^\mu(x) \diffp{}{x_i^\mu} + h_i \partial_\alpha \varepsilon^\alpha(x) \right) \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}\\
-        &= -\sum_{i=1}^n \delta(x - x_i)(\varepsilon^\mu(x_i) \diffp{}{x_i^\mu} + h_i \partial_\alpha \varepsilon^\alpha(x_i)) \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}.
+        &= -\sum_{i=1}^n \delta(x - x_i)\left( \varepsilon^\mu(x_i) \diffp{}{x_i^\mu} + h_i \partial_\alpha \varepsilon^\alpha(x_i) \right) \correlator{\quantumField{O}_{h_1}(x_1) \dotsm \quantumField{O}_{h_n}(x_n)}.
     \end{align}
     Note that in the last line we've used the presence of the \(\delta(x - x_i)\) to replace \(x\)s with \(x_i\)s.
     This result is called the \defineindex{conformal Ward identity} for spinless primary fields.
@@ -2014,9 +2016,230 @@ noabbrev
     \begin{equation}
         \partial_z T_{\overbar{z}\overbar{z}} = 0, \qand \partial_{\overbar{z}} T_{zz} = 0 \quad \text{up to contact terms}.
     \end{equation}
+    This is a strong constraint.
+    It means that correlation functions at finite separation involving \(T_{zz}\) are holomorphic functions of \(z\), and correlators functions at finite separation involving \(T_{\overbar{z}\overbar{z}}\) are antiholomorphic functions of \(z\).
+    The locality assumption means that such functions have poles only at the isolated points where the other local fields in the correlator are evaluated.
+    Later we will exploit the transformation laws and invariance under conformal transformations to deduce the structure of these correlators.
     
+    We will mostly be interested in the regular parts of correlators, that is the parts which don't diverge, which we get by restricting to non-coincident points.
+    To constrain the functions that can arise in this way we can modify the Ward identities into a form where they don't contain any contact terms.
+    To do this we integrate them over a region, \(M\), containing the insertion points, \(z_1, \dotsc, z_n\), but not containing any poles of \(\varepsilon\).
+    Using the constraints on \(T\) derived above we have
+    \begin{align}
+        \partial_\mu (T^{\mu\nu} \varepsilon_\nu) &= \partial_z (T^{z\overbar{z}}\varepsilon_z) + \partial_{\overbar{z}} (T^{\overbar{z}z} \varepsilon_z)\\
+        &= 2\partial_z(T_{zz} \varepsilon_z) + 2\partial_z(T_{\overbar{z}\overbar{z}} \varepsilon_{\overbar{z}})\\
+        &= -\frac{1}{\pi}\partial_z(T(z)\varepsilon(z)) -\frac{1}{\pi}\partial_{\overbar{z}}(\overbar{T}(\overbar{z})\overbar{\varepsilon}(\overbar{z}))
+    \end{align}
+    where we use the common CFT shorthand
+    \begin{equation}
+        T(z) = -2\pi T_{zz}(z), \qand \overbar{T}(\overbar{z}) = -2\pi T_{\overbar{z}\overbar{z}}(\overbar{z}),
+    \end{equation}
+    which just makes expressions slightly shorter and saves on some factors of \(2\pi\) later.
+    Start with the conformal Ward identity (\cref{eqn:conformal ward identity}) in complex coordinates:
+    \begin{multline}
+        \frac{1}{\pi}\correlator{\partial_z(T(z)\varepsilon_\nu(z)) \quantumField{O}_{h_1}(z_1) \dotsm \quantumField{O}_{h_n}(z_n)} + \frac{1}{\pi}\correlator{\partial_{\overbar{z}}(\overbar{T}(\overbar{z})\overbar{\varepsilon}(\overbar{z})) \quantumField{O}_{h_1}(z_1) \dotsm \quantumField{O}_{h_n}(z_n)}\\
+        = \sum_{i=1}^n \delta(z - z_i)\left( \varepsilon(z_i) \diffp{}{z_i} + \overbar{\varepsilon}(\overbar{z}_i) \diffp{}{\overbar{z}_i} + h_i \partial_{z_i}\varepsilon(z_i) + h_i \partial_{\overbar{z}_i} \overbar{\varepsilon}(\overbar{z}_i) \right)\\
+        \cdot\correlator{\quantumField{O}_{h_1}(z_1) \dotsm \quantumField{O}_{h_n}(z_n)}.
+    \end{multline}
+    Integrating over \(M\) we have
+    \begin{multline}
+        \frac{1}{\pi} \int_M \dl{^2z} \, \correlator{\partial_z(T(z)\varepsilon(z)) \quantumField{O}_{h_1}(z_1) \dotsm \quantumField{O}_{h_n}(z_n)} + \frac{1}{\pi} \int_M \dl{^2\overbar{z}} \, \correlator{\partial_{\overbar{z}}(\overbar{T}(\overbar{z})\overbar{\varepsilon}(\overbar{z}))} =\\
+        \sum_{i=1}^n \int_M \dl{^2z} \delta(z - z_i)\left( \varepsilon(z_i) \diffp{}{z_i} + \overbar{\varepsilon}(\overbar{z}_i) \diffp{}{\overbar{z}_i} + h_i \partial_{z_i}\varepsilon(z_i) + h_i \partial_{\overbar{z}_i} \overbar{\varepsilon}(\overbar{z}_i) \right)\\
+        \cdot\correlator{\quantumField{O}_{h_1}(z_1) \dotsm \quantumField{O}_{h_n}(z_n)}.
+    \end{multline}
+    On the left we use Stoke's theorem, and on the right we can use the Dirac deltas to perform the integral.
+    This gives
+    \begin{multline}
+        \frac{1}{2\pi i} \oint_C \dl{z} \, \varepsilon(z) \correlator{T(z) \quantumField{O}_{h_1}(z_1) \dotsm \quantumField{O}_{h_n}(z_n)}\\
+        - \frac{1}{2\pi i} \oint_C \dl{\overbar{z}} \, \overbar{\varepsilon}(\overbar{z}) \correlator{\overbar{T}(\overbar{z}) \quantumField{O}_{h_1}(z_1) \dotsm \quantumField{O}_{h_n}(z_n)} =\\
+        \sum_{i=1}^n \left( \varepsilon(z_i) \diffp{}{z_i}\bigg|_{z_i = z} + \overbar{\varepsilon}(\overbar{z}_i) \diffp{}{\overbar{z}_i}\bigg|_{z_i = z} + h_i \partial_{z_i}\varepsilon(z_i) + h_i \partial_{\overbar{z}_i} \overbar{\varepsilon}(\overbar{z}_i) \right)\\
+        \cdot\correlator{\quantumField{O}_{h_1}(z_1) \dotsm \quantumField{O}_{h_n}(z_n)}|_{z_i = z}.
+    \end{multline}
+    We can write the right hand side as
+    \begin{equation}
+        \correlator{\delta_{\varepsilon,\overbar{\varepsilon}}\quantumField{O}_{h_1}(z_1) \dotsm \quantumField{O}_{h_n}(z_n)} + \dotsb + \correlator{\quantumField{O}_{h_1}(z_1) \dotsm \delta_{\varepsilon, \overbar{\varepsilon}} \quantumField{O}_{h_n}(z_n)}
+    \end{equation}
+    where \(\delta_{\varepsilon,\overbar{\varepsilon}}\quantumField{O}_{h_i}\) is a field defined by
+    \begin{equation}
+        \delta_{\varepsilon,\overbar{\varepsilon}}\quantumField{O}_{h_i}(z_i) = [\varepsilon(z_i)\partial_{z_i} + \overbar{\varepsilon}(\overbar{z}_i)\partial_{\overbar{z}_i} + h_i\partial_z\varepsilon(z_i) + h_i\partial_{\overbar{z}}\overbar{\varepsilon}(\overbar{z}_i)]\quantumField{O}_{h_i}(z_i)
+    \end{equation}
+    where by \(\partial_z\varepsilon(z_i)\) we mean that the field \(\partial_z\varepsilon\) is evaluated at \(z_i\), this could be written as \(\partial_z\varepsilon(z)|_{z=z_i}\) in more standard notation.
     
+    \chapter{Global Conformal Invariance}
+    \section{Transformation Law for Correlators}
+    Consider a global conformal transformation
+    \begin{equation}
+        z \mapsto z' = \varphi(z) = \frac{az + b}{cz + d}, \qqwhere ad - bc = 1.
+    \end{equation}
+    Starting with the flat metric, \(\delta_{\mu\nu}\), after this transformation the metric is \(\Lambda \delta_{\mu\nu}\) where \(\Lambda = \abs{\difs{\varphi}{z}}^2 > 0\).
+    Under this transformation we have
+    \begin{equation}
+        \correlator{\quantumField{O}_{h_1}(\varphi(z_1)) \dotsm \quantumField{O}_{h_n}(\varphi(z_n))}_{\delta_{\mu\nu}} = \correlator{\quantumField{O}_{h_1}(z_1) \dotsm \quantumField{O}_{h_n}(z_n)}_{\Lambda \delta_{\mu\nu}}.
+    \end{equation}
+    We can also treat this transformation as a Weyl transformation, which means that the correlators transform according to
+    \begin{equation}
+        \correlator{\quantumField{O}_{h_1}(z_1) \dotsm \quantumField{O}_{h_n}(z_n)}_{\Lambda \delta_{\mu\nu}} = \prod_{i=1}^n \Lambda^{-h_i}(z_i) \correlator{\quantumField{O}_{h_1}(z_1) \dotsm \quantumField{O}_{h_n}(z_n)}_{\delta_{\mu\nu}}.
+    \end{equation}
+    Equating these and writing \(z_i' = \varphi(z_i)\) and multiplying through by the product of the \(\Lambda^{h_i}\) we have
+    \begin{equation}
+        \correlator{\quantumField{O}_{h_1}(z_1) \dotsm \quantumField{O}_{h_n}(z_n)}_{\delta_{\mu\nu}} = \prod_{i=1}^n \Lambda^{h_i} \correlator{\quantumField{O}_{h_1}(z_1') \dotsm \quantumField{O}_{h_n}(z_n')}_{\delta_{\mu\nu}}.
+    \end{equation}
+    We can now drop the metric from the notation as all of this is considered in the flat metric, \(\delta_{\mu\nu}\).
+    We can then use
+    \begin{equation}
+        \Lambda = \abs*{\diff{z'}{z}}^2 = \diff{z'}{z} \diff{\overbar{z}'}{z'}
+    \end{equation}
+    and we have
+    \begin{equation}
+        \correlator{\quantumField{O}_{h_1}(z_1) \dotsm \quantumField{O}_{h_n}(z_n)} = \left( \diff{z'}{z} \right)^{h_1} \left( \diff{\overbar{z}'}{\overbar{z}} \right)^{h_1} \dotsm \left( \diff{z'}{z} \right)^{h_n} \left( \diff{\overbar{z}'}{\overbar{z}} \right)^{h_n} \correlator{\quantumField{O}_{h_1}(z_1') \dotsm \quantumField{O}_{h_n}(z_n)}.
+    \end{equation}
+    This is the transformation law for correlators of scalar (spin zero, \(h_i = \overbar{h}_i\)) fields.
     
+    A more general calculation allowing for \(h_i \ne \overbar{h}_i\) leaves us with the correlator transformation law
+    \begin{equation}
+        \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1) \dotsm \quantumField{O}_{h_n, \overbar{h}_n}(z_n)} = \left( \diff{z'}{z} \right)^{h_1} \left( \diff{\overbar{z}'}{\overbar{z}} \right)^{\overbar{h}_1} \dotsm \left( \diff{z'}{z} \right)^{h_n} \left( \diff{\overbar{z}'}{\overbar{z}} \right)^{\overbar{h}_n} \correlator{\quantumField{O}_{h_1, \overbar{h}_1}(z_1') \dotsm \quantumField{O}_{h_n, \overbar{h}_n}(z_n)}.
+    \end{equation}
+    More succinctly, we can say that, in a correlation function, the primary fields transform as
+    \begin{equation}
+        \quantumField{O}_{h,\overbar{h}}(z, \overbar{z}) = \left( \diff{z'}{z} \right)^h \left( \diff{\overbar{z}'}{\overbar{z}} \right)^{\overbar{h}} \quantumField{O}_{h,\overbar{h}}(z', \overbar{z}).
+    \end{equation}
+    We can recast this as
+    \begin{equation}
+        \quantumField{O}_{h,\overbar{h}}(z, \overbar{z}) (\dl{z})^h (\dl{\overbar{z}})^{\overbar{h}} = \quantumField{O}_{h,\overbar{h}}(z', \overbar{z}') (\dl{z'})^h (\dl{\overbar{z}'})^{\overbar{h}}.
+    \end{equation}
+    This says that the primary fields are actually (the components of) differential forms, at least when considered inside correlators.
+    
+    One slight subtlety here is that really we want to consider \(\complex_{\infty}\), and any sensible theory will have correlators vanish at \(\infty\).
+    If our transformation takes one of the insertion points, \(z_i\), to \(\infty\) then the correct way to deal with this is to take a limit of the transformation law as \(z_i \to \infty\).
+    
+    It should be noted that this transformation law respects composition of M\"obius transformations, that is if we have M\"obius transformations \(z \mapsto z'\) and \(z' \mapsto z''\) then under the composite of these we pick up a factor of
+    \begin{equation}
+        \left( \diff{z''}{z} \right)^h \left( \diff{\overbar{z}''}{\overbar{z}} \right)^{\overbar{h}} = \left( \diff{z''}{z'} \diff{z'}{z} \right)^h \left( \diff{\overbar{z}''}{\overbar{z}'}\diff{\overbar{z}'}{\overbar{z}} \right)^{\overbar{h}} = \left( \diff{z''}{z'} \right)^h \left( \diff{z'}{z} \right)^h \left( \diff{\overbar{z}''}{\overbar{z}'} \right)^{\overbar{h}}  \left( \diff{\overbar{z}'}{\overbar{z}} \right)^{\overbar{h}}.
+    \end{equation}
+    We can see that these are the same factors we pick up if we do both transformations separately.
+    
+    A last point that we make is that within correlators conformal transformations are always given by a diffeomorphism followed by a Weyl transformation, although not all such composite transformations are conformal.
+    We can therefore think of a conformal transformation as resulting in a reparametrisation followed by a scaling.
+    
+    \section{Quasiprimary Fields}
+    \begin{dfn}{}{}
+        A \defineindex{quasiprimary field} is a local field, \(\quantumField{O}_{h,\overbar{h}}\) which transforms according to
+        \begin{equation}
+            \quantumField{O}_{h,\overbar{h}}(z, \overbar{z}) = \left( \diff{z'}{z} \right)^h \left( \diff{\overbar{z}'}{\overbar{z}} \right)^{\overbar{h}} \quantumField{O}_{h,\overbar{h}}(z', \overbar{z}')
+        \end{equation}
+        under a global conformal transformation, \(z \mapsto z'\).
+    \end{dfn}
+    
+    Note that all primary fields are quasiprimary fields, but not necessarily\footnote{We can always take the trivial CFT in which the space of local fields is \(W = 0\), and in this all fields are trivially primary} vice versa.
+    The distinction is that primary fields satisfy all of the Ward identities that we developed in the previous chapter (which relate to infinitesimal conformal transformations), whereas quasiprimary fields only need to behave nicely under global conformal transformations.
+    
+    For the rest of this chapter we will take all of our fields, \(\quantumField{O}_{h,\overbar{h}}\), to be quasiprimary fields.
+    
+    \subsection{Integrality of Spin}
+    The spin, \(s = h - \overbar{h}\), is an integer.
+    This is true for quasiprimary fields, as we show here.
+    Consider a rotation,
+    \begin{equation}
+        z \mapsto z' = \e^{i\alpha} z.
+    \end{equation}
+    We have
+    \begin{equation}
+        \diff{z'}{z} = \e^{i\alpha}, \qqand \diff{\overbar{z}'}{\overbar{z}} = \diff{}{\overbar{z}} \e^{-i\alpha}\overbar{z} = \e^{-i\alpha},
+    \end{equation}
+    and so any quasiprimary field, \(\quantumField{O}_{h,\overbar{h}}\), must transform as
+    \begin{equation}
+        \quantumField{O}_{h,\overbar{h}}(z, \overbar{z}) = (\e^{i\alpha})^h (\e^{-i\alpha})^{\overbar{h}} \quantumField{O}_{h,\overbar{h}}(z', \overbar{z}') = \e^{i\alpha(h - \overbar{h})} \quantumField{O}_{h,\overbar{h}}(z', \overbar{z}').
+    \end{equation}
+    Now consider the case where \(\alpha = 2\pi\).
+    We know that this should, of course, be the identity transformation, in which case we should have
+    \begin{equation}
+        \quantumField{O}_{h,\overbar{h}}(z, \overbar{z}) = \quantumField{O}_{h,\overbar{h}}(z', \overbar{z}').
+    \end{equation}
+    From this we can see that we must have
+    \begin{equation}
+        \e^{2\pi i(h - \overbar{h})} = 1 \implies h - \overbar{h} \in \integers.
+    \end{equation}
+    So, the spin is always an integer.
+    
+    \subsection{Structure of Correlation Functions}
+    We can use similar techniques to the previous section, considering particularly nice conformal transformations, to determine the structure of the correlation functions, at least as far as we can for a general CFT.
+    By this we mean that we'll see that \(n\)-point correlators for \(n \le 3\) have a fixed structure as a function of \(z_i\), differing only by a constant.
+    For \(n \ge 4\) there is more freedom, which is where we are allowed to specify different correlators and we end up with different CFTs.
+    
+    \subsubsection{One-Point Correlation Function}
+    Consider a single quasiprimary field, \(\quantumField{O}_{h,\overbar{h}}\).
+    We will compute the correlator
+    \begin{equation}
+        \correlator{\quantumField{O}_{h,\overbar{h}}(z_1, \overbar{z}_1)}.
+    \end{equation}
+    To do so we consider how this correlator transforms under the translation, \(z \mapsto z' = z - z_1\), which is of course chosen so that \(z_1 \mapsto 0\).
+    We then have
+    \begin{equation}
+        \diff{z'}{z} = 1, \qqand \diff{\overbar{z}'}{\overbar{z}} = 1,
+    \end{equation}
+    and so we must have
+    \begin{equation}
+        \correlator{\quantumField{O}_{h,\overbar{h}}(z_1, \overbar{z}_1)} = 1^h 1^{\overbar{h}} \correlator{\quantumField{O}_{h,\overbar{h}}(z_1 - z_1, \overbar{z}_1 - \overbar{z}_1)} = \correlator{\quantumField{O}_{h,\overbar{h}}(0, 0)}.
+    \end{equation}
+    This shows that the one-point correlator is completely fixed by the value of the constant \(C_1 = \correlator{\quantumField{O}_{h,\overbar{h}}(0, 0)}\), and so is independent of the insertion point.
+    
+    If we instead consider a rotation/dilation, \(z \mapsto z' = az\) for \(a \in \complex^{\times}\) then we have
+    \begin{equation}
+        \diff{z'}{z} = a, \qqand \diff{\overbar{z}'}{\overbar{z}} = \diff{}{\overbar{z}} (\overbar{a} \overbar{z}) = \overbar{a},
+    \end{equation}
+    and so the one-point correlator transforms as
+    \begin{equation}
+        \correlator{\quantumField{O}_{h,\overbar{h}}(z_1, \overbar{z}_1)} = a^h \overbar{a}^{\overbar{h}} \correlator{\quantumField{O}_{h,\overbar{h}}(az_1, \overbar{a}\overbar{z}_1)}
+    \end{equation}
+    and realising that all of these one-point correlators are just \(C_1\) we have
+    \begin{equation}
+        C_1 = a^h a^{\overbar{h}}C_1.
+    \end{equation}
+    Assuming that we have quasiprimary fields where \(h\) and \(\overbar{h}\) are not both zero we see we must have that \(C_1 = 0\).
+    If \(h = \overbar{h} = 0\) then we cannot say that \(C_1 = 0\).
+    Instead, we use the fact that in a (unitary) CFT the unique vacuum assumption is that there is a unique (up to scaling) operator with zero weights (that is, with \(h = \overbar{h} = 0\)), called the vacuum, and certainly the identity operator, \(\identity\) works here, since it is invariant under conformal transformations, and so works as this unique vacuum state.
+    The identity operator is the rotation/dilation given by taking \(a = 1\), and we always have rescaling freedom to choose to have \(\correlator{\identity} = 1\).
+    If we do this then we have
+    \begin{equation}
+        C_1 = \correlator{\quantumField{O}_{h,\overbar{h}}(z, \overbar{z})} = \delta_{h0} \delta_{\overbar{h}0}.
+    \end{equation}
+    
+    \subsubsection{Two-Point Correlation Function}
+    Now suppose that we have two quasiprimary fields, \(\quantumField{O}_{h_1,\overbar{h}_1}\) and \(\quantumField{O}_{h_2,\overbar{h}_2}\).
+    Note that we do not assume that the \(h_i\) or \(\overbar{h}_i\) are distinct, but we keep the labels \(1\) and \(2\) even if the fields are actually the same, just to keep track.
+    Our goal is to compute the structure of the two-point correlator
+    \begin{equation}
+        \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1, \overbar{z}_1) \quantumField{O}_{h_2, \overbar{h}_2}(z_2, \overbar{z}_2)}.
+    \end{equation}
+    
+    As before we can consider a translation, \(z \mapsto z - z_1\), and the transformation law for quasiprimary fields tells us that we get
+    \begin{equation}
+        \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1, \overbar{z}_1) \quantumField{O}_{h_2, \overbar{h}_2}(z_2, \overbar{z}_2)} = \correlator{\quantumField{O}_{h_1, \overbar{h}_1}(0, 0) \quantumField{O}_{h_2, \overbar{h}_2}(z_2', \overbar{z}_2')}
+    \end{equation}
+    where \(z_2' = z_2 - z_1\).
+    
+    We can now consider a rotation/dilation performed after this transformation given by \(z' \mapsto z''/(z_2 - z_1)\).
+    This is chosen such that \(z_2' \mapsto 1\).
+    Note that we assume \(z_2 - z_1 \ne 0\) since we're interested in the regular structure, away from the poles at coincident points.
+    We have
+    \begin{equation}
+        \diff{z''}{z'} = \frac{1}{z_2 - z_1}, \qqand \diff{\overbar{z}''}{\overbar{z}'} = \diff{}{\overbar{z}'}\frac{\overbar{z}'}{\overbar{z}_2 - \overbar{z}_1} = \frac{1}{\overbar{z}_2 - \overbar{z}_1}.
+    \end{equation}
+    Thus, the correlator transforms from the initial coordinate system to this translated and rotated/dilated coordinate system according to
+    \begin{equation}
+        \correlator{\quantumField{O}_{h_1, \overbar{h}_1'}(z_1, \overbar{z}_1) \quantumField{O}_{h_2, \overbar{h}_2}(z_2, \overbar{z}_2)} = \left( \frac{1}{z_2 - z_1} \right)^{h_1 + h_2} \left( \frac{1}{\overbar{z}_2 - \overbar{z}_1} \right)^{\overbar{h}_1 + \overbar{h}_2} \correlator{\quantumField{O}_{h_1, \overbar{h}_1}(0, 0) \quantumField{O}_{h_2, \overbar{h}_2}(1, 1)}.
+    \end{equation}
+    We can then identify that \(C_{12} = \correlator{\quantumField{O}_{h_1, \overbar{h}_1}(0, 0) \quantumField{O}_{h_2, \overbar{h}_2}(1, 1)}\) is independent of the insertion points, \(z_1\) and \(z_2\).
+    
+    A final transformation, this time a special conformal transformation \(z'' \mapsto z''' = z''/(cz'' + 1)\), will allow us to determine \(C_{12}\).
+    We have
+    \begin{equation}
+        \diff{z'''}{z''} = \frac{1}{(cz + 1)^2}, \qqand \diff{\overbar{z}'''}{\overbar{z}''} = \diff{}{\overbar{z}''} \frac{\overbar{z}''}{\overbar{c}\overbar{z}'' + 1} = \frac{1}{(\overbar{c}\overbar{z} + 1)^2}.
+    \end{equation}
+    We also have
+    \begin{equation}
+        z_2''' - z_1''' = \frac{z_2'' - z_1''}{(cz_2'' + 1)(cz_1'' + 1)}
+    \end{equation}
     
     
     
