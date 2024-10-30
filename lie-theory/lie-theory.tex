@@ -44,6 +44,9 @@ noabbrev
 
 \hyphenation{ei-gen-space ei-gen-spaces}
 
+\AtBeginEnvironment{tikzcd}{\tikzexternaldisable}
+\AtEndEnvironment{tikzcd}{\tikzexternalenable}
+
 % Commands
 % Maths
 \renewcommand{\field}{\symbb{k}}
@@ -80,6 +83,8 @@ noabbrev
 \DeclareMathOperator{\Perm}{Perm}
 \newcommand{\centre}{\symfrak{z}}
 \DeclareMathOperator{\rad}{rad}
+\newcommand{\universalenveloping}{\symcal{U}}
+\newcommand{\basis}{\symcal{B}}
 
 \begin{document}
 	\frontmatter
@@ -318,10 +323,10 @@ noabbrev
     In this section we'll give the standard definition of a diagonalisable operator, which should be familiar.
     We'll then give an equivalent definition which makes no mention of a basis.
     
-    Let \(V\) be a finite dimensional vector space over \(\field\) with basis \(\symcal{B} = \{v_1, \dotsc, v_n\}\).
-    Recall that if \(T \colon V \to V\) is a linear operator then its matrix in basis \(\symcal{B}\) is the matrix
+    Let \(V\) be a finite dimensional vector space over \(\field\) with basis \(\basis = \{v_1, \dotsc, v_n\}\).
+    Recall that if \(T \colon V \to V\) is a linear operator then its matrix in basis \(\basis\) is the matrix
     \begin{equation}
-        [T]_{\symcal{B}} \coloneq 
+        [T]_{\basis} \coloneq 
         \begin{bmatrix}
             \uparrow & & \uparrow \\
             Tv_1 & \dots & Tv_n \\
@@ -335,17 +340,17 @@ noabbrev
             c_{n1} & c_{n2} & \dots & c_{nn}
         \end{bmatrix}
     \end{equation}
-    where \(c_{ij}\) is the coefficient of \(v_i\) in \(Tv_j\) when expressed in the basis \(\symcal{B}\).
-    That is, the \(i\)th column of \([T]_{\symcal{B}}\) is \(Tv_i\) as a column vector in basis \(\symcal{B}\).
+    where \(c_{ij}\) is the coefficient of \(v_i\) in \(Tv_j\) when expressed in the basis \(\basis\).
+    That is, the \(i\)th column of \([T]_{\basis}\) is \(Tv_i\) as a column vector in basis \(\basis\).
     
     \begin{dfn}{Diagonalisable Operator}{}
         Let \(V\) be a finite dimensional vector space over \(\field\).
-        Then a linear operator, \(T \colon V \to V\), is \defineindex{diagonalisable} if there exists some basis, \(\symcal{B}\), in which the matrix \([T]_{\symcal{B}}\) is diagonal.
+        Then a linear operator, \(T \colon V \to V\), is \defineindex{diagonalisable} if there exists some basis, \(\basis\), in which the matrix \([T]_{\basis}\) is diagonal.
     \end{dfn}
     
-    Notice that if \(T \colon V \to V\) is a linear operator diagonalised by the basis \(\symcal{B} = \{v_1, \dotsc, v_n\}\) then
+    Notice that if \(T \colon V \to V\) is a linear operator diagonalised by the basis \(\basis = \{v_1, \dotsc, v_n\}\) then
     \begin{equation}
-        [T]_{\symcal{B}} = 
+        [T]_{\basis} = 
         \begin{bmatrix}
             \lambda_1 & & \\
             & \ddots & \\
@@ -353,10 +358,10 @@ noabbrev
         \end{bmatrix}
     \end{equation} 
     for some \(\lambda_i \in \field\).
-    We can also express the basis vectors \(v_i\) in this basis, they are simply the standard basis, in which \([v_i]_{\symcal{B}} = e_i\) is the column vector with 1 in the \(i\)th position and 0 everywhere else.
+    We can also express the basis vectors \(v_i\) in this basis, they are simply the standard basis, in which \([v_i]_{\basis} = e_i\) is the column vector with 1 in the \(i\)th position and 0 everywhere else.
     Then, for example, we have
     \begin{equation}
-        [Tv_1]_{\symcal{B}} = [T]_{\symcal{B}}[v_1]_{\symcal{B}} = 
+        [Tv_1]_{\basis} = [T]_{\basis}[v_1]_{\basis} = 
         \begin{bmatrix}
             \lambda_1 & & \\
             & \ddots & \\
@@ -373,14 +378,14 @@ noabbrev
         \begin{bmatrix}
             1\\ \vdots\\ 0
         \end{bmatrix}
-        = \lambda_1 [v_1]_{\symcal{B}}.
+        = \lambda_1 [v_1]_{\basis}.
     \end{equation}
     Thus, we have \(Tv_1 = \lambda v_1\), that is, \(v_1\) is an eigenvector of \(T\) with eigenvalue \(\lambda_1\).
     In general, \(v_i\) will be an eigenvector of \(T\) with eigenvalue \(\lambda_i\).
     
     Now make the following observations.
     We may define the subspaces \(U_i = \Span\{v_i\}\).
-    The fact that \(V = \bigoplus_{i=1}^n U_i\) follows immediately from (and is equivalent to) the fact that \(\symcal{B}\) is a basis.
+    The fact that \(V = \bigoplus_{i=1}^n U_i\) follows immediately from (and is equivalent to) the fact that \(\basis\) is a basis.
     Each subspace \(U_i\) is \(T\)-\defineindex{invariant}, meaning that \(T(U_i) \subseteq U_i\), which simply means that if \(u \in U_i\) then \(Tu \in U_i\) also, so it's not possible to leave \(U_i\) just by the action of \(T\).
     This is clear in this case because \(T\) acts on each subspace, \(U_i\), by scalar multiplication, specifically, by multiplication by \(\lambda_i\).
     Because of this it makes sense to consider the restricted linear map \(T|_{U_i} \colon U_i \to U_i\), defined by \(T|_{U_i}(u) = T(u)\) for \(u \in U_i\).
@@ -646,7 +651,7 @@ noabbrev
     
     \begin{crl}{Existence of Jordan Normal Form}{}
         Let \(\field\) be an algebraically closed field, let \(V\) be a finite dimensional vector space, and let \(T \colon V \to V\) be a linear map.
-        There exists a basis of \(V\) such that \([T]_{\symcal{B}}\) is in Jordan normal form.
+        There exists a basis of \(V\) such that \([T]_{\basis}\) is in Jordan normal form.
         \begin{proof}
             Consider the decomposition of \(V\) into a sum of generalised eigenspaces of \(T\).
             Each generalised eigenspace is invariant under \(T\), and thus if \(v_\alpha \in V_\alpha\) then \(Tv_\alpha = c_1v_1 + \dotsb c_rv_r\) where \(\{v_1, \dotsc, v_r\}\) is a basis for \(V_\alpha\).
@@ -1386,9 +1391,17 @@ noabbrev
     
     The idea behind this definition is that \(\lie{g}\) is acting on \(V\) by specifying an endomorphism \(\varphi_X = \rho(X) \in \End V = \generalLinearLie(V)\) for each \(X \in \lie{g}\).
     Then \(X\) acts on \(v \in V\) by \(x \mapsto \varphi_X(V)\).
-    
+        
     This should be compared to the idea of a group action, which can similarly be specified by a map \(\rho \colon G \to \Perm(X)\) where \(\Perm(X)\) is the group of permutations of elements of \(X\).
     If you're familiar with group representations then the idea here is the same as a group representation \((V, \rho)\) with \(\rho \colon G \to \generalLinear(V)\) a group homomorphism.
+    
+    \begin{exm}{Trivial Representation}{}
+        Let \(\lie{g}\) be a Lie algebra over \(\field\) and \(V\) any vector space over \(\field\).
+        Then the homomorphism \(\rho_{\symrm{triv}} \colon \lie{g} \to \generalLinearLie(V)\) defined by \(\rho_{\symrm{triv}}(X) = 0\) is the \defineindex{trivial representation} of \(\lie{g}\) on \(V\).
+    \end{exm}
+    
+    Note that the\footnote{We say \enquote{the} trivial representation, because \(V\) really isn't important in this case. When \(V\) is not specified the trivial representation is typically taken to be carried by a one-dimensional vector space.} trivial Lie algebra representation acts as zero, whereas a trivial group representation acts as the identity.
+    This is consistent since \(\e^0 = 1\), so we recover the trivial action of the corresponding Lie group from the trivial action of the Lie algebra.
     
     One of the most important examples of a representation is when the Lie algebra acts on itself in the obvious way, through the bracket.
     
@@ -2406,8 +2419,8 @@ noabbrev
             
             We can prove this by induction on \(\dim V\).
             The base case is \(\dim V = 1\).
-            If \(X \colon V \to V\) is nilpotent, so that \(X^n = 0\) for some \(n \in \naturals\), then in any basis of \(V\) we can express \(X\) as \([X]_{\symcal{B}} = (b)\) for some \(b \in \complex\).
-            Then the nilpotent condition is that \((b)^n = (b^n) = 0\), which is true if and only if \(b = 0\), and hence \([X]_{\symcal{B}} = (0)\), which is strictly upper triangular.
+            If \(X \colon V \to V\) is nilpotent, so that \(X^n = 0\) for some \(n \in \naturals\), then in any basis of \(V\) we can express \(X\) as \([X]_{\basis} = (b)\) for some \(b \in \complex\).
+            Then the nilpotent condition is that \((b)^n = (b^n) = 0\), which is true if and only if \(b = 0\), and hence \([X]_{\basis} = (0)\), which is strictly upper triangular.
             
             For the inductive step suppose that for any vector space of dimension less than \(\dim V\) there is a complete flag which is completely preserved by elements of \(\nilpotentLie\).
             By Engel's theorem (\cref{thm:engel}) we know that there is some \(v_1 \in V\) such that \(v_1 \ne 0\) and \(\nilpotentLie v_1 = 0\) (that is, \(X(v_1) = 0\) for all \(X \in \nilpotentLie\)).
@@ -2664,8 +2677,8 @@ noabbrev
         A finite-dimensional Lie algebra, \(\lie{g}\), over \(\complex\) is solvable if and only if \(\kappa(X, Y) = 0\) for all \(X \in \lie{g}'\) and \(Y \in \lie{g}\).
         \begin{proof}
             Suppose that \(\lie{g}\) is solvable.
-            Then Lie's theorem tells us that there is a basis, \(\symcal{B}\), for \(\lie{g}\) such that if \(W \in \lie{g}\) then \([\ad_W]_{\symcal{B}}\) is upper triangular.
-            This implies that \([\bracket{\ad_X}{\ad_Y}]_{\symcal{B}} = \bracket{[\ad_X]_{\symcal{B}}}{[\ad_Y]_{\symcal{B}}}\) is \emph{strictly} upper triangular for \(X, Y \in \lie{g}\), since the commutator of upper triangular matrices is strictly upper triangular.
+            Then Lie's theorem tells us that there is a basis, \(\basis\), for \(\lie{g}\) such that if \(W \in \lie{g}\) then \([\ad_W]_{\basis}\) is upper triangular.
+            This implies that \([\bracket{\ad_X}{\ad_Y}]_{\basis} = \bracket{[\ad_X]_{\basis}}{[\ad_Y]_{\basis}}\) is \emph{strictly} upper triangular for \(X, Y \in \lie{g}\), since the commutator of upper triangular matrices is strictly upper triangular.
             This then implies that \(\kappa(\bracket{X}{Y}, Z) = \tr(\bracket{\ad_X}{\ad_Y}\circ \ad_Z) = 0\) using similar calculations to \cref{lma:associativity of killing form}.
             Note then that \(\bracket{X}{Y}\) is exactly an element of \(\lie{g}'\) and \(Z\) an element of \(\lie{g}\).
             
@@ -2737,7 +2750,7 @@ noabbrev
         \end{proof}
     \end{lma}
     
-    \begin{thm}{Cartan's Second Criterion}{}
+    \begin{thm}{Cartan's Second Criterion}{thm:cartans second criterion}
         A Lie algebra, \(\lie{g}\), over \(\complex\) is semisimple if and only if the Killing form is non-degenerate.
         \begin{proof}
             Suppose that \(\lie{g}\) is semisimple, then we want to show that \(\kappa\) is non-degenerate.
@@ -2769,10 +2782,445 @@ noabbrev
         \end{proof}
     \end{thm}
     
+    \begin{thm}{}{}
+        Let \(\lie{g}\) be a finite dimensional semisimple Lie algebra.
+        Then there is a unique (up to isomorphisms of summands and the order of terms in the sum) decomposition
+        \begin{equation}
+            \lie{g} = \lie{g}_0 \oplus \lie{g}_1 \oplus \dotsb \oplus \lie{g}_k
+        \end{equation}
+        with \(\lie{g}_i\) simple Lie algebras.
+        \begin{proof}
+            \Step{Existence}
+            Suppose \(\lie{g}\) is a semisimple Lie algebra.
+            If such a decomposition exists then the \(\lie{g}_i\) will be ideals of \(\lie{g}\) which pairwise commute, that is \(\bracket{\lie{g}_i}{\lie{g}_j} = 0\) for \(i \ne j\).
+            Another way to put this is that if \(i \ne j\) then \(\ad(\lie{g}_i)\) vanishes on \(\lie{g}_j\) and vice versa.
+            Very concretely, \(\ad_X\), for \(X \in \lie{g}_i\), will admit a basis such that it is block diagonal and the blocks corresponding to \(\lie{g}_j\) (\(j \ne i\)) will be zero.
+            In other words, the subspace \(\lie{g}_i\) will be perpendicular to the subspace \(\lie{g}_j\) with respect to the Killing form, \(\kappa\).
+            
+            This gives us a way to start to construct such a decomposition.
+            Let \(\lie{l}\) be some proper ideal, that is \(\lie{l} \ne \lie{g}, 0\).
+            Define
+            \begin{equation}
+                \lie{l}^{\perp} \coloneq \{X \in \lie{g} \mid \kappa(X, Y) = 0 \forall Y \in \lie{l}\}.
+            \end{equation}
+            This is the space of all \(X\) which are perpendicular to all elements of \(\lie{l}\).
+            This is an ideal, since if \(X \in \lie{l}^{\perp}\), \(Y \in \lie{l}\), and \(Z \in \lie{g}\) then
+            \begin{equation}
+                \kappa(\bracket{X}{Z}, Y) = \kappa(X, \bracket{Z}{Y}) = 0
+            \end{equation}
+            having used the associativity of the Killing form (\cref{lma:associativity of killing form}) and then the fact that \(\lie{l}\) is an ideal and \(Y \in \lie{l}\) so \(\bracket{Z}{Y} \in \lie{l}\) and since \(X \in \lie{l}^{\perp}\) it must be that \(\kappa(X, \bracket{Z}{Y})\) vanishes.
+            
+            The intersection of ideals is again an ideal, and so \(\lie{l} \cap \lie{l}^{\perp}\) is an ideal of \(\lie{g}\).
+            Further, \(\kappa\) vanishes on \(\lie{l} \cap \lie{l}^{\perp}\) since if \(X, Y \in \lie{l} \cap \lie{l}^{\perp}\) then, in particular, \(X \in \lie{l}^{\perp}\) and \(Y \in \lie{l}\) so by the definition of \(\lie{l}^{\perp}\) we must have that \(\kappa(X, Y) = 0\).
+            This implies that \(\lie{l} \cap \lie{l}^{\perp}\) is solveable by Cartan's criterion (\cref{thm:cartans second criterion}).
+            ***
+            The semisimplicity of \(\lie{g}\) therefore requires that \(\lie{l} \cap \lie{l}^{\perp} = 0\), note that we can't have \(\lie{l} \cap \lie{l}^{\perp} = \lie{g}\) because \(\lie{l} \subsetneq \lie{g}\).
+            From this we can see that \(\lie{l} + \lie{l}^{\perp} = \lie{l} \oplus \lie{l}^{\perp}\).
+            
+            We claim that \(\lie{l} \oplus \lie{l}^{\perp} = \lie{g}\).
+            This follows by an argument on dimensions.
+            Clearly, \(\lie{l} \oplus \lie{l}^{\perp} \subseteq \lie{g}\), and so we get the result if we can show that \(\dim \lie{l} + \dim \lie{l}^{\perp} = \dim \lie{g}\).
+            We get this in turn by noting that \(\lie{l}^{\perp} = \ker(\iota_\kappa|_{\lie{l}})\) and that \(\iota_\kappa|_{\lie{l}} \in \lie{l}^*\).
+            Since all of our vector spaces are finite dimensional we have \(\dim \lie{l}^* = \dim \lie{l}\), thus we have that \(\dim \lie{l} + \dim \lie{l}^{\perp} = \dim \lie{l}^* + \dim \lie{l}^{\perp} = \dim \lie{g}^*\), which follows since any linear map \(\lie{g} \to \complex\) may be written as a linear map on \(\lie{l}\) plus a linear map on \(\lie{g}\) which vanishes on \(\lie{l}\), which is exactly what \(\lie{l}^* + \lie{l}^{\perp}\) gives us.
+            Finally, we have \(\dim \lie{g}^* = \dim\lie{g}\), and so \(\lie{l} \oplus \lie{l}^{\perp} = \lie{g}\).
+            
+            If \(\lie{l}\) and \(\lie{l}^{\perp}\) are simple we are done.
+            If this is not the case then we can recurse on any non-simple term.
+            Note that \(\lie{l}\) and \(\lie{l}^{\perp}\) are ideals of a semisimple Lie algebra and so are themselves semisimple.
+            
+            The dimensions of \(\lie{l}\) and \(\lie{l}^{\perp}\) are strictly smaller than the dimension of \(\lie{g}\).
+            Because the dimensions are finite decrease with each recursion this process must terminate eventually.
+            It will terminate only when all terms appearing in the sums are simple, and then \(\lie{g}\) will be a sum of all of these simple Lie algebras.
+            
+            \Step{Uniqueness}
+            Suppose that \(\lie{h}\) is a simple ideal of \(\lie{g}\).
+            We claim that \(\lie{h} = \lie{g}_i\) for some \(i\).
+            The space \(\bracket{\lie{g}}{\lie{h}}\) is an ideal of \(\lie{h}\).
+            It is nonzero since the centre of \(\lie{h}\) is trivial.
+            Since \(\lie{h}\) is assumed to be simple it must then be that \(\bracket{\lie{g}}{\lie{h}} = \lie{h}\).
+            Now consider the decomposition
+            \begin{equation}
+                \lie{g} = \lie{g}_1 \oplus \lie{g}_2 \oplus \dotsb \oplus \lie{g}_k.
+            \end{equation}
+            Taking the bracket with \(\lie{h}\) we have
+            \begin{equation}
+                \bracket{\lie{g}}{\lie{h}} = \bracket{\lie{g}_1}{\lie{h}} \oplus \bracket{\lie{g}_2}{\lie{h}} \oplus \dotsb \oplus \bracket{\lie{g}_k}{\lie{h}} = \lie{h}.
+            \end{equation}
+            Since each bracket is either \(0\) or \(\lie{h}\) by the same logic as above there must be a unique \(\lie{i}\) such that \(\bracket{\lie{g}_i}{\lie{h}} = \lie{h}\).
+            Since each \(\lie{g}_i\) is simple and \(\bracket{\lie{g}_i}{\lie{h}} = \lie{h} \ne 0\) we must have that \(\lie{h} = \bracket{\lie{g}_i}{\lie{h}} = \lie{g}_i\).
+            Thus, every ideal of \(\lie{g}\) corresponds uniquely to some \(\lie{g}_i\), and clearly the \(\lie{g}_i\) are ideals of \(\lie{g}\), and so the decomposition is uniquely determined by the simple ideals of \(\lie{g}\), again, up to order in the sum and isomorphism of each \(\lie{g}_i\).
+        \end{proof}
+    \end{thm}
+    
+    The idea of this result is that a semisimple Lie algebra is determined by its simple ideals.
+    Further, we've shown that if \(\lie{g}\) is semisimple then \(\bracket{\lie{g}}{\lie{g}} = \lie{g}\).
+    In particular, this means that semisimple Lie algebras are neither solveable or nilpotent.
+    
+    \chapter{Complete Reducibility}
+    \section{Definition and Statement of Weyl's Theorem}
+    \begin{dfn}{Complete Reducibility}{}
+        Let \(\lie{g}\) be a Lie algebra over \(\field\).
+        A \(\lie{g}\)-module, \(V\), is \defineindex{completely reducible} if there exists simple \(\lie{g}\)-modules \(V_i\) such that
+        \begin{equation}
+            V = V_1 \oplus V_2 \oplus \dotsb \oplus V_n
+        \end{equation}
+        for some \(n \in \naturals\).
+    \end{dfn}
+    
+    Note that in such a decomposition \(X \in \lie{g}\) acts on \(\bigoplus_i V_i\) by
+    \begin{equation}
+        X(v_1, v_2, \dotsc, v_n) = (Xv_1, \dotsc, Xv_n)
+    \end{equation}
+    where the action \(Xv_i\) is that of the \(\lie{g}\)-module structure of \(V_i\).
+    
+    There is an obvious inclusion
+    \begin{align}
+        V_i &\hookrightarrow \bigoplus_{i=1}^n V_i\\
+        v &\mapsto (0, \dotsc, 0, \underbrace{v}_{\mathclap{i\text{th place}}}, 0, \dotsc, 0).
+    \end{align}
+    We write \(v_1 + \dotsb + v_n\) for \((v_1, \dotsc, v_n)\).
+    With this the above inclusion is then even more obvious, it's just \(v \mapsto 0 + \dotsb + 0 + v + 0 + \dotsb + 0 = v\), where the zeros are implicit in the final expression.
+    
+    Note that, unlike the decomposition of a semisimple Lie algebra, the decomposition of a completely reducible \(\lie{g}\)-module need not be unique.
+    For example, if we take \(\lie{g} = 0\) then any vector space is trivially a \(\lie{g}\)-module, and all subspaces of dimension 1 are simple submodules.
+    Then any decomposition of a vector space is a decomposition into simple \(\lie{g}\)-modules, and such decompositions are not unique (for dimension at least 2).
+    
+    Our goal of this chapter is to prove the following theorem, but before we can do that we'll spend some time developing a few lemmas and some extra theory.
+    
+    \begin{thm}{Weyl's Theorem}{}
+        Let \(\lie{g}\) be a semisimple Lie algebra over \(\complex\).
+        Then every finite-dimensional representation of \(\lie{g}\) is completely reducible.
+    \end{thm}
+    
+    This result is as strong as possible.
+    If \(\lie{g}\) is not semisimple then this result doesn't hold.
+    If the representation is not finite dimensional then this result doesn't hold.
+    For this second case simply take any infinite dimensional vector space as a \(0\)-module, such a space does not have a decomposition as a \emph{finite} sum of one-dimensional spaces, so is not completely reducible.
+    
+    Note that since we can always decompose a semisimple Lie algebra, \(\lie{g}\), as a direct sum of simple Lie algebras it is sufficient to prove Weyl's theorem for a simple Lie algebra.
+    
+    \section{Complements}
+    \begin{lma}{}{}
+        A finite dimensional \(\lie{g}\)-module, \(V\), is completely reducible if and only if every submodule, \(W \subseteq V\), admits a complement, \(W'\), which is a submodule \(W' \subseteq V\) such that \(V = W \oplus W'\).
+        \begin{proof}
+            \Step{Complete Reducibility Implies Complements}
+            Suppose that \(V\) is a completely reducible \(\lie{g}\)-module.
+            Then we can write \(V = V_1 \oplus \dotsb \oplus V_n\).
+            Let \(W \subseteq V\) be a submodule of \(V\).
+            Then \(W\) has the decomposition
+            \begin{equation}
+                W = (W \cap V_1) \oplus \dotsb \oplus (W \cap V_n).
+            \end{equation}
+            Since each \(V_i\) is a simple module and \(W \cap V_i \subseteq V_i\) is a submodule of \(V_i\) we have that either \(W \cap V_i = 0\) or \(W \cap V_i = V_i\).
+            Let \(\{i_1, \dotsc, i_k\}\) be the set of indices for which \(W \cap V_i = V_i\), then we can write the decomposition of \(W\) as
+            \begin{equation}
+                W = V_{i_1} \oplus \dotsb \oplus V_{i_k}.
+            \end{equation}
+            Let \(\{j_1, \dotsc, j_\ell\}\) be the set of indices for which \(W \cap V_j = 0\), and let
+            \begin{equation}
+                W' = V_{j_1} \oplus \dotsb \oplus V_{j_\ell}.
+            \end{equation}
+            Then we have
+            \begin{equation}
+                W \oplus W' = V_{i_1} \oplus \dotsb \oplus V_{i_k} \oplus V_{j_1} \oplus \dotsb \oplus V_{j_\ell} = V
+            \end{equation}
+            and so \(W'\) is the complement of \(W\).
+            
+            \Step{Complements Imply Complete Reducibility}
+            Suppose that \(V\) is a \(\lie{g}\)-module such that every submodule, \(W \subseteq V\), admits a complement, \(W'\).
+            If \(V\) is simple then it is trivially a direct sum of simple modules, so we're done.
+            If \(V\) is not simple then we induct on \(\dim V\).
+            For \(\dim V = 1\) then \(V\) is simple and so we're done.
+            Now suppose that having complements implies complete reducibility for all \(\lie{g}\)-modules of dimension less than \(\dim V\).
+            By assumption \(V\) is not simple, so we may find some proper submodule \(W \subsetneq V\).
+            Take \(W' \subseteq V\) such that \(W \oplus W' = V\), such a complement exists by assumption.
+            Since \(W\) was chosen to be proper we know that \(\dim W, \dim W' < \dim V\), and thus \(W\) and \(W'\) both have decompositions into sums of simple \(\lie{g}\)-modules,
+            \begin{equation}
+                W = W_1 \oplus \dotsb \oplus W_n, \qand W' = W_1' \oplus \dotsb \oplus W_m'.
+            \end{equation}
+            Note that \(W_i'\) need not be the complement to \(W_1\).
+            Then we have
+            \begin{equation}
+                V = W \oplus W' = W_1 \oplus \dotsb \oplus W_n \oplus W_1' \oplus \dotsb \oplus W_m',
+            \end{equation}
+            and so \(V\) is a direct sum of simple \(\lie{g}\)-modules as required.
+        \end{proof}
+    \end{lma}
+    
+    This result fails when \(\lie{g}\) is not semisimple.
+    For example, taking \(\lie{g}\) to be the one-dimensional Lie algebra spanned by \(X\) we can define a two-dimensional \(\lie{g}\)-module \(V = \Span\{e_1, e_2\}\) by \(Xe_1 = 0\) and \(Xe_1 = 0\).
+    Then \(W = \complex e_1\) is a \(\lie{g}\)-submodule of \(V\), since it's invariant under the action of \(X\) (just mapping everything in \(W\) to \(0 \in W\)).
+    Any complementary subspace to \(W\) as a vector space must be of the form \(W' = \complex (\alpha e_1 + e_2)\) for some fixed value of \(\alpha \in \complex\) (we are taken the span of \(\alpha e_1 + e_2\), so we're free to choose the overall scaling to have the coefficient of \(e_2\) be \(1\)).
+    This is the only way that \(W + W'\) can contain \(e_2\).
+    However, \(X(\alpha e_1 + e_2) = \alpha X e_1 + X e_2 = 0 + e_1 = e_1\), and so \(W'\) is not a \(\lie{g}\)-submodule.
+    
+    Another example of this failing is when we take \(\lie{g} = \nilpotentLie(3, \complex)\), which is not semisimple, and we take \(V = \Span\{e_1, e_2, e_3\}\) to be the standard representation of a subalgebra of \(\generalLinearLie(3, \complex)\), so \(e_i\) are just the standard column vector basis vectors.
+    Elements of \(\nilpotentLie(3, \complex)\) are of the form
+    \begin{equation}
+        \begin{bmatrix}
+            0 & * & *\\
+            0 & 0 & *\\
+            0 & 0 & 0
+        \end{bmatrix}
+        .
+    \end{equation}
+    The fact that the first column of any nilpotent matrix must be zero means that any \(X \in \nilpotentLie(3, \complex)\) acts trivially on \(e_1\), we have \(X e_1 = 0\).
+    This means that \(W = \complex e_1\) is a submodule of \(V\), since every element of \(W\) just maps to \(0 \in W\).
+    However, there is no \(\lie{g}\)-submodule, \(W'\), such that \(V = W \oplus W'\), since if such a submodule existed we could take \(u = \alpha e_1 + \beta e_2 + \gamma e_3 \in W'\) and then since \(W \cap W' = 0\) we must have that either \(\beta\) or \(\gamma\) is non-zero in any such vector.
+    For non-zero \(\beta\) we have
+    \begin{equation}
+        \begin{bmatrix}
+            0 & 1 & 0\\
+            0 & 0 & 0\\
+            0 & 0 & 0
+        \end{bmatrix}
+        \begin{bmatrix}
+            \alpha\\ \beta\\ \gamma
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            \beta\\ 0\\ 0
+        \end{bmatrix}
+        = \beta e_1
+    \end{equation}
+    and for non-zero \(\gamma\) we have
+    \begin{equation}
+        \begin{bmatrix}
+            0 & 0 & 1\\
+            0 & 0 & 0\\
+            0 & 0 & 0
+        \end{bmatrix}
+        \begin{bmatrix}
+            \alpha\\ \beta\\ \gamma
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            \gamma\\ 0\\ 0
+        \end{bmatrix}
+        = \gamma e_1.
+    \end{equation}
+    For either case we have left \(W'\) and ended up with an element of \(W\), and as such it cannot be that \(W \oplus W' = V\).
+    
+    \section{Faithful Modules}
+    \begin{dfn}{}{}
+        Let \((V, \rho)\) be a representation of a Lie algebra, \(\lie{g}\).
+        We say that this is a \define{faithful representation} or that the corresponding \(\lie{g}\)-module, \(V\), is a \defineindex{faithful module} if \(\rho \colon \lie{g} \to \generalLinearLie(V)\) is injective.
+    \end{dfn}
+    
+    The idea of a faithful representation is that in mapping \(\lie{g}\) to a Lie-algebra of operators on \(V\) we don't lose any information by mapping two elements of \(\lie{g}\) to the same operator on \(V\).
+    
+    \begin{lma}{}{}
+        Let \(\lie{g}\) be a simple Lie algebra and \(V\) a \(\lie{g}\)-module.
+        Then \(V\) is either a faithful module, or a trivial module.
+        \begin{proof}
+            Let \((V, \rho)\) be an irreducible representation (that is, \(V\) is a simple \(\lie{g}\)-module with the action given by \(\rho\)).
+            Then \(\ker \rho \subseteq \lie{g}\) is an ideal of \(\lie{g}\) since \(\ker \rho\) is a subspace of \(\lie{g}\) by basic linear algebra, and if \(X \in \ker \rho\) and \(Y \in \lie{g}\) we have
+            \begin{equation}
+                \rho(\bracket{X}{Y})(v) = \bracket{\rho(X)}{\rho(Y)}(v) = \bracket{0}{\rho(Y)}(v) = 0(v) = 0
+            \end{equation}
+            for all \(v \in V\) and so \(\bracket{X}{Y} \in \ker \rho\).
+            
+            Since \(\lie{g}\) is assumed to be simple we must therefore have either \(\ker \rho = 0\), in which case \(\rho\) is injective, or \(\ker \rho = \lie{g}\), in which case \(\rho\) is the zero map.
+            This corresponds to \(V\) being a faithful or trivial \(\lie{g}\)-module respectively.
+        \end{proof}
+    \end{lma}
+    
+    \begin{crl}{}{}
+        If \(\lie{g}\) is a simple Lie algebra and \(V\) is a non-trivial \(\lie{g}\)-module then \(\dim V \ge \sqrt{\dim \lie{g}}\).
+        \begin{proof}
+            Let \((\rho, V)\) be the corresponding representation, which must be faithful, since we assume it is not trivial.
+            Then \(\rho \colon \lie{g} \to \generalLinearLie(V)\) is injective, and so \(\lie{g}\) may be realised as a subalgebra of \(\generalLinearLie(V)\), and \(\dim \generalLinearLie(V) = (\dim V)^2\) and since a subalgebra must have at most the dimension of the full algebra we find that \(\dim \lie{g} \le (\dim V)^2\).
+        \end{proof}
+    \end{crl}
+    
+    For example, any non-trivial \(\specialLinearLie(n, \complex)\) representation must have dimension at least \(\sqrt{n^2 - 1}\).
+    
+    The intuition here is that a faithful module (which any non-trivial module of a simple Lie algebra is) must have \enquote{enough room} to fit all of the elements of \(\lie{g}\) in, and it turns out that enough room is \(\sqrt{\dim \lie{g}}\) dimensions.
+    My first assumption would be that enough room would be \(\dim \lie{g}\) dimensions, but the bracket relations between elements of \(\lie{g}\) reduces the degrees of freedom required, and so we don't quite need one dimension for each dimension of \(\lie{g}\).
+    
+    \section{Casimir Operators}
+    \textit{In this section I diverge slightly from the material of the lectures.
+    This course never introduces the notion of the universal enveloping algebra, which I believe is a mistake, and so I will take a slightly more general approach here of introducing this universal enveloping algebra and then a general Casimir element, of which the quadratic Casimir is just one example, before restricting to representations of Casimir elements, which brings us back in line with the content of the course.}
+    
+    \begin{dfn}{Enveloping Algebra}{}
+        Let \(\lie{g}\) be a Lie algebra over \(\field\).
+        An \defineindex{enveloping algebra} of \(\lie{g}\) is a pair \((\varphi, U)\) where \(U\) is a unital associative algebra over \(\field\) and \(\varphi \colon \lie{g} \to U\) is a Lie algebra homomorphism, where the Lie algebra structure of \(U\) is that of the commutator, \(\bracket{X}{Y} = XY - YX\) for \(X, Y \in U\).
+    \end{dfn}
+    
+    Note the similarity to the definition of a representation, \((\rho, V)\), where \(\rho \colon \lie{g} \to \generalLinearLie(V)\) is a Lie algebra homomorphism, where \(\generalLinearLie(V)\) is the Lie algebra of \(\End V\) equipped with the commutator as a bracket.
+    What this means is that representations, \((\rho, V)\), correspond to enveloping algebras \((\rho, \End V)\).
+    
+    There is a distinguished enveloping algebra for each Lie algebra, called the universal enveloping algebra.
+    As the name suggests it may be defined via a universal property.
+    It is, in a sense, the most universal enveloping algebra because any other enveloping algebra factors through it.
+    
+    \begin{dfn}{Universal Enveloping Algebra}{}
+        Let \(\lie{g}\) be a Lie algebra.
+        The \defineindex{universal enveloping algebra} of \(\lie{g}\) is the enveloping algebra \((\Phi, \universalenveloping(\lie{g}))\) satisfying the universal property that for any enveloping algebra, \((\varphi, U)\), of \(\lie{g}\) there is a unique homomorphism of associative algebras \(f \colon \universalenveloping(\lie{g}) \to U\) such that \(\varphi = f \circ \Phi\).
+        That is, the following diagram commutes
+        \begin{equation}
+            \begin{tikzcd}
+                \lie{g} \arrow[r, "\varphi"] \arrow[d, "\Phi"'] & U\\
+                \universalenveloping(\lie{g}) \arrow[ur, dashed, "\exists! f"']
+            \end{tikzcd}
+        \end{equation}
+        commutes.
+    \end{dfn}
+    
+    Note that the above definition doesn't really tell us what \(\universalenveloping(\lie{g})\) is, just what it does in relation to other enveloping algebras.
+    In fact, this definition doesn't even guarantee the existence of such an object.
+    This is usually the case with objects defined via a universal property.
+    We shall now prove that the universal enveloping algebra always exists and is unique (up to isomorphism) when it does.
+    
+    \begin{lma}{}{}
+        The universal enveloping algebra exists for any Lie algebra.
+        \begin{proof}
+            Let \(T(\lie{g})\) be the tensor algebra of \(\lie{g}\).
+            This may variously be defined as the free unital associative algebra on some basis, \(\{e_1, e_2, \dotsc\}\) of \(\lie{g}\), or by
+            \begin{equation}
+                T(\lie{g}) = \field \oplus \lie{g} \oplus (\lie{g} \otimes \lie{g}) \oplus (\lie{g} \otimes \lie{g} \otimes \lie{g}) \oplus \dotsb.
+            \end{equation}
+            Let \(I\) be the two-sided ideal of \(T(\lie{g})\) generated by the elements \(e_ie_j - e_je_i - \bracket{e_i}{e_j}\).
+            Then \(\universalenveloping(\lie{g}) = T(\lie{g})/I\) has the desired properties of the universal enveloping algebra if we define \(\Phi \colon \lie{g} \to T(\lie{g})/I\) by taking \(\Phi(e_i) = e_i + I\) and extending linearly to all of \(\lie{g}\).
+            
+            We first show that \((\Phi, T(\lie{g})/I)\) is an enveloping algebra.
+            To do so we just need to check that \(\Phi\) is a Lie algebra homomorphism.
+            Since \(\Phi\) is defined by linearly extending a mapping of a basis it is sufficient to check on a basis that \(\Phi\) is a Lie algebra homomorphism.
+            That is, we need to check that \(\Phi(\bracket{e_i}{e_j}) = \bracket{\Phi(e_i)}{\Phi(e_j)}\).
+            This is true because
+            \begin{equation}
+                \Phi(\bracket{e_i}{e_j}) - \bracket{\Phi(e_i)}{\Phi(e_j)} = \bracket{e_i}{e_j} - e_ie_j - e_je_i + I = 0 + I.
+            \end{equation}
+            Since \(0 + I\) is zero in \(T(\lie{g})/I\) this shows that we have the desired equality.
+            
+            We now show that \((\Phi, T(\lie{g})/I)\) is universal.
+            Let \((\varphi, U)\) be some other enveloping algebra.
+            An element of \(T(\lie{g})\) is a finite sum of a finite product of \(e_i\)s.
+            Define the map \(\tilde{f} \colon T(\lie{g}) \to U\) by defining
+            \begin{equation}
+                f\left( {\textstyle \prod_{i=1}^k e_{i_j} }\right) = {\textstyle \prod_{i=1}^k} \varphi(e_{i_j})
+            \end{equation}
+            and extending linearly over sums.
+            This is, by construction, a homomorphism of unital associative algebras.
+            We further have
+            \begin{equation}
+                f(\bracket{e_i}{e_j} - e_ie_j - e_je_i) = \varphi(\bracket{e_i}{e_j}) - \varphi(e_i)\varphi(e_j) - \varphi(e_j)\varphi(e_i) = 0
+            \end{equation}
+            where the last equality follows because \(\varphi \colon \lie{g} \to U\) is a Lie algebra homomorphism.
+            Then \(I \subseteq \ker \tilde{f}\), and so the map \(f \colon \universalenveloping(\lie{g}) \to U\) given by \(f(X + I) = \tilde{f}(X)\) is well-defined by definition of the quotient and is a homomorphism of associative unital algebras.
+            
+            Uniqueness of \(f\) is immediate when we realise that at no point in this construction were we free to make any assumptions.
+        \end{proof}
+    \end{lma}
     
     
+    \begin{lma}{}{}
+        The universal enveloping algebra is unique up to isomorphism.
+        \begin{proof}
+            Let \((\Phi_1, U_1)\) and \((\Phi_2, U_2)\) be universal enveloping algebras of \(\lie{g}\).
+            Then by the universal properties of these two objects we have unique unital associative algebra homomorphisms \(f_{ij} \colon U_i \to U_j\) such that \(\Phi_i = f_{ij} \circ \Phi_j\) for \(i, j \in \{1, 2\}\).
+            Since \(\Phi_i = \id_{U_i} \circ \Phi_i\) uniqueness imposes that \(f_{ii} = \id_{U_i}\).
+            We also have \(\Phi_i = f_{ij} \circ \Phi_j = f_{ij} \circ f_{ji} \circ \Phi_i\), since \(\Phi_j = f_{ji} \circ \Phi_i\), and thus by uniqueness \(f_{ij} \circ f_{ji} = \id_{U_i}\).
+            This means that \(f_{12}\) is invertible, and so is an isomorphism (of unital associative algebras) giving us the required uniqueness of universal enveloping algebras up to isomorphism.
+        \end{proof}
+    \end{lma}
     
+    One can also set up the category of enveloping algebras, the objects of which are enveloping algebras and a morphism \((\varphi, U) \to (\psi, V)\) is a homomorphism of unital associative algebras, \(f \colon U \to V\), such that \(\psi = f \circ \varphi\).
+    Then the universal enveloping algebra is the initial object in this category and is unique by abstract nonsense.
 	
+    The idea of the universal enveloping algebra is that it is the freest unital associative algebra which, when equipped with the commutator as a bracket, contains \(\lie{g}\) as a Lie-subalgebra.
+    This is pretty much all we'll actually need.
+    
+    \begin{dfn}{Casimir Element}{}
+        Let \(\lie{g}\) be a 
+        A \defineindex{Casimir element}, \(\Omega\), is a distinguished element of the centre of \(\universalenveloping(\lie{g})\).
+    \end{dfn}
+    
+    That is, \(\Omega\) is just some element of the universal enveloping algebra of \(\lie{g}\) which is such that it commutes with all elements of \(\universalenveloping(\lie{g})\) (commuting with respect to the associative product in the normal way, so it's commutator with any element of \(\universalenveloping(\lie{g})\) is always zero).
+    
+    It turns out that there's a way to construct such an element that works for any finite-dimensional Lie algebra.
+    Before we can do this we need the notion of a dual basis.
+    
+    Let \(V\) be a finite-dimensional vector space with basis \(\basis = \{v_1, \dotsc, v_n\}\).
+    Then any \(v \in V\) may uniquely be expressed as a sum
+    \begin{equation}
+        v = \sum_{i=1}^n a_i w_i
+    \end{equation}
+    with \(a_i \in \complex\).
+    This defines \(n\) linear maps \(\lambda_i \colon V \to \complex\) given by \(\lambda_i(v) = a_i\).
+    These maps form a basis, \(\{\lambda_1, \dotsc, \lambda_n\}\), for \(V^*\).
+    We say that this is the dual basis in \(V^*\) to \(\basis\), by which we mean that
+    \begin{equation}
+        \lambda_i(v_j) = \delta_{ij}.
+    \end{equation}
+    
+    Now suppose that \(\eta \colon V \times V \to \complex\) is a non-degenerate symmetric bilinear form.
+    Then we can use this to define a second basis, \(\symcal{C} = \{u_1, \dotsc, u_n\}\) of \(V\), which is such that \(\eta(v_i, u_j) = \delta_{ij}\).
+    Confusingly, we also call \(\symcal{C}\) the dual basis to \(\basis\), but now \(\symcal{C}\) is a basis for \(V\), not \(V^*\).
+    
+    \begin{lma}{}{}
+        Given a finite-dimensional vector space, \(V\), with basis \(\basis\), and a non-degenerate symmetric bilinear form, \(\eta \colon V\times V \to \complex\), there is a unique dual basis, \(\symcal{C}\), such that \(\eta(v_i, u_j) = \delta_{ij}\) for all \(v_i \in \basis\) and \(u_j \in \symcal{C}\).
+        \begin{proof}
+            Non-degeneracy of \(\eta\) means that we have an isomorphism \(\iota_\eta \colon V \to V^*\).
+            We may then define \(u_i = \iota_\eta^{-1}(\lambda_i)\) where \(\{\lambda_i\}\) is the dual basis to \(\basis\) in \(V^*\).
+            Then
+            \begin{multline}
+                \eta(v_i, u_j) = \eta(u_j, v_i) = \iota_\eta(u_j)(v_i) = \iota_\eta(\iota_\eta^{-1}(\lambda_j))(v_i)\\
+                = \id_{V^*}(\lambda_j)(v_i) = \lambda_j(v_i) = \delta_{ji} = \delta_{ij}.  
+            \end{multline}
+            This proves that \(\symcal{C} = \{u_1, \dotsc, u_n\}\) has the desired property.
+            Uniqueness follows by noting that the above chain of equalities only holds for this choice of \(u_j\).
+        \end{proof}
+    \end{lma}
+    
+    One way of stating the above construction of \(\symcal{C}\) is that \(\symcal{C}\) is the pullback of the dual basis to \(\basis\) along \(\iota_\eta\).
+    This is just fancy talk for saying that we're using the inverse of the map \(\iota_\eta\) to take something defined in \(V^*\) to something defined in \(V\).
+    
+     \begin{dfn}{Quadratic Casimir}{}
+         Let \(\lie{g}\) be a finite-dimensional Lie algebra, and let \(\basis = \{X_1, \dotsc, X_n\}\) be a basis for \(\lie{g}\).
+         Let \(\symcal{C} = \{Y_1, \dotsc, Y_n\}\) be the dual basis for \(\lie{g}\) corresponding to some non-degenerate symmetric bilinear form, \(\eta\).
+         If \(\lie{g}\) is semisimple then we will assume \(\eta = \kappa\) is the Killing form, but it is always possible to find such an \(\eta\) in any case.
+         The \defineindex{quadratic Casimir element}, \(\Omega\), is the Casimir element defined by
+         \begin{equation}
+             \Omega_2 = \sum_{i=1}^{n} X_i Y_i.
+         \end{equation}
+     \end{dfn}
+     
+     Note that this sum, and in particular the product \(X_i Y_i\), is all done in \(\universalenveloping(\lie{g})\).
+     That \(\Omega_2\) is a Casimir element can be shown by an explicit calculation, or it can be seen by the following argument chaining together linear maps.
+     This argument also proves that \(\Omega_2\) is independent of the choice of basis.
+     \begin{itemize}
+         \item There is a linear map \(\field \to \End \lie{g}\) given by sending \(\lambda \in \field\) to the map \(X \mapsto \lambda X\), that is the map which is just scaling by \(\lambda\).
+         \item For \(\lie{g}\) finite dimensional there is a canonical isomorphism of vector spaces\footnote{We write \(\End_{\field}\lie{g}\) to mean the vector space of linear maps \(\lie{g} \to \lie{g}\), rather than the set of Lie algebra homomorphisms \(\lie{g} \to \lie{g}\), which we denote \(\End\lie{g}\).} \(\lie{g} \otimes \lie{g} \to \End_{\field} \lie{g}\) given by \((X, \lambda) \mapsto (Y \mapsto (\lambda(Y)X))\), that is \((X, \lambda)\) maps to the linear map given by scaling \(X\) by \(\lambda(Y) \in \complex\).
+         \item For \(\lie{g}\) finite dimensional there is a canonical isomorphism of vector spaces \(\iota_\eta\lie{g}^* \to \lie{g}\)
+         \item There is a linear map \(\lie{g} \otimes \lie{g} \to \universalenveloping(\lie{g})\) given by \(X \otimes Y \mapsto XY\).
+     \end{itemize}
+     Combining these we have
+     \begin{equation}
+         \field \hookrightarrow \End_{\field} \lie{g} \xrightarrow{\sim} \lie{g} \otimes \lie{g}^* \xrightarrow{\sim} \lie{g} \otimes \lie{g} \to \universalenveloping(\lie{g}).
+     \end{equation}
+     Now consider where \(1 \in \field\) maps under this chain of linear maps.
+     \begin{itemize}
+         \item \(1 \mapsto \id_{\lie{g}}\) since scaling by 1 is the identity.
+         \item \(\id_{\lie{g}} \mapsto \sum_{i=1}^n X_i \otimes \lambda_i\), this is the completeness relation and works for any choice of basis, \(\{X_i\}\) and its dual, \(\{\lambda_i\}\).
+         \item \(\lambda_i \mapsto Y_i\) so \(X_i \otimes \lambda_i \mapsto X_i \otimes Y_i\) and \(\sum_{i=1}^n X_i \otimes \lambda_i \mapsto \sum_{i=1}^n X_i \otimes Y_i\).
+         \item \(X_i \otimes Y_i\) maps to \(X_i Y_i\) so \(\sum_{i=1}^n X_i \otimes Y_i \mapsto \sum_{i=1}^n X_i Y_i = \Omega_2\).
+     \end{itemize}
+     Since \(1 \in \field\) is \(\lie{g}\)-invariant and commutes with all elements the same is true of its image under this composite linear map, and the image is exactly the quadratic Casimir, \(\Omega_2\).
+     
+     We now give the definition of the representation of \(\Omega\), which is what the course calls \emph{the} Casimir operator.
+     
+     \begin{dfn}{}{}
+         Let \(V\) be a faithful \(\lie{g}\)-module, and let \((\rho, V)\) be the corresponding representation.
+         We define the \defineindex{Casimir} of \(V\) to be
+         \begin{equation}
+             \Omega_V = \sum_{i=1}^n \rho(X_i)\rho(Y_i)
+         \end{equation}
+         where \(\{X_1, \dotsc, X_n\}\) is some basis of \(\lie{g}\) and \(\{Y_1, \dotsc, Y_n\}\) is the dual basis in \(\lie{g}\).
+     \end{dfn}
+     
+    That is, \(\Omega_V = \tilde{\rho}(\Omega_2)\) with our more general definition of the quadratic Casimir, where \(\tilde{\rho} \colon \universalenveloping(\lie{g}) \to \generalLinearLie(V)\) is the unital associative algebra homomorphism corresponding to the Lie algebra homomorhpism \(\rho\) under the universal property of \(\universalenveloping(\lie{g})\) with \((\rho, \End V)\) viewed as an enveloping algebra.
+    
 	% Appdendix
 %	\appendixpage
 %	\begin{appendices}
