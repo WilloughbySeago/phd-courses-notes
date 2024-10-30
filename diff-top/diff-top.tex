@@ -12,6 +12,9 @@
 
 \usepackage{tikz-cd}
 
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
 \usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes from differential topology},pdfkeywords={differential topology, manifold, tangent space, homology, cohomology},pdfsubject={Differential Topology}]{hyperref}  % Should be loaded second last (cleveref last)
 \colorlet{hyperrefcolor}{blue!60!black}
 \hypersetup{colorlinks=true, linkcolor=hyperrefcolor, urlcolor=hyperrefcolor}
@@ -56,6 +59,7 @@ noabbrev
 \DeclareMathOperator{\Der}{Der}
 \newcommand{\derivations}{\Der}
 \DeclareMathOperator{\End}{End}
+\newcommand{\trans}{\top}
 
 \begin{document}
     \frontmatter
@@ -574,8 +578,9 @@ noabbrev
                 \partial_X(fg) = \dl{(fg)}X = f \dd{g}X + g \dd{f}X = f\partial_Xg + g\partial_Xf.
             \end{equation}
             Now taking \(X\) to be a vector field on some smooth manifold, \(M\), and \(f \in C^{\infty}(M)\) we can define \(\partial_Xf(p) = \dl{f_p}X_p\), which we may also write as\(\partial_{X_p}f\).
-            The map \(X \mapsto \partial_X\) is a morphism of \(C^{\infty}(M)\)-modules \(\vectorFields(M) \to \derivations(C^{\infty}(M))\).
-            It is an isomorphism because % TODO: why is it an isomorphism?
+            The map \(\Phi \colon \vectorFields(M) \to \derivations(C^{\infty}(M))\) defined by \(X \mapsto \partial_X\) is a morphism of \(C^{\infty}(M)\)-modules \(\vectorFields(M) \to \derivations(C^{\infty}(M))\).
+            
+            It can be shown that \(\Phi\) is in fact an isomorphism.
         \end{proof}
     \end{thm}
     
@@ -586,8 +591,132 @@ noabbrev
     \end{equation}
     which is almost the Leibniz rule, except for the fact that \(\partial_{X_p}\) isn't an endomorphism.
     
+    \chapter{Integral Curves and Lie Groups}
+    \section{Integral Curves}
+
+    Consider the vector field \(X \in \vectorFields(\reals^2)\) given by
+    \begin{equation}
+        X(x, y) = 
+        \begin{pmatrix}
+            -y\\ x
+        \end{pmatrix}
+    \end{equation}
+    which is interpreted as an element of \(T_{(x, y)}\reals^2 \isomorphic \reals^2\).
+    If we attach \(X(x, y)\) to the point \((x, y)\) for some number of points we get an image like \cref{fig:vector field example}.
+    This is why we call these vector fields.
     
+    Notice that every arrow is tangent to a circle centred on the origin of radius \(\sqrt{x^2 + y^2}\).
     
+    \begin{figure}
+        \tikzsetnextfilename{vector-field-example}
+        \begin{tikzpicture}
+            \begin{axis}[%
+                view     = {0}{90}, % for a view 'from above'
+                domain   = -6:6,
+                y domain = -6:6,
+                xtick    = {0},
+                ytick    = {0},
+                ]
+                \addplot3[highlight, quiver={u=y, v=-x, scale arrows=0.1}, samples=16, -latex] (x, y, 0);
+            \end{axis}
+        \end{tikzpicture}
+        \caption[Example of a vector field]{The vector field \(X \in \vectorFields(\reals^2)\) given by \(X(x, y) = (-y\ x)^{\trans}\).}
+        \label{fig:vector field example}
+    \end{figure}
+    
+    \begin{dfn}{}{}
+        A smooth \defineindex{path} on a manifold, \(M\), is a smooth map \(c \colon \reals \to M\).
+    \end{dfn}
+    
+    What we see here is that the vectors in the vector field \(X\) are all tangent to the smooth curve defined by
+    \begin{equation}
+        c(t) =
+        \begin{pmatrix}
+            r \cos t\\ r \sin t
+        \end{pmatrix}
+        .
+    \end{equation}
+    
+    \begin{prp}{}{}
+        Let \(M\), \(N\), and \(O\) be smooth manifolds and let \(f \colon M \to N\) and \(g \colon N \to O\) be smooth maps.
+        Then for \(x \in M\) we have
+        \begin{equation}
+            \dl (g \circ f)_x = \dl{g}_{f(x)} \circ \dl{f}_x.
+        \end{equation}
+    \end{prp}
+    
+    If \(c\) is a path we can relate the tangent vector at 0, that is \(V = \dot{c}(0)\), to the corresponding derivation by
+    \begin{equation}
+        \partial_V f = \dl{f}_{c(0)}(V) = \dl{f}_{c(0)}\left( \dl{c}_0\left( \diffp{}{t} \right) \right) = \dl{(f \circ c)}_0 \left( \diffp{}{t} \right) = (f \circ c)'(0).
+    \end{equation}
+    
+    \begin{dfn}{Local Integral Curve}{}
+        Let \(M\) be a smooth manifold and let \(X \in \vectorFields(M)\) be a smooth vector field on \(M\).
+        A \defineindex{local integral curve} of \(X\) through \(p \in M\) is a local path \(c \colon (-\varepsilon, \varepsilon) \to M\) (for some \(\varepsilon > 0\)) such that \(c(0) = p\) and \(\dot{c}(t) = X_{c(t)}\) for all \(t \in (-\varepsilon, \varepsilon)\).
+    \end{dfn}
+    
+    Note that for a smooth curve, \(c \colon \reals \to M\) with \(c(0) = p \in M\) the derivative \(\dot{c}(0) \in T_pM\) is defined to be the equivalence class
+    \begin{equation}
+        \dot{c}(0) = \left[ \alpha, \diff{}{t}\bigg|_{t=0}\varphi_\alpha(c(t)) \right]_p.
+    \end{equation}
+    The vector \(\dot{c}(0) \in T_pM\) is then the image of the vector \(1 \in T_0\reals = \reals\) under the linear map \(\dl{c}_0 \colon T_0 \reals \to T_{p}M\).
+    
+    Every \(p \in M\) and \(v \in T_pM\) has a corresponding smooth curve \(c \colon \reals \to M\) such that \(c(0) = p\) and \(\dot{c}(0) = v\).
+    To see this take some coordinate chart \(\varphi_\alpha \colon U_\alpha \to \Omega_\alpha\) such that \(p \in U_\alpha\), and define \(x = \varphi_\alpha(p)\) and \(\xi = \dl{\varphi_\alpha}_p(v)\).
+    Take some constant \(\varepsilon > 0\) such that \(x + t\xi \in \Omega_\alpha\) for all \(t \in (-\varepsilon, \varepsilon)\).
+    Then we may define \(c\) by
+    \begin{equation}
+        c(t) = \varphi_\alpha^{-1}\left( x + \frac{\varepsilon t}{\sqrt{\varepsilon^2 + t^2}} \right)
+    \end{equation}
+    for \(t \in \reals\) and this has the desired property.
+    
+    \begin{prp}{}{}
+        Let \(M\) be a smooth manifold and \(X \in \vectorFields(M)\) a smooth vector field.
+        Then the following hold:
+        \begin{enumerate}
+            \item For every \(p \in M\) there exists some \(\varepsilon > 0\) such that for every \(\delta \le \varepsilon\) there exists a unique integral curve of \(X\) through \(p\) defined on \((-\delta, \delta)\).
+            \item For every \(p \in M\) there exists an open neighbourhood, \(U_p\), of \(p\) and \(\varepsilon > 0\) such that the integral curve of \(X\) through every \(q \in U_p\) is defined for \(t \in (-\varepsilon, \varepsilon)\).
+            \item For \(p \in M\) let \(U_p\) and \(\varepsilon\) be as in the previous point.
+            If \(t < \varepsilon\) we define the map \(\varphi_t \colon U_p \to M\) by \(\varphi_t(q) = c_q(t)\) where \(c_q\) is the integral curve of \(X\) through \(q\).
+            Then we have
+            \begin{equation}
+                \varphi_t \circ \varphi_s = \varphi_{s + t}
+            \end{equation}
+            for all \(t, s, s + t \in (-\varepsilon, \varepsilon)\) on whatever open set this composite is defined on.
+            \item For every \(t < \varepsilon\) the local map \(\varphi_t\) is a local diffeomorphism.
+        \end{enumerate}
+    \end{prp}
+    
+    We call a family, \(\{\varphi_t\}\), of local diffeomorphisms satisfying \(\varphi_t \circ \varphi_s = \varphi_{t + s}\) a one-parameter pseudogroup of local diffeomorhpisms of \(M\).
+    It's like a group, but sometimes the composite isn't defined.
+    
+    \section{Lie Groups and Lie Algebras}
+    \begin{dfn}{}{}
+        A group, \(G\), which is also a smooth manifold for which the multiplication map, \(\mu \colon G \times G \to G\), \(\mu(g, h) = gh\), and inverse map, \(\iota \colon G \to G\), \(\iota(g) = g^{-1}\), are smooth is called a Lie group.
+    \end{dfn}
+    
+    For a Lie group, \(G\), define \(L_g, R_g \colon G \to G\) to be left and right multiplication by \(g\), that is \(L_g(h) = gh\) and \(R_g(h) = hg\).
+    We call these left and right translation, because we view them as shifting the manifold around by some amount \(g\), the canonical example being \(G = \reals^n\) with addition as the group operation, in which case these really are translations.
+    Note that \(L_g\) and \(R_g\) are invertible, with inverses \(L_{g^{-1}}\) and \(R_{g^{-1}}\) respectively, and they are defined in terms of the smooth multiplication map, so are themselves smooth.
+    Thus \(L_g\) and \(R_g\) are diffeomorphisms of \(G\).
+    
+    A vector field, \(X \in \vectorFields(G)\), is called \defineindex{left invariant} (similar definitions hold for right translations) if \(\dl{L_g}(X) = X\) for all \(g \in G\).
+    That is, if
+    \begin{equation}
+        (\dl{L}_g)_{g^{-1}a}(X_{g^{-1}a}) = X_a
+    \end{equation}
+    for all \(a, g \in G\).
+    Note that we're writing \(g^{-1}a\) as a generic element of \(G\), since all \(b \in G\) can be written in this way, just take \(a = gb\).
+    If we take \(g = a\) in the above then we find that
+    \begin{equation}
+        (\dl{L}_g)_e(X_e) = X_g
+    \end{equation}
+    and so the value of the vector field at \(g\), that is \(X_g\), is determined entirely from its value at the identity, that is \(X_e\), and the translation \(L_g\).
+    Conversely, this allows us to define a smooth left invariant vector field \(X\) by specifying just it's value at \(e\).
+    
+    We write \(\lie{g} = T_eG\) and call this the \defineindex{Lie algebra} of \(G\).
+    Every vector in \(T_eG\) defines a smooth left-invariant vector field on \(G\) by the above equation.
+    This correspondence allows us to alternatively identify \(\lie{g}\) as the vector space of left-invariant vector fields on \(G\).
     
     % Appdendix
 %    \appendixpage
