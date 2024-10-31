@@ -2232,40 +2232,115 @@ noabbrev
         = \left( \frac{1}{z_2 - z_1} \right)^{h_2} \left( \frac{1}{\overbar{z}_2 - \overbar{z}_1} \right)^{\overbar{h}_2} \correlator{\quantumField{O}_{h_1, \overbar{h}_1}(0, 0) \quantumField{O}_{h_2, \overbar{h}_2}(1, 1)}.
     \end{multline}
     We can then identify that \(C_{12} = \correlator{\quantumField{O}_{h_1, \overbar{h}_1}(0, 0) \quantumField{O}_{h_2, \overbar{h}_2}(1, 1)}\) is independent of the insertion points, \(z_1\) and \(z_2\).
+    The two-point correlator is then given by
+    \begin{equation}
+        \label{eqn:z dependence of 2 pt correlator}
+        \correlator{\quantumField{O}_{h_1, \overbar{h}_1}(z_1, \overbar{z}_1) \quantumField{O}_{h_2, \overbar{h}_2}(z_2, \overbar{z}_2)}\\
+        = \left( \frac{1}{z_2 - z_1} \right)^{h_2} \left( \frac{1}{\overbar{z}_2 - \overbar{z}_1} \right)^{\overbar{h}_2} C_{12}.
+    \end{equation}
+    All of the \(z_i\) dependence is in those \(z_2 - z_1\) factors.
     
-    Instead, we may consider a special conformal transformation \(z \mapsto z' = z/(cz + 1)\), will allow us to determine \(C_{12}\).
+    We may also consider a special conformal transformation \(z \mapsto z' = z/(cz + 1)\), and this will allow us to determine \(C_{12}\).
     We have
     \begin{equation}
         \diff{z'}{z} = \frac{1}{(cz + 1)^2}, \qqand \diff{\overbar{z}'}{\overbar{z}} = \diff{}{\overbar{z}} \frac{\overbar{z}}{\overbar{c}\overbar{z} + 1} = \frac{1}{(\overbar{c}\overbar{z} + 1)^2}.
     \end{equation}
-    We also have
-    \begin{equation}
-        \label{eqn:z2' - z1'}
-        z_2' - z_1' = \frac{z_2 - z_1}{(cz_2 + 1)(cz_1 + 1)}.
-    \end{equation}
     Then the transformation law tells us that
     \begin{multline}
-        \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1, \overbar{z}_1) \quantumField{O}_{h_2,\overbar{h}_2}(z_2, \overbar{z}_2)} =\\
-        \left( \frac{1}{cz_1 + 1} \right)^{h_1} \left( \frac{1}{cz_2 + 1} \right)^{h_2} \left( \frac{1}{\overbar{c}\overbar{z}_1 + 1} \right)^{\overbar{h}_1} \left( \frac{1}{\overbar{c}\overbar{z}_2 + 1} \right)^{\overbar{h}_2}\\
-        \times \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1', \overbar{z}_1') \quantumField{O}_{h_2, \overbar{h}_2}(z_2', \overbar{z}_2')}.
+        \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1, \overbar{z}_1) \quantumField{O}_{h_2,\overbar{h}_2}(z_2, \overbar{z}_2)} = \left( \frac{1}{cz_1 + 1} \right)^{2h_1} \left( \frac{1}{\overbar{c}\overbar{z}_1 + 1} \right)^{2\overbar{h}_1}\\
+        \times \left( \frac{1}{cz_2 + 1} \right)^{2h_2} \left( \frac{1}{\overbar{c}\overbar{z}_2 + 1} \right)^{2\overbar{h}_2} \frac{C_{12}}{(z_2' - z_1')^{h_1 + h_2} (\overbar{z}_2' - \overbar{z}_1')^{\overbar{h}_1 + \overbar{h}_2}}.
     \end{multline}
-    Equating this with \cref{eqn:2pt correlator translated and rotated} we must have
-    \begin{multline}
-        \left( \frac{1}{z_2 - z_1} \right)^{h_2} \left( \frac{1}{\overbar{z}_2 - \overbar{z}_1} \right)^{\overbar{h}_2} C_{12} = \left( \frac{1}{cz_1 + 1} \right)^{h_1} \left( \frac{1}{cz_2 + 1} \right)^{h_2} \left( \frac{1}{\overbar{c}\overbar{z}_1 + 1} \right)^{\overbar{h}_1}\\
-        \times \left( \frac{1}{\overbar{c}\overbar{z}_2 + 1} \right)^{\overbar{h}_2} \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1', \overbar{z}_1') \quantumField{O}_{h_2, \overbar{h}_2}(z_2', \overbar{z}_2')}.
-    \end{multline}
-    Rearranging this and using \cref{eqn:z2' - z1'} for \(C_{12} \ne 0\) we get
+    We require that this is equal to the right hand side of \cref{eqn:z dependence of 2 pt correlator}.
+    Noting that
+    \begin{equation}
+        z_2' - z_1' = \frac{z_2 - z_1}{(cz_2 + 1)(cz_1 + 1)}.
+    \end{equation}
+    we can show that if \(C_{12} \ne 0\) we must have that
     \begin{equation}
         (cz_1 + 1)^{h_1 - h_2} (cz_2 + 1)^{h_2 - h_1} (\overbar{c}\overbar{z}_1 + 1)^{\overbar{h}_1 - \overbar{h}_2} (\overbar{c}\overbar{z}_2 + 1)^{\overbar{h}_2 - \overbar{h}_1} = 1.
     \end{equation}
     This must hold for arbitrary \(z_1\), \(z_2\), and \(c\), which will only be the case if \(h_1 - h_2 = \overbar{h}_1 - \overbar{h}_2 = 0\), and so we can conclude that the functional form of the two-point correlator is
     \begin{equation}
+        \label{eqn:general 2 pt correlator}
         \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1, \overbar{z}_1) \quantumField{O}_{h_2, \overbar{h}_2}(z_2, \overbar{z}_2)} = \delta_{h_1,h_2} \delta_{\overbar{h}_1, \overbar{h}_2} \frac{C_{12}}{(z_2 - z_1)^{2h_1} (\overbar{z}_2 - \overbar{z}_1)^{2\overbar{h}_1}}.
     \end{equation}
     
+    \begin{exm}{}{}
+        We saw for the free massless scalar boson that the two point correlator is
+        \begin{equation}
+            \correlator{\phi(z_1, \overbar{z}_2) \phi(z_2, \overbar{z}_2)} = -\ln\abs{z_1 - z_2}^2.
+        \end{equation}
+        We can compute the correlatoion function of derivative fields, \(\partial_z \varphi(z, \overbar{z})\), by using the fact that we've defined correlators so that the correlator of derivatives is the derivative of the correlator.
+        This means that
+        \begin{align}
+            \correlator{\partial_{z_1}\phi(z_1, \overbar{z}_1) \partial_{z_2}\phi(z_2, \overbar{z}_2)} &= \partial_{z_1}\partial_{z_2}\correlator{\phi(z_1, \overbar{z}_1) \phi(z_2, \overbar{z}_2)}\\
+            &= -\partial_{z_1}\partial_{z_2}\ln\abs{z_1 - z_2}^2\\
+            &= -\frac{2}{(z_1 - z_2)^2}
+        \end{align}
+        and equating this with the general form of \cref{eqn:general 2 pt correlator} we see that we must have that the derivatives are quasiprimary fields with weights \((h, \overbar{h}) = (1, 0)\) and\footnote{\color{red}The lecture notes have \(C_{12} = -1\), and their expression for the correlator doesn't have the factor of 2 (I used \textit{Mathematica} to compute it).} \(C_{12} = -2\).
+        In the free boson theory \(\partial_z\phi\) is actually a primary field, but that's just a special case of quasiprimary fields.
+    \end{exm}
     
-    
-    
+    \subsubsection{Three-Point Correlation Function}
+    Now consider three quasiprimary fields.
+    We can perform the same translation followed by a rotation/dilation as we did for the two-point correlator, and we find that
+    \begin{multline}
+        \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1, \overbar{z}_2) \quantumField{O}_{h_2,\overbar{h}_2}(z_2, \overbar{z}_2) \quantumField{O}_{h_3,\overbar{h}_3}(z_3, \overbar{z}_3)}\\
+        = \frac{\correlator{\quantumField{O}_{h_1,\overbar{h}_1}(0, 0) \quantumField{O}_{h_2,\overbar{h}_2}(1, 1) \quantumField{O}_{h_3, \overbar{h}_3}(\xi, \overbar{\xi})}}{(z_2 - z_1)^{h_1 + h_2 + h_3}(\overbar{z}_2 - \overbar{z}_1)^{\overbar{h}_1 + \overbar{h}_2 + \overbar{h}_3}}
+    \end{multline}
+    where \(\xi\) is the coordinate \(z_3\) after the translation and rotation/dilation, which we can compute to be
+    \begin{equation}
+        z_3 \mapsto z_3 - z_1 \mapsto \frac{z_3 - z_1}{z_2 - z_1} = \xi.
+    \end{equation}
+    We have therefore removed the position dependence of all but the third field.
+    To proceed we need to remove the dependence on \(\xi\) of the third field.
+    We did this for the first two fields by exploiting the fact that \(0\) and \(1\) are distinguished elements\footnote{We could actually use any fixed distinct points, but it's nice to have \enquote{special} ones.} of \(\complex\), being the additive and multiplicative identity respectively.
+    Fortunately, we aren't working in \(\complex\), but \(\complex_{\infty}\), and this gives us a third distinguished element, \(\infty\).
+    We can therefore look for a transformation that takes \(\xi\) to \(\infty\) while leaving \(0\) and \(1\) invariant (or at least without introducing any position dependence).
+    We have to be slightly careful with infinity, so what we'll do is look for a transformation that sends \(\xi\) to some value that we can take a limit of and in that limit it will go to \(\infty\).
+    It turns out that the special conformal transformation
+    \begin{equation}
+        z \mapsto z' = \frac{(\eta - 1)z}{\eta - z} \quad \eta \ne 1
+    \end{equation}
+    does the job.
+    This is a special conformal transformation, despite not being in the standard form (\(z/(cz + 1)\)) of one.
+    This transformation is such that
+    \begin{equation}
+        0 \mapsto \frac{(\eta - 1)0}{\eta - 0} = 0, \qqand 1 \mapsto \frac{(\eta - 1)1}{\eta - 1} = 1.
+    \end{equation}
+    Further,
+    \begin{equation}
+        \xi \mapsto \xi' = \frac{(\eta - 1)\xi}{\eta - \xi} \to \infty \quad \text{ as } \quad \eta \to \xi.
+    \end{equation}
+    To compute the transformation law we should do so for finite \(\xi'\) and then take the limit as \(\eta \to \xi\).
+    For the transformation law we have
+    \begin{equation}
+        \diff{z'}{z} = \frac{(\eta - 1)\eta}{(\eta - z)^2}, \qqand \diff{\overbar{z}'}{\overbar{z}} = \frac{(\overbar{\eta} - 1)\overbar{\eta}}{(\overbar{\eta} - \overbar{z})^2}.
+    \end{equation}
+    Composing this with our earlier transformations we have the transformation law
+    \begin{multline}
+        \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1, \overbar{z}_2) \quantumField{O}_{h_2,\overbar{h}_2}(z_2, \overbar{z}_2) \quantumField{O}_{h_3,\overbar{h}_3}(z_3, \overbar{z}_3)} = \left( \frac{(\eta - 1)\eta}{(\eta - 1)^2} \right)^{h_1} \left( \frac{(\overbar{\eta} - 1)\overbar{\eta}}{(\overbar{\eta} - 1)^2} \right)^{\overbar{{h}}_1}\\
+        \times \left( \frac{(\eta - 1)\eta}{(\eta - 0)^2} \right)^{h_2} \left( \frac{(\overbar{\eta} - 1)\overbar{\eta}}{(\overbar{\eta} - 0)^2} \right)^{\overbar{h}_2} \left( \frac{(\eta - 1)\xi}{(\eta - \xi)^2} \right)^{h_3} \left( \frac{(\overbar{\eta} - 1)\overbar{\xi}}{(\overbar{\eta} - \overbar{\xi})^2} \right)^{\overbar{h}_3}\\
+        \times \frac{\correlator{\quantumField{O}_{h_1,\overbar{h}_1}(0, 0) \quantumField{O}_{h_2,\overbar{h}_2}(1, 1) \quantumField{O}_{h_3, \overbar{h}_3}(\xi', \overbar{\xi}')}}{(z_2 - z_1)^{h_1 + h_2 + h_3} (\overbar{z}_2 - \overbar{z}_1)^{\overbar{h}_1 + \overbar{h}_2 + \overbar{h}_3}}.
+    \end{multline}
+    This simplifies to
+    \begin{multline}
+        \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1, \overbar{z}_2) \quantumField{O}_{h_2,\overbar{h}_2}(z_2, \overbar{z}_2) \quantumField{O}_{h_3,\overbar{h}_3}(z_3, \overbar{z}_3)} = \left( \frac{\eta}{\eta - 1} \right)^{h_1} \left( \frac{\overbar{\eta}}{\overbar{\eta} - 1} \right)^{\overbar{{h}}_1}\\
+        \times \left( \frac{(\eta - 1)}{\eta} \right)^{h_2} \left( \frac{(\overbar{\eta} - 1)}{\overbar{\eta}} \right)^{\overbar{h}_2} \left( \frac{(\eta - 1)\xi}{(\eta - \xi)^2} \right)^{h_3} \left( \frac{(\overbar{\eta} - 1)\overbar{\xi}}{(\overbar{\eta} - \overbar{\xi})^2} \right)^{\overbar{h}_3}\\
+        \times \frac{\correlator{\quantumField{O}_{h_1,\overbar{h}_1}(0, 0) \quantumField{O}_{h_2,\overbar{h}_2}(1, 1) \quantumField{O}_{h_3, \overbar{h}_3}(\xi', \overbar{\xi}')}}{(z_2 - z_1)^{h_1 + h_2 + h_3} (\overbar{z}_2 - \overbar{z}_1)^{\overbar{h}_1 + \overbar{h}_2 + \overbar{h}_3}}.
+    \end{multline}
+    Collecting terms this becomes
+    \begin{multline}
+        \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1, \overbar{z}_2) \quantumField{O}_{h_2,\overbar{h}_2}(z_2, \overbar{z}_2) \quantumField{O}_{h_3,\overbar{h}_3}(z_3, \overbar{z}_3)} =\\ 
+        \frac{(\eta - 1)^{-h_1 + h_2 + h_3} (\overbar{\eta} - 1)^{-\overbar{h}_1 + \overbar{h}_2 + \overbar{h}_3} \eta^{h_1 - h_2} \overbar{\eta}^{h_1 - h_2} (\xi')^{h_3}(\overbar{\xi}')^{\overbar{h}_3}}{(\eta - \xi)^{2h_3}(\overbar{\eta} - \overbar{\xi})^{2\overbar{h}_3}}\\
+        \times \frac{\correlator{\quantumField{O}_{h_1,\overbar{h}_1}(0, 0) \quantumField{O}_{h_2,\overbar{h}_2}(1, 1) \quantumField{O}_{h_3, \overbar{h}_3}(\xi', \overbar{\xi}')}}{(z_2 - z_1)^{h_1 + h_2 + h_3} (\overbar{z}_2 - \overbar{z}_1)^{\overbar{h}_1 + \overbar{h}_2 + \overbar{h}_3}}.
+    \end{multline}
+    We can now substitute in the expression for \(\xi'\) and consider the limit \(\eta \to \xi\).
+    Doing so, and demanding that this law holds, we have
+    \begin{multline}
+        \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1, \overbar{z}_2) \quantumField{O}_{h_2,\overbar{h}_2}(z_2, \overbar{z}_2) \quantumField{O}_{h_3,\overbar{h}_3}(z_3, \overbar{z}_3)} =\\
+        % TODO compute this taking \eta -> \xi = (z_2 - z_3)/(z_2 - z_1)
+    \end{multline}
     
     
 %	 Appdendix
