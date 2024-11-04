@@ -5,6 +5,7 @@
 
 \usepackage{csquotes}
 \usepackage{tensor}
+\usepackage{siunitx}
 
 \usepackage{tikz}
 \usetikzlibrary{external}
@@ -74,6 +75,7 @@ noabbrev
 \newcommand{\dalembertian}{\partial^2}
 \newcommand{\order}{\symscr{O}}
 \newcommand{\identity}{\symbb{1}}
+\DeclarePairedDelimiterX{\schwarzian}[2]{\{}{\}}{#1 ; #2}
 
 \begin{document}
     \frontmatter
@@ -2123,7 +2125,7 @@ noabbrev
     
     \section{Quasiprimary Fields}
     \begin{dfn}{}{}
-        A \defineindex{quasiprimary field} is a local field, \(\quantumField{O}_{h,\overbar{h}}\) which transforms according to
+        A \defineindex{quasiprimary field} is a local field, \(\quantumField{O}_{h,\overbar{h}}\), which transforms according to
         \begin{equation}
             \quantumField{O}_{h,\overbar{h}}(z, \overbar{z}) = \left( \diff{z'}{z} \right)^h \left( \diff{\overbar{z}'}{\overbar{z}} \right)^{\overbar{h}} \quantumField{O}_{h,\overbar{h}}(z', \overbar{z}')
         \end{equation}
@@ -2332,15 +2334,160 @@ noabbrev
     Collecting terms this becomes
     \begin{multline}
         \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1, \overbar{z}_2) \quantumField{O}_{h_2,\overbar{h}_2}(z_2, \overbar{z}_2) \quantumField{O}_{h_3,\overbar{h}_3}(z_3, \overbar{z}_3)} =\\ 
-        \frac{(\eta - 1)^{-h_1 + h_2 + h_3} (\overbar{\eta} - 1)^{-\overbar{h}_1 + \overbar{h}_2 + \overbar{h}_3} \eta^{h_1 - h_2} \overbar{\eta}^{h_1 - h_2} (\xi')^{h_3}(\overbar{\xi}')^{\overbar{h}_3}}{(\eta - \xi)^{2h_3}(\overbar{\eta} - \overbar{\xi})^{2\overbar{h}_3}}\\
+        \frac{(\eta - 1)^{-h_1 + h_2 + h_3} (\overbar{\eta} - 1)^{-\overbar{h}_1 + \overbar{h}_2 + \overbar{h}_3} \eta^{h_1 - h_2} \overbar{\eta}^{\overbar{h}_1 - \overbar{h}_2} (\xi')^{h_3}(\overbar{\xi}')^{\overbar{h}_3}}{(\eta - \xi)^{2h_3}(\overbar{\eta} - \overbar{\xi})^{2\overbar{h}_3}}\\
         \times \frac{\correlator{\quantumField{O}_{h_1,\overbar{h}_1}(0, 0) \quantumField{O}_{h_2,\overbar{h}_2}(1, 1) \quantumField{O}_{h_3, \overbar{h}_3}(\xi', \overbar{\xi}')}}{(z_2 - z_1)^{h_1 + h_2 + h_3} (\overbar{z}_2 - \overbar{z}_1)^{\overbar{h}_1 + \overbar{h}_2 + \overbar{h}_3}}.
     \end{multline}
-    We can now substitute in the expression for \(\xi'\) and consider the limit \(\eta \to \xi\).
+    We can now substitute in the expression for \(\xi'\) in terms of \(\eta\) and \(\xi\) and consider the limit \(\eta \to \xi = (z_2 - z_3)/(z_2 - z_1)\).
     Doing so, and demanding that this law holds, we have
     \begin{multline}
         \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1, \overbar{z}_2) \quantumField{O}_{h_2,\overbar{h}_2}(z_2, \overbar{z}_2) \quantumField{O}_{h_3,\overbar{h}_3}(z_3, \overbar{z}_3)} =\\
-        % TODO compute this taking \eta -> \xi = (z_2 - z_3)/(z_2 - z_1)
+        \frac{C_{123}}{z_{21}^{h_2 + h_1 - h_3} z_{31}^{h_3 + h_1 - h_2} z_{32}^{h_3 + h_2 - h_1} \overbar{z}_{21}^{\overbar{h}_2 + \overbar{h}_1-\overbar{h_3}} \overbar{z}_{31}^{\overbar{h}_3 + \overbar{h}_1 - \overbar{h}_2} \overbar{z}_{32}^{\overbar{h}_3 + \overbar{h}_2 - \overbar{z}_1}}
     \end{multline}
+    where \(z_{ij} = z_i - z_j\) and
+    \begin{align}
+        C_{123} &= \lim_{\eta \to \xi} (\xi')^{2h_3} (\overbar{\xi}')^{2\overbar{h}_3} \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(0, 0) \quantumField{O}_{h_2, \overbar{h}_2}(1, 1) \quantumField{O}_{h_3, \overbar{h}_3}(\xi', \overbar{\xi}')}\\
+        &= \lim_{\eta' \to \infty} (\xi')^{2h_3} (\overbar{\xi}')^{2\overbar{h}_3} \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(0, 0) \quantumField{O}_{h_2, \overbar{h}_2}(1, 1) \quantumField{O}_{h_3, \overbar{h}_3}(\xi', \overbar{\xi}')}
+    \end{align}
+    is a constant.
+    
+    Note that we can always write \(z^h \overbar{z}^{\overbar{h}} = \abs{z}^{2h}\overbar{z}^{-s}\), which makes it clear that there are only integral powers of complex numbers here, and therefore we don't need any branch cuts.
+    
+    In this derivation we treated the correlation function as a function on \(\complex_{\infty}\) to evaluate at \(\infty\).
+    It is also possible to consider the correlation function as a differential form,
+    \begin{equation}
+        \correlator{\quantumField{O}_{h_1, \overbar{h}_1}(z_1, \overbar{z}_1) \dotsm \quantumField{O}_{h_n, \overbar{h}_n}(z_n, \overbar{z}_n)} (\dl{z_1})^{h_1} (\dl{\overbar{z}_1})^{\overbar{h}_1} \dotsm (\dl{z_n})^{h_n}(\dl{\overbar{z}_n})^{\overbar{h}_n}.
+    \end{equation}
+    This defines a function on the product of the tangent spaces \(T_{z_1}\complex \times \dotsb \times T_{z_n}\complex\), which extends naturally to a differential form on the \(T_{z_1}\complex_{\infty} \times \dotsb \times T_{z_n}\complex_{\infty}\).
+    To take one of the insertion points, say \(z_1\), to infinity we can use the trick of taking the coordinate chart \((\xi_1, z_2, \dotsc, z_n)\) where \(\xi_1 = -1/z_1\).
+    We then have
+    \begin{equation}
+        \diff{\xi}{z_1} = \frac{1}{z_1^2},
+    \end{equation}
+    so the transformation law gives
+    \begin{equation}
+        \quantumField{O}_{h_1, \overbar{h}_1}(\xi_1, \overbar{\xi}_1) = z_1^{2h_1}\overbar{z}_1^{2\overbar{h}_1}\quantumField{O}_{h_1, \overbar{h}_1}(z_1, \overbar{z}_1).
+    \end{equation}
+    Taking \(z_1\) to \(\infty\) is then taking the limit as \(\xi \to 0\)
+    \begin{equation}
+        \lim_{z_1 \to \infty} z_1^{2h_1} \overbar{z}_1^{2\overbar{h}_1} \correlator{\quantumField{O}_{h_1, \overbar{h}_1}(z_1, \overbar{z}_1) \dotsm \quantumField{O}_{h_n, \overbar{h}_n}(z_n, \overbar{z}_n)} (\dl{z_1})^{h_1} (\dl{\overbar{z}_1})^{\overbar{h}_1} \dotsm (\dl{z_n})^{h_n}(\dl{\overbar{z}_n})^{\overbar{h}_n}.
+    \end{equation}
+    This gives a finite quantity and defines a function on \(T_{\infty}\complex_{\infty} \times T_{z_2}\complex_{\infty} \times \dotsb \times T_{z_n}\complex_{\infty}\).
+    
+    Note that this choice of coordinate, \(\xi_1 = -1/z_1\), is equivalent to working with the Riemann sphere by a stereographic projection with \(z_1\) as the point of projection combined with a \ang{180} rotation (the \(-\)).
+    
+    Note that the requirement that all of these limits existing, and being nonzero, means that inside a correlator our fields must decay as
+    \begin{equation}
+        \quantumField{O}_{h,\overbar{h}}(z, \overbar{z}) \sim \frac{1}{\abs{z}^{2(h + \overbar{h})}}, \quad \text{as} \quad z \to \infty.
+    \end{equation}
+    
+    \subsubsection{\texorpdfstring{\(n\)}{n}-Point Correlation Function}
+    For an \(n\)-point correlation function of quasiprimary fields with \(n \ge 4\) we can perform the same steps as above to reduce the correlation function to a function of \(n - 3\) positions, whatever \(z_i\) for \(i \ge 4\) map to under the translation, rotation/dilation, and special conformal transformation above.
+    We can not further remove position dependence.
+    This is the point at which different conformal field theories will differ in a meaningful way, up to now they have only varied in the value of the constants \(C_1\), \(C_{12}\) and \(C_{123}\).
+    In a 4-point correlator the analytic structure will vary between different theories.
+    
+    One thing we can do is introduce slightly nicer parameters.
+    For the 4-point case one choice is the \defineindex{anharmonic ratio}
+    \begin{equation}
+        \eta = \frac{z_{12}z_{34}}{z_{13}z_{24}},
+    \end{equation}
+    which is invariant under all M\"obius transformations.
+    Note that permuting the points doesn't give anything new, since this expression with permuted points is always related to \(\eta\) in a simple way, for example
+    \begin{equation}
+        \frac{z_{14}z_{23}}{z_{13}z_{24}} = 1 - \eta.
+    \end{equation}
+    
+    This observation allows us to reduce a 4-point correlation function to a function of the anharmonic ratio and its conjugate.
+    There are different ways to do this, one of which results in the expression
+    \begin{equation}
+        \correlator{\quantumField{O}_{h_1, \overbar{h}_1}(z_1, \overbar{z}_1) \dotsb \quantumField{O}_{h_4, \overbar{h}_4}(z_4, \overbar{z}_4)} = \prod_{i < j} z_{ij}^{h/3 - h_i - h_j} \overbar{z}_{ij}^{\overbar{h}/3 - \overbar{h}_i - \overbar{h}_j} F(\eta, \overbar{\eta})
+    \end{equation}
+    where \(F\) is some function to be specified for a given CFT, and
+    \begin{equation}
+        h = \sum_{i=1}^4 h_i, \qand \overbar{h} = \sum_{i=1}^4 \overbar{h}_i.
+    \end{equation}
+    
+    This generalises to \(n\)-point functions, we can always reduce them to the form of the above where \(F\) is a function of \(n - 3\) anharmonic ratios and their conjugates and the prefactors generalise in the obvious way.
+    
+    \section{Hierarchy of Local Fields}
+    The derivatives of quasiprimary fields are local fields, but aren't quasiprimary fields.
+    Their correlation functions are given by taking derivatives of the correlation functions of the quasiprimary fields.
+    It is possible to determine transformation laws for derivatives of quasiprimary fields by differentiating the transformation laws of the quasiprimary fields.
+    These transformation laws are, in general, more complicated than those of the quasiprimary fields.
+    However, under rotations/dilations \(z \mapsto z' = az\) (\(a \in \complex^{\times}\)) they still have the nice transformation law
+    \begin{equation}
+        \partial_z^{n}\partial_{\overbar{z}}^{m} \quantumField{O}_{h,\overbar{h}}(z, \overbar{z}) \mapsto a^{h + n}\overbar{a}^{\overbar{h} + m}\partial_z^{n}\partial_{\overbar{z}}^{m} \quantumField{O}_{h,\overbar{h}}(z', \overbar{z}').
+    \end{equation}
+    
+    \begin{dfn}{}{}
+        A \defineindex{scaling field} is a local field, \(\quantumField{O}_{h,\overbar{h}}\), which is invariant under translations and transforms under a rotation/dilation, \(z \mapsto z' = az\) (\(a \in \complex^{\times}\)) according to
+        \begin{equation}
+            \quantumField{O}(z, \overbar{z}) \mapsto a^h \overbar{a}^{\overbar{h}}\quantumField{O}(az, \overbar{a}\overbar{z}).
+        \end{equation}
+    \end{dfn}
+    
+    So, the derivative field \(\partial_z^n \partial_{\overbar{z}}^m \quantumField{O}_{h,\overbar{h}}\) is a scaling field of conformal weight \((h + n, \overbar{h} + m)\).
+    
+    We then have the following hierarchy of local fields:
+    \begin{equation*}
+        \{\text{Primary Fields}\} \subseteq \{\text{Quasiprimary Fields}\} \subseteq \{\text{Scaling Fields}\} \subseteq \{\text{Local Fields}\}.
+    \end{equation*}
+    We will show later that knowing the correlation functions for the primary fields is sufficient to determine them for all local fields.
+    Note that this hierarchy corresponds to the increasingly strong conditions
+    \begin{itemize}
+        \item Is a local field;
+        \item Transforms as expected under translations and rotations/dilations;
+        \item Transforms as expected under all global conformal transformations;
+        \item Satisfies the Ward identities (i.e., transforms as expected under infinitesimal conformal transformations).
+    \end{itemize}
+    
+    \section{Energy-Momentum Tensor Components are Quasiprimary}
+    Under a diffeomorphism (coordinate change) the components of the energy-momentum transform as tensors.
+    It can also be shown that under a finite Weyl transformation we have the transformation law
+    \begin{equation}
+        \correlator{T_{zz}(z) \dotsm}_{\Lambda \delta_{\mu\nu}} = \correlator*{\left[ T_{zz}(z) + \frac{c}{24\pi}\left( \partial_z^2 \ln \Lambda(z) - \frac{1}{2}(\partial_z \ln \Lambda(z))^2 \right) \right] \dotsm}
+    \end{equation}
+    where \(\dotsm\) is some product of quasiprimary fields.
+    We can compensate for the Weyl transformation with a conformal transformation for which the metric transforms as \(\delta_{\mu\nu} \mapsto \Lambda^{-1}\delta_{\mu\nu}\), where
+    \begin{equation}
+        \Lambda = \abs*{\diff{z'}{z}}^2.
+    \end{equation}
+    Then we obtain the transformation law
+    \begin{align}
+        \left( \diff{z'}{z} \right) \correlator{T(z') \dotsm} &= \correlator{T(z) \dotsm}_{\abs{\partial_zz'}^2\delta_{\mu\nu}}\\
+        &= \correlator*{\left[ T(z) - \frac{c}{12}\left( \partial_z^2 \ln\abs*{\diffp{z'}{z}}^2 - \frac{1}{2}\left( \partial_z \ln \abs*{\diffp{z'}{z}}^2 \right)^2 \right) \right] \dotsm} \notag\\
+        &= \correlator*{\left[ T(z) - \frac{c}{12} \schwarzian{z'}{z} \right] \dotsm}
+    \end{align}
+    Note that \(T(z) = -2\pi T_{zz}(z)\) as usual, which gets rid of an overall factor of \(2\pi\).
+    Here 
+    \begin{equation}
+        \schwarzian{w}{z} \coloneqq \frac{\partial_z^3w}{\partial_zw} - \frac{3}{2}\left( \frac{\partial_z^2w}{\partial_zw} \right)^2
+    \end{equation}
+    is called the \defineindex{Schwarzian derivative}.
+    
+    The transformation law we have derived for \(T(z)\) is then
+    \begin{equation}
+        T(z') = \left( \diff{z'}{z} \right)^{-2} \left[ T(z) - \frac{c}{12}\schwarzian{z'}{z} \right].
+    \end{equation}
+    So, \(T\) transforms by a translation and a rescaling.
+    
+    For this transformation to be well defined it must be compatible with composite transformations.
+    If we have a chain of conformal transformations \(z \mapsto w \mapsto \xi\) then it should be that successive transformations of \(T\) agree with the composite transformation under \(z \mapsto \xi\).
+    This follows from the following identity of the Schwarzian derivative:
+    \begin{equation}
+        \schwarzian{\xi}{z} = \schwarzian{w}{z} + \left( \diffp{w}{z} \right) \schwarzian{\xi}{w}.
+    \end{equation}
+    
+    The Schwarzian derivative vanishes for any M\"obius transformation on \(\complex_{\infty}\) (and further the Schwarzian derivative is only identically zero for M\"obius transformations).
+    This means that under global conformal transformations inside a correlator \(T(z)\) behaves like a quasiprimary field of weight \((2, 0)\).
+    Note that the Schwarzian does not vanish for M\"obius transformations on other geometries.
+    
+    We have the identity
+    \begin{equation}
+        \schwarzian{w}{z} = -\left( \diff{w}{z} \right)^2 \schwarzian{z}{w}.
+    \end{equation}
+    
+    
     
     
 %	 Appdendix
