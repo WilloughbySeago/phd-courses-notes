@@ -60,6 +60,29 @@ noabbrev
 \newcommand{\derivations}{\Der}
 \DeclareMathOperator{\End}{End}
 \newcommand{\trans}{\top}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclarePairedDelimiterX{\innerprod}[2]{\langle}{\rangle}{#1, #2}
+\ExplSyntaxOn
+% Create LaTeX interface command
+\NewDocumentCommand{\cycle}{ O{\,} m }{  % optional arg is separator, mandatory
+    %arg is comma separated list
+    (
+    \willoughby_cycle:nn { #1 } { #2 }
+    )
+}
+
+\clist_new:N \l_willougbhy_cycle_clist  % Create new clist variable
+\cs_new_protected:Npn \willoughby_cycle:nn #1 #2 {  % create LaTeX3 function
+    \clist_set:Nn \l_willougbhy_cycle_clist { #2 }  % set clist variable with
+    %clist #2 passed by user
+    \clist_use:Nn \l_willougbhy_cycle_clist { #1 }  % print list separated by #1
+}
+\ExplSyntaxOff
+\makeatletter
+\newcommand{\c@egory}{\symsfup}
+\newcommand{\Vect}[1][\field]{\c@egory{Vect}_{#1}}
+\makeatother
+\newcommand{\op}{\symrm{op}}
 
 \begin{document}
     \frontmatter
@@ -717,6 +740,228 @@ noabbrev
     We write \(\lie{g} = T_eG\) and call this the \defineindex{Lie algebra} of \(G\).
     Every vector in \(T_eG\) defines a smooth left-invariant vector field on \(G\) by the above equation.
     This correspondence allows us to alternatively identify \(\lie{g}\) as the vector space of left-invariant vector fields on \(G\).
+    
+    \chapter{The Exterior Algebra}
+    \textit{The order in which things were introduced in this section is questionable, and I've decided to take a more standard approach. At a few points this means results which were stated as definitions in the lecture would more properly be understood as theorems here, and I'll attempt to flag these as they arise.}
+    
+    Our goal in this section is to begin the introduction of calculus to manifolds, in particular integrals, as we've already seen some derivatives.
+    It turns out that for a general manifold, \(M\), (as opposed to \(\reals^m\)) functions on \(M\) are not the \enquote{correct} thing to be integrating.
+    Instead, we need to integrate differential forms
+    
+    \section{Differential Forms}
+    \subsection{Symmetric Group}
+    You know what this is.
+    We write \(\varepsilon(\sigma)\) for the sign of the permutation \(\sigma\).
+    
+    \subsection{Forms}
+    \begin{dfn}{Form}{}
+        Let \(V\) be an \(m\)-dimensional real vector space and fix some positive integer \(k\).
+        An alternating \(k\)-form is a multilinear map
+        \begin{equation}
+            \omega \colon V^k \to \reals
+        \end{equation}
+        satisfying
+        \begin{equation}
+            \omega(v_1, \dotsc, v_k) = \varepsilon(\sigma) \omega(v_{\sigma(1)}, \dotsc, v_{\sigma(k)})
+        \end{equation}
+        for \(S \in S_k\).
+    \end{dfn}
+    
+    In physics parlance an alternating \(k\)-form is just an antisymmetric rank \(k\) tensor.
+    In a given basis, \(\{e_i\}\), for \(V\) the components of \(\omega \colon V^k \to \reals\) are
+    \begin{equation}
+        \omega_{i_1 \dotsm i_k} = \omega_I \coloneqq \omega(e_{i_1}, \dotsc, e_{i_k}).
+    \end{equation}
+    Here \(I = i_1\dotsm i_k\) is \defineindex{multi-index} notation, it's just shorthand for a bunch of indices.
+    
+    \begin{lma}{}{}
+        For a fixed \(k\) and \(V\) the set of all alternating \(k\)-forms on \(V\) is a vector space, with pointwise addition and scalar multiplication.
+    \end{lma}
+    
+    We denote this vector space by \(\Lambda^k V^*\).
+    
+    \begin{exm}{}{}
+        \begin{itemize}
+            \item For \(k = 0\) we have \(V^0 = \reals\) and all maps \(\reals \to \reals\) are trivially alternating (since \(S_0\) is trivial).
+            So \(0\)-forms are just linear functions \(\reals \to \reals\).
+            Such a function is completely determined by where it sends \(1\), say it sends \(1\) to \(\lambda\), then the action on \(n\) is \(n = n \cdot 1 \mapsto n \cdot \lambda = \lambda n\), so the function is just scaling by \(\lambda\), and hence \(\Lambda^0 V^* \isomorphic \Hom_{\reals}(\reals, \reals)\).
+            \item For \(k = 1\) we have \(V^1 = V\) and all maps \(V \to \reals\) are trivially alternating (since \(S_1\) is trivial).
+            So \(1\)-forms are just linear maps \(V \to \reals\), which is to say elements of \(V^*\), and so \(\Lambda^1 V^* = V^* = \Hom_{\reals}(V, \reals)\).
+            
+            For \(V = \reals^m\) denote by \(\dl{x^i} \colon \reals^m \to \reals\) the projection onto the \(i\)th coordinate in some basis \(\{e_i\}\) for \(\reals^m\).
+            So if \(\xi = \xi^1 e_1 + \dotsb + \xi^m e_m\) then \(\dl{x^i}(\xi) = \xi^i\).
+            The linear maps \(\dl{x^i} \colon \reals^m \to \reals\) then form a basis for \((\reals^m)^* = \Lambda^1(\reals^m)^*\).
+            
+            \item For \(k = 2\) we finally have a nontrivial \(S_2\), and so not all linear maps \(V \to \reals\) are alternating \(k\)-forms.
+            An alternating \(2\)-form is is a skew-symmetric linear map \(\omega \colon V \times V \to \reals\), which is to say that
+            \begin{equation}
+                \omega(u, v) = -\omega(v, u).
+            \end{equation}
+            
+            For \(V = \reals^m\) any such alternating \(2\)-form corresponds to a skew-symmetric matrix, \(A\), which is such that
+            \begin{equation}
+                \omega(u, v) = \innerprod{u}{Av}
+            \end{equation}
+            where \(\innerprod{-}{-}\) is the standard inner product on \(\reals^m\).
+            Further, this identification provides an isomorphism \(\Lambda^2(\reals^m)^* \isomorphic \specialOrthogonalLie(m)\) (it just happens that \(\specialOrthogonalLie(m)\) is the space of skew-symmetric matrices, there's not really anything rotational going on here).
+            Simple parameter counting tells us that \(\dim \specialOrthogonalLie(m) = \dim(\Lambda^2(\reals^m)^*) = m(m - 1)/2\) (this is just the number of above-diagonal elements in an \(m \times m\) matrix).
+        \end{itemize}
+    \end{exm}
+    
+    \begin{dfn}{}{}
+        \textit{This is not the standard definition of \(\dl{x}^I\). That would be \(\dl{x}^I = \dl{x}^{i_1} \wedge \dotsm \wedge \dl{x}^{i_k}\), instead this is a theorem for us here, which is both wrong and bad.}
+        
+        Let \(\symcal{I}_{k,m}\) denote the set of tuples \((i_1, \dotsc, i_k) \in \naturals^k\) (with \(\naturals = \{1, 2, 3, \dotsc\}\) (also wrong and bad)) such that \(1 \le i_1 < i_2 < \dotsb < i_k \le m\).
+        Then define the alternating \(k\)-form
+        \begin{equation}
+            \dl{x^I} \colon (\reals^m)^k \to \reals
+        \end{equation}
+        by
+        \begin{equation}
+            \dl{x^I}(v_1, \dotsc, v_k) = \det
+            \begin{pmatrix}
+                u_1^{i_1} & u_2^{i_1} & \dots & u_k^{i_1}\\
+                u_1^{i_2} & u_2^{i_2} & \dots & u_k^{i_2}\\
+                \vdots & \vdots & \ddots & \vdots\\
+                u_1^{i_k} & u_2^{i_k} & \dots & u_k^{i_k}
+            \end{pmatrix}
+            .
+        \end{equation}
+        If we allow for \(i_j > m\) then we just declare that \(\dl{x^I} = 0\), which is enforced by the alternating property of \(\dl{x^I}\).
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        Let \(V\) be an \(m\)-dimensional real vector space.
+        Then
+        \begin{equation}
+            \dim \Lambda^kV^* = \binom{m}{k}.
+        \end{equation}
+        \begin{proof}
+            First note that if \(\varphi \colon V \to \reals^m\) is an isomorphism then this induces an isomorphism \(\Lambda^k V^* \to \Lambda^k (\reals^m)^*\) by \(\omega \mapsto \omega \circ \varphi^k\) where \(\varphi^k\) simply applies \(\varphi\) to each input of \(\omega\).
+            Thus, it is sufficient to prove the \(V = \reals^m\) case.
+            In this case we claim that \(\{\dl{x^I}\}_{I \in \symcal{I}_{k,m}}\) forms a basis for \(\Lambda^k(\reals^m)^*\), and then it is a simple counting exercise to show that
+            \begin{equation}
+                \abs{\symcal{I}_{k,m}} = \binom{m}{k}.
+            \end{equation}
+            
+            We make three observations:
+            \begin{enumerate}
+                \item If \(\{e_i\}\) is the standard basis of \(\reals^m\) and \(J = (j_1, \dotsc, j_k) \in \symcal{I}_{k,m}\) then for \(I \in \symcal{I}_{k,m}\) we have
+                \begin{equation}
+                    \dl{x}^I(e_J) \coloneqq \dl{x^I}(e_{j_1}, \dotsc, e_{j_k}) = 
+                    \begin{cases}
+                        1 & I = J,\\
+                        0 & I \ne J.
+                    \end{cases}
+                \end{equation}
+                This follows because if \(I \ne J\) then the resulting matrix that we take the determinant of will have a zero on the diagonal, and if \(I = J\) then the resulting matrix is the identity.
+                \item For \(\omega \in \Lambda^k(\reals^m)^*\) we have
+                \begin{equation}
+                    (\omega = 0) \iff (\omega(e_I) = \omega(e_{i_1}, \dotsc, e_{i_k}) = \omega_I = 0 \forall I \in \symcal{I}_{k,m}).
+                \end{equation}
+                That is, \(\omega\) vanishes only if all of its components do in the standard basis.
+                \item For every \(\omega \in \Lambda^k(\reals^m)^*\) we have
+                \begin{equation}
+                    \omega = \sum_{I \in \symcal{I}_{k,m}} \omega_I \dd{x^I}.
+                \end{equation}
+                This follows by simply both sides on some set of vectors and using the definitions and observing that they give the same result.
+                Alternatively this is simply the fact that \(\dl{x}^I\) is defined via a determinant, which is the only alternating map up to a scale factor, here \(\omega_I\), and thus this follows from the first two observations.
+            \end{enumerate}
+            The third observation proves that \(\dl{x^I}\) span \(\Lambda^k(\reals^m)^*\), and linear independent of the \(\dl{x^I}\) follows from these observations also: if \(\sum_I \omega_I \dd{x^I} = 0\) then define \(\omega = \sum_I \omega_I \dd{x^I}\) and \(\omega(e_J) = \omega_J = 0\) only if \(\omega_J\) vanishes in this sum, so \(\omega = 0\) only if all of its components vanish.
+        \end{proof}
+    \end{lma}
+    
+    \section{Exterior Product}
+    \begin{dfn}{Exterior Product}{}
+        The \defineindex{exterior product} or \defineindex{wedge product} is the product \(\Lambda^k V^* \times \Lambda^\ell V^* \to \Lambda^{K+\ell}V^*\) defined by
+        \begin{equation}
+            (\omega \wedge \eta)(v_1, \dotsc, v_{k + \ell}) = \frac{1}{k!\ell!} \sum_{\sigma \in S_{k + \ell}} \omega(v_{\sigma(1)}, \dotsc, v_{\sigma(k)}) \eta(v_{\sigma(k + 1)}, \dotsc, v_{\sigma(k + \ell)}).
+        \end{equation}
+        \textit{This is not the definition given in lectures, which is in terms of shuffles, to avoid the over-counting fixed by the prefactor of \(1/k!\ell!\) at the cost of being much worse in every other way.}
+    \end{dfn}
+    
+    \begin{exm}{}{}
+        \begin{itemize}
+            \item For \(k = \ell = 1\) we have
+            \begin{equation}
+                (\omega \wedge \eta)(u, v) = \omega(u)\eta(v) - \omega(v)\eta(u).
+            \end{equation}
+            \item For \(k = 1\) and \(\ell = 2\) taking \(S_3 = \{\cycle{}, \cycle{1,2}, \cycle{2,3}, \cycle{1,3}, \cycle{1,2,3}, \cycle{1,3,2}\}\) in this order we have
+            \begin{align*}
+                (\omega \wedge \eta)(u, v, w) &= \frac{1}{2!}[\omega(u)\eta(v, w) - \omega(v)\eta(u, w) - \omega(u)\eta(w, v) \\
+                &\qquad- \omega(w)\eta(v, u) + \omega(v)\eta(w, u) + \omega(w)\eta(u, v)]\\
+                &= \frac{1}{2}[\omega(u)\eta(v, w) + \omega(v)\eta(w, u) + \omega(u)\eta(v, w) \\
+                &\qquad+ \omega(w)\eta(u, v) + \omega(v)\eta(w, u) + \omega(w)\eta(u, v)]\\
+                &= \omega(u)\eta(v, w) + \omega(v)\eta(w, u) + \omega(w)\eta(u, v)
+            \end{align*}
+        \end{itemize}
+    \end{exm}
+    
+    \begin{lma}{}{}
+        The exterior product is associative, distributes over addition, and is supercommutative, meaning
+        \begin{equation}
+            \omega \wedge \eta = (-1)^{\deg(\omega) \deg(\eta)}\eta \wedge \omega
+        \end{equation}
+        where \(\deg \omega = k\) and \(\deg \eta = \ell\) for \(\omega \in \Lambda^kV^*\) and \(\eta \in \Lambda^\ell V^*\).
+    \end{lma}
+    
+    \subsection{Better Definitions}
+    The exterior algebra, \(\Lambda V^* = \Lambda^* V\), is formally defined to be the quotient of the tensor algebra
+    \begin{equation}
+        T(V^*)/I = (\reals \oplus V^* \oplus (V^* \otimes V^*) \oplus \dotsb)/I
+    \end{equation}
+    where \(I\) is the ideal generated by \(\omega \otimes \omega\) for \(\omega \in V^*\).
+    This is \(\naturals\)-graded and \(\Lambda^kV^*\) is just the \(k\)-graded part of this.
+    The wedge product is just the tensor product mod \(I\), so \(\omega \wedge \eta = \tilde{\omega} \otimes \tilde{\eta} + I\) where \(\omega = \tilde{\omega} + I\) and \(\eta = \tilde{\eta} + I\) are such that \(\tilde{\omega}, \tilde{\eta} \in T(V^*)\).
+    
+    \begin{thm}{Determinant Theorem}{}
+        For \(\omega_i \in V^* = \Lambda^1V^*\) and \(v_i \in V\) we have
+        \begin{equation}
+            (\alpha_1 \wedge \dotsb \wedge \alpha_k)(v_1, \dotsc, v_k) = \det
+            \begin{pmatrix}
+                \alpha_1(v_1) & \alpha_1(v_2) & \dots & \alpha_1(v_k)\\
+                \alpha_2(v_1) & \alpha_2(v_2) & \dots & \alpha_2(v_l)\\
+                \vdots & \vdots & \ddots & \vdots\\
+                \alpha_k(v_1) & \alpha_k(v_2) & \dots & \alpha_k(v_k)
+            \end{pmatrix}
+            .
+        \end{equation}
+    \end{thm}
+    
+    \begin{crl}{}{}
+        \(\dl{x^I} = \dl{x^{i_1}} \wedge \dotsb \wedge \dl{x^{i_k}}\).
+    \end{crl}
+    \textit{Of course, with sensible definitions this corollary is the definition and what we have as the definition is a special case of the determinant theorem.}
+    
+    \section{Pullback}
+    \begin{dfn}{Pullback}{}
+        Let \(\varphi \colon V \to W\) be a linear map between real vector spaces \(V\) and \(W\).
+        The \defineindex{pullback} of the alternating \(k\)-form \(\omega \in \Lambda^kW^*\) along \(\varphi\) is the alternating \(k\)-form \(\varphi^*\omega \in \Lambda^kV^*\) defined by
+        \begin{equation}
+            (\varphi^*\omega)(v_1, \dotsc, v_k) = \omega(\varphi(v_1), \dotsc, \varphi(v_k))
+        \end{equation}
+        for \(v_i \in V\).
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        For fixed \(\varphi \colon V \to W\) the map \(\Lambda^* W \to \Lambda^* V\) given by \(\omega \mapsto \varphi^* \omega\) is linear and preserves the exterior product, that is
+        \begin{equation}
+            \varphi^*(\omega \wedge \eta) = \varphi^*\omega \wedge \varphi^*\eta
+        \end{equation}
+        for all \(\omega, \eta \in \Lambda^*W\).
+   \end{lma}
+   \begin{lma}{}{}
+        Let \(\varphi \colon V \to W\) and \(\psi \colon W \to U\) be linear maps between real vector spaces.
+        Then \((\psi \circ \varphi)^*\omega = \varphi^*(\psi^*\omega)\) for all \(\omega \in \Lambda^*U\), so \((\psi \circ \varphi)^* = \varphi^* \circ \psi^*\).
+        Further, if \(W = V\) we can take \(\varphi = \id_V\) and \(\id_V^*\omega = \omega\) so \(\id_V^* = \id_{\Lambda^*V}\).
+        
+        In other words, taking exterior algebras and pullbacks defines a contravariant functor \(\Vect[\reals]^{\op} \to \Vect[\reals]\) sending a vector space to \(\Lambda^* V\) and sending a linear map, \(\varphi\), to its pullback, \(\varphi^*\).
+    \end{lma}
+    
+    \begin{lma}{}{}
+        If \(\varphi \colon V \to V\) is an endomorphism then \(\varphi^*\omega = \det(\varphi) \omega\) for all \(\omega \in \Lambda^* V\).
+    \end{lma}
+    
     
     % Appdendix
 %    \appendixpage
