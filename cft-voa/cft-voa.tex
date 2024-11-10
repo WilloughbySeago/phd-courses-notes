@@ -76,6 +76,10 @@ noabbrev
 \newcommand{\order}{\symscr{O}}
 \newcommand{\identity}{\symbb{1}}
 \DeclarePairedDelimiterX{\schwarzian}[2]{\{}{\}}{#1 ; #2}
+\newcommand{\phaseSpace}{\symcal{P}}
+\DeclarePairedDelimiterX{\poissonBracket}[2]{\{}{\}}{#1 , #2}
+\newcommand{\hilbertSpace}{\symcal{H}}
+\DeclareMathOperator{\End}{End}
 
 \begin{document}
     \frontmatter
@@ -2486,6 +2490,107 @@ noabbrev
     \begin{equation}
         \schwarzian{w}{z} = -\left( \diff{w}{z} \right)^2 \schwarzian{z}{w}.
     \end{equation}
+    
+    \chapter{Canonical Quantisation}
+    So far we've been looking at QFT in an axiomatic way.
+    When we've needed explicit computation tools we've used path integrals.
+    There is another method that we develop here, known as \defineindex{canonical quantisation}.
+    In this method we take the corresponding classical system and replace the variables with operators satisfying desirable commutation relations.
+    This method is more straightforward than path integrals, being motivated by similar processes in quantum mechanics.
+    However, there are subtleties that arise with operators, such as deciding on the correct order of operators which don't commute when classically the variables they represent do.
+    Fortunately, most of these subtleties won't arise in our use case, which is the free massless scalar boson.
+    
+    \section{Quantisation of Classical Harmonic Oscillators}
+    Quantisation begins with a classical theory, described by a Lagrangian, \(\lagrangian(q^i, \dot{q}^i)\).
+    Here \(q^i\) are some coordinates and \(\dot{q}^i = \difs{q^i}{t}\) are the associated velocities.
+    We'll assume we have a finite number of degrees of freedom, taking \(i = 1, \dotsc, n\).
+    The Euler--Lagrange equations are
+    \begin{equation}
+        \diff{}{t} \diffp{\lagrangian}{\dot{q}^i} = \diffp{\lagrangian}{q^i}.
+    \end{equation}
+    The solution to these equations is the classical equation of motion.
+    
+    An alternative classical approach is the Hamiltonian formalism.
+    In this we define the canonical momenta
+    \begin{equation}
+        p_i \coloneq \diffp{\lagrangian}{\dot{q}^i}
+    \end{equation}
+    (which may or may not coincide with the standard notion of momentum).
+    Then the collection of coordinates, \(\{q^i\}\), viewed as a subspace of \(\reals^n\), forms a manifold called \defineindex{configuration space}.
+    The cotangent bundle \(\phaseSpace \coloneq T^*Q\) is called \defineindex{phase space} and it can be viewed as the subset of \(\reals^{2n}\) consisting of the coordinates \(\{q^i, p_i\}\).
+    
+    The \defineindex{Poisson bracket}, \(\poissonBracket{-}{-}\) is an operation defined on the space of smooth functions on \(\phaseSpace\), \(C^{\infty}(\phaseSpace)\), by
+    \begin{equation}
+        \poissonBracket{f}{g} \coloneq \sum_{i=1}^{n} \left( \diffp{f}{p_i}\diffp{g}{q^i} - \diffp{g}{p_i}\diffp{f}{q^i} \right).
+    \end{equation}
+    This is alternating (\(\poissonBracket{f}{f} = 0\)), bilinear (with respect to the \(\reals\)-vector space structure of \(C^{\infty}(\phaseSpace)\), that is pointwise addition and scalar multiplication) and it satisfies the Jacobi identity,
+    \begin{equation}
+        \poissonBracket{f}{\poissonBracket{g}{h}} + \poissonBracket{g}{\poissonBracket{h}{f}} + \poissonBracket{h}{\poissonBracket{f}{g}} = 0.
+    \end{equation}
+    This makes \(C^{\infty}(\phaseSpace)\) into a Lie algebra.
+    There is further structure arising from the pointwise mutliplication of functions, \((g_1g_2)(a) = g_1(a)g_2(a)\), which makes \(C^{\infty}(\phaseSpace)\) an associative algebra.
+    These two algebra structures interact through a form of the Leibniz rule:
+    \begin{equation}
+        \poissonBracket{f}{g_1g_2} = \poissonBracket{f}{g_1}g_2 + g_1\poissonBracket{f}{g_2}.
+    \end{equation}
+    Note that while the order of function multiplication is not important here it will be later when we upgrade to operators.
+    
+    The Euler Lagrange equations, which are second order differential equations, can be rewritten as a collection of first order differential equations:
+    \begin{equation}
+        \diff{q^i}{t} = \poissonBracket{H}{q^i}, \qand \diff{p_i}{t} = \poissonBracket{H}{p_i}.
+    \end{equation}
+    Here \(H\) is a quantity known as the \defineindex{Hamiltonian}, defined by
+    \begin{equation}
+        H = \sum_{i=1}^n p_i \dot{q}^i - \lagrangian.
+    \end{equation}
+    Note that to make use of \(H\) in calculations it must be written in terms of the position, \(q^i\), and momentum, \(p^i\), only.
+    Any velocities, \(\dot{q}^i\), can be removed by first solving the Euler--Lagrange equations and using the equation of motion to replace them with some expression in the positions and momenta.
+    These differential equations, known as Hamilton's equations, are more commonly written as
+    \begin{equation}
+        \diff{q^i}{t} = \diffp{H}{p^i}, \qqand \diff{p^i}{t} = -\diffp{H}{q^i}.
+    \end{equation}
+    These are exactly the same, but the advantage of the Poisson-bracket formalism is it will generalise to the quantum case, and it also successfully hides the asymmetry of the minus sign in the above.
+    It also helps with the symplectic structure for people who like symplectic geometry.
+    
+    One can show that
+    \begin{equation}
+        \poissonBracket{q^i}{p_j} = -\tensor{\delta}{^i_j}.
+    \end{equation}
+    
+    \begin{exm}{}{}
+        Consider the case of a single harmonic oscillator in one dimension.
+        Writing \(q\) for the generalised coordinate the Lagrangian for this is
+        \begin{equation}
+            \lagrangian = \frac{1}{2}\dot{q^2} - \frac{1}{2}\omega^2 q^2
+        \end{equation}
+        where \(\omega\) is some parameter called the (angular) frequency.
+        Note that we've chosen here to have unit mass, were this not the case there would be an overall factor of \(m\).
+        Note that this Lagrangian is given by \(T - V\) where \(T\) is the kinetic energy and \(V\) the potential energy.
+        
+        The canonical momentum is
+        \begin{equation}
+            p = \diffp{\lagrangian}{\dot{q}} = \dot{q}.
+        \end{equation}
+        Note that, in this case, with non-unit mass we have \(p = m\dot{q} = mv\), justifying calling \(p\) the momentum in general.
+        
+        The Hamiltonian is given by
+        \begin{equation}
+            H = p\dot{q} - \lagrangian = p^2 - \frac{1}{2}q^2 + \frac{1}{2}\omega^2q^2 = \frac{1}{2}p^2 + \frac{1}{2}\omega^2q^2.
+        \end{equation}
+        Note that this Hamiltonian is \(T + V\), so it can be interpreted as the total energy, but this is not always the case.
+        
+        All of this generalises to a collection of \(n\) independent harmonic oscillators, writing \(q^i\) for the generalised coordinate corresponding to the \(i\)th oscillator we have
+        \begin{equation}
+            \lagrangian = \sum_{i=1}^{n}\left( \frac{1}{2}(\dot{q}^i)^2 - \frac{1}{2} \omega^2_i (\dot{q}^i)^2 \right)
+        \end{equation}
+        where \(\omega_i\) is the frequency of the \(i\)th oscillator, which need not be the same for all oscillators.
+        The corresponding Hamiltonian is
+        \begin{equation}
+            H = \sum_{i=1}^{n}\left( \frac{1}{2}(\dot{q}^i)^2 + \frac{1}{2} \omega^2_i (\dot{q}^i)^2 \right).
+        \end{equation}
+    \end{exm}
+    
+    In the canonical quantisation approach we replace the commutative algebra \(C^{\infty}(\phaseSpace)\) with some non-commutative algebra, \(O(\hilbertSpace) \subseteq \End \hilbertSpace\) of operators on a Hilbert space, \(\hilbertSpace\).
     
     
     
