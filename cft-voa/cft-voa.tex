@@ -80,6 +80,10 @@ noabbrev
 \DeclarePairedDelimiterX{\poissonBracket}[2]{\{}{\}}{#1 , #2}
 \newcommand{\hilbertSpace}{\symcal{H}}
 \DeclareMathOperator{\End}{End}
+\newcommand{\hermit}{{\dagger}}
+\newcommand{\fockSpace}{\symcal{F}}
+\newcommand{\bosonAlgebra}{\symfrak{h}}
+\newcommand{\minkowski}{\symrm{M}}
 
 \begin{document}
     \frontmatter
@@ -2590,7 +2594,159 @@ noabbrev
         \end{equation}
     \end{exm}
     
-    In the canonical quantisation approach we replace the commutative algebra \(C^{\infty}(\phaseSpace)\) with some non-commutative algebra, \(O(\hilbertSpace) \subseteq \End \hilbertSpace\) of operators on a Hilbert space, \(\hilbertSpace\).
+    In the canonical quantisation approach we replace the commutative algebra \(C^{\infty}(\phaseSpace)\) with some non-commutative algebra, \(C(\hilbertSpace) \subseteq \End \hilbertSpace\), of operators on a Hilbert space, \(\hilbertSpace\).
+    We do this in such a way that the constant functions \(q^i\) and \(p_j\) are replaced by operators, \(\operator{q}^i\) and \(\operator{p}_j\) satisfying the commutation relation
+    \begin{equation}
+        \bracket{\operator{q}^k}{\operator{p}_j} = i\hbar\tensor{\delta}{^i_j}.
+    \end{equation}
+    Here \(\hbar\) is Planck's constant, and we'll work in units where \(\hbar = 1\) so this relationship becomes
+    \begin{equation}
+        \bracket{\operator{q}^k}{\operator{p}_j} = i\tensor{\delta}{^i_j}.
+    \end{equation}
+    This is called the \defineindex{canonical commutation relation}.
+    
+    We also have to replace the other functions in \(C^{\infty}(\phaseSpace)\) by operators on \(\hilbertSpace\).
+    This isn't as straightforward as replacing all of the \(q^i\) and \(p_j\) with the corresponding operators.
+    For example, there is some ambiguity in a term like \(q^ip_j = p_jq^i\) as to whether this is \(\operator{q}^i\operator{p}_j\) or \(\operator{p}_j\operator{p}^i\).
+    There are various approaches to fix this, one of the simplest being \defineindex{Weyl quantisation} in which any monomial in \(q^i\) and \(p_j\) is replaced by the average over all possible orderings, with some overall normalisation factor.
+    Fortunately, we shall only be interested in cases where we have monomials in \(q^i\) or monomials in \(p_j\), never mixing the two in this way, and as such the naive replacement scheme will be sufficient for our purposes.
+    Under this quantisation scheme the Hamiltonian of \(n\) harmonic oscillators is replaced by the operator
+    \begin{equation}
+        \operator{H} = \sum_{i=1}^n \left( \frac{1}{2}\operator{p}_i^2 + \frac{1}{2}\omega_i^2 \operator{q}_i^2 \right).
+    \end{equation}
+    
+    In maths parlance this process of replacing elements of the algebra \(C^{\infty}(\phaseSpace)\) with operators on some Hilbert space is exactly finding a representation of \(C^{\infty}(\phaseSpace)\).
+    It turns out that for a system of finitely many degrees of freedom, such as our case of finitely many harmonic oscillators, there is only one faithful representation up to isomorphism.
+    We call this the standard representation, and in the case of \(n\) harmonic oscillators it is given by taking \(\hilbertSpace = L_2(\reals^n)\) to be the Hilbert space of square integrable functions \(\reals^n \to \reals\) with the inner product
+    \begin{equation}
+        \innerproduct{\psi_1}{\psi_2} = \braket{\psi_1}{\psi_n} \coloneq \int \dl{^nq} \, \overbar{\psi}_1(q_1, \dotsc, q_n) \psi_2(q_1, \dotsc, q_n)
+    \end{equation}
+    and defining the operators \(\operator{q}^i\) and \(\operator{p}_j\) by
+    \begin{align}
+        \operator{q}^i \psi(q_1, \dotsc, q_n) &= q^i \psi(q_1, \dotsc, q_n)\\
+        \operator{p}_j \psi(q_1, \dotsc, q_n) &= -i\diffp{}{q^j}\psi(q_1, \dotsc, q_n).
+    \end{align}
+    Note that \(q^i\) are the constant functions in \(C^{\infty}(\phaseSpace)\) whereas the \(q_i\) are just the components of some point in \(\phaseSpace\).
+    This distinction is subtle and not really that important once we fix this representation.
+    
+    Note that both operators defined above are Hermitian (or self-adjoint in maths-talk).
+    An operator, \(\operator{A}\) is called Hermitian if
+    \begin{equation}
+        \innerproduct{\psi_1}{A \psi_2} = \innerproduct{A \psi_1}{\psi_2}.
+    \end{equation}
+    More generally, the Hermitian conjugate of an operator, \(\operator{A}\), is the operator \(\operator{A}^{\hermit}\) such that
+    \begin{equation}
+        \innerproduct{\operator{A}^{\hermit}\psi_1}{\psi_2} = \innerproduct{\psi_1}{\operator{A}\psi_2}.
+    \end{equation}
+    So a Hermitian operator is one which is its own Hermitian conjugate.
+    
+    In this representation the Hamiltonian of \(n\) harmonic oscillators is given by the operator
+    \begin{equation}
+        \operator{H} = \sum_{i=1}^n \left( \frac{1}{2} \diffp[2]{}{(q^i)} + \frac{1}{2}\omega_i^2 (q^i)^2 \right).
+    \end{equation}
+    
+    In quantum mechanics the eigenvalues of the Hamiltonian operator are the energy levels of the system.
+    For this particular case there are two approaches to computing the spectrum of this operator.
+    The first is an analytic approach, solving the differential equation \(\operator{H}\psi = E\psi\) and finding the energy levels, \(E\), this way.
+    This makes use of the Hermite polynomials.
+    We shall take the algebraic approach using the creation and annihilation operators, which is both nicer and generalises to QFT.
+    We define the operators
+    \begin{equation}
+        a_j = \sqrt{\frac{\omega_j}{2}} \left( \operator{q}^j + \frac{i}{\omega_j}\operator{p}_j \right), \qqand a_j^{\hermit} = \sqrt{\frac{\omega_j}{2}} \left( \operator{q}^j - \frac{i}{\omega_j}\operator{p}_j \right)
+    \end{equation}
+    for \(\omega_j > 0\), and we call these annihilation and creation operators respectively.
+    These two operators are Hermitian conjugates of each other, and one can show that they satisfy the commutation relations
+    \begin{equation}
+        \bracket{a_i}{a_j^\hermit} = \delta_{ij}, \qqand \bracket{a_i}{a_j} = \bracket{a_i^{\hermit}}{a_j^{\hermit}} = 0.
+    \end{equation}
+    These operators allow us to rewrite the Hamiltonian as
+    \begin{equation}
+        \operator{H} = \sum_{i=1}^n \omega_i\left( a_i^{\hermit}a_i + \frac{1}{2} \right).
+    \end{equation}
+    This then satisfies the commutation relations
+    \begin{equation}
+        \bracket{\operator{H}}{a_i} = -\omega_ia_i, \qqand \bracket{\operator{H}}{a_i^{\hermit}} = \omega_ia_i^\hermit.
+    \end{equation}
+    
+    Let \(\ket{E}\) be an eigenvector of \(\operator{H}\) with eigenvalue \(E\), that is \(\operator{H}\ket{E} = E\ket{E}\), then we have
+    \begin{align}
+        \operator{H}a_i^{\hermit}\ket{E} &= (a_i^{\hermit}\operator{H} + \bracket{\operator{H}}{a_i^{\hermit}})\ket{E}\\
+        &= (a_i^{\hermit}\operator{H} + \omega_ia_i^\hermit)\ket{E}\\
+        &= (E + \omega_i)a_i^\hermit\ket{E}
+    \end{align}
+    which shows that \(a_i^\hermit\ket{E}\) is an eigenvector of \(\operator{H}\) with eigenvalue \(E + \omega_i\).
+    That is, \(a_i^\hermit\ket{E}\) is a state with energy \(E + \omega_i\).
+    This is why we call \(a_i^{\hermit}\) a creation operator, it has \enquote{created} some extra amount of energy, \(\omega_i\).
+    The same calculation with \(a_i\) shows that \(a_i\ket{E}\) is an energy eigenstate with energy\footnote{this is true only if \(a_i\ket{E} \ne 0\), which is not guaranteed, in particular if \(\ket{E}\) is the ground state then \(a_i\ket{E} = 0\).} \(E - a_i\), so \(a_i\) has \enquote{annihilated} some amount of energy, \(\omega_i\).
+    
+    If the spectrum of \(\operator{H}\) is bounded below (which must be the case for a reasonable physical theory) then there must be some state, \(\ket{0} \in \hilbertSpace\) such that \(a_j\ket{0} = 0\).
+    This state is an energy eigenstate since
+    \begin{equation}
+        \operator{H}\ket{0} = \sum_{i=1}^n \omega_i\left( a_i^\hermit a_i + \frac{1}{2} \right)\ket{0} = \frac{1}{2}\sum_{i=1}^n \omega_i \ket{0}.
+    \end{equation}
+    
+    Rather than start with \(\hilbertSpace\) and look at operators we can now start with just a single state, \(\ket{0}\), and define this state to be annihilated by all annihilation operators, so \(a_i\ket{0} = 0\).
+    Then we can build other states by acting with creation operators, so we get states like
+    \begin{equation}
+        a_1^\hermit \ket{0}, \quad a_2^\hermit \ket{0}, \quad a_1^\hermit a_2^\hermit \ket{0}, \qand (a_1^\hermit)^2 \ket{0}.
+    \end{equation}
+    More formally, we define bosonic \defineindex{Fock space}, \(\fockSpace\), to be the free vector space on
+    \begin{equation}
+        \{(a_1^{\hermit})^{m_1} \dotsm (a_n^{\hermit})^{m_n}\ket{0} \mid m_i \in \naturals = \{0, 1, 2, \dotsc\}\}.
+    \end{equation}
+    Note that we fix the ordering so that \(a_1^{\hermit}\) comes first then \(a_2^{\hermit}\) and so on, since the \(a_i^{\hermit}\) commute.
+    Fock space is an irreducible representation of the algebra \(\bosonAlgebra = \{a_i, a_i^{\hermit} \mid i = 1, 2, \dotsc\}\), which is known as the \defineindex{boson algebra} or \define{Heisenberg algebra}\index{Heisenberg algebra!see{boson algebra}}.
+    
+    The state \(\ket{0}\) is called the \define{ground}\index{ground state} or \defineindex{vacuum state}.
+    We interpret \(a_i^{\hermit}\ket{0}\) as a state with energy \(\omega_i\), and in general the state
+    \begin{equation}
+        (a_1^{\hermit})^{m_1} \dotsb (a_n^{\hermit})^{m_n} \ket{0}
+    \end{equation}
+    has energy
+    \begin{equation}
+        m_1\omega_1 + \dotsb + m_n\omega_n.
+    \end{equation}
+    We'll see that once we pass to QFT rather than creating energy the operators \(a_i^{\hermit}\) create particles, then \(\ket{0}\) is the vacuum state consisting of no particles, \(a_i^{\hermit}\ket{0}\) consists of a single particle of energy \(\omega_i\), \(a_1^{\hermit}a_2^{\hermit}\ket{0}\) consists of two particles, one of type 1 and one of type 2, of energies \(\omega_1\) and \(\omega_2\) respectively.
+    
+    \chapter{Quantising the Free Boson}
+    In this section we'll look at the quantisation of the free massless scalar boson, which is the simplest case of quantisation in QFT.
+    Nevertheless, this example demonstrates the general process of quantisation and some of the subtleties which arise along the way.
+    
+    We'll restrict ourselves to a particularly nice spacetime, the cylinder\footnote{I'm writing the time coordinate first, the lectures have the space coordinate first.}, \(\reals \times S^1\), with coordinates \((t, x)\).
+    That is, we consider a \((1 + 1)\)-dimensional spacetime in which the spacial coordinate is periodic with period \(L\) (which is the circumference of the cylinder).
+    We'll work with the Minkowski metric in this part, unlike the rest of what we've done which has been in Euclidean spacetime.
+    The reason for this is that the Minkowski metric is required for canonical quantisation to work.
+    We'll move back to Euclidean later once we've introduced radial quantisation, which works in Euclidean space.
+    For now then the metric is \(-(\dl{t})^2 + (\dl{x})^2\), meaning we're using the (bad) metric signature\footnote{not to be confused with the (doubly bad) metric signature \(({+}{-})\) corresponding to \((\dl x)^2 - (\dl t)^2\), which is the same, but now with the space coordinate first} \(({-}{+})\).
+    
+    \section{Quantisation}
+    Before we can quantise the system we need to specify the system we're quantising.
+    We do this by specifying the action, which is just specifying the Lagrangian with more steps.
+    In this case the action is
+    \begin{equation}
+        S_{\minkowski} = \frac{1}{8\pi} \int \dl{t} \int_0^L \dl{x} \left( \frac{1}{2}(\partial_t\phi)^2 - \frac{1}{2}(\partial_x\phi) \right)
+    \end{equation}
+    where \(\phi = \phi(t, x)\) is our field and the \(\minkowski\) in \(S_{\minkowski}\) just stands for Minkowski, to remind us that we're not working with the Euclidean metric.
+    Note that we're following the convention common in QFT where otherwise unspecified integrals are taken over the whole domain, which for \(t\) is \((-\infty, \infty)\).
+    We could also have left the domain of the \(x\) integral unspecified, since \([0, L)\) is the whole domain of \(x\) (choosing the obvious coordinates for the cylinder with some arbitrary point around the circumference declared zero).
+    But we choose to leave the \(0\) and \(L\) explicit to remind us that \(x\) has a compact domain.
+    
+    The quantisation process in QFT is now to consider a Fourier transform in \(x\).
+    In this case we have that \(x\) is periodic, so we can actually consider a Fourier series.
+    For a fixed value of \(t\) we write
+    \begin{equation}
+        \phi(t, x) = \sum_{n \in \integers} \exp\left\{ \frac{2\pi in}{L}x \right\} \phi_n(t)
+    \end{equation}
+    where \(\phi_n(t)\) are the Fourier modes of our field, and are to be determined.
+    We can now substitute this into our action functional, giving
+    % Should be d/dt (sum exp phi) rather than sum (d/dt exp phi), somehow get only phi_n and phi_-n, probably get \delta_n+m,0 somehow (n, m indices of two sums)?
+    % ????????????
+    % Actually, I think I'm missing cross terms such as d/dt d/dx ... which come from sum?
+    \begin{align}
+        S_{\minkowski} &= \frac{1}{8\pi} \int \dl{t} \int_0^L \dl{x} \sum_{n \in \integers} \left( \diffp{}{t}\exp\left\{ \frac{2\pi i n}{L}x\right\} \phi_n(t) \right)^2 + \left( \diffp{}{x}\exp\left\{ \frac{2\pi i n}{L}x \right\}\phi_n(t) \right)^2\\
+        &= \frac{1}{8\pi} \int \dl{t} \int_0^L \dl{x} \sum_{n \in \integers} \left[ \left( \exp\left\{ \frac{2\pi i n}{L}x \right\} \dot{\phi}_n \right)^2 + \left( \frac{2\pi i n}{L} \exp\left\{ \frac{2\pi i n}{L} x \right\} \phi_n \right)^2 \right]\\
+        &= \frac{1}{8\pi} \int \dl{t} \int_0^L \dl{x} \sum_{n \in \integers} \exp\left\{ \frac{4\pi in}{L}x \right\} \left[\dot{\phi}_n\dot{\phi}_n - \left( \frac{2\pi n}{L} \right)^2 \phi_n \phi_n \right]
+    \end{align}
     
     
     
