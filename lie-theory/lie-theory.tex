@@ -3404,7 +3404,7 @@ noabbrev
     
     We are now ready to prove Weyl's Theorem for simple Lie algebras.
     
-    \begin{thm}{Weyl}{}
+    \begin{thm}{Weyl}{thm:weyl}
         Let \(\lie{g}\) be a simple Lie algebra over \(\complex\).
         Then every finite-dimensional representation of \(\lie{g}\) is completely reducible.
         \begin{proof}
@@ -3517,8 +3517,29 @@ noabbrev
                 \lie{g} = \lie{g}_1 \oplus \dotsb \oplus \lie{g}_k.
             \end{equation}
             We prove this result by induction on \(k\).
+            The case of \(k = 1\) simply has \(\lie{g} = \lie{g}_1\), which means that \(\lie{g}\) is simple, so this is just Weyl's theorem (\cref{thm:weyl}).
+            Suppose then that every semisimple Lie algebra which decomposes into fewer than \(k\) simple Lie algebras has only completely reducible finite-dimensional representations over \(\complex\).
+            
+            Let \(\lie{g}\) be a semisimple Lie group decomposing as \(\lie{g} = \lie{g}_1 \oplus \lie{m}\) where \(\lie{g}_1\) is simple and \(\lie{m} = \lie{g}_2 \oplus \dotsb \oplus \lie{g}_k\) where the \(\lie{g}_i\) are also simple.
+            Let \(V\) be a finite-dimensional \(\lie{g}\)-module.
+            Using the simplicity of \(\lie{g}_1\) we can decompose \(V\) as a direct sum \(V = V_1^{n_1} \oplus \dotsb \oplus V_r^{n_r}\) where the \(V_i\) are simple, pairwise non-isomorphic \(\lie{g}_1\)-modules.
+            Define a map
+            \begin{align}
+                \Hom_{\lie{g}_1}(V_i, V) \otimes V_i &\to V\\
+                (\varphi, v) &\mapsto \varphi(v).
+            \end{align}
+            We know by the discussion preceding this corollary that \(\Hom_{\lie{g}_1}(V_i, V)\) is an \(\lie{m}\)-module.
+            Thus, \(\Hom_{\lie{g}_1}(V_i, V) \otimes V_i\) is a \(\lie{m}\) module, and \(V\) is a \(\lie{g}_1\)-module, because it is a \(\lie{g}\)-module and \(\lie{g}_1 \subseteq \lie{g}\).
+            Then \(\Hom_{\lie{g}_1}(V_i, V) \otimes V_1\) is an \((\lie{m} \oplus \lie{g}_1)\)-module, and \(\lie{m} \oplus \lie{g}_1 \isomorphic \lie{g}_1 \oplus \lie{m} = \lie{g}\), so \(\Hom_{\lie{g}_1}(V_i, V) \otimes V\) is a \(\lie{g}\)-module.
+            The map defined above then extends to an isomorphism of \(\lie{g}\)-modules
+            \begin{equation}
+                (\Hom_{\lie{g}_1}(V_1, V) \otimes V_1) \oplus \dotsb \oplus (\Hom_{\lie{g}_1}(V_r, V) \otimes V_r) \to V.
+            \end{equation}
+            Since each \(\Hom_{\lie{g}_1}(V_i, V)\) is a completely reducible \(\lie{m}\)-module by the induction hypothesis we can decompose each \(\Hom_{\lie{g}_1}(V_i, V) \otimes V_i\) as a direct sum of simple \(\lie{g}\)-modules.
         \end{proof}
     \end{crl}
+    
+    
     
     
 	% Appdendix
