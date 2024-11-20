@@ -4,6 +4,7 @@
 \strictpagecheck
 
 \usepackage{csquotes}
+\usepackage{enumitem}
 
 \usepackage{tikz}
 \usetikzlibrary{external}
@@ -86,6 +87,7 @@ noabbrev
 \newcommand{\universalenveloping}{\symcal{U}}
 \newcommand{\basis}{\symcal{B}}
 \DeclareMathOperator{\res}{res}
+\newcommand{\csa}{\symfrak{h}}
 
 \begin{document}
 	\frontmatter
@@ -1852,7 +1854,7 @@ noabbrev
     
     Combining these results we have proven the following.
     
-    \begin{thm}{Classification of Finite Dimensional Simple \(\specialLinearLie(2, \complex)\)-Modules}{}
+    \begin{thm}{Classification of Finite Dimensional Simple \(\specialLinearLie(2, \complex)\)-Modules}{thm:sl2 reps classification}
         Let \(V\) be a finite-dimensional simple \(\specialLinearLie(2, \complex)\)-module with a highest weight vector of weight \(\alpha\).
         Then
         \begin{enumerate}
@@ -1864,6 +1866,7 @@ noabbrev
     
     This leads to the following picture of \(\specialLinearLie(2, \complex)\) representations:
     \begin{equation}
+        \label{eqn:sl2 rep picture}
         \hfil
         \tikzexternaldisable
         \begin{tikzcd}
@@ -3538,6 +3541,311 @@ noabbrev
             Since each \(\Hom_{\lie{g}_1}(V_i, V)\) is a completely reducible \(\lie{m}\)-module by the induction hypothesis we can decompose each \(\Hom_{\lie{g}_1}(V_i, V) \otimes V_i\) as a direct sum of simple \(\lie{g}\)-modules.
         \end{proof}
     \end{crl}
+    
+    \chapter{Cartan Subalgebras}
+    \section{Representation Theory of \texorpdfstring{\(\specialLinearLie_2\)}{sl2}}
+    We start this section with a recap of \(\specialLinearLie_2 = \specialLinearLie(2, \complex)\) representation theory.
+    We saw in \cref{thm:sl2 reps classification} that any simple \(\specialLinearLie_2\)-module is isomorphic to an \(\specialLinearLie_2\)-module, \(V(n)\), for some \(n \in \integers\) such that there exists some highest weight vector \(v_0 \in V(n)_n\) where
+    \begin{equation}
+        V(n)_k = \{v \in V(n) \mid Hv = kv\}
+    \end{equation}
+    for integer \(k\) with \(-n \le k \le n\).
+    By \enquote{highest weight} we mean that \(Hv_0 = nv_0\) and \(Ev_0 = 0\).
+    The dimension of \(V(n)\) is \(\dim V(n) = n + 1\), with a basis given by \(\{v_i = F^i v_0/i! \mid i = 0, 1, \dotsc, n\}\).
+    This leads to the picture in \cref{eqn:sl2 rep picture} where the \(\specialLinearLie_2\) generators act as \(E \colon V(n)_k \to V(n)_{k+2}\), \(H \colon V(n)_k \to V(n)_k\), and \(F \colon V(n)_k \to V(n)_{k-2}\), where we define \(V(n)_{n+2} = 0 = V(n)_{-n-2}\).
+    
+    Since \(\specialLinearLie_2\) is simple the work of the previous chapter tells us that any finite-dimensional \(\specialLinearLie_2\)-module, \(V\), admits a decomposition as
+    \begin{equation}
+        V \isomorphic \bigoplus_{i \ge 0} V(i)^{\oplus n_i}
+    \end{equation}
+    where the \defineindex{multiplicity} is \(n_i \in \integers_{\ge 0}\) with \(n_i = 0\) for \(i \gg 0\).
+    These \(n_i\) are uniquely determined by \(V\), and can be computed as \(n_i = \dim(V_i \cap \ker E)\).
+    That is, we get one \(V(i)\) submodule for each basis vector in \(V_i\) (that is, an eigenvector of \(H\) with eigenvalue \(i\)) that also vanishes under the action of \(E\), so the highest weight vectors of \(V\) determine \(n_i\).
+    
+    We now list some special properties of \(H\) and which we will seek to generalise to other simple Lie algebras.
+    \begin{itemize}
+        \item If \(V\) is a finite dimensional \(\specialLinearLie_2\)-module then \(H\) acts diagonalisably on \(V\), this is an immediate consequence of the direct sum decomposition of \(V\) being into eigenspaces of \(H\).
+        In fact, one can take \enquote{diagonalisable} to mean that there is an eigenbasis of the operator corresponding to such a decomposition.
+        \item All of \(H\)'s eigenvalues are integers.
+        \item For any integer \(\alpha \in \integers\) we have \(\dim V_\alpha = \dim V_{-\alpha}\), since the generalised \(H\)-eigenspace of \(\alpha\) and \(-\alpha\) coincide.
+    \end{itemize}
+    These last two facts are particularly nice because \(\specialLinearLie_2\)-modules tend to arise in lots of areas of maths, such as Hodge theory and the cohomology of K\"ahler manifolds.
+    
+    \subsection{Representation Theory of \texorpdfstring{\(\specialLinearLie_3\)}{sl3}}
+    Now consider \(\specialLinearLie_3 = \specialLinearLie(3, \complex)\), which is also a simple Lie algebra, consisting of traceless \(3 \times 3\) matrices over \(\complex\).
+    There is no one equivalent \enquote{\(H\)} for \(\specialLinearLie_3\).
+    Instead, we can consider
+    \begin{equation}
+        H_1 = 
+        \begin{bmatrix}
+            1 & 0 & 0\\
+            0 & -1 & 0\\
+            0 & 0 & 0
+        \end{bmatrix}
+        , \qqand H_2 =
+        \begin{bmatrix}
+            0 & 0 & 0\\
+            0 & 1 & 0\\
+            0 & 0 & -1
+        \end{bmatrix}
+        .
+    \end{equation}
+    More specifically, we want to consider \(\csa = \Span_{\complex}\{H_1, H_2\}\) which consists of all traceless diagonal \(3 \times 3\) matrices over \(\complex\).
+    Compare this to the case of \(\specialLinearLie_2\) where considering the same set but for \(2 \times 2\) matrices would mean considering \(\csa = \Span_{\complex}\{H\}\).
+    We can generalise the definition of a weight space from \(\specialLinearLie_2\) to \(\specialLinearLie_3\) by defining a weight space to be a the common eigenspace of all \(H \in \csa\).
+    Then any finite-dimensional \(\specialLinearLie_3\)-module, \(V\), has a decomposition into weight-spaces with multiplicity, just as in the \(\specialLinearLie_2\) case.
+    
+    We will follow this generalisation through for arbitrary simple finite-dimensional Lie algebras over \(\complex\), and we shall see that we get the same result each time.
+    We'll also see that there are generalisations of \(E\) and \(F\), as well as the hidden integrality of the eigenvalues of \(H\) which lead us to define something called a root system, which then leads to a full classification of all finite-dimensional simple Lie algebras over \(\complex\).
+    
+    \subsection{Preliminary Definitions}
+    \begin{dfn}{}{}
+        Let \(V\) be a finite-dimensional vector space over \(\complex\).
+        We say that \(A \in \End_{\complex}V\) is \defineindex{nilpotent} if there exists \(n \in \naturals\) such that \(A^n = 0\).
+        We say that \(A\) is \defineindex{semisimple} if it is diagonalisable.
+    \end{dfn}
+    
+    For example, for any finite-dimensional \(\specialLinearLie_2\)-module \(E\) and \(F\) are nilpotent, since applying them repeatedly we always end up with the zero module, and \(H\) is semisimple since we've shown that \(H\) is diagonalisable.
+    The benefit of the \enquote{semisimple} wording over \enquote{diagonalisable} is that it reduces the emphasis of matrices, which is generally a good thing for more advanced linear algebra where we aim to talk about linear maps rather than matrices.
+    
+    \begin{prp}{}{}
+        Let \(V\) be a finite-dimensional vector space over \(\complex\) and let \(A \in \End_{\complex}V\).
+        Then there exists a unique decomposition \(A = A_{\symrm{s}} + A_{\symrm{n}}\) with \(A_{\symrm{s}}\) semisimple, \(A_{\symrm{n}}\) nilpotent, and \(\bracket{A_{\symrm{s}}}{A_{\symrm{n}}} = 0\).
+        \begin{proof}
+            Since we work over \(\complex\) we know that \(V\) decomposes into generalised-eigenspaces of \(A\) as
+            \begin{equation}
+                V = \bigoplus_{\alpha \in \complex} V_\alpha
+            \end{equation}
+            where
+            \begin{equation}
+                V_\alpha = \{v \in V \mid (A - \alpha)^Nv = 0 \text{ for some } N \in \naturals\}.
+            \end{equation}
+            We can then define \(A_{\symrm{s}}\) and \(A_{\symrm{n}}\) by their action on each generalised eigenspace.
+            In particular, take
+            \begin{equation}
+                A_{\symrm{s}} = \sum_{\alpha \in \complex} \alpha \id_{V_\alpha}
+            \end{equation}
+            so \(A_{\symrm{s}}\) acts on \(V_\alpha\) by multiplication by \(\alpha\).
+            Define \(A_{\symrm{n}}\) to be what is left over,
+            \begin{equation}
+                A_{\symrm{n}} = \sum_{\alpha \in \complex} (A|_{V_\alpha} - \alpha \id_{V_\alpha}).
+            \end{equation}
+            Then by construction \(A = A_{\symrm{s}} + A_{\symrm{n}}\) and \(A_{\symrm{s}}\) acts on each generalised eigenspace by scalar multiplication so it's action commutes with that of \(A_{\symrm{n}}\).
+            
+            We do not prove uniqueness.
+            % TODO: Maybe prove uniqueness
+        \end{proof}
+    \end{prp}
+    
+    Note that this works over \(\complex\), since it's algebraically closed, guaranteeing the generalised eigenspace decomposition exists.
+    It does not work in general over non-algebraically closed fields, it only works for the special cases where the field contains the eigenvalues.
+    
+    \subsection{Cartan Subalgebra}
+    \begin{dfn}{}{}
+        Let \(\lie{g}\) be a Lie algebra over \(\complex\).
+        We say that \(X \in \lie{g}\) is nilpotent (semisimple), or if we need to distinguish \(\ad\)-nilpotent (\(\ad\)-semisimple) if \(\ad_X\) is a nilpotent (semisimple) element of \(\End_{\complex} \lie{g}\).
+    \end{dfn}
+    
+    \begin{dfn}{Cartan Subalgebra}{}
+        Let \(\lie{g}\) be a Lie algebra.
+        A \defineindex{Cartan subalgebra} is a subalgebra \(\csa \subseteq \lie{g}\) containing only semisimple elements and which is maximal with respect to this property.
+        That is, if \(\csa' \subseteq \lie{g}\) is also a subalgebra consisting of semisimple elements and \(\csa \subseteq \csa'\) then \(\csa = \csa'\).
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        Every finite-dimensional Lie algebra has a Cartan subalgebra.
+        \begin{proof}
+            The zero space is always a subalgebra, and the zero element is semisimple.
+            This shows that every Lie algebra has a subalgebra consisting of semisimple elements.
+            Since we assume a finite number of dimensions it is always possible to take some maximal such subalgebra and this will then be a Cartan subalgebra.
+        \end{proof}
+    \end{lma}
+    
+    Note that we say \emph{a} Cartan subalgebra, Cartan subalgebras are not necessarily unique.
+    However, when there are multiple Cartan subalgebras they are all conjugate, and as such it's common to talk of \enquote{the} Cartan subalgebra.
+    
+    One property of Cartan subalgebras is that they are always abelian.
+    This is simply a special case of the following.
+    
+    \begin{lma}{}{lma:subalgebra of semisimple elements is abelian}
+        Let \(\lie{g}\) be a Lie algebra.
+        Any subalgebra, \(\lie{h} \subseteq \lie{g}\), consisting of semisimple elements is abelian.
+        \begin{proof}
+            Consider some \(X \in \lie{h}\).
+            Since \(\lie{h}\) is a subalgebra of \(\lie{g}\) it is closed under the bracket, and thus we can restrict the adjoint action of \(X\) on \(\lie{g}\) to a map \(\ad_X \colon \lie{h} \to \lie{h}\).
+            Our goal is to show that \(\lie{h}\) is abelian, which we can do by showing that \(\ad_X = 0\) when restricted to \(\lie{h}\).
+            By assumption \(\lie{h}\) consists of semisimple elements so \(\ad_X\) is semisimple.
+            Therefore it suffices to show that all eigenvalues of \(\ad_X\) are zero, since then in the basis in which it is diagonal it has only zeros on the diagonal, and thus is just the zero matrix.
+            More generally, if all eigenvalues vanish then the operator is also nilpotent, and semisimplicity plus nilpotency imply that the operator is zero.
+            
+            Let \(Y \in \lie{h}\) be an eigenvector of \(\ad_X\).
+            Then there exists some \(a \in \complex\) such that \(\ad_X(Y) = aY\).
+            Note that \(Y\) is also an eigenvector of \(\ad_Y\) since \(\ad_Y(Y)= \bracket{Y}{Y} = 0\), so the eigenvalue is \(0\).
+            We may extend this to some basis of eigenvectors of \(Y\), \(\{X_1, \dotsc, X_n\}\), with \(X_1 = Y\).
+            Then by definition there exist some \(\alpha_i \in \complex\) such that \(\ad_Y(X_i) = \alpha_iX_i\), and in particular we must have that \(\alpha_1 = 0\).
+            Now expand \(X\) in this eigenbasis, which lets us write
+            \begin{equation}
+                X = \sum_{i=1}^n u_iX_i
+            \end{equation}
+            for some \(u_i \in \complex\).
+            A direct computation in this basis then shows that
+            \begin{align}
+                \ad_X(Y) &= \bracket{X}{Y}\\
+                &= -\bracket{Y}{X}\\
+                &= -\bracket*{Y}{\sum_{i=1}^n u_i X_i}\\
+                &= -\sum_{i=1}^n u_i \bracket{Y}{X_i}\\
+                &= -\sum_{i=1}^n u_i \ad_Y(X_i)\\
+                &= -\sum_{i=2}^n u_i \alpha_iX_i
+            \end{align}
+            where we've used the fact that \(\ad_Y(X_1) = 0\) to get rid of the first term of the sum.
+            We also have
+            \begin{equation}
+                \ad_X(Y) = aY = aX_1.
+            \end{equation}
+            Equating these we have that
+            \begin{equation}
+                aX_1 = -\sum_{i=1}^n \alpha_i u_i X_i \implies aX_1 + \sum_{i=2} \alpha_i u_i X_i = 0.
+            \end{equation}
+            Since the \(X_i\) form a basis this implies that \(a = \alpha_i u_i = 0\) for all \(i\) by linear independence.
+            Thus, \(a = 0\) and \(\ad_X\) has only zero eigenvalues and is semisimple, so it is zero.
+            Hence, \(\lie{h}\) is abelian.
+        \end{proof}
+    \end{lma}
+    
+    \begin{crl}{}{}
+        Let \(\lie{g}\) be a Lie algebra and \(\lie{h} \subseteq \lie{g}\) a subalgebra consisting of only semisimple elements.
+        Then if any subalgebra strictly containing \(\lie{h}\) is nonabelian \(\lie{h}\) is a Cartan subalgebra of \(\lie{g}\).
+        \begin{proof}
+            By the contrapositive of \cref{lma:subalgebra of semisimple elements is abelian} the subalgebras containing \(\lie{h}\) cannot contain only semisimple elements, and therefore \(\lie{h}\) is a maximal subalgebra containing only semisimple elements, and thus is a Cartan subalgebra of \(\lie{g}\).
+        \end{proof}
+    \end{crl}
+    
+    This corollary gives us a method of checking if a given subalgebra is Cartan that is often easier to check than directly checking that there is no larger subalgebra.
+    
+    \begin{dfn}{Normaliser}{}
+        Let \(\lie{g}\) be a Lie algebra and let \(\lie{m} \subseteq\) be a subalgebra.
+        The \defineindex{normaliser}, \(N_{\lie{g}}(\lie{m})\), of \(\lie{m}\) in \(\lie{g}\) is the largest subalgebra of \(\lie{g}\) such that \(\bracket{N_{\lie{g}}(\lie{m})}{\lie{m}} \subseteq \lie{m}\).
+        That is,
+        \begin{equation}
+            N_{\lie{g}}(\lie{m}) = \{X \in \lie{g} \mid \bracket{X}{\lie{m}} \subseteq \lie{m}\}.
+        \end{equation}
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        The normaliser of a subalgebra is again a subalgebra.
+        Further the normaliser of a subalgebra in \(\lie{g}\) is equal to \(\lie{g}\) if and only if the subalgebra is an ideal.
+        \begin{proof}
+            Let \(\lie{g}\) be a Lie algebra and \(\lie{m} \subseteq \lie{g}\) a subalgebra.
+            To show that \(N_{\lie{g}}(\lie{m})\) is a subalgebra we need to show that it is a subspace which is closed under the bracket.
+            First note that if \(X \in N_{\lie{g}}(\lie{m})\) then \(\bracket{X}{\lie{m}} \subseteq \lie{m}\), that is \(\bracket{X}{Z} \in \lie{m}\) for all \(Z \in \lie{m}\).
+            Then it follows by linearity that \(\bracket{aX}{Z} = a\bracket{X}{Z} \in \lie{m}\) for any \(a \in \complex\).
+            If \(Y \in N_{\lie{g}}(\lie{m})\) also then \(\bracket{Y}{Z} \in \lie{m}\) for all \(Z \in \lie{m}\) and again by linearity we have
+            \begin{equation}
+                \bracket{X + Y}{Z} = \bracket{X}{Z} + \bracket{Y}{Z} \in \lie{m}.
+            \end{equation}
+            So, \(N_{\lie{g}}(\lie{m})\) is a subspace.
+            
+            Now suppose that \(X, Y \in N_{\lie{g}}(\lie{m})\).
+            Then for \(Z \in \lie{m}\) using the Jacobi identity we hvae
+            \begin{equation}
+                \bracket{\bracket{X}{Y}}{Z} = -\bracket{Z}{\bracket{X}{Y}} = -\bracket{\bracket{Z}{X}}{Y} - \bracket{X}{\bracket{Z}{Y}}
+            \end{equation}
+            and each of these brackets is in \(N_{\lie{g}}(\lie{m})\) since \(\bracket{Z}{X}\) and \(\bracket{Z}{Y}\) are in \(\lie{m}\) and so the bracket of these with \(Y\) and \(X\) respectively is again in \(\lie{m}\).
+            Thus, \(N_{\lie{g}}(\lie{m})\) is closed under the bracket so it is a subalgebra.
+            
+            Now suppose that \(\lie{m}\) is an ideal.
+            Then \(\bracket{X}{Z} \in \lie{m}\) for any \(X \in \lie{g}\) and \(Z \in \lie{m}\), so \(N_{\lie{g}}(\lie{m}) = \lie{g}\).
+            Conversely, suppose that \(N_{\lie{g}}(\lie{m}) = \lie{g}\).
+            Then \(\bracket{X}{Z} \in \lie{m}\) for any \(X \in \lie{g}\) and \(Z \in \lie{m}\), so \(N_{\lie{g}}(\lie{m})\) is all of \(\lie{g}\).
+        \end{proof}
+    \end{lma}
+    
+    From the last part of this proof we see that \(N_{\lie{g}}(\lie{m}) = \lie{g}\) is just a slightly more complicated way of writing the absorbing property of an ideal.
+    
+    An important property of Cartan subalgebras is that they are equal to their own normalisers.
+    That is, if \(X \in \lie{g}\) such that \(\bracket{X}{\csa} \subset \csa\) then \(X \in \lie{h}\).
+    This follows immediately from the maximality of Cartan subalgebras, since the normaliser of a subalgebra of semisimple elements consists only of semisimple elements.
+    
+    \subsubsection{Examples of Cartan Subalgebras}
+    \paragraph{Cartan Subalgebras of \(\specialLinearLie_2\)}
+    The simplest example of a Cartan subalgebra is the\footnote{a slight abuse of language, but one that is common} Cartan subalgebra of \(\specialLinearLie_2\), which is simply \(\csa = \complex H\).
+    To prove this is a Cartan subalgebra we need to show that
+    \begin{enumerate}[label=\alph*)]
+        \item every element of \(\csa\) is semisimple; and
+        \item \(\csa\) is maximal.
+    \end{enumerate}
+    
+    First note that we need to show that all elements of \(\csa\) are \(\ad\)-semisimple, that is that \(\ad_X\) is diagonalisable, not that \(X\) is diagonalisable.
+    An arbitrary element of \(\csa\) is of the form \(cH\) for some \(c \in \complex\).
+    We then have
+    \begin{align}
+        \ad_{cH}(E) &= \bracket{cH}{E} = 2cE,\\
+        \ad_{cH}(H) &= \bracket{cH}{H} = 0,\\
+        \ad_{cH}(F) &= \bracket{cH}{F} = -2cF.\\
+    \end{align}
+    This shows that in the basis \(\{E, H, F\}\) we have
+    \begin{equation}
+        \ad_{cH} = 
+        \begin{bmatrix}
+            2c & 0 & 0\\
+            0 & 0 & 0\\
+            0 & 0 & -2c
+        \end{bmatrix}
+    \end{equation}
+    which shows that \(\ad_{cH}\) is diagonalisable, and thus \(cH\) is semisimple.
+    
+    Now suppose that \(\tilde{\lie{h}}\) is some other subalgebra of \(\specialLinearLie_2\) such that \(\lie{h} \subseteq \tilde{\lie{h}}\) and \(\tilde{\lie{h}}\) is abelian.
+    Then for all \(Y \in \tilde{\lie{h}}\) we have \(\ad_X(Y) = 0\), which implies that all \(Y \in \tilde{\lie{h}}\) lie in the zero eigenspace of \(\ad_X\) for all \(X \in \csa\).
+    However, from our calculations above we see that the zero eigenspace of \(\ad_X\) is simply the span of \(H\), which is just \(\csa\).
+    Thus, \(\tilde{\lie{h}} \subseteq \csa\), and so we have \(\tilde{\lie{h}} = \csa\).
+    This proves maximality.
+    
+    It turns out that this is really the \emph{only} example of a Cartan subalgebra of \(\specialLinearLie_2\) up to a very specific type of isomorhpism.
+    The Lie group \(\specialLinear_2\) consists of \(2 \times 2\) matrices over \(\complex\) with unit determinant.
+    There is an action of \(\specialLinear_2\) on \(\specialLinearLie_2\) given by conjugation.
+    For \(A \in \specialLinear_2\) denote this action by \(c_A\), that is \(c_A(X) = AXA^{-1}\) for \(X \in \specialLinearLie_2\).
+    Since the bracket in \(\specialLinearLie_2\) is just the commutator it's easy to show that \(c_A\) preserves the bracket:
+    \begin{align}
+        \bracket{c_A(X)}{c_A(Y)} &= \bracket{AXA^{-1}}{AYA^{-1}}\\
+        &= AXA^{-1}AYA^{-1} - AYA^{-1}AXA^{-1}\\
+        &= AXYA^{-1} - AYXA^{-1}\\
+        &= A\bracket{X}{Y}A^{-1}\\
+        &= c_A(\bracket{X}{Y}).
+    \end{align}
+    Clearly conjugation is linear.
+    Thus, \(c_A\) is an automorphism of \(\specialLinearLie_2\).
+    
+    We claim that \(\Span_{\complex}\{AHA^{-1}\}\) for some fixed \(A \in \specialLinear_2\) is also a Cartan subalgebra of \(\specialLinearLie_2\).
+    This follows in exactly the same way as the proof that \(\Span_{\complex}\{H\}\) is a Cartan subalgebra.
+    The conjugate \(A\)s just factor out at each step.
+    In fact, one can show that all Cartan subalgebras of \(\specialLinearLie_2\) arise in this way.
+    
+    % TODO: are all CSAs conjugate under this action of the corresponding Lie group?
+    
+    \paragraph{Cartan Subalgebras of \(\specialLinearLie_n\)}
+    The next simplest example is the generalisation of this to \(\specialLinearLie_n\).
+    Note that \(\specialLinearLie_n\) consists of all \(n \times n\) traceless matrices over \(\complex\).
+    The Cartan subalgebra, \(\lie{h}\), consists of all such matrices which are also diagonal.
+    A basis for this is \(H_i = E_{ii} - E_{i+1,i+1}\) for \(i=1, \dotsc, n-1\) where \(E_{ij}\) is the elementary matrix with a 1 in the \(i\)th row and \(j\)th column and zero everywhere else.
+    
+    To show that this is indeed the Cartan subalgebra we need to show that each \(H_i\) is \(\ad\)-semisimple.
+    Rather than computing the action of \(H_i\) on \(\specialLinearLie_n\) it's simpler to find a simultaneous eigenbasis of the \(H_i\) for \(\specialLinearLie_n\).
+    This can be done because the adjoint action of the \(H_i\)s all commute with each other.
+    The \(H_i\) give us the diagonal matrices in \(\specialLinearLie_n\).
+    To get the other matrices we can simply take \(E_{ij}\) with \(i \ne j\).
+    Then a basis for \(\specialLinearLie_n\) is
+    \begin{equation}
+        \{H_i \mid i = 1, \dotsc, n - 1\} \cup \{E_{ij} \mid i, j \in \{1, \dotsc, n\} \text{ and } i \ne j\}.
+    \end{equation}
+    This is an eigenbasis for the adjoint action of the \(H_i\)s which can be shown using the relation
+    \begin{equation}
+        E_{ij}E_{k\ell} = \delta_{jk}E_{i\ell}.
+    \end{equation}
+    
+    
+    
+    
+    
     
     
     
