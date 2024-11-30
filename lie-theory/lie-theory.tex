@@ -4,6 +4,7 @@
 \strictpagecheck
 
 \usepackage{csquotes}
+\usepackage{enumitem}
 
 \usepackage{tikz}
 \usetikzlibrary{external}
@@ -85,6 +86,8 @@ noabbrev
 \DeclareMathOperator{\rad}{rad}
 \newcommand{\universalenveloping}{\symcal{U}}
 \newcommand{\basis}{\symcal{B}}
+\DeclareMathOperator{\res}{res}
+\newcommand{\csa}{\symfrak{h}}
 
 \begin{document}
 	\frontmatter
@@ -529,7 +532,7 @@ noabbrev
         If \(\field\) is a field then \(\field[x]\) is a PID, and in particular B\'ezout's lemma applies to polynomials.
     \end{lma}
     
-    \begin{thm}{Decomposition Theorem}{}
+    \begin{thm}{Decomposition Theorem}{thm:decomposition}
         Let \(\field\) be an algebraically closed field, \(V\) a finite dimensional vector space, and \(T \colon V \to V\) a linear operator.
         Then
         \begin{equation}
@@ -1505,7 +1508,7 @@ noabbrev
         \end{align}
         and
         \begin{align}
-            \Hom_{\lie{g}}(M, N) &= \{T \colon M \to N \mid T \text{ is a } \lie{g} \text{-module homomorphism}\}\\
+            \Hom_{\lie{g}}(M, N) &= \{T \colon M \to N \mid T \text{ is a } \lie{g} \text{-module homomorphism}\} \notag\\
             &= \Rep(M, N).
         \end{align}
         Similarly, we write \(\End_{\field}(M) = \End(M) = \Hom(M, M)\) and \(\End_{\lie{g}}(M) = \Hom_{\lie{g}}(M, M)\).
@@ -1851,7 +1854,7 @@ noabbrev
     
     Combining these results we have proven the following.
     
-    \begin{thm}{Classification of Finite Dimensional Simple \(\specialLinearLie(2, \complex)\)-Modules}{}
+    \begin{thm}{Classification of Finite Dimensional Simple \(\specialLinearLie(2, \complex)\)-Modules}{thm:sl2 reps classification}
         Let \(V\) be a finite-dimensional simple \(\specialLinearLie(2, \complex)\)-module with a highest weight vector of weight \(\alpha\).
         Then
         \begin{enumerate}
@@ -1863,6 +1866,7 @@ noabbrev
     
     This leads to the following picture of \(\specialLinearLie(2, \complex)\) representations:
     \begin{equation}
+        \label{eqn:sl2 rep picture}
         \hfil
         \tikzexternaldisable
         \begin{tikzcd}
@@ -2900,7 +2904,7 @@ noabbrev
     Note that since we can always decompose a semisimple Lie algebra, \(\lie{g}\), as a direct sum of simple Lie algebras it is sufficient to prove Weyl's theorem for a simple Lie algebra.
     
     \section{Complements}
-    \begin{lma}{}{}
+    \begin{lma}{}{lma:reducible iff comlements}
         A finite dimensional \(\lie{g}\)-module, \(V\), is completely reducible if and only if every submodule, \(W \subseteq V\), admits a complement, \(W'\), which is a submodule \(W' \subseteq V\) such that \(V = W \oplus W'\).
         \begin{proof}
             \Step{Complete Reducibility Implies Complements}
@@ -3009,7 +3013,7 @@ noabbrev
     
     The idea of a faithful representation is that in mapping \(\lie{g}\) to a Lie-algebra of operators on \(V\) we don't lose any information by mapping two elements of \(\lie{g}\) to the same operator on \(V\).
     
-    \begin{lma}{}{}
+    \begin{lma}{}{lma:simple lie alg rep faithful or trivial}
         Let \(\lie{g}\) be a simple Lie algebra and \(V\) a \(\lie{g}\)-module.
         Then \(V\) is either a faithful module, or a trivial module.
         \begin{proof}
@@ -3176,50 +3180,675 @@ noabbrev
     One way of stating the above construction of \(\symcal{C}\) is that \(\symcal{C}\) is the pullback of the dual basis to \(\basis\) along \(\iota_\eta\).
     This is just fancy talk for saying that we're using the inverse of the map \(\iota_\eta\) to take something defined in \(V^*\) to something defined in \(V\).
     
-     \begin{dfn}{Quadratic Casimir}{}
-         Let \(\lie{g}\) be a finite-dimensional Lie algebra, and let \(\basis = \{X_1, \dotsc, X_n\}\) be a basis for \(\lie{g}\).
-         Let \(\symcal{C} = \{Y_1, \dotsc, Y_n\}\) be the dual basis for \(\lie{g}\) corresponding to some non-degenerate symmetric bilinear form, \(\eta\).
-         If \(\lie{g}\) is semisimple then we will assume \(\eta = \kappa\) is the Killing form, but it is always possible to find such an \(\eta\) in any case.
-         The \defineindex{quadratic Casimir element}, \(\Omega\), is the Casimir element defined by
-         \begin{equation}
-             \Omega_2 = \sum_{i=1}^{n} X_i Y_i.
-         \end{equation}
-     \end{dfn}
+    \begin{dfn}{Quadratic Casimir}{}
+        Let \(\lie{g}\) be a finite-dimensional Lie algebra, and let \(\basis = \{X_1, \dotsc, X_n\}\) be a basis for \(\lie{g}\).
+        Let \(\symcal{C} = \{Y_1, \dotsc, Y_n\}\) be the dual basis for \(\lie{g}\) corresponding to some non-degenerate symmetric bilinear form, \(\eta\).
+        If \(\lie{g}\) is semisimple then we will assume \(\eta = \kappa\) is the Killing form, but it is always possible to find such an \(\eta\) in any case.
+        The \defineindex{quadratic Casimir element}, \(\Omega\), is the Casimir element defined by
+        \begin{equation}
+            \Omega_2 = \sum_{i=1}^{n} X_i Y_i.
+        \end{equation}
+    \end{dfn}
      
-     Note that this sum, and in particular the product \(X_i Y_i\), is all done in \(\universalenveloping(\lie{g})\).
-     That \(\Omega_2\) is a Casimir element can be shown by an explicit calculation, or it can be seen by the following argument chaining together linear maps.
-     This argument also proves that \(\Omega_2\) is independent of the choice of basis.
-     \begin{itemize}
-         \item There is a linear map \(\field \to \End \lie{g}\) given by sending \(\lambda \in \field\) to the map \(X \mapsto \lambda X\), that is the map which is just scaling by \(\lambda\).
-         \item For \(\lie{g}\) finite dimensional there is a canonical isomorphism of vector spaces\footnote{We write \(\End_{\field}\lie{g}\) to mean the vector space of linear maps \(\lie{g} \to \lie{g}\), rather than the set of Lie algebra homomorphisms \(\lie{g} \to \lie{g}\), which we denote \(\End\lie{g}\).} \(\lie{g} \otimes \lie{g} \to \End_{\field} \lie{g}\) given by \((X, \lambda) \mapsto (Y \mapsto (\lambda(Y)X))\), that is \((X, \lambda)\) maps to the linear map given by scaling \(X\) by \(\lambda(Y) \in \complex\).
-         \item For \(\lie{g}\) finite dimensional there is a canonical isomorphism of vector spaces \(\iota_\eta\lie{g}^* \to \lie{g}\)
-         \item There is a linear map \(\lie{g} \otimes \lie{g} \to \universalenveloping(\lie{g})\) given by \(X \otimes Y \mapsto XY\).
-     \end{itemize}
-     Combining these we have
-     \begin{equation}
-         \field \hookrightarrow \End_{\field} \lie{g} \xrightarrow{\sim} \lie{g} \otimes \lie{g}^* \xrightarrow{\sim} \lie{g} \otimes \lie{g} \to \universalenveloping(\lie{g}).
-     \end{equation}
-     Now consider where \(1 \in \field\) maps under this chain of linear maps.
-     \begin{itemize}
-         \item \(1 \mapsto \id_{\lie{g}}\) since scaling by 1 is the identity.
-         \item \(\id_{\lie{g}} \mapsto \sum_{i=1}^n X_i \otimes \lambda_i\), this is the completeness relation and works for any choice of basis, \(\{X_i\}\) and its dual, \(\{\lambda_i\}\).
-         \item \(\lambda_i \mapsto Y_i\) so \(X_i \otimes \lambda_i \mapsto X_i \otimes Y_i\) and \(\sum_{i=1}^n X_i \otimes \lambda_i \mapsto \sum_{i=1}^n X_i \otimes Y_i\).
-         \item \(X_i \otimes Y_i\) maps to \(X_i Y_i\) so \(\sum_{i=1}^n X_i \otimes Y_i \mapsto \sum_{i=1}^n X_i Y_i = \Omega_2\).
-     \end{itemize}
-     Since \(1 \in \field\) is \(\lie{g}\)-invariant and commutes with all elements the same is true of its image under this composite linear map, and the image is exactly the quadratic Casimir, \(\Omega_2\).
-     
-     We now give the definition of the representation of \(\Omega\), which is what the course calls \emph{the} Casimir operator.
-     
-     \begin{dfn}{}{}
-         Let \(V\) be a faithful \(\lie{g}\)-module, and let \((\rho, V)\) be the corresponding representation.
-         We define the \defineindex{Casimir} of \(V\) to be
-         \begin{equation}
-             \Omega_V = \sum_{i=1}^n \rho(X_i)\rho(Y_i)
-         \end{equation}
-         where \(\{X_1, \dotsc, X_n\}\) is some basis of \(\lie{g}\) and \(\{Y_1, \dotsc, Y_n\}\) is the dual basis in \(\lie{g}\).
-     \end{dfn}
+    Note that this sum, and in particular the product \(X_i Y_i\), is all done in \(\universalenveloping(\lie{g})\).
+    That \(\Omega_2\) is a Casimir element can be shown by an explicit calculation, or it can be seen by the following argument chaining together linear maps.
+    This argument also proves that \(\Omega_2\) is independent of the choice of basis.
+    \begin{itemize}
+        \item There is a linear map \(\field \to \End \lie{g}\) given by sending \(\lambda \in \field\) to the map \(X \mapsto \lambda X\), that is the map which is just scaling by \(\lambda\).
+        \item For \(\lie{g}\) finite dimensional there is a canonical isomorphism of vector spaces\footnote{We write \(\End_{\field}\lie{g}\) to mean the vector space of linear maps \(\lie{g} \to \lie{g}\), rather than the set of Lie algebra homomorphisms \(\lie{g} \to \lie{g}\), which we denote \(\End\lie{g}\).} \(\lie{g} \otimes \lie{g} \to \End_{\field} \lie{g}\) given by \((X, \lambda) \mapsto (Y \mapsto (\lambda(Y)X))\), that is \((X, \lambda)\) maps to the linear map given by scaling \(X\) by \(\lambda(Y) \in \complex\).
+        \item For \(\lie{g}\) finite dimensional there is a canonical isomorphism of vector spaces \(\iota_\eta \colon \lie{g}^* \to \lie{g}\)
+        \item There is a linear map \(\lie{g} \otimes \lie{g} \to \universalenveloping(\lie{g})\) given by \(X \otimes Y \mapsto XY\).
+    \end{itemize}
+    Combining these we have
+    \begin{equation}
+        \field \hookrightarrow \End_{\field} \lie{g} \xrightarrow{\sim} \lie{g} \otimes \lie{g}^* \xrightarrow{\sim} \lie{g} \otimes \lie{g} \to \universalenveloping(\lie{g}).
+    \end{equation}
+    Now consider where \(1 \in \field\) maps under this chain of linear maps.
+    \begin{itemize}
+        \item \(1 \mapsto \id_{\lie{g}}\) since scaling by 1 is the identity.
+        \item \(\id_{\lie{g}} \mapsto \sum_{i=1}^n X_i \otimes \lambda_i\), this is the completeness relation and works for any choice of basis, \(\{X_i\}\), and its dual, \(\{\lambda_i\}\).
+        \item \(\lambda_i \mapsto Y_i\) so \(X_i \otimes \lambda_i \mapsto X_i \otimes Y_i\) and \(\sum_{i=1}^n X_i \otimes \lambda_i \mapsto \sum_{i=1}^n X_i \otimes Y_i\).
+        \item \(X_i \otimes Y_i\) maps to \(X_i Y_i\) so \(\sum_{i=1}^n X_i \otimes Y_i \mapsto \sum_{i=1}^n X_i Y_i = \Omega_2\).
+    \end{itemize}
+    Since \(1 \in \field\) is \(\lie{g}\)-invariant and commutes with all elements the same is true of its image under this composite algebra morphism, and the image is exactly the quadratic Casimir, \(\Omega_2\).
+    
+    \subsection{Casimir According to the Course}
+    We now give the definition of the representation of \(\Omega\), which is what the course calls \emph{the} Casimir operator.
+    
+    Let \((\rho, V)\) be a representation of a simple Lie algebra, \(\lie{g}\).
+    Then \(V\) is either faithful or trivial.
+    Trivial modules aren't interesting, so we'll assume \(V\) is faithful.
+    There is an obvious generalisation of the Killing form, namely
+    \begin{align}
+        \beta_V \colon \lie{g} \times \lie{g} &\to \complex\\
+        (X, Y) &\mapsto \beta_V(X, Y) = \tr_V(\rho(X)\rho(Y))
+    \end{align}
+    where \(\tr_V\) is the trace of an operator on \(V\).
+    Note that the Killing form is then simply \(\kappa = \beta_{\lie{g}}\) where we're considering the representation \((\ad, \lie{g})\).
+    Many of the properties of the Killing form, such as bilinearity and associativity, hold for \(\beta_V\) without much modification to the proofs.
+    The fact that \(\lie{g}\) is simple means that by similar proof to Cartan's criterion we also know that \(\beta_V\) is non-degenerate.
+    
+    We now define \enquote{the Casimir} as the course defines it.
+    
+    \begin{dfn}{}{}
+        Let \(V\) be a faithful \(\lie{g}\)-module, and let \((\rho, V)\) be the corresponding representation.
+        We define the \defineindex{Casimir} of \(V\) to be
+        \begin{equation}
+            \Omega_V = \sum_{i=1}^n \rho(X_i)\rho(Y_i)
+        \end{equation}
+        where \(\{X_1, \dotsc, X_n\}\) is some basis of \(\lie{g}\) and \(\{Y_1, \dotsc, Y_n\}\) is the dual basis in \(\lie{g}\) corresponding to the symmetric non-degenerate associative bilinear form \(\beta_V\).
+    \end{dfn}
      
     That is, \(\Omega_V = \tilde{\rho}(\Omega_2)\) with our more general definition of the quadratic Casimir, where \(\tilde{\rho} \colon \universalenveloping(\lie{g}) \to \generalLinearLie(V)\) is the unital associative algebra homomorphism corresponding to the Lie algebra homomorhpism \(\rho\) under the universal property of \(\universalenveloping(\lie{g})\) with \((\rho, \End V)\) viewed as an enveloping algebra.
+    
+    That \(\Omega_V\) commutes with all elements of \(\End V\) follows immediately from the fact that \(\Omega_2\) commutes with all elements of \(\universalenveloping(\lie{g})\).
+    It can also be proven by a calculation from the definition.
+    First take \(X \in \lie{g}\) and let \(\{X_i\}\) be a basis for the \(n\)-dimensional \(\lie{g}\).
+    Write
+    \begin{equation}
+        \bracket{X}{X_i} = \sum_{j=1}^n a_{ij}X_j
+    \end{equation}
+    for some \(a_{ij} \in \complex\).
+    This is just expressing \(\bracket{X}{X_i} \in \lie{g}\) as a linear combination of basis vectors, \(X_i\).
+    Similarly, write
+    \begin{equation}
+        \bracket{X}{Y_i} = \sum_{j=1}^n b_{ij}Y_j
+    \end{equation}
+    where \(\{Y_i\}\) is the dual basis to \(\{X_i\}\) corresponding to some symmetric non-degenerate associative bilinear form, \(\beta_V\).
+    Then we have
+    \begin{align}
+        a_{ij} &= \sum_{k=1}^n a_{ik} \delta_{kj}\\
+        &= \sum_{k=1}^n a_{ik} \beta_V(X_k, Y_j)\\
+        &= \beta_V\left( \sum_{k=1}^n a_{ik}X_k, Y_j \right)\\
+        &= \beta_V(\bracket{X}{X_i}, Y_j)\\
+        &= \beta_V(-\bracket{X_i}{X}, Y_j)\\
+        &= \beta_V(-X_i, \bracket{X}{Y_j})\\
+        &= \beta_V\left( -X_i, \sum_{k=1}^n b_{jk}Y_k \right)\\
+        &= \sum_{k=1}^n -b_{jk} \beta_V(X_i, Y_k)\\
+        &= \sum_{k=1}^n -b_{jk} \delta_{ik}\\
+        &= -b_{ji}.
+    \end{align}
+    Now we can use the fact that in \(\End V\) (and more generally in any algebra for which the bracket is a commutator) we have
+    \begin{equation}
+        \bracket{XY}{Z} = \bracket{X}{Z}Y + X\bracket{Y}{Z},
+    \end{equation}
+    which can be shown by expanding these brackets as commutators.
+    This gives us
+    \begin{align}
+        \bracket{\Omega_V}{\rho(X)} &= \bracket*{\sum_{i=1}^n \rho(X_i)\rho(Y_i)}{\rho(X)}\\
+        &= \sum_{i=1}^n (\bracket{\rho(X_i)}{\rho(X)}\rho(Y_i) + \rho(X_i)\bracket{\rho(Y_i)}{\rho(X)})\\
+        &= \sum_{i=1}^n (\rho(\bracket{X_i}{X}) \rho(Y_i) + \rho(X_i) \rho(\bracket{Y_i}{X}))\\
+        &= \sum_{i=1}^n (\rho(-\bracket{X}{X_i}) \rho(Y_i) + \rho(X_i) \rho(-\bracket{X}{Y_i}))\\
+        &= -\sum_{i=1}^n \left( \rho\left( \sum_{j=1}^n a_{ij}X_j \right) \rho(Y_i) + \rho(X_i) \rho\left( \sum_{j=1}^n b_{ij}Y_j \right) \right)\\
+        &= -\sum_{i=1}^n \sum_{j=1}^n (a_{ij}\rho(X_j)\rho(Y_i) + b_{ij}\rho(X_i)\rho(Y_j))\\
+        &= 0
+    \end{align}
+    where the last equality follows since \(a_{ij} = -b_{ji}\) so the two terms in the sum cancel.
+    
+    Note that we have
+    \begin{align}
+        \tr(\Omega_V) &= \tr\left( \sum_{i=1}^n \rho(X_i)\rho(Y_i) \right)\\
+        &= \sum_{i=1}^n \tr(\rho(X_i)\rho(Y_i))\\
+        &= \sum_{i=1}^n \beta_V(X_i, Y_i)\\
+        &= \sum_{i=1}^n \delta_{ii}\\
+        &= \dim \lie{g}.
+    \end{align}
+    
+    \section{Proving Weyl's Theorem}
+    \Cref{lma:reducible iff comlements} implies that if \(V\) is a \(\lie{g}\)-module then it is sufficient to show that each \(\lie{g}\)-submodule, \(W\), admits a complementary \(\lie{g}\)-submodule, \(W'\).
+    To do this we'll make use of the decomposition theorem (\cref{thm:decomposition}).
+    Recall that this states that for a finite dimensional vector space, \(V\), and some endomorphism \(X \in \End_{\complex}(V)\) we have the decomposition
+    \begin{equation}
+        V = \bigoplus_{\alpha \in \complex} V_\alpha
+    \end{equation}
+    where
+    \begin{equation}
+        V_\alpha = \{v \in V \mid (X - \alpha)^Nv = 0 \text{ for some } N \in \naturals\}
+    \end{equation}
+    is the generalised eigenspace of \(V\) associated with \(X\).
+    
+    If in addition \(V\) is a \(\lie{g}\)-module and \(X \in \End_{\lie{g}}(V)\) then each \(V_\alpha\) is a \(\lie{g}\)-submodule since the action of \(\lie{g}\) on \(V\) commutes with the \(\lie{g}\)-module endomorphism, \(X\) (and also the identity), and thus leaves each \(V_\alpha\) invariant.
+    That is, \(Y \cdot (X - \alpha)^Nv = 0\) if and only if \((X - \alpha)^N(Y \cdot v) = 0\).
+    
+    \begin{lma}{}{lma:one dimensional rep trivial}
+        If \(\lie{g}\) is a semisimple Lie algebra and \(V\) is a one-dimensional \(\lie{g}\)-module then \(V\) is trivial.
+        \begin{proof}
+            Let \(\rho \colon \lie{g} \to \generalLinearLie(V)\) be the corresponding Lie algebra representation.
+            For \(V\) one-dimensional, so \(V \isomorphic \complex\), then \(\generalLinearLie(V) \isomorphic \generalLinearLie(\complex) = \complex\), the only linear maps \(\complex \to \complex\) are scalar multiplication.
+            The image \(\rho(\lie{g})\) is a Lie subalgebra of \(\generalLinearLie(V)\), and so in this case \(\rho(\lie{g})\) is a Lie subalgebra of \(\complex\), and thus is abelian.
+            Then \(X, Y \in \lie{g}\) act on \(V\) by scalar multiplication, say \(X \cdot v = xv\) and \(Y \cdot v = yv\) for some \(x, y \in \complex\) and \(v \in V\).
+            Then we have \(X \cdot (Y \cdot v) = xyv = yxv = Y \cdot (X \cdot v)\) so \(X \cdot (Y \cdot v) - Y \cdot (X \cdot v) = 0\) which means that we must have \(\bracket{X}{Y} \cdot v = 0\).
+            Thus, we have that \(\bracket{\lie{g}}{\lie{g}}\) must act trivially on \(V\), but \(\lie{g} = \bracket{\lie{g}}{\lie{g}}\) for a semisimple Lie algebra, so \(\lie{g}\) acts trivially on \(V\).
+            This last fact follows because \(\bracket{\lie{g}}{\lie{g}}\) is a solvable subalgebra of \(\lie{g}\) and therefore for semisimple \(\lie{g}\) must be either 0 or \(\lie{g}\), and it's not 0 unless \(\lie{g}\) is abelian, which is assumed not to be the case for a semisimple Lie algebra.
+        \end{proof}
+    \end{lma}
+    
+    Before we prove Weyl's theorem for all simple Lie algebras we prove a special case, and then the proof of the full theorem is just reduction to this special case.
+    
+    \begin{prp}{}{prp:weyls theorem for codimension 1}
+        Let \(V\) be a \(\lie{g}\)-module and \(W\) a submodule of codimension one.
+        Then, there exists a \(\lie{g}\)-submodule, \(W'\), of dimension one with \(W \oplus W' = V\).
+        \begin{proof}
+            The proof is by induction on \(\dim V\).
+            The base case, \(\dim V = 1\), is trivial since any submodule of codimension one is of dimension \(1 - 1 = 0\) so the only codimension one submodule is \(0\), and we trivially have \(\dim V = 1\) and \(0 \oplus V = V\).
+            
+            For the inductive step assume that any \(\lie{g}\)-module of dimension less than \(\dim V \) admits complementary submodules for all submodules of codimension 1.
+            Let \(W\) be a \(\lie{g}\)-submodule of \(V\) of codimension 1.
+            We know that \(V\) is either a faithful representation or trivial (\cref{lma:simple lie alg rep faithful or trivial}).
+            If \(V\) is trivial then any dimension 1 \(\lie{g}\)-submodule (which is any dimension 1 subspace) will work for \(W'\).
+            Suppose \(V\) is faithful.
+            We can use the Casimir, \(\Omega_V \in \End_{\lie{g}} V\), to generate \(W'\).
+            To do this we consider the decomposition
+            \begin{equation}
+                V = \bigoplus_{\alpha \in \complex} V_\alpha
+            \end{equation}
+            where \(V_\alpha = \{v \in V \mid (\Omega_V - \alpha)^N(v) = 0 \text{ for some } N \in \naturals\}\) is the generalised eigenspace associated with \(\Omega_V\).
+            We know that \(\Omega_V\) preserves \(W\), that is \(\Omega_V(W) \subseteq W\), since \(\lie{g}\) preserves \(W\), and \(\Omega_V\) acts as a sum of (products) of elements of \(\lie{g}\).
+            We can therefore consider the restriction of \(\Omega_V\) to \(W\), \(\Omega_V|_W \colon W \to W\) where \(\Omega_V|_W(w) = \Omega_V(w)\), and \(\Omega_V|_W \in \End_{\lie{g}}W\).
+            We then get a decomposition
+            \begin{equation}
+                W = \bigoplus_{\alpha \in \complex} W_\alpha
+            \end{equation}
+            where
+            \begin{equation}
+                W_\alpha = \{w \in W \mid (\Omega_V|_W - \alpha)^N(w) = 0 \text{ for some } N \in \naturals\}
+            \end{equation}
+            is the generalised eigenspace associated with \(\Omega_V|_W\).
+            From these definitions we can immediately see that \(W_\alpha\) consists of all elements of \(W\) for which \((\Omega_V - \alpha)^N(w)\) is eventually \(0\) for some \(N \in \naturals\).
+            That is, \(W_\alpha = W \cap V_\alpha\).
+            
+            \begin{clm}{}{}
+                With the notation as above we have \(V_\alpha = W_\alpha\) for all \(\alpha \ne 0\) and \(\dim (V_0/W_0) = 1\).
+                \begin{proof}
+                    Each \(V_\alpha\) is a \(\lie{g}\)-module and \(W_\alpha\) is a \(\lie{g}\)-submodule of \(V_\alpha\).
+                    Thus, the quotient \(V_\alpha/W_\alpha\) is a \(\lie{g}\)-module.
+                    Further, we have
+                    \begin{equation}
+                        V/W = \bigoplus_{\alpha \in \complex} V_\alpha/W_\alpha.
+                    \end{equation}
+                    Since \(\dim V/W = 1\) (because \(W\) is of codimension 1 by assumption) there is therefore exactly one \(\alpha \in \complex\) for which \(V_\alpha/W_\alpha \ne 0\) and for that value of \(\alpha\) we have \(V_\alpha/W_\alpha = 1\).
+                    This holds because the dimension of the sum is the sum of the dimensions.
+                    We then only need to show that \(\alpha = 0\) is this distinguished value.
+                    This follows because the quotients \(V_\alpha/W_\alpha = V_\alpha/(V_\alpha \cap W)\) are such that \(\lie{g}\) acts trivially on these, since these quotients have dimension at most one.
+                    Then \(\Omega_V\) also acts trivially on the quotients since \(\Omega_V\) acts as a sum of products of elements of \(\lie{g}\).
+                    However, by definition \(\Omega_V\) also acts on \(V_\alpha\) by scalar multiplication by \(\alpha\) and this carries across into the quotient, so it must be that \(\alpha = 0\) for our non-zero quotient.
+                \end{proof}
+            \end{clm}
+            
+            To complete the proof from here it is sufficient to show that \(\dim V_0 < \dim V\), since \(W_0 \subseteq V_0\) is a submodule of codimension one and this will allow us to apply the inductive hypothesis.
+            We know that \(\dim V_0 < \dim V\) because \(\tr(\Omega_V) = \dim \lie{g} \ne 0\) so \(\Omega_V\) is not the zero operator, so there is at least one \(\alpha \in \complex\setminus\{0\}\) for which \(V_\alpha \ne 0\) and thus \(V_0\) cannot be all of \(V\).
+        \end{proof}
+    \end{prp}
+    
+    We're now almost ready to prove Weyl's theorem for any simple \(\lie{g}\)-module.
+    In order to do this we just need a few more details.
+    If \(V\) and \(W\) is a \(\lie{g}\)-module then so is \(\Hom_{\complex}(V, W)\), which has its vector space structure defined pointwise and the \(\lie{g}\)-module structure defined by taking \(X \in \lie{g}\) to act on \(f \in \Hom_{\complex}(V, W)\) by defining \(X \cdot f\) to be the map
+    \begin{equation}
+        \label{eqn:natural action on homC}
+        (X \cdot f)(v) = X \cdot f(v) - f(X \cdot v)
+    \end{equation}
+    for all \(v \in V\).
+    
+    \begin{dfn}{Invariants}{}
+        If \(U\) is a \(\lie{g}\)-module denote by \(U^{\lie{g}}\) the \(\lie{g}\)-submodule consisting of \(\lie{g}\)-invariant elements, that is \(u \in U^{\lie{g}}\) if and only if \(X \cdot u = 0\) for all \(X \in \lie{g}\).
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        Let \(V\) and \(W\) be \(\lie{g}\)-modules.
+        Then \(\Hom_{\complex}(V, W)^{\lie{g}} = \Hom_{\lie{g}}(V, W)\).
+        That is, the \(\lie{g}\)-equivaraint maps are precisely those which are fixed under the action of \(\lie{g}\).
+        \begin{proof}
+            Suppose that \(f \in \Hom_{\lie{g}}(V, W)\), that is \(f \colon V \to W\) is linear and \(X \cdot f(v) = f(X \cdot v)\) for all \(X \in \lie{g}\) and \(v \in V\).
+            Then by definition \(X\) acts trivially on \(f\) since the right hand side of \cref{eqn:natural action on homC} vanishes.
+            Suppose instead that \(f \in \Hom_{\complex}(V, W)^{\lie{g}}\), so that \(X \cdot f = 0\) for all \(X \in \lie{g}\).
+            Then the left hand side of \cref{eqn:natural action on homC} vanishes and it follows that \(X \cdot f(v) = f(X \cdot v)\), so \(f\) is \(\lie{g}\)-equivariant, so \(f \in \Hom_{\lie{g}}(V, W)\).
+        \end{proof}
+    \end{lma}
+    
+    We are now ready to prove Weyl's Theorem for simple Lie algebras.
+    
+    \begin{thm}{Weyl}{thm:weyl}
+        Let \(\lie{g}\) be a simple Lie algebra over \(\complex\).
+        Then every finite-dimensional representation of \(\lie{g}\) is completely reducible.
+        \begin{proof}
+            Let \(V\) be a \(\lie{g}\)-module with \(W \subseteq V\) a \(\lie{g}\)-submodule.
+            Then \(\Hom_{\complex}(V, W)\) is a \(\lie{g}\)-module.
+            Define
+            \begin{equation}
+                U = \{f \in \Hom_{\complex}(V, W) \mid f|_W = \lambda \id_W \text{ for some } \lambda \in \complex\}.
+            \end{equation}
+            That is, \(U\) is the subspace of \(\Hom_{\complex}(V, W)\) consisting of linear maps which restrict to scalar multiplication on \(W\).
+            Let
+            \begin{equation}
+                U_0 = \{f \in \Hom_{\complex}(V, W) \mid f|_W = 0\}
+            \end{equation}
+            be the subspace of \(U\) of linear maps which \(V \to W\) which restrict to the zero map on \(W\).
+            
+            \begin{clm}{}{}
+                With notation as above \(U\) and \(U_0\) are \(\lie{g}\)-submodules of \(\Hom_{\complex}(V, W)\).
+                \begin{proof}
+                    We need to show that \(U\) and \(U_0\) are closed under the action of \(\lie{g}\).
+                    Let \(X \in \lie{g}\) and \(f \in U\).
+                    Then \(X\) acts on \(f\) according to \cref{eqn:natural action on homC}.
+                    That is
+                    \begin{equation}
+                        (X \cdot f)(v) = X \cdot f(v) - f(X \cdot v)
+                    \end{equation}
+                    for all \(v \in V\).
+                    We need to show that \(X \cdot f \in U\), that is, we want to show that \((X \cdot f) |_W = \lambda \id_W\) for some \(\lambda \in \complex\).
+                    This is simple because if \(v = w \in W\) in the above we have
+                    \begin{equation}
+                        (X \cdot f)|_W(w) = (X \cdot f)(w) = X \cdot f(w) - f(X \cdot w)
+                    \end{equation}
+                    and since \(W\) is a submodule we know that \(X \cdot w \in W\) so both applications of \(f\) above are to some element of \(W\), and so both are just scalar multiplication by some \(\lambda \in \complex\), and thus
+                    \begin{equation}
+                        (X \cdot f)|_W(w) = X \cdot (\lambda w) - \lambda(X \cdot w) = 0
+                    \end{equation}
+                    using linearity of the action of \(X\).
+                    This shows that \(X \cdot f \in U\) as \(X \cdot f\) simply acts as \(0 \id_W\).
+                    This also proves that \(U_0\) is a submodule, it's just the special case where \(\lambda = 0\) in the above equations.
+                \end{proof}
+            \end{clm}
+            
+            \begin{clm}{}{}
+                With notation as above \(\dim U/U_0 = 1\).
+                \begin{proof}
+                    Consider the restriction map
+                    \begin{align}
+                        \res \colon U &\to \Hom_{\complex}(W, V)\\
+                        f &\mapsto f|_W.
+                    \end{align}
+                    By definition of \(U\) we know that \(\res f = \lambda \id_W\) where \(\lambda \in \complex\), and certainly we hit every \(\lambda \in \complex\) in this way, so \(\res(U) \isomorphic \complex\).
+                    We also have that \(\ker(\res)\) consists of those maps which map to \(0 \id_W\), which is exactly \(\ker(\res) = U_0\).
+                    Thus, by the rank-nullity theorem we have that
+                    \begin{equation}
+                        \dim U = \dim(\res(U)) + \dim(\ker(\res)) = 1 + \dim U_0
+                    \end{equation}
+                    and so \(\dim U/U_0 = 1\).
+                \end{proof}
+            \end{clm}
+            
+            By the special case of Weyl's theorem (\cref{prp:weyls theorem for codimension 1}) we know that \(U_0\) admits a complement \(U_0'\) such that \(U_0 \oplus U_0' = U\).
+            Now take some \(\varphi \in U_0'\), then we know that \(\res \varphi = \varphi|_W = c \id_W\) for some \(c \in \complex\).
+            Since \(\varphi \in U_0'\) we know that \(\varphi \in U_0\) only if \(\varphi = 0\).
+            Assuming that \(\varphi \ne 0\) we therefore have that \(c \ne 0\), and so we can rescale \(\varphi\) to \(\frac{1}{c}\varphi\) which has \(\res(\frac{1}{c}\varphi) = \id_W\).
+            Therefore without loss of generality we may assume that any nonzero \(\varphi \in U_0'\) is such that \(\res(\varphi) = \id_W\).
+            
+            \begin{clm}{}{}
+                With the notation as above we have \(\varphi \in \Hom_{\lie{g}}\).
+                \begin{proof}
+                    We know that \(\dim U_0' = 1\), and thus the action of \(\lie{g}\) on \(U_0'\) is trivial (\cref{lma:one dimensional rep trivial}).
+                    Thus, for all \(X \in \lie{g}\) we have \(X \cdot \varphi(v) = \varphi(X \cdot v)\), which is \cref{eqn:natural action on homC} defining the action of \(X\) on \(\Hom_{\complex}(V, W)\) when the action is trivial.
+                    This result is exactly what it means for \(\varphi\) to be a \(\lie{g}\)-module homomorphism.
+                \end{proof}
+            \end{clm}
+            
+            This allows us to construct the following sequence of \(\lie{g}\)-modules linked by \(\lie{g}\)-module homomorphisms:
+            \begin{equation}
+                W \hookrightarrow V \xrightarrow{\varphi} W.
+            \end{equation}
+            Further, by definition we know that embedding \(W\) in \(V\) then applying \(\varphi\) is the same sa applying the identity map since \(\res(\varphi) = \id_W\).
+            The existence of such a chain here tells us that \(V = W \oplus \ker \varphi\) and thus we have found a complement for \(W\) and so \(V\) is completely reducible by \cref{lma:reducible iff comlements}.
+        \end{proof}
+    \end{thm}
+    
+    Here we've used the fact that a short exact sequence
+    \begin{equation}
+        \label{eqn:short exact sequence}
+        0 \to A \xrightarrow{f} B \xrightarrow{g} C \to 0
+    \end{equation}
+    splits (meaning that the map \(B \to C\) has a right inverse, \(h \colon C \to B\), which we've shown is the case for \(\varphi\) here) if and only if \(B = C/A\).
+    This is a general result that holds for vector spaces and more generally for \(R\)-modules.
+    It follows then that \(B \isomorphic A \oplus C\) because we can explicitly construct an isomorphism \(A \oplus C \to B\) by \((a, c) \mapsto f(a) + h(c)\).
+    Note that a sequence
+    \begin{equation}
+        \dotsb \to X \xrightarrow{f} Y \xrightarrow{g} Z \to \dotsb
+    \end{equation}
+    is exact at \(Y\) if \(f(X) = \ker g\), which for a short exact sequence, such as \cref{eqn:short exact sequence}, implies that \(f\) is injective and \(g\) is surjective.
+    
+    Note that the choice of \(U_0'\) is not unique, since in the proof of \cref{prp:weyls theorem for codimension 1} any one-dimensional subspace we choose will work.
+    
+    It remains only to show that this result generalises to semisimple Lie algebras.
+    To do this first note that if \(V\) is an \((\lie{m} \oplus \lie{l})\)-module then defining \(X \cdot f = (X, 0) \cdot f\) for all \(f \in \Hom_{\ell}(W, V)\) makes \(\Hom_{\ell}(W, V)\) into a \(\lie{m}\)-module.
+    
+    \begin{crl}{Weyl for Semisimple Lie Algebras}{}
+        Let \(\lie{g}\) be a semisimple Lie algebra over \(\complex\).
+        Then every finite-dimensional representation of \(\lie{g}\) is completely reducible.
+        \begin{proof}
+            Recall that any semisimple Lie algebra, \(\lie{g}\), can be decomposed as a sum of simple Lie algebras, \(\lie{g}_i\):
+            \begin{equation}
+                \lie{g} = \lie{g}_1 \oplus \dotsb \oplus \lie{g}_k.
+            \end{equation}
+            We prove this result by induction on \(k\).
+            The case of \(k = 1\) simply has \(\lie{g} = \lie{g}_1\), which means that \(\lie{g}\) is simple, so this is just Weyl's theorem (\cref{thm:weyl}).
+            Suppose then that every semisimple Lie algebra which decomposes into fewer than \(k\) simple Lie algebras has only completely reducible finite-dimensional representations over \(\complex\).
+            
+            Let \(\lie{g}\) be a semisimple Lie group decomposing as \(\lie{g} = \lie{g}_1 \oplus \lie{m}\) where \(\lie{g}_1\) is simple and \(\lie{m} = \lie{g}_2 \oplus \dotsb \oplus \lie{g}_k\) where the \(\lie{g}_i\) are also simple.
+            Let \(V\) be a finite-dimensional \(\lie{g}\)-module.
+            Using the simplicity of \(\lie{g}_1\) we can decompose \(V\) as a direct sum \(V = V_1^{n_1} \oplus \dotsb \oplus V_r^{n_r}\) where the \(V_i\) are simple, pairwise non-isomorphic \(\lie{g}_1\)-modules.
+            Define a map
+            \begin{align}
+                \Hom_{\lie{g}_1}(V_i, V) \otimes V_i &\to V\\
+                (\varphi, v) &\mapsto \varphi(v).
+            \end{align}
+            We know by the discussion preceding this corollary that \(\Hom_{\lie{g}_1}(V_i, V)\) is an \(\lie{m}\)-module.
+            Thus, \(\Hom_{\lie{g}_1}(V_i, V) \otimes V_i\) is a \(\lie{m}\) module, and \(V\) is a \(\lie{g}_1\)-module, because it is a \(\lie{g}\)-module and \(\lie{g}_1 \subseteq \lie{g}\).
+            Then \(\Hom_{\lie{g}_1}(V_i, V) \otimes V_1\) is an \((\lie{m} \oplus \lie{g}_1)\)-module, and \(\lie{m} \oplus \lie{g}_1 \isomorphic \lie{g}_1 \oplus \lie{m} = \lie{g}\), so \(\Hom_{\lie{g}_1}(V_i, V) \otimes V\) is a \(\lie{g}\)-module.
+            The map defined above then extends to an isomorphism of \(\lie{g}\)-modules
+            \begin{equation}
+                (\Hom_{\lie{g}_1}(V_1, V) \otimes V_1) \oplus \dotsb \oplus (\Hom_{\lie{g}_1}(V_r, V) \otimes V_r) \to V.
+            \end{equation}
+            Since each \(\Hom_{\lie{g}_1}(V_i, V)\) is a completely reducible \(\lie{m}\)-module by the induction hypothesis we can decompose each \(\Hom_{\lie{g}_1}(V_i, V) \otimes V_i\) as a direct sum of simple \(\lie{g}\)-modules.
+        \end{proof}
+    \end{crl}
+    
+    \chapter{Cartan Subalgebras}
+    \section{Representation Theory of \texorpdfstring{\(\specialLinearLie_2\)}{sl2}}
+    We start this section with a recap of \(\specialLinearLie_2 = \specialLinearLie(2, \complex)\) representation theory.
+    We saw in \cref{thm:sl2 reps classification} that any simple \(\specialLinearLie_2\)-module is isomorphic to an \(\specialLinearLie_2\)-module, \(V(n)\), for some \(n \in \integers\) such that there exists some highest weight vector \(v_0 \in V(n)_n\) where
+    \begin{equation}
+        V(n)_k = \{v \in V(n) \mid Hv = kv\}
+    \end{equation}
+    for integer \(k\) with \(-n \le k \le n\).
+    By \enquote{highest weight} we mean that \(Hv_0 = nv_0\) and \(Ev_0 = 0\).
+    The dimension of \(V(n)\) is \(\dim V(n) = n + 1\), with a basis given by \(\{v_i = F^i v_0/i! \mid i = 0, 1, \dotsc, n\}\).
+    This leads to the picture in \cref{eqn:sl2 rep picture} where the \(\specialLinearLie_2\) generators act as \(E \colon V(n)_k \to V(n)_{k+2}\), \(H \colon V(n)_k \to V(n)_k\), and \(F \colon V(n)_k \to V(n)_{k-2}\), where we define \(V(n)_{n+2} = 0 = V(n)_{-n-2}\).
+    
+    Since \(\specialLinearLie_2\) is simple the work of the previous chapter tells us that any finite-dimensional \(\specialLinearLie_2\)-module, \(V\), admits a decomposition as
+    \begin{equation}
+        V \isomorphic \bigoplus_{i \ge 0} V(i)^{\oplus n_i}
+    \end{equation}
+    where the \defineindex{multiplicity} is \(n_i \in \integers_{\ge 0}\) with \(n_i = 0\) for \(i \gg 0\).
+    These \(n_i\) are uniquely determined by \(V\), and can be computed as \(n_i = \dim(V_i \cap \ker E)\).
+    That is, we get one \(V(i)\) submodule for each basis vector in \(V_i\) (that is, an eigenvector of \(H\) with eigenvalue \(i\)) that also vanishes under the action of \(E\), so the highest weight vectors of \(V\) determine \(n_i\).
+    
+    We now list some special properties of \(H\) and which we will seek to generalise to other simple Lie algebras.
+    \begin{itemize}
+        \item If \(V\) is a finite dimensional \(\specialLinearLie_2\)-module then \(H\) acts diagonalisably on \(V\), this is an immediate consequence of the direct sum decomposition of \(V\) being into eigenspaces of \(H\).
+        In fact, one can take \enquote{diagonalisable} to mean that there is an eigenbasis of the operator corresponding to such a decomposition.
+        \item All of \(H\)'s eigenvalues are integers.
+        \item For any integer \(\alpha \in \integers\) we have \(\dim V_\alpha = \dim V_{-\alpha}\), since the generalised \(H\)-eigenspace of \(\alpha\) and \(-\alpha\) coincide.
+    \end{itemize}
+    These last two facts are particularly nice because \(\specialLinearLie_2\)-modules tend to arise in lots of areas of maths, such as Hodge theory and the cohomology of K\"ahler manifolds.
+    
+    \subsection{Representation Theory of \texorpdfstring{\(\specialLinearLie_3\)}{sl3}}
+    Now consider \(\specialLinearLie_3 = \specialLinearLie(3, \complex)\), which is also a simple Lie algebra, consisting of traceless \(3 \times 3\) matrices over \(\complex\).
+    There is no one equivalent \enquote{\(H\)} for \(\specialLinearLie_3\).
+    Instead, we can consider
+    \begin{equation}
+        H_1 = 
+        \begin{bmatrix}
+            1 & 0 & 0\\
+            0 & -1 & 0\\
+            0 & 0 & 0
+        \end{bmatrix}
+        , \qqand H_2 =
+        \begin{bmatrix}
+            0 & 0 & 0\\
+            0 & 1 & 0\\
+            0 & 0 & -1
+        \end{bmatrix}
+        .
+    \end{equation}
+    More specifically, we want to consider \(\csa = \Span_{\complex}\{H_1, H_2\}\) which consists of all traceless diagonal \(3 \times 3\) matrices over \(\complex\).
+    Compare this to the case of \(\specialLinearLie_2\) where considering the same set but for \(2 \times 2\) matrices would mean considering \(\csa = \Span_{\complex}\{H\}\).
+    We can generalise the definition of a weight space from \(\specialLinearLie_2\) to \(\specialLinearLie_3\) by defining a weight space to be a the common eigenspace of all \(H \in \csa\).
+    Then any finite-dimensional \(\specialLinearLie_3\)-module, \(V\), has a decomposition into weight-spaces with multiplicity, just as in the \(\specialLinearLie_2\) case.
+    
+    We will follow this generalisation through for arbitrary simple finite-dimensional Lie algebras over \(\complex\), and we shall see that we get the same result each time.
+    We'll also see that there are generalisations of \(E\) and \(F\), as well as the hidden integrality of the eigenvalues of \(H\) which lead us to define something called a root system, which then leads to a full classification of all finite-dimensional simple Lie algebras over \(\complex\).
+    
+    \subsection{Preliminary Definitions}
+    \begin{dfn}{}{}
+        Let \(V\) be a finite-dimensional vector space over \(\complex\).
+        We say that \(A \in \End_{\complex}V\) is \defineindex{nilpotent} if there exists \(n \in \naturals\) such that \(A^n = 0\).
+        We say that \(A\) is \defineindex{semisimple} if it is diagonalisable.
+    \end{dfn}
+    
+    For example, for any finite-dimensional \(\specialLinearLie_2\)-module \(E\) and \(F\) are nilpotent, since applying them repeatedly we always end up with the zero module, and \(H\) is semisimple since we've shown that \(H\) is diagonalisable.
+    The benefit of the \enquote{semisimple} wording over \enquote{diagonalisable} is that it reduces the emphasis of matrices, which is generally a good thing for more advanced linear algebra where we aim to talk about linear maps rather than matrices.
+    
+    \begin{prp}{}{}
+        Let \(V\) be a finite-dimensional vector space over \(\complex\) and let \(A \in \End_{\complex}V\).
+        Then there exists a unique decomposition \(A = A_{\symrm{s}} + A_{\symrm{n}}\) with \(A_{\symrm{s}}\) semisimple, \(A_{\symrm{n}}\) nilpotent, and \(\bracket{A_{\symrm{s}}}{A_{\symrm{n}}} = 0\).
+        \begin{proof}
+            Since we work over \(\complex\) we know that \(V\) decomposes into generalised-eigenspaces of \(A\) as
+            \begin{equation}
+                V = \bigoplus_{\alpha \in \complex} V_\alpha
+            \end{equation}
+            where
+            \begin{equation}
+                V_\alpha = \{v \in V \mid (A - \alpha)^Nv = 0 \text{ for some } N \in \naturals\}.
+            \end{equation}
+            We can then define \(A_{\symrm{s}}\) and \(A_{\symrm{n}}\) by their action on each generalised eigenspace.
+            In particular, take
+            \begin{equation}
+                A_{\symrm{s}} = \sum_{\alpha \in \complex} \alpha \id_{V_\alpha}
+            \end{equation}
+            so \(A_{\symrm{s}}\) acts on \(V_\alpha\) by multiplication by \(\alpha\).
+            Define \(A_{\symrm{n}}\) to be what is left over,
+            \begin{equation}
+                A_{\symrm{n}} = \sum_{\alpha \in \complex} (A|_{V_\alpha} - \alpha \id_{V_\alpha}).
+            \end{equation}
+            Then by construction \(A = A_{\symrm{s}} + A_{\symrm{n}}\) and \(A_{\symrm{s}}\) acts on each generalised eigenspace by scalar multiplication so it's action commutes with that of \(A_{\symrm{n}}\).
+            
+            We do not prove uniqueness.
+            % TODO: Maybe prove uniqueness
+        \end{proof}
+    \end{prp}
+    
+    Note that this works over \(\complex\), since it's algebraically closed, guaranteeing the generalised eigenspace decomposition exists.
+    It does not work in general over non-algebraically closed fields, it only works for the special cases where the field contains the eigenvalues.
+    
+    \subsection{Cartan Subalgebra}
+    \begin{dfn}{}{}
+        Let \(\lie{g}\) be a Lie algebra over \(\complex\).
+        We say that \(X \in \lie{g}\) is nilpotent (semisimple), or if we need to distinguish \(\ad\)-nilpotent (\(\ad\)-semisimple) if \(\ad_X\) is a nilpotent (semisimple) element of \(\End_{\complex} \lie{g}\).
+    \end{dfn}
+    
+    \begin{dfn}{Cartan Subalgebra}{}
+        Let \(\lie{g}\) be a Lie algebra.
+        A \defineindex{Cartan subalgebra} is a subalgebra \(\csa \subseteq \lie{g}\) containing only semisimple elements and which is maximal with respect to this property.
+        That is, if \(\csa' \subseteq \lie{g}\) is also a subalgebra consisting of semisimple elements and \(\csa \subseteq \csa'\) then \(\csa = \csa'\).
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        Every finite-dimensional Lie algebra has a Cartan subalgebra.
+        \begin{proof}
+            The zero space is always a subalgebra, and the zero element is semisimple.
+            This shows that every Lie algebra has a subalgebra consisting of semisimple elements.
+            Since we assume a finite number of dimensions it is always possible to take some maximal such subalgebra and this will then be a Cartan subalgebra.
+        \end{proof}
+    \end{lma}
+    
+    Note that we say \emph{a} Cartan subalgebra, Cartan subalgebras are not necessarily unique.
+    However, when there are multiple Cartan subalgebras they are all conjugate, and as such it's common to talk of \enquote{the} Cartan subalgebra.
+    
+    One property of Cartan subalgebras is that they are always abelian.
+    This is simply a special case of the following.
+    
+    \begin{lma}{}{lma:subalgebra of semisimple elements is abelian}
+        Let \(\lie{g}\) be a Lie algebra.
+        Any subalgebra, \(\lie{h} \subseteq \lie{g}\), consisting of semisimple elements is abelian.
+        \begin{proof}
+            Consider some \(X \in \lie{h}\).
+            Since \(\lie{h}\) is a subalgebra of \(\lie{g}\) it is closed under the bracket, and thus we can restrict the adjoint action of \(X\) on \(\lie{g}\) to a map \(\ad_X \colon \lie{h} \to \lie{h}\).
+            Our goal is to show that \(\lie{h}\) is abelian, which we can do by showing that \(\ad_X = 0\) when restricted to \(\lie{h}\).
+            By assumption \(\lie{h}\) consists of semisimple elements so \(\ad_X\) is semisimple.
+            Therefore it suffices to show that all eigenvalues of \(\ad_X\) are zero, since then in the basis in which it is diagonal it has only zeros on the diagonal, and thus is just the zero matrix.
+            More generally, if all eigenvalues vanish then the operator is also nilpotent, and semisimplicity plus nilpotency imply that the operator is zero.
+            
+            Let \(Y \in \lie{h}\) be an eigenvector of \(\ad_X\).
+            Then there exists some \(a \in \complex\) such that \(\ad_X(Y) = aY\).
+            Note that \(Y\) is also an eigenvector of \(\ad_Y\) since \(\ad_Y(Y)= \bracket{Y}{Y} = 0\), so the eigenvalue is \(0\).
+            We may extend this to some basis of eigenvectors of \(Y\), \(\{X_1, \dotsc, X_n\}\), with \(X_1 = Y\).
+            Then by definition there exist some \(\alpha_i \in \complex\) such that \(\ad_Y(X_i) = \alpha_iX_i\), and in particular we must have that \(\alpha_1 = 0\).
+            Now expand \(X\) in this eigenbasis, which lets us write
+            \begin{equation}
+                X = \sum_{i=1}^n u_iX_i
+            \end{equation}
+            for some \(u_i \in \complex\).
+            A direct computation in this basis then shows that
+            \begin{align}
+                \ad_X(Y) &= \bracket{X}{Y}\\
+                &= -\bracket{Y}{X}\\
+                &= -\bracket*{Y}{\sum_{i=1}^n u_i X_i}\\
+                &= -\sum_{i=1}^n u_i \bracket{Y}{X_i}\\
+                &= -\sum_{i=1}^n u_i \ad_Y(X_i)\\
+                &= -\sum_{i=2}^n u_i \alpha_iX_i
+            \end{align}
+            where we've used the fact that \(\ad_Y(X_1) = 0\) to get rid of the first term of the sum.
+            We also have
+            \begin{equation}
+                \ad_X(Y) = aY = aX_1.
+            \end{equation}
+            Equating these we have that
+            \begin{equation}
+                aX_1 = -\sum_{i=1}^n \alpha_i u_i X_i \implies aX_1 + \sum_{i=2} \alpha_i u_i X_i = 0.
+            \end{equation}
+            Since the \(X_i\) form a basis this implies that \(a = \alpha_i u_i = 0\) for all \(i\) by linear independence.
+            Thus, \(a = 0\) and \(\ad_X\) has only zero eigenvalues and is semisimple, so it is zero.
+            Hence, \(\lie{h}\) is abelian.
+        \end{proof}
+    \end{lma}
+    
+    \begin{crl}{}{}
+        Let \(\lie{g}\) be a Lie algebra and \(\lie{h} \subseteq \lie{g}\) a subalgebra consisting of only semisimple elements.
+        Then if any subalgebra strictly containing \(\lie{h}\) is nonabelian \(\lie{h}\) is a Cartan subalgebra of \(\lie{g}\).
+        \begin{proof}
+            By the contrapositive of \cref{lma:subalgebra of semisimple elements is abelian} the subalgebras containing \(\lie{h}\) cannot contain only semisimple elements, and therefore \(\lie{h}\) is a maximal subalgebra containing only semisimple elements, and thus is a Cartan subalgebra of \(\lie{g}\).
+        \end{proof}
+    \end{crl}
+    
+    This corollary gives us a method of checking if a given subalgebra is Cartan that is often easier to check than directly checking that there is no larger subalgebra.
+    
+    \begin{dfn}{Normaliser}{}
+        Let \(\lie{g}\) be a Lie algebra and let \(\lie{m} \subseteq\) be a subalgebra.
+        The \defineindex{normaliser}, \(N_{\lie{g}}(\lie{m})\), of \(\lie{m}\) in \(\lie{g}\) is the largest subalgebra of \(\lie{g}\) such that \(\bracket{N_{\lie{g}}(\lie{m})}{\lie{m}} \subseteq \lie{m}\).
+        That is,
+        \begin{equation}
+            N_{\lie{g}}(\lie{m}) = \{X \in \lie{g} \mid \bracket{X}{\lie{m}} \subseteq \lie{m}\}.
+        \end{equation}
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        The normaliser of a subalgebra is again a subalgebra.
+        Further the normaliser of a subalgebra in \(\lie{g}\) is equal to \(\lie{g}\) if and only if the subalgebra is an ideal.
+        \begin{proof}
+            Let \(\lie{g}\) be a Lie algebra and \(\lie{m} \subseteq \lie{g}\) a subalgebra.
+            To show that \(N_{\lie{g}}(\lie{m})\) is a subalgebra we need to show that it is a subspace which is closed under the bracket.
+            First note that if \(X \in N_{\lie{g}}(\lie{m})\) then \(\bracket{X}{\lie{m}} \subseteq \lie{m}\), that is \(\bracket{X}{Z} \in \lie{m}\) for all \(Z \in \lie{m}\).
+            Then it follows by linearity that \(\bracket{aX}{Z} = a\bracket{X}{Z} \in \lie{m}\) for any \(a \in \complex\).
+            If \(Y \in N_{\lie{g}}(\lie{m})\) also then \(\bracket{Y}{Z} \in \lie{m}\) for all \(Z \in \lie{m}\) and again by linearity we have
+            \begin{equation}
+                \bracket{X + Y}{Z} = \bracket{X}{Z} + \bracket{Y}{Z} \in \lie{m}.
+            \end{equation}
+            So, \(N_{\lie{g}}(\lie{m})\) is a subspace.
+            
+            Now suppose that \(X, Y \in N_{\lie{g}}(\lie{m})\).
+            Then for \(Z \in \lie{m}\) using the Jacobi identity we hvae
+            \begin{equation}
+                \bracket{\bracket{X}{Y}}{Z} = -\bracket{Z}{\bracket{X}{Y}} = -\bracket{\bracket{Z}{X}}{Y} - \bracket{X}{\bracket{Z}{Y}}
+            \end{equation}
+            and each of these brackets is in \(N_{\lie{g}}(\lie{m})\) since \(\bracket{Z}{X}\) and \(\bracket{Z}{Y}\) are in \(\lie{m}\) and so the bracket of these with \(Y\) and \(X\) respectively is again in \(\lie{m}\).
+            Thus, \(N_{\lie{g}}(\lie{m})\) is closed under the bracket so it is a subalgebra.
+            
+            Now suppose that \(\lie{m}\) is an ideal.
+            Then \(\bracket{X}{Z} \in \lie{m}\) for any \(X \in \lie{g}\) and \(Z \in \lie{m}\), so \(N_{\lie{g}}(\lie{m}) = \lie{g}\).
+            Conversely, suppose that \(N_{\lie{g}}(\lie{m}) = \lie{g}\).
+            Then \(\bracket{X}{Z} \in \lie{m}\) for any \(X \in \lie{g}\) and \(Z \in \lie{m}\), so \(N_{\lie{g}}(\lie{m})\) is all of \(\lie{g}\).
+        \end{proof}
+    \end{lma}
+    
+    From the last part of this proof we see that \(N_{\lie{g}}(\lie{m}) = \lie{g}\) is just a slightly more complicated way of writing the absorbing property of an ideal.
+    
+    An important property of Cartan subalgebras is that they are equal to their own normalisers.
+    That is, if \(X \in \lie{g}\) such that \(\bracket{X}{\csa} \subset \csa\) then \(X \in \lie{h}\).
+    This follows immediately from the maximality of Cartan subalgebras, since the normaliser of a subalgebra of semisimple elements consists only of semisimple elements.
+    
+    \subsubsection{Examples of Cartan Subalgebras}
+    \paragraph{Cartan Subalgebras of \(\specialLinearLie_2\)}
+    The simplest example of a Cartan subalgebra is the\footnote{a slight abuse of language, but one that is common} Cartan subalgebra of \(\specialLinearLie_2\), which is simply \(\csa = \complex H\).
+    To prove this is a Cartan subalgebra we need to show that
+    \begin{enumerate}[label=\alph*)]
+        \item every element of \(\csa\) is semisimple; and
+        \item \(\csa\) is maximal.
+    \end{enumerate}
+    
+    First note that we need to show that all elements of \(\csa\) are \(\ad\)-semisimple, that is that \(\ad_X\) is diagonalisable, not that \(X\) is diagonalisable.
+    An arbitrary element of \(\csa\) is of the form \(cH\) for some \(c \in \complex\).
+    We then have
+    \begin{align}
+        \ad_{cH}(E) &= \bracket{cH}{E} = 2cE,\\
+        \ad_{cH}(H) &= \bracket{cH}{H} = 0,\\
+        \ad_{cH}(F) &= \bracket{cH}{F} = -2cF.\\
+    \end{align}
+    This shows that in the basis \(\{E, H, F\}\) we have
+    \begin{equation}
+        \ad_{cH} = 
+        \begin{bmatrix}
+            2c & 0 & 0\\
+            0 & 0 & 0\\
+            0 & 0 & -2c
+        \end{bmatrix}
+    \end{equation}
+    which shows that \(\ad_{cH}\) is diagonalisable, and thus \(cH\) is semisimple.
+    
+    Now suppose that \(\tilde{\lie{h}}\) is some other subalgebra of \(\specialLinearLie_2\) such that \(\lie{h} \subseteq \tilde{\lie{h}}\) and \(\tilde{\lie{h}}\) is abelian.
+    Then for all \(Y \in \tilde{\lie{h}}\) we have \(\ad_X(Y) = 0\), which implies that all \(Y \in \tilde{\lie{h}}\) lie in the zero eigenspace of \(\ad_X\) for all \(X \in \csa\).
+    However, from our calculations above we see that the zero eigenspace of \(\ad_X\) is simply the span of \(H\), which is just \(\csa\).
+    Thus, \(\tilde{\lie{h}} \subseteq \csa\), and so we have \(\tilde{\lie{h}} = \csa\).
+    This proves maximality.
+    
+    It turns out that this is really the \emph{only} example of a Cartan subalgebra of \(\specialLinearLie_2\) up to a very specific type of isomorhpism.
+    The Lie group \(\specialLinear_2\) consists of \(2 \times 2\) matrices over \(\complex\) with unit determinant.
+    There is an action of \(\specialLinear_2\) on \(\specialLinearLie_2\) given by conjugation.
+    For \(A \in \specialLinear_2\) denote this action by \(c_A\), that is \(c_A(X) = AXA^{-1}\) for \(X \in \specialLinearLie_2\).
+    Since the bracket in \(\specialLinearLie_2\) is just the commutator it's easy to show that \(c_A\) preserves the bracket:
+    \begin{align}
+        \bracket{c_A(X)}{c_A(Y)} &= \bracket{AXA^{-1}}{AYA^{-1}}\\
+        &= AXA^{-1}AYA^{-1} - AYA^{-1}AXA^{-1}\\
+        &= AXYA^{-1} - AYXA^{-1}\\
+        &= A\bracket{X}{Y}A^{-1}\\
+        &= c_A(\bracket{X}{Y}).
+    \end{align}
+    Clearly conjugation is linear.
+    Thus, \(c_A\) is an automorphism of \(\specialLinearLie_2\).
+    
+    We claim that \(\Span_{\complex}\{AHA^{-1}\}\) for some fixed \(A \in \specialLinear_2\) is also a Cartan subalgebra of \(\specialLinearLie_2\).
+    This follows in exactly the same way as the proof that \(\Span_{\complex}\{H\}\) is a Cartan subalgebra.
+    The conjugate \(A\)s just factor out at each step.
+    In fact, one can show that all Cartan subalgebras of \(\specialLinearLie_2\) arise in this way.
+    
+    % TODO: are all CSAs conjugate under this action of the corresponding Lie group?
+    
+    \paragraph{Cartan Subalgebras of \(\specialLinearLie_n\)}
+    The next simplest example is the generalisation of this to \(\specialLinearLie_n\).
+    Note that \(\specialLinearLie_n\) consists of all \(n \times n\) traceless matrices over \(\complex\).
+    The Cartan subalgebra, \(\lie{h}\), consists of all such matrices which are also diagonal.
+    A basis for this is \(H_i = E_{ii} - E_{i+1,i+1}\) for \(i=1, \dotsc, n-1\) where \(E_{ij}\) is the elementary matrix with a 1 in the \(i\)th row and \(j\)th column and zero everywhere else.
+    
+    To show that this is indeed the Cartan subalgebra we need to show that each \(H_i\) is \(\ad\)-semisimple.
+    Rather than computing the action of \(H_i\) on \(\specialLinearLie_n\) it's simpler to find a simultaneous eigenbasis of the \(H_i\) for \(\specialLinearLie_n\).
+    This can be done because the adjoint action of the \(H_i\)s all commute with each other.
+    The \(H_i\) give us the diagonal matrices in \(\specialLinearLie_n\).
+    To get the other matrices we can simply take \(E_{ij}\) with \(i \ne j\).
+    Then a basis for \(\specialLinearLie_n\) is
+    \begin{equation}
+        \{H_i \mid i = 1, \dotsc, n - 1\} \cup \{E_{ij} \mid i, j \in \{1, \dotsc, n\} \text{ and } i \ne j\}.
+    \end{equation}
+    This is an eigenbasis for the adjoint action of the \(H_i\)s which can be shown using the relation
+    \begin{equation}
+        E_{ij}E_{k\ell} = \delta_{jk}E_{i\ell}.
+    \end{equation}
+    
+    
+    
+    
+    
+    
+    
+    
     
 	% Appdendix
 %	\appendixpage

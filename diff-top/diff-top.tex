@@ -872,7 +872,7 @@ noabbrev
     \end{lma}
     
     \section{Exterior Product}
-    \begin{dfn}{Exterior Product}{}
+    \begin{dfn}{Exterior Product}{def:exterior product}
         The \defineindex{exterior product} or \defineindex{wedge product} is the product \(\Lambda^k V^* \times \Lambda^\ell V^* \to \Lambda^{K+\ell}V^*\) defined by
         \begin{equation}
             (\omega \wedge \eta)(v_1, \dotsc, v_{k + \ell}) = \frac{1}{k!\ell!} \sum_{\sigma \in S_{k + \ell}} \omega(v_{\sigma(1)}, \dotsc, v_{\sigma(k)}) \eta(v_{\sigma(k + 1)}, \dotsc, v_{\sigma(k + \ell)}).
@@ -898,7 +898,7 @@ noabbrev
     \end{exm}
     
     \begin{lma}{}{}
-        The exterior product is associative, distributes over addition, and is supercommutative, meaning
+        The exterior product is associative, distributes over addition, and is graded-commutative (or supercommutative), meaning
         \begin{equation}
             \omega \wedge \eta = (-1)^{\deg(\omega) \deg(\eta)}\eta \wedge \omega
         \end{equation}
@@ -961,6 +961,93 @@ noabbrev
     \begin{lma}{}{}
         If \(\varphi \colon V \to V\) is an endomorphism then \(\varphi^*\omega = \det(\varphi) \omega\) for all \(\omega \in \Lambda^* V\).
     \end{lma}
+    
+    \chapter{Differential Forms}
+    \section{Differential Forms}
+    When we take the vector space \(V = T_pM\) and impose a smoothness condition on the resulting alternating \(k\)-forms we get differential forms.
+    
+    \begin{dfn}{Differential Form}{}
+        Let \(M\) be a smooth manifold and let \(k \in \naturals\).
+        A \define{differential \(k\)-form}\index{differential form}, \(\omega\), is a collection of alternating \(k\)-forms, \(\omega_p \in \Lambda^k T_p^*M\), one for each \(p \in M\).
+        That is, we have differential forms
+        \begin{equation}
+            \omega_p \colon T_pM \times \dotsb \times T_pM \to \reals
+        \end{equation}
+        with \(k\) copies of \(T_pM\) in the product.
+        The differential form, \(\omega\), itself is a function \(\omega \colon M \to \Lambda^kT_p^*M\).
+        
+        We impose the smoothness condition that for any \(k\) smooth vector fields, \(X_1, \dotsc, X_k \in \vectorFields(M)\) the function \(p \mapsto \omega_p(X_1(p), \dotsc, X_k(p))\) must be smooth.
+        
+        We denote the set of smooth differential \(k\)-forms on \(M\) by \(\Omega^k(M)\).
+        We call \(k\) the \defineindex{degree} of \(\omega\) and write \(k = \deg(\omega)\).
+    \end{dfn}
+    
+    \begin{remark}{}{}
+        The set
+        \begin{equation}
+            \Lambda^k T^*M = \{(p, \omega) \mid p \in M, \omega \in \Lambda^kT^*_pM\}
+        \end{equation}
+        is a vector bundle over \(M\), which we'll define in a future section.
+        % TODO: add reference to definition of vector bundle
+        This requires that \(\Lambda^kT^*M\) is a manifold, and indeed it is.
+        The projection \(\pi \colon \Lambda^k T^* M \to M\) given by \((p, \omega) \mapsto p\) is a sooth submersion, and each fibre (to be defined) \(\Lambda^kT^*_pM\) is a vector space, with addition and scalar multiplication given by smooth maps.
+        The manifold structure is uniquely determined by the fact that each \(\omega \in \Omega^k(M)\) defines a smooth map \(M \to \Lambda^k T^*M\) given by \(p \mapsto (p, \omega_p)\).
+        The composition of this map with the projection \(\pi\) is the identity on \(M\), and maps with this property are called (smooth) sections of the vector bundle.
+        This allows us to identify \(\Omega^k(M)\) with the space of smooth sections of \(\Lambda^kT^*M\), sometimes denoted \(\Gamma(\Lambda^kT^*M)\).
+        
+        The space \(\Omega^k(M)\) is a vector space, and is generally infinite dimensional (the dimension is finite only if \(M\) is a finite set or \(k > \dim M\) (in which case \(\Omega^k(M) = 0\))).
+        Note that \(\Omega^0(M) = \{f \colon M \to \reals \mid f \text{ is smooth}\}\) is the set of real valued smooth functions on \(M\), also denoted \(C^{\infty}(M)\).
+    \end{remark}
+    
+    The operators on the wedge product and pullback generalise pointwise to differential forms, as we see in the following definitions.
+    
+    \begin{dfn}{Exterior Product}{}
+        Let \(M\) be a smooth manifold and \(\omega \in \Omega^k(M)\) and \(\eta \in \Omega^{\ell}(M)\) differential forms on \(M\).
+        We define the \defineindex{exterior product} pointwise by
+        \begin{equation}
+            (\omega \wedge \eta)_p \coloneqq \omega_p \wedge \eta_p
+        \end{equation}
+        where on the right the exterior product is that of alternating forms defined in \cref{def:exterior product}.
+    \end{dfn}
+    
+    \begin{dfn}{Pullback}{}
+        Let \(M\) and \(N\) be smooth manifolds and let \(\omega \in \Omega^k(N)\) be a differential form on \(N\).
+        Let \(\varphi \colon M \to N\) be a smooth map between manifolds.
+        The \defineindex{pullback} of \(\omega\) is the differential \(k\)-form \(\varphi^*\omega \in \Omega^k(M)\) on \(M\) given by
+        \begin{equation}
+            (\varphi^*\omega)_p(v_1, \dotsc, v_k) \coloneqq \omega_{\varphi(p)}(\dl{\varphi}_pv_1, \dotsc, \dl{\varphi}_pv_k)
+        \end{equation}
+        for all \(p \in M\) and \(v_i \in T_pM\).
+    \end{dfn}
+    
+    The following lemma is immediate from the same properties for the exterior product and pullback of alternating forms, everything just factors through the pointwise operations.
+    
+    \begin{lma}{}{}
+        The exterior product is associative, distributes over addition, and is graded-commutative.
+        
+        The pullback is linear, preserves the exterior product, and provides a contravariant functor between vector bundles.
+    \end{lma}
+    
+    \begin{lma}{}{}
+        Let \(M\) and \(N\) be smooth manifolds, \(\omega \in \Omega^k(N)\) a differential form, and \(X_1, \dotsc, X_k \in \vectorFields(N)\) vector fields.
+        Let \(\varphi \colon M \to N\) be a diffeomorphism.
+        Then 
+        \begin{equation}
+            (\varphi^*\omega)(\varphi^*X_1, \dotsc, \varphi^*X_k) = \omega(X_1, \dotsc, X_k) \circ \varphi.
+        \end{equation}
+    \end{lma}
+    
+    \section{Differential Forms in Local Coordinates}
+    For explicit calculations (if you're a physicist) it can be useful to work in local coordinates.
+    That is, we take some chart \((U_\alpha, \varphi_\alpha)\), and we restrict our attention to only the part of \(M\) covered by \(U_\alpha\).
+    We can then use \(\varphi_\alpha\) to get explicit functions between subsets of \(\reals^m\) and \(\reals\) instead of functions \(M \to \reals\).
+    In this section we'll look at how this lets us express differential forms in local coordinates.
+    
+    \begin{remark}{}{}
+        We have so far assumed, and will continue to assume, that manifolds do not have boundaries.
+        A manifold with boundary can be defined in the same way as a manifold without boundary, just replace \(\reals^m\) with the upper half space, \(\symbb{H}^m = \{(x_1, \dotsc, x_m) \in \reals^m \mid x_m \ge 0\}\).
+        Then a boundary point is any point in \(M\) which maps to coordinates with \(x_m = 0\) in a chart, and all other points are interior points.
+    \end{remark}
     
     
     % Appdendix

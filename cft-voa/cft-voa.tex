@@ -80,6 +80,14 @@ noabbrev
 \DeclarePairedDelimiterX{\poissonBracket}[2]{\{}{\}}{#1 , #2}
 \newcommand{\hilbertSpace}{\symcal{H}}
 \DeclareMathOperator{\End}{End}
+\newcommand{\hermit}{{\dagger}}
+\newcommand{\fockSpace}{\symcal{F}}
+\newcommand{\bosonAlgebra}{\symfrak{h}}
+\newcommand{\minkowski}{\symrm{M}}
+\newcommand{\ren}{\symrm{ren}}
+\DeclareMathOperator{\RealPart}{Re}
+\DeclareMathOperator{\ImPart}{Im}
+\AtBeginDocument{\renewcommand{\Re}{\RealPart} \renewcommand{\Im}{\ImPart}}
 
 \begin{document}
     \frontmatter
@@ -2591,7 +2599,471 @@ noabbrev
         \end{equation}
     \end{exm}
     
-    In the canonical quantisation approach we replace the commutative algebra \(C^{\infty}(\phaseSpace)\) with some non-commutative algebra, \(O(\hilbertSpace) \subseteq \End \hilbertSpace\) of operators on a Hilbert space, \(\hilbertSpace\).
+    In the canonical quantisation approach we replace the commutative algebra \(C^{\infty}(\phaseSpace)\) with some non-commutative algebra, \(C(\hilbertSpace) \subseteq \End \hilbertSpace\), of operators on a Hilbert space, \(\hilbertSpace\).
+    We do this in such a way that the constant functions \(q^i\) and \(p_j\) are replaced by operators, \(\operator{q}^i\) and \(\operator{p}_j\) satisfying the commutation relation
+    \begin{equation}
+        \bracket{\operator{q}^k}{\operator{p}_j} = i\hbar\tensor{\delta}{^i_j}.
+    \end{equation}
+    Here \(\hbar\) is Planck's constant, and we'll work in units where \(\hbar = 1\) so this relationship becomes
+    \begin{equation}
+        \bracket{\operator{q}^k}{\operator{p}_j} = i\tensor{\delta}{^i_j}.
+    \end{equation}
+    This is called the \defineindex{canonical commutation relation}.
+    
+    We also have to replace the other functions in \(C^{\infty}(\phaseSpace)\) by operators on \(\hilbertSpace\).
+    This isn't as straightforward as replacing all of the \(q^i\) and \(p_j\) with the corresponding operators.
+    For example, there is some ambiguity in a term like \(q^ip_j = p_jq^i\) as to whether this is \(\operator{q}^i\operator{p}_j\) or \(\operator{p}_j\operator{p}^i\).
+    There are various approaches to fix this, one of the simplest being \defineindex{Weyl quantisation} in which any monomial in \(q^i\) and \(p_j\) is replaced by the average over all possible orderings, with some overall normalisation factor.
+    Fortunately, we shall only be interested in cases where we have monomials in \(q^i\) or monomials in \(p_j\), never mixing the two in this way, and as such the naive replacement scheme will be sufficient for our purposes.
+    Under this quantisation scheme the Hamiltonian of \(n\) harmonic oscillators is replaced by the operator
+    \begin{equation}
+        \operator{H} = \sum_{i=1}^n \left( \frac{1}{2}\operator{p}_i^2 + \frac{1}{2}\omega_i^2 \operator{q}_i^2 \right).
+    \end{equation}
+    
+    In maths parlance this process of replacing elements of the algebra \(C^{\infty}(\phaseSpace)\) with operators on some Hilbert space is exactly finding a representation of \(C^{\infty}(\phaseSpace)\).
+    It turns out that for a system of finitely many degrees of freedom, such as our case of finitely many harmonic oscillators, there is only one faithful representation up to isomorphism.
+    We call this the standard representation, and in the case of \(n\) harmonic oscillators it is given by taking \(\hilbertSpace = L_2(\reals^n)\) to be the Hilbert space of square integrable functions \(\reals^n \to \reals\) with the inner product
+    \begin{equation}
+        \innerproduct{\psi_1}{\psi_2} = \braket{\psi_1}{\psi_n} \coloneq \int \dl{^nq} \, \overbar{\psi}_1(q_1, \dotsc, q_n) \psi_2(q_1, \dotsc, q_n)
+    \end{equation}
+    and defining the operators \(\operator{q}^i\) and \(\operator{p}_j\) by
+    \begin{align}
+        \operator{q}^i \psi(q_1, \dotsc, q_n) &= q^i \psi(q_1, \dotsc, q_n)\\
+        \operator{p}_j \psi(q_1, \dotsc, q_n) &= -i\diffp{}{q^j}\psi(q_1, \dotsc, q_n).
+    \end{align}
+    Note that \(q^i\) are the constant functions in \(C^{\infty}(\phaseSpace)\) whereas the \(q_i\) are just the components of some point in \(\phaseSpace\).
+    This distinction is subtle and not really that important once we fix this representation.
+    
+    Note that both operators defined above are Hermitian (or self-adjoint in maths-talk).
+    An operator, \(\operator{A}\) is called Hermitian if
+    \begin{equation}
+        \innerproduct{\psi_1}{A \psi_2} = \innerproduct{A \psi_1}{\psi_2}.
+    \end{equation}
+    More generally, the Hermitian conjugate of an operator, \(\operator{A}\), is the operator \(\operator{A}^{\hermit}\) such that
+    \begin{equation}
+        \innerproduct{\operator{A}^{\hermit}\psi_1}{\psi_2} = \innerproduct{\psi_1}{\operator{A}\psi_2}.
+    \end{equation}
+    So a Hermitian operator is one which is its own Hermitian conjugate.
+    
+    In this representation the Hamiltonian of \(n\) harmonic oscillators is given by the operator
+    \begin{equation}
+        \operator{H} = \sum_{i=1}^n \left( \frac{1}{2} \diffp[2]{}{(q^i)} + \frac{1}{2}\omega_i^2 (q^i)^2 \right).
+    \end{equation}
+    
+    In quantum mechanics the eigenvalues of the Hamiltonian operator are the energy levels of the system.
+    For this particular case there are two approaches to computing the spectrum of this operator.
+    The first is an analytic approach, solving the differential equation \(\operator{H}\psi = E\psi\) and finding the energy levels, \(E\), this way.
+    This makes use of the Hermite polynomials.
+    We shall take the algebraic approach using the creation and annihilation operators, which is both nicer and generalises to QFT.
+    We define the operators
+    \begin{equation}
+        a_j = \sqrt{\frac{\omega_j}{2}} \left( \operator{q}^j + \frac{i}{\omega_j}\operator{p}_j \right), \qqand a_j^{\hermit} = \sqrt{\frac{\omega_j}{2}} \left( \operator{q}^j - \frac{i}{\omega_j}\operator{p}_j \right)
+    \end{equation}
+    for \(\omega_j > 0\), and we call these annihilation and creation operators respectively.
+    These two operators are Hermitian conjugates of each other, and one can show that they satisfy the commutation relations
+    \begin{equation}
+        \bracket{a_i}{a_j^\hermit} = \delta_{ij}, \qqand \bracket{a_i}{a_j} = \bracket{a_i^{\hermit}}{a_j^{\hermit}} = 0.
+    \end{equation}
+    These operators allow us to rewrite the Hamiltonian as
+    \begin{equation}
+        \operator{H} = \sum_{i=1}^n \omega_i\left( a_i^{\hermit}a_i + \frac{1}{2} \right).
+    \end{equation}
+    This then satisfies the commutation relations
+    \begin{equation}
+        \bracket{\operator{H}}{a_i} = -\omega_ia_i, \qqand \bracket{\operator{H}}{a_i^{\hermit}} = \omega_ia_i^\hermit.
+    \end{equation}
+    
+    Let \(\ket{E}\) be an eigenvector of \(\operator{H}\) with eigenvalue \(E\), that is \(\operator{H}\ket{E} = E\ket{E}\), then we have
+    \begin{align}
+        \operator{H}a_i^{\hermit}\ket{E} &= (a_i^{\hermit}\operator{H} + \bracket{\operator{H}}{a_i^{\hermit}})\ket{E}\\
+        &= (a_i^{\hermit}\operator{H} + \omega_ia_i^\hermit)\ket{E}\\
+        &= (E + \omega_i)a_i^\hermit\ket{E}
+    \end{align}
+    which shows that \(a_i^\hermit\ket{E}\) is an eigenvector of \(\operator{H}\) with eigenvalue \(E + \omega_i\).
+    That is, \(a_i^\hermit\ket{E}\) is a state with energy \(E + \omega_i\).
+    This is why we call \(a_i^{\hermit}\) a creation operator, it has \enquote{created} some extra amount of energy, \(\omega_i\).
+    The same calculation with \(a_i\) shows that \(a_i\ket{E}\) is an energy eigenstate with energy\footnote{this is true only if \(a_i\ket{E} \ne 0\), which is not guaranteed, in particular if \(\ket{E}\) is the ground state then \(a_i\ket{E} = 0\).} \(E - a_i\), so \(a_i\) has \enquote{annihilated} some amount of energy, \(\omega_i\).
+    
+    If the spectrum of \(\operator{H}\) is bounded below (which must be the case for a reasonable physical theory) then there must be some state, \(\ket{0} \in \hilbertSpace\) such that \(a_j\ket{0} = 0\).
+    This state is an energy eigenstate since
+    \begin{equation}
+        \operator{H}\ket{0} = \sum_{i=1}^n \omega_i\left( a_i^\hermit a_i + \frac{1}{2} \right)\ket{0} = \frac{1}{2}\sum_{i=1}^n \omega_i \ket{0}.
+    \end{equation}
+    
+    Rather than start with \(\hilbertSpace\) and look at operators we can now start with just a single state, \(\ket{0}\), and define this state to be annihilated by all annihilation operators, so \(a_i\ket{0} = 0\).
+    Then we can build other states by acting with creation operators, so we get states like
+    \begin{equation}
+        a_1^\hermit \ket{0}, \quad a_2^\hermit \ket{0}, \quad a_1^\hermit a_2^\hermit \ket{0}, \qand (a_1^\hermit)^2 \ket{0}.
+    \end{equation}
+    More formally, we define bosonic \defineindex{Fock space}, \(\fockSpace\), to be the free vector space on
+    \begin{equation}
+        \{(a_1^{\hermit})^{m_1} \dotsm (a_n^{\hermit})^{m_n}\ket{0} \mid m_i \in \naturals = \{0, 1, 2, \dotsc\}\}.
+    \end{equation}
+    Note that we fix the ordering so that \(a_1^{\hermit}\) comes first then \(a_2^{\hermit}\) and so on, since the \(a_i^{\hermit}\) commute.
+    Fock space is an irreducible representation of the algebra \(\bosonAlgebra = \{a_i, a_i^{\hermit} \mid i = 1, 2, \dotsc\}\), which is known as the \defineindex{boson algebra} or \define{Heisenberg algebra}\index{Heisenberg algebra!see{boson algebra}}.
+    
+    The state \(\ket{0}\) is called the \define{ground}\index{ground state} or \defineindex{vacuum state}.
+    We interpret \(a_i^{\hermit}\ket{0}\) as a state with energy \(\omega_i\), and in general the state
+    \begin{equation}
+        (a_1^{\hermit})^{m_1} \dotsb (a_n^{\hermit})^{m_n} \ket{0}
+    \end{equation}
+    has energy
+    \begin{equation}
+        m_1\omega_1 + \dotsb + m_n\omega_n.
+    \end{equation}
+    We'll see that once we pass to QFT rather than creating energy the operators \(a_i^{\hermit}\) create particles, then \(\ket{0}\) is the vacuum state consisting of no particles, \(a_i^{\hermit}\ket{0}\) consists of a single particle of energy \(\omega_i\), \(a_1^{\hermit}a_2^{\hermit}\ket{0}\) consists of two particles, one of type 1 and one of type 2, of energies \(\omega_1\) and \(\omega_2\) respectively.
+    
+    \chapter{Quantising the Free Boson}
+    In this section we'll look at the quantisation of the free massless scalar boson, which is the simplest case of quantisation in QFT.
+    Nevertheless, this example demonstrates the general process of quantisation and some of the subtleties which arise along the way.
+    
+    We'll restrict ourselves to a particularly nice spacetime, the cylinder\footnote{I'm writing the time coordinate first, the lectures have the space coordinate first.}, \(\reals \times S^1\), with coordinates \((t, x)\).
+    That is, we consider a \((1 + 1)\)-dimensional spacetime in which the spacial coordinate is periodic with period \(L\) (which is the circumference of the cylinder).
+    We'll work with the Minkowski metric in this part, unlike the rest of what we've done which has been in Euclidean spacetime.
+    The reason for this is that the Minkowski metric is required for canonical quantisation to work.
+    We'll move back to Euclidean later once we've introduced radial quantisation, which works in Euclidean space.
+    For now then the metric is \(-(\dl{t})^2 + (\dl{x})^2\), meaning we're using the (bad) metric signature\footnote{not to be confused with the (doubly bad) metric signature \(({+}{-})\) corresponding to \((\dl x)^2 - (\dl t)^2\), which is the same, but now with the space coordinate first} \(({-}{+})\).
+    
+    \section{Quantisation}
+    Before we can quantise the system we need to specify the system we're quantising.
+    We do this by specifying the action, which is just specifying the Lagrangian with more steps.
+    In this case the action is
+    \begin{equation}
+        S_{\minkowski} = \frac{1}{8\pi} \int \dl{t} \int_0^L \dl{x} \left( \frac{1}{2}(\partial_t\phi)^2 - \frac{1}{2}(\partial_x\phi) \right)
+    \end{equation}
+    where \(\phi = \phi(t, x)\) is our field and the \(\minkowski\) in \(S_{\minkowski}\) just stands for Minkowski, to remind us that we're not working with the Euclidean metric.
+    Note that we're following the convention common in QFT where otherwise unspecified integrals are taken over the whole domain, which for \(t\) is \((-\infty, \infty)\).
+    We could also have left the domain of the \(x\) integral unspecified, since \([0, L)\) is the whole domain of \(x\) (choosing the obvious coordinates for the cylinder with some arbitrary point around the circumference declared zero).
+    But we choose to leave the \(0\) and \(L\) explicit to remind us that \(x\) has a compact domain.
+    
+    The quantisation process in QFT is now to consider a Fourier transform in \(x\).
+    In this case we have that \(x\) is periodic, so we can actually consider a Fourier series.
+    For a fixed value of \(t\) we write
+    \begin{equation}
+        \phi(t, x) = \sum_{n \in \integers} \exp\left\{ \frac{2\pi in}{L}x \right\} \phi_n(t)
+    \end{equation}
+    where \(\phi_n(t)\) are the Fourier modes of our field, and are to be determined.
+    We can now substitute this into our action functional, giving
+    \begin{align}
+        S_{\minkowski} &= \frac{1}{8\pi} \int \dl{t} \int_0^L \dl{x} \left[ \left( \sum_{n \in \integers} \diffp{}{t}(\e^{iknx}\phi_n) \right)^2 - \left( \sum_{n \in \integers} \diffp{}{x}(\e^{iknx}\phi_n \right)^2 \right]\\
+        &= \frac{1}{8\pi} \int \dl{t} \int_0^L \dl{x} \left[ \left( \sum_{n \in \integers} \e^{iknx} \dot{\phi}_n \right)^2 - \left( \sum_{n \in \integers} ikn \e^{iknx} \phi_n \right)^2 \right]\\
+        &= \frac{1}{8\pi} \int \dl{t} \int_0^L \dl{x} \sum_{n \in \integers} \sum_{m \in \integers} (\e^{iknx}\dot{\phi}_n \e^{ikmx} \dot{\phi}_m - ikn\e^{iknx}\phi_n ikm\e^{ikmx}\phi_m) \notag\\
+        &= \frac{1}{8\pi} \int \dl{t} \int_0^L \dl{x} \e^{ik(n + m)x} (\dot{\phi}_n \dot{\phi}_m + k^2mn \phi_n \phi_m)\\
+        &= \frac{1}{8\pi} \int \dl{t} \sum_{n \in \integers} \sum_{m \in \integers} \delta_{n,-m} (\dot{\phi}_n \dot{\phi}_m + k^2 mn \phi_n\phi_m)\\
+        &= \frac{L}{8\pi} \int \dl{t} \sum_{n \in \integers} (\dot{\phi}_n \dot{\phi}_{-n} - k^2n^2 \phi_n \phi_{-n}).
+    \end{align}
+    where \(k = 2\pi/L\).
+    Here we've used
+    \begin{equation}
+        \int_0^L \dl{x} \, \e^{i(n - m)x} = L\delta_{k\ell},
+    \end{equation}
+    which holds whenever \(0\) is in the range of integration and \(n\) and \(m\) are discrete.
+    This is simply the Fourier transform of the indicator function.
+    
+    Looking at this it is tempting to identify it as the action functional of an infinite number of harmonic oscillators, where instead of \(q^i\) and \(\dot{q}^i\) we now have \(\phi_n\) and \(\dot{\phi}_n\).
+    However, we don't have \((q^i)^2\) but \(\phi_n \phi_{-n}\).
+    This difference goes away if we instead consider the variables \(\phi_n + \phi_{-n}\) and \(i(\phi_n - \phi_{-n})\), a transformation of variables which diagonalises the quadratic terms.
+    So, this really can be viewed as an infinite number of harmonic oscillators, they're just not quite the oscillators we initially thought they would be.
+    We will continue to work with \(\phi_n\) and \(\phi_{-n}\), realising that since we're considering a real field, \(\phi\), basic Fourier analysis tells us that \(\overbar{\phi}_n = \phi_{-n}\), and thus we have \(\abs{\phi}_n^2\) here.
+    The energy corresponding to the \(n\)th mode is
+    \begin{equation}
+        \omega_n = kn = \frac{2\pi n}{L}.
+    \end{equation}
+    
+    We can now introduce the conjugate momenta,
+    \begin{equation}
+        \pi_n \coloneqq \diffp{\lagrangian}{\dot{\phi}_n} = \frac{L}{4\pi} \dot{\phi}_{-n}.
+    \end{equation}
+    Note that in the derivative we get a factor of 2 because for a fixed value of \(n\) there are two contributions from \(\dot{\phi}_n\) to the sum, once when the index of the sum is \(n\) and once when the index of the sum is \(-n\).
+    
+    Now that we have our canonical variables we can quantise by passing to operators, \(\operator{\phi}_n\) and \(\operator{\pi}_n\), which satisfy the canonical commutation relations
+    \begin{equation}
+        \bracket{\operator{\phi}_n}{\operator{\pi}_m} = i\delta_{mn}, \qqand \bracket{\operator{\phi}_n}{\operator{\phi}_m} = \bracket{\operator{\pi}_n}{\operator{\pi}_m} = 0.
+    \end{equation}
+    The Hamiltonian operator is then
+    \begin{equation}
+        \operator{H} = \frac{2\pi}{L} \sum_{n \in \integers} \left( \operator{\pi}_n \operator{\pi}_{-n} + \frac{1}{4}n^2\operator{\phi}_n\operator{\phi}_{-n} \right).
+    \end{equation}
+    This is just the usual Legendre transformation of the Lagrangian followed by replacing the variables with the corresponding operators, which can be done unambiguously in this case.
+    
+    Note that the zero mode, \(\phi_0\), has a vanishing frequency, and as such we need to be careful when dealing with this term.
+    We can pull the corresponding momentum out of the sum and use the symmetry of the sum in \(n\), and the fact that the \(\operator{\phi}_n\) and \(\operator{\pi}_n\) commute with themselves, to replace the doubly-infinite sum with a half-infinite sum:
+    \begin{equation}
+        \operator{H} = \frac{2\pi}{L}\left( \operator{\pi}_0^2 + 2 \sum_{n=1}^{\infty} \left( \operator{\pi}_n\operator{\pi}_{-n} + \operator{\phi}_n\operator{\phi}_{-n} \right) \right).
+    \end{equation}
+    
+    \section{Creation and Annihilation Operators}
+    To find the energy eigenvalues and build the corresponding Fock space we introduce creation and annihilation operators.
+    We need two sets this time simply because we want to have one for each \(n \in \integers\) but we'd prefer to work with half-infinite sums, so in the following definitions \(n > 0\):
+    \begin{align}
+        \label{eqn:creation operators}
+        a_n &= \frac{1}{\sqrt{n}}\left( \operator{\pi}_{-n} - \frac{i}{2}n \operator{\phi}_n \right),\\
+        \overbar{a}_n &= \frac{1}{\sqrt{n}}\left( \operator{\pi}_{-n} - \frac{i}{2}n \operator{\phi}_n \right).
+    \end{align}
+    We can compute the adjoints using \(\operator{\phi}_n^{\hermit} = \operator{\phi}_{-n}\) and \(\operator{\pi}_n^{\hermit} = \operator{\pi}_{-n}\), which is the operator version of requiring that \(\overbar{\phi}_n = \phi_{-n}\) and \(\overbar{\pi}_n = \pi_{-n}\):
+    \begin{align}
+        \label{eqn:annihilation operators}
+        a_n^{\hermit} &= \frac{1}{\sqrt{n}}\left( \operator{\pi}_{n} + \frac{i}{2}n \operator{\phi}_{-n} \right),\\
+        \overbar{a}_n^{\hermit} &= \frac{1}{\sqrt{n}}\left( \operator{\pi}_{n} + \frac{i}{2}n \operator{\phi}_{-n} \right).
+    \end{align}
+    
+    Using these one can show that we have the commutation relations
+    \begin{equation}
+        \bracket{a_n}{a_m^\hermit} = \bracket{\overbar{a}_n}{\overbar{a}_m^{\hermit}} = \delta_{mn}
+    \end{equation}
+    and all other commutators vanish.
+    
+    Note that the choice of \(1/\sqrt{n}\) normalisation in \(a_n\) is common, but not universal.
+    If we didn't include this then we would instead get the commutation relations \(\bracket{a_n}{a_m^{\hermit}} = n\delta_{mn}\), a choice that is sometimes more convenient for vertex operators, but not for QFT.
+    
+    We also have the following identity, which can be checked by substituting in the definitions of the creation and annihilation operators and making use of the commutation relations for \(\operator{\phi}_n\) and \(\operator{\pi}_n\):
+    \begin{equation}
+        n(a_n^{\hermit} a_n + \overbar{a}_n^{\hermit}\overbar{a}_n + 1) = 2\left( \operator{\pi}_n \operator{\pi}_{-n} + \frac{1}{4}n^2 \operator{\phi}_n \operator{\phi}_{-n} \right).
+    \end{equation}
+    This can be used to rewrite the Hamiltonian in terms of the zero mode and the creation and annihilation operators:
+    \begin{equation}
+        \operator{H} = \frac{2\pi}{L}\left( \operator{\pi}_0^2 + \sum_{n=1}^{\infty} n(a_n^{\hermit}a_n + \overbar{a}_n^{\hermit} \overbar{a}_n) + e_0 \right).
+    \end{equation}
+    This is deceptively simple because
+    \begin{equation}
+        e_0 = \sum_{n=1}^{\infty} n
+    \end{equation}
+    is a divergent sum.
+    
+    Fortunately, there is a process in QFT, known as renormalisation, for dealing with such infinities.
+    The key to this is that \(e_0\) is constant, and so it only effects the vacuum energy of the system, which we'll call \(E_0\).
+    For a finite number, \(N\), of oscillators the vacuum energy is
+    \begin{equation}
+        E_0 = \sum_{i=1}^N \frac{1}{2}\omega_i.
+    \end{equation}
+    The Hamiltonian we have, up to a factor of \(2\pi/L\), looks like the Hamiltonian of an infinite number of oscillators, each with energy \(\omega_n = n\).
+    So, the candidate for the vacuum energy in this case is this divergent sum, \(e_0\).
+    The renormalisation process has two steps, first we regulate, introducing some parameter, \(\tau\), such that for most values of \(\tau\) the quantity is finite, then we renormalise, taking the limit as \(\tau\) goes to some value for which the quantity diverges, but in such a way that we can still extract some information.
+    This process is more an art than a science, and the choice of regulator is not unique.
+    
+    One choice of regulator that works for us here is to introduce the parameter \(\tau\) by definint
+    \begin{equation}
+        e_0(\tau) = \sum_{n=1}^{\infty} n\e^{-\tau n}
+    \end{equation}
+    which is finite for for \(\tau > 0\).
+    Note that \(e_0(0)\) is the original divergent sum we want.
+    For \(\tau > 0\) we then have
+    \begin{equation*}
+        e_0(\tau) = \sum_{n=1}^{\infty} n\e^{-\tau n} = \sum_{n=0}^{\infty} n\e^{-\tau n} = -\diff{}{\tau} \sum_{n=0}^{\infty} \e^{-n\tau} = -\diff{}{\tau} \frac{1}{1 - \e^{-\tau}} = \frac{\e^{-\tau}}{(1 - \e^{-\tau})^2}.
+    \end{equation*}
+    Here we've used the geometric sum formula.
+    Renormalising corresponds to taking the \(\tau \to 0\) limit to remove the regulator.
+    To do this we'll expand \(e_0(\tau)\) in a Laurent series about 0, which gives
+    \begin{equation}
+        \frac{e^{-\tau}}{(1 - \e^{-\tau})^2} = \frac{1}{\tau^2} - \frac{1}{12} + \frac{\tau^2}{240} + \order(\tau^4).
+    \end{equation}
+    Note that the \(\tau \to 0\) limit still gives a divergent quantity.
+    Instead, we can consider the limit
+    \begin{equation}
+        \lim_{\tau \to 0} \left( \frac{\e^{-\tau}}{(1 - \e^{-\tau})^2} - \frac{1}{\tau^2} \right) = -\frac{1}{12}.
+    \end{equation}
+    Then the renormalised vacuum energy is defined to be the constant term in the Hamiltonian \enquote{minus \(\infty\)}, where we subtract the infinity in the way we subtracted \(1/\tau^2\) above to be left with \(-1/12\).
+    This then gives the renormalised vacuum energy
+    \begin{equation}
+        E_0^{\ren} = -\frac{1}{12} \left( \frac{2\pi}{L} \right) = -\frac{\pi}{6L}.
+    \end{equation}
+    
+    There are alternative regularisation procedures we could have considered.
+    A common one is to introduce a cut-off, a large energy value that we do not consider values above.
+    This is better physically motivated, since a sufficiently high energy value should be unobtainable for any real experiment.
+    In this case if we introduce an energy cut-off since \(\omega_n = n\) this corresponds to truncating the sum at some finite number of terms.
+    Note that it is no coincidence that we have the Riemann zeta function
+    \begin{equation}
+        \zeta(-1) = -\frac{1}{12}
+    \end{equation}
+    and for \(s \in \complex\) with \(\Re{s} > 1\) we have
+    \begin{equation}
+        \zeta(z) = \sum_{n=1}^{\infty} n^{-s},
+    \end{equation}
+    which makes it tempting to say that
+    \begin{equation}
+        -\frac{1}{12} \mathrel{\enquote{{=}}} 1 + 2 + 3 + \dotsb.
+    \end{equation}
+    Of course, \(\zeta\) is not defined by this sum for \(\Re{s} \le 1\), instead it is defined to be the analytic continuation of this sum, but don't let actual maths get in the way of a good meme.
+    
+    While this renormalisation process is questionable in its rigour it does produce correct answers.
+    We'll also see later that the conformal symmetry fixes the vacuum energy in a less ad hoc way, but renormalisation is a process which works form many QFTs, not just CFTs.
+    
+    After all of this our renormalised Hamiltonian is
+    \begin{equation}
+        \operator{H} = \frac{2\pi}{L} \left( \operator{\pi}_0^2 + \sum_{n=1}^{\infty} n(a_n^{\hermit}a_n + \overbar{a}_n^{\hermit}\overbar{a}_n) \right) - \frac{\pi}{6L}.
+    \end{equation}
+    
+    \section{Fock Space}
+    With the renormalised Hamiltonian we can compute the following commutation relations:
+    \begin{equation}
+        \bracket{\operator{H}}{a_n} = -\frac{2\pi n}{L} a_n, \qqand \bracket{\operator{H}}{\overbar{a}_n} = -\frac{2\pi n}{L} \overbar{a}_n.
+    \end{equation}
+    Using the fact that \(\operator{H}\) is Hermitian and \(\bracket{A}{B}^{\hermit} = \bracket{B^{\hermit}}{A^{\hermit}} = -\bracket{A^{\hermit}}{B^{\hermit}}\) we also get
+    \begin{equation}
+        \bracket{\operator{H}}{a_n^{\hermit}} = \frac{2\pi n}{L} \operator{a}_n^{\hermit}, \qqand \bracket{\operator{H}}{\overbar{a}_n^{\hermit}} = \frac{2\pi n}{L} \overbar{a}_n^{\hermit}.
+    \end{equation}
+    As we did before we can use these commutation relations to prove that if \(\ket{E}\) is an energy eigenstate with eigenvalue \(E\) then \(a_n^{\hermit}\ket{E}\) and \(\overbar{a}_n\ket{E}\) are energy eigenstates with energy \(E + 2\pi n/L\), and \(a_n\ket{E}\) and \(\overbar{a}_n\ket{E}\) are energy eigenstates with energy \(E - 2\pi n/L\).
+    We then define the vacuum state, \(\ket{0}\), to be such that
+    \begin{equation}
+        a_n \ket{0} = \overbar{a}_n \ket{0} = 0.
+    \end{equation}
+    
+    We do not place any constraints on the spectrum of \(\operator{\pi}_0\), other than it must be real since \(\operator{\pi}_0\) is Hermitian (\(\operator{\pi}_0^{\hermit} = \operator{\pi}_{-0} = \operator{\pi}_{0}\)).
+    We define the states \(\ket{p}\) to be eigenstates of \(\operator{\pi}_0\) with eigenvalue \(p\).
+    That is, \(\operator{\pi}_0\ket{p} = p\ket{p}\) and for which \(a_n\ket{p} = \overbar{a}_n\ket{p} = 0\).
+    One can then show that
+    \begin{equation}
+        \operator{H}\ket{p} = \frac{2\pi}{L}\left( p^2 - \frac{1}{12} \right)\ket{p},
+    \end{equation}
+    so these are also eigenstates of the Hamiltonian, which is possible because \(\bracket{\operator{H}}{\operator{\pi}_0} = 0\).
+    From these definitions we can generate Fock space as the free vector space with the basis given by the elements
+    \begin{equation}
+        (a_{n_1}^{\hermit})^{m_1} \dotsm (a_{n_N}^{\hermit})^{m_N} (\overbar{a}_{\overbar{n}_1}^{\hermit})^{\overbar{m}_1} \dotsm (\overbar{a}_{\overbar{n}_M}^{\hermit})^{\overbar{m}_M} \ket{p}.
+    \end{equation}
+    Note that \(n_i\) and \(\overbar{n}_i\), and \(m_i\) and \(\overbar{m}_i\) are not related, they're all independent integers.
+    Such a state has energy eigenvalue
+    \begin{equation}
+        E = \frac{2\pi}{L}\left( \sum_{i=1}^N m_in_i + \sum_{i=1}^M \overbar{m}_i \overbar{n}_i + p^2 - \frac{1}{12} \right),
+    \end{equation}
+    which is simply the energy corresponding to the state \(\ket{p}\) plus the energy \(2\pi n_i/L\) \enquote{created} by \(a_{n_i}^{\hermit}\) \(m_i\) times and the energy \(2\pi \overbar{n}_i/L\) \enquote{created} by \(\overbar{a}_{\overbar{n}}^{\hermit}\) \(\overbar{m}_i\) times.
+    
+    Note that what we have constructed here is the \enquote{algebraic} Fock space.
+    For QFT it's useful to have a Hilbert space, and we can get one by completing this \enquote{algebraic} Fock space into a Hilbert space (with respect to some inner product) and that is what is usually considered the Fock space for actually doing QFT.
+    
+    We can determine the action of \(a_n\) and \(\overbar{a}_{\overbar{n}}\) on basis states of the Fock space by using the commutation relations to commute these annihilation operators through the creation operators.
+    Doing this with \(a_n\) we will get \(0\) if \(a_n^{\hermit}\) is not present at least once in the state.
+    If \(a_n^{\hermit}\) is present in the state then we can use \(a_na_n^{\hermit} = a_n^{\hermit}a_n + \bracket{a_n}{a_n^{\hermit}} = a_n^{\hermit}a_n + 1\).
+    The first term acts as zero, since \(a_n\ket{p} = 0\), and the second term acts as the identity.
+    Thus, \(a_n\) acts on a basis state by 0 if \(a_n^{\hermit}\) is not present, and by removing one copy of \(a_n^{\hermit}\) if it is present.
+    The result is that we have reduced the energy of the state by \(2\pi n/L\).
+    
+    If we insist that \(\bracket{\operator{\phi}_0}{\operator{\pi}_0} = i\) then it can be shown that the spectrum of \(\operator{\pi}_0\) must be all of \(\reals\).
+    This them implies that the vacuum state, \(\ket{0}\), with zero momentum is not normalisable.
+    To see this suppose it were.
+    We have \(\operator{\pi}_0\ket{0} = 0\) and then \(\bra{0} \bracket{\operator{\phi}_0}{\operator{\pi}_0}\ket{0} = 0\) by expanding the commutator, but also \(\bra{0}\bracket{\operator{\phi}_0}{\operator{\pi}_0}\ket{0} = i\braket{0}{0}\), and we can't have \(\braket{0}{0} = 0\) so this is a problem.
+    The canonical commutation relation enforces a continuous spectrum not just for \(\operator{\pi}_0\) but also for \(\operator{\phi}_0\), and the resulting eigenstates of \(\operator{\pi}_0\) are then non-normalisable.
+    They are, however, Dirac-delta-normalisable, specifically, we can choose them such that
+    \begin{equation}
+        \braket{p}{p'} = \delta(p - p').
+    \end{equation}
+    We'll ignore this problem for now, and in a later section we'll look at how one can obtain a normalisable vacuum.
+    
+    \section{Fields}
+    We now return to the field \(\phi\).
+    We can promote this to an operator on Fock space in the obvious way,
+    \begin{align}
+        \operator{\phi}(t, x) &= \sum_{n \in \integers} \exp\left\{ \frac{2\pi in}{L}x \right\} \operator{\phi}_n(t)\\
+        &- \operator{\phi}_0(t) + \sum_{n=1}^{\infty} \left( \exp\left\{ \frac{2\pi in}{L}x \right\} \operator{\phi}_n(t) + \exp\left\{ -\frac{2\pi in}{L}x \right\} \operator{\phi}_{-n}(t) \right).
+    \end{align}
+    In the last line we've just pulled apart the sum to single out the zero mode, because we'll need to treat it specially in the future.
+    We can write the the modes in terms of the creation and annihilation operators based on the original definition (\cref{eqn:creation operators,eqn:annihilation operators}):
+    \begin{equation}
+        \operator{\phi}_n = -i\frac{1}{\sqrt{n}} (a_n^{\hermit} - \overbar{a}_n), \qqand \operator{\phi}_{-n} = -i\frac{1}{\sqrt{n}}(\overbar{a}_n^{\hermit} - a_n). 
+    \end{equation}
+    Of course, the second equation is just the Hermitian conjugate of the first.
+    Then we have
+    \begin{multline}
+        \operator{\phi}(t, x) = \operator{\phi}_0(t) + \sum_{n=1}^n \bigg[ \exp\left\{ \frac{2\pi in}{L}x \right\} (a_n^{\hermit}(t) - \overbar{a}_n(t))\\
+        + \exp\left\{ -\frac{2\pi in}{L}x \right\} (\overbar{a}_n^{\hermit}(t) - a_n(t)) \bigg].
+    \end{multline}
+    Here we've promoted the creation and annihilation operators to be time dependent, but we haven't said how.
+    This comes from the quantisation of the Poisson equations, which gives the Heisenberg equation governing the time evolution of operators:
+    \begin{equation}
+        \diff{\operator{A}}{t} = i \bracket{\operator{H}}{\operator{A}}.
+    \end{equation}
+    Applying this to the creation and annihilation operators we get differential equations such as
+    \begin{equation}
+        \diff{a_n}{t} = i\bracket{\operator{H}}{a_n} = -i\frac{2\pi n}{L}a_n.
+    \end{equation}
+    This has the general solution
+    \begin{equation}
+        a_n(t) = A\exp\left\{ -\frac{2\pi in}{L}t \right\}
+    \end{equation}
+    for some constant \(A\).
+    Using the obvious initial conditions,
+    \begin{equation}
+        a_n(0) = a_n, \quad \overbar{a}_n(0) = \overbar{a}_n, \quad a_n^{\hermit}(0) = a_n^{\hermit}, \qand \overbar{a}_n^{\hermit}(0) = \overbar{a}_n^{\hermit},
+    \end{equation}
+    where on the right we just have the time independent creation and annihilation operators, we obtain that the time dependence is simply exponential:
+    \begin{equation}
+        a_n(t) = \exp\left\{ -\frac{2\pi in}{L}t \right\} a_n, \quad \overbar{a}_n(t) = \exp\left\{ -\frac{2\pi in}{L}t \right\} \overbar{a}_n, \quad a_n^{\hermit}(t) = \exp\left\{ \frac{2\pi in}{L}t \right\}a_n^{\hermit}, \qand \overbar{a}_n^{\hermit}(t) = \exp\left\{ \frac{2\pi in}{L}t \right\}\overbar{a}_n^{\hermit}.
+    \end{equation}
+    
+    For the zero mode we have
+    \begin{equation}
+        \diff{\operator{\phi}_0}{t} = i\bracket{\operator{H}}{\operator{\phi}_0} = i\frac{2\pi}{L}\bracket{\operator{\pi}_0^2}{\operator{\phi}_0} = \frac{4\pi}{L}\operator{\pi}_0
+    \end{equation}
+    and
+    \begin{equation}
+        \diff{\operator{\pi}_0}{t} = i\bracket{\operator{H}}{\operator{\pi}_0} = 0.
+    \end{equation}
+    Of course, the fact that \(\operator{\pi}_0\) is constant is one of the reasons it makes sense to use it to define the Fock space.
+    We integrate the first differential equation subject to the initial condition \(\operator{\phi}_0(0) = \operator{\phi}_0\) and we simply get linear time evolution:
+    \begin{equation}
+        \operator{\phi}_0(t) = \operator{\phi}_0 + \frac{4\pi}{L}t \operator{\pi}_0.
+    \end{equation}
+    
+    Combining these results we have
+    \begin{align}
+        \operator{\phi}(t, x) &= \operator{\phi}_0 + \frac{4\pi}{L}t \operator{\pi}_0\\
+        &+ \sum_{n=1}^{\infty} \frac{i}{\sqrt{n}} \bigg[ \overbar{a}_n \exp\left\{ \frac{2\pi in}{L}(x - t) \right\} + a_n \exp\left\{ -\frac{2\pi in}{L}(x + t) \right\}\notag\\
+        &\qquad\qquad- \overbar{a}_n^{\hermit} \exp\left\{ -\frac{2\pi in}{L}(x - t) \right\} - a_n^{\hermit} \exp\left\{ \frac{2\pi in}{L}(x + t) \right\} \bigg]. \notag
+    \end{align}
+    This defines \(\operator{\phi}(t, x)\) as an operator acting on Fock space.
+    
+    Note that the exponential factors here can be interpreted as plane waves on the cylinder.
+    If we orient our cylinder so that time points upwards space wraps around in an anticlockwise direction then terms of the form \(f(x + t)\) are waves propagating along a spiral winding around and up the cylinder in an anticlockwise manner, and terms of the form \(f(x - t)\) are winding in a clockwise manner.
+    We call these left- and right-moving waves respectively.
+    
+    \begin{remark}{}{}
+        When we constructed the field \(\operator{\phi}(t, x)\) we chose the initial conditions such that creation and annihilation operators corresponded to \(t = 0\).
+        This choice is standard, but arbitrary.
+        If we instead chose boundary conditions setting \(a_n(t_*) = a_n\) and so on for some fixed \(t_*\) then we would create a different field, \(\operator{\phi}(t, x)\), but not in a meaningful way.
+        In particular, this field differs from the one constructed above by a unitary transformation, \(\exp\{i\operator{H}t_*\}\), and as such the physics is unchanged whichever initial conditions we pick.
+        In other words, the two representations of the Heisenberg algebra that we produce are, while not equal, isomorphic, with the operator \(\exp\{-i\operator{H}t_*\} \colon \hilbertSpace_0 \to \hilbertSpace_*\) mapping the representation defined above with initial conditions at time \(t = 0\) to the representation defined with initial conditions at time \(t = t_*\).
+        
+        This sort of arbitrary choice which results in differing representations by a unitary transformation will come up a few times.
+    \end{remark}
+    
+    \section{Correlators}
+    Now that we have the field operator \(\operator{\phi}(t, x)\) we need to relate it to the QFT at hand.
+    We do this by demanding that
+    \begin{equation}
+        \correlator{\phi(t_1, x_1) \dotsm \phi(t_n, x_n)} = \bra{0} \operator{\phi}(t_1, x_1) \dotsm \operator{\phi}(t_n, x_n) \ket{0}.
+    \end{equation}
+    Note that a more typical approach to QFT (as opposed to our axiomatic approach) does this the other way around.
+    We start by quantising fields based on the same process in QM, then we realise that the correlators, or the matrix elements of the vacuum state as we see here, are the objects that are actually useful in calculations and we work forwards from there to derive things like the Ward identities.
+    
+    Making this definition hold requires a properly normalised vacuum state.
+    One way that we can achieve this is by noticing that the cylinder imposes periodic boundary conditions on any wave function.
+    So, if the wave function \(\psi_n\) is a function of \(\phi_0\) then it should be that \(\psi(\phi_0) = \psi(\phi_0 + L)\).
+    We can impose this by taking
+    \begin{equation}
+        \psi_n(\phi_0) = \frac{1}{\sqrt{L}} \e^{2\pi i n\phi_0/L}
+    \end{equation}
+    for \(n \in \integers\).
+    Then
+    \begin{equation}
+        \operator{\pi}_0 = -i\diff{}{\phi_0}
+    \end{equation}
+    is our momentum operator on \(L^2(S^1)\), which is the standard representation of our fields on the cylinder.
+    We can then take the canonical commutation relations in the exponential form, known as the Weyl form:
+    \begin{equation}
+        \e^{2\pi in\operator{\phi}_0/L} \e^{i\theta \operator{\pi}_0} = \e^{2\pi in \theta/L} \e^{i\theta\operator{\pi}_0} \e^{2\pi in \operator{\phi}_0/L}
+    \end{equation}
+    where \(\theta \in [0, L)\) and \(n \in \integers\).
+    Then \(\psi_0\) is the wavefunction corresponding to the normalisable vacuum state \(\ket{0}\).
+    The Fock space then consists of the states \(\ket{n}\) where \(\ket{n}\) corresponds to the wavefunction \(\psi_n\).
+    
+    \section{Connection to Theory on the Plane}
+    In this section we take our work above on the plane with Minkowski signature and produce results for the Euclidean plane.
+    
+    
+    
+    
+    
+    
     
     
     
