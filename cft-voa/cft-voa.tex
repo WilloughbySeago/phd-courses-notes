@@ -2102,9 +2102,10 @@ noabbrev
     This is the transformation law for correlators of scalar (spin zero, \(h_i = \overbar{h}_i\)) fields.
     
     A more general calculation allowing for \(h_i \ne \overbar{h}_i\) leaves us with the correlator transformation law
-    \begin{equation}
-        \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1) \dotsm \quantumField{O}_{h_n, \overbar{h}_n}(z_n)} = \left( \diff{z'}{z} \right)^{h_1} \left( \diff{\overbar{z}'}{\overbar{z}} \right)^{\overbar{h}_1} \dotsm \left( \diff{z'}{z} \right)^{h_n} \left( \diff{\overbar{z}'}{\overbar{z}} \right)^{\overbar{h}_n} \correlator{\quantumField{O}_{h_1, \overbar{h}_1}(z_1') \dotsm \quantumField{O}_{h_n, \overbar{h}_n}(z_n)}.
-    \end{equation}
+    \begin{multline}
+        \correlator{\quantumField{O}_{h_1,\overbar{h}_1}(z_1) \dotsm \quantumField{O}_{h_n, \overbar{h}_n}(z_n)} =\\
+        \left( \diff{z'}{z} \right)^{h_1} \left( \diff{\overbar{z}'}{\overbar{z}} \right)^{\overbar{h}_1} \dotsm \left( \diff{z'}{z} \right)^{h_n} \left( \diff{\overbar{z}'}{\overbar{z}} \right)^{\overbar{h}_n} \correlator{\quantumField{O}_{h_1, \overbar{h}_1}(z_1') \dotsm \quantumField{O}_{h_n, \overbar{h}_n}(z_n)}.
+    \end{multline}
     More succinctly, we can say that, in a correlation function, the primary fields transform as
     \begin{equation}
         \quantumField{O}_{h,\overbar{h}}(z, \overbar{z}) = \left( \diff{z'}{z} \right)^h \left( \diff{\overbar{z}'}{\overbar{z}} \right)^{\overbar{h}} \quantumField{O}_{h,\overbar{h}}(z', \overbar{z}).
