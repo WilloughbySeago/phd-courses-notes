@@ -11,6 +11,8 @@
 \tikzexternalize[prefix=tikz-external/]
 
 \usepackage{tikz-cd}
+\AtBeginEnvironment{tikzcd}{\tikzexternaldisable}
+\AtEndEnvironment{tikzcd}{\tikzexternalenable}
 
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
@@ -81,8 +83,13 @@ noabbrev
 \makeatletter
 \newcommand{\c@egory}{\symsfup}
 \newcommand{\Vect}[1][\field]{\c@egory{Vect}_{#1}}
+\newcommand{\Man}{\c@egory{Man}}
+\newcommand{\ACGrAlg}[1][\field]{\c@egory{ACGrAlg}_{#1}}
 \makeatother
 \newcommand{\op}{\symrm{op}}
+\DeclareMathOperator{\im}{im}
+\newcommand{\compact}{\symrm{c}}
+\newcommand{\poincareDuality}{\symrm{PD}}
 
 \begin{document}
     \frontmatter
@@ -1049,6 +1056,389 @@ noabbrev
         Then a boundary point is any point in \(M\) which maps to coordinates with \(x_m = 0\) in a chart, and all other points are interior points.
     \end{remark}
     
+    % MISSING CONTENT HERE FROM MERGE, STOKES AND THAT
+    
+    \chapter{de Rham Cohomology}
+    \section{Motivation}
+    Consider a smooth vector field,  \(\vv{F} \colon U \to \reals^2\), defined on an open subset, \(U \subseteq \reals^2\)..
+    This can be specified by giving the coordinates as two smooth functions \(P, Q \colon U \to \reals\), so \(\vv{F}(x, y) = \langle P(x, y), Q(x, y) \rangle\).
+    Take some smooth curve, \(c \colon [0, 1] \to \reals^2\), which can also be given in terms of coordinate functions \(x, y \colon [0, 1] \to \reals^2\), \(c(t) = (x(t), y(t))\).
+    One common operation is performing an integral of \(\vv{F}\) along this curve, that is, performing the integral
+    \begin{equation}
+        W = \int_C (P \dd{x} + Q\dd{y}).
+    \end{equation}
+    Suppose \(\vv{F}\) is actually the gradient of some scalar function, \(f \colon U \to \reals\), so \(\vv{F} = \gradWord f = \langle f_x, f_y \rangle\), where \(f_x = \difsp{f}{x}\) and \(f_y = \difsp{f}{y}\).
+    Then we can compute this using
+    \begin{equation}
+        W = \int_C f_x \dd{x} + \int_C f_y \dd{y} = \int_C \dl{f} = f(1) - f(0).
+    \end{equation}
+    In order for \(\vv{F}\) to be a gradient it is necessary to have
+    \begin{equation}
+        P_y = f_{xy} = f_{yx}  Q_x,
+    \end{equation}
+    which is basically one of the Cauchy--Riemann equations.
+    
+    The question we may then ask is if this condition is sufficient for \(\vv{F}\) to be the gradient of some function.
+    It turns out that it is.
+    We have seen that we have a one-to-one correspondence between vectors in \(\reals^2\) and 1-forms in \(\Lambda^1\reals^2\), specifically, the isomorphism is given by \(e_1 \mapsto \dl{x}\) and \(e_2 \mapsto \dl{y}\).
+    This extends to a one-to-one correspondence between vector fields in \(\vectorFields(U)\) and differential 1-forms in \(\Omega^1(U)\), the isomorphism looks the same, but now each element is viewed as a function on the manifold outputting a vector/1-form.
+    This correspondence gives \(\vv{F} = \langle P, Q\rangle\) a corresponding differential 1-form \(\omega = P \dd{x} + Q \dd{y}\).
+    We have seen (for the case of \(\reals^3\)) that the gradient corresponds to the exterior derivative (and this holds equally in \(\reals^2\), and indeed in \(\reals^n\) generally), so \(\gradWord f = \langle f_x, f_y \rangle\) corresponds to \(\dl f = f_x \dd{x} + f_y \dd{y}\) under this correspondence.
+    Then, the fact that \(Q_x - P_y = 0\) (which is what we're assuming) means that
+    \begin{align}
+        \dl{\omega} &= \dl(P \dd{x} \wedge Q \dd{y})\\
+        &= \dl{P} \wedge \dl{x} + \dl{Q} \wedge \dl{y}\\
+        &= (P_x \dd{x} + P_y \dd{y}) \wedge \dl{x} + (Q_x \dd{x} + Q_y \dd{y}) \wedge \dl{y}\\
+        &= P_y \dd{y} \wedge \dl{x} + Q_x \dd{x} \wedge \dl{y}\\
+        &= (Q_x - P_y) \dd{x} \wedge \dl{y}\\
+        &= 0.
+    \end{align}
+    So, we can say that \(\vv{F}\) is the gradient of some function if and only if the corresponding 1-form, \(\omega\), is such that \(\dl{\omega} = 0\), and it turns out that whether this is the case depends on the topology of \(U\).
+    
+    \subsection{Different Types of Form}
+    \begin{dfn}{Closed and Exact Forms}{}
+        A differential form, \(\omega\), is said to be \defineindex{closed} if \(\dl{\omega} = 0\).
+        
+        A differential \(k\)-form, \(\omega\), is said to be \defineindex{exact} if there exists some differential \((k - 1)\)-form, \(\tau\), such that \(\omega = \dl{\tau}\).
+    \end{dfn}
+    
+    The terminology here comes from cohomology, which we're about to introduce.
+    The map \(\dl{}\) here is interpreted as a \enquote{boundary map}, and so \(\dl{\omega} = 0\) means that \(\omega\) has no boundary, so it's closed, compare this to, for example, the circle, \(S^1\), which is a closed loop and has no boundary, as opposed to an interval, \([0, 1]\), which is not a closed loop, and has a boundary, \(\{0, 1\}\).
+    
+    The question then is how are closed and exact forms related?
+    It follows immediately from the definitions that if \(\omega\) is exact it is also closed, since exactness implies the existence of some \(\tau\) satisfying \(\omega = \dl{\tau}\), and then \(\dl{\omega} = \dl^2\tau = 0\).
+    The interesting question then is what about closed forms that aren't exact?
+    It turns out that whether or not such forms exist depends on the manifold, and further, it is possible to distinguish many manifolds based solely on whether closed non-exact forms exist, and when they do exist how many linearly independent ones exist.
+    To do this rigorously we introduce the general notion of cohomology.
+    
+    Before we do this however, note that the closed \(k\)-forms form subspace of \(\Omega^k(M)\), since if \(\omega, \omega' \in \Omega^k(M)\) are closed then \(\dl(\omega + a \omega') = \dl{\omega} + a\dd{\omega'} = 0\) for \(a \in \reals\), so the subset of closed forms is closed under addition and scalar multiplication.
+    Call the subspace of closed forms \(Z^k(M) = \{\omega \in \Omega^k(M) \mid \dl{\omega} = 0\}\).
+    Similarly, the subset of exact \(k\)-forms is a subspace of \(\Omega^k(M)\), since if \(\omega, \omega' \in \Omega^k(M)\) are exact, so there exist \(\tau, \tau' \in \Omega^{k-1}(M)\) such that \(\dl{\tau} = \omega\) and \(\dl{\tau'} = \omega'\), then \(\omega + a\omega' = \dl{(\tau + a\tau')}\) for all \(a \in \reals\), so the subset of exact forms is closed under addition and scalar multiplication.
+    Call the subspace of exact forms \(B^k(M) = \{\omega \in \Omega^k(M) \mid \exists \tau \in \Omega^{k-1}(M) \text{ s.t.\@ } \omega = \dl{\tau}\}\).
+    Further, note that since every exact form is closed we have \(B^k(M) \subseteq Z^k(M)\).
+    
+    The study of cohomology is then all about the study of elements of \(Z^k(M)\) which are not elements of \(B^k(M)\).
+    To do this we actually look at the quotient \(Z^k(M)/B^k(M)\), which essentially sets all exact forms to be zero leaving the only non-zero elements to be (equivalence classes of) non-exact closed forms.
+    
+    \subsection{Cohomology}
+    In this section we'll set up a more abstract way of defining cohomology that generalises.
+    For historical reasons what we're doing here is considered \emph{co}homology.
+    Turning all the arrows around and removing any \enquote{co-} prefix gives us homology, but we won't concern ourselves with that here.
+    
+    \begin{dfn}{Cochain Complex}{}
+        A \defineindex{cochain complex}, \(C^{\bullet} = \{C^i\}_{k \in \integers}\) is a collection of vector spaces (or more generally, \(R\)-modules), \(C^k\), equipped with linear maps (\(R\)-module homomorphisms) \(d^k \colon C^k \to C^{k+1}\), which satisfy the property that \(d^{k + 1} \circ d^{k} = 0\) for all \(k \in \integers\).
+        We can express all of this information as the diagram
+        \begin{equation}
+                \begin{tikzcd}
+                    \dots \arrow[r] & C^{-1} \arrow[r, "d^{-1}"] & C^0 \arrow[r, "d^0"] & C^1 \arrow[r, "d^2"] & \dots.
+                \end{tikzcd}
+        \end{equation}
+        We call the \(d^k\) the \define{boundary maps}\index{boundary map}, or \define{differentials}\index{differential!of a cochain complex} of the cochain complex.
+        
+        Elements of \(C^k\) are called \(k\)-\define{cochains}\index{cochain}.
+    \end{dfn}
+    
+    \begin{dfn}{Exactness}{}
+        A \defineindex{cochain complex} is \defineindex{exact} at \(C^k\) if \(\im d^{k} = \ker d^{k+1}\).
+        An \defineindex{exact sequence} is a cochain complex which is exact at every point.
+    \end{dfn}
+    
+    \begin{dfn}{Cohomology}{}
+        The \defineindex{cohomology} of a cochain complex at a point indexed by \(k\) is the quotient vector space (or \(R\)-module) \(H^k = \ker d^k/\ker d^{k-1}\).
+    \end{dfn}
+    
+    Note that a cochain complex is exact at \(k\) if and only if \(H^k = 0\).
+    
+    \subsection{de Rham Cohomology}
+    We are mostly interested in the special case hinted at in the motivation section, namely when \(C^k = \Omega^k(M)\) with the exterior derivative as the differential.
+    
+    \begin{dfn}{de Rham Cochain Complex}{}
+        The \defineindex{de Rham cochain complex} of a manifold, \(M\), is given by taking \(C^k = \Omega^k(M)\) for \(0 \le k \le m = \dim M\), and \(C^k = 0\) otherwise, and taking the maps \(\Omega^k(M) \to \Omega^{k+1}(M)\) to be exterior derivatives.
+        That is, it's the cochain complex
+        \begin{equation*}
+            \begin{tikzcd}[column sep=small]
+                0 \arrow[r] & \Omega^0(M) \arrow[r, "\dl"] & \Omega^1(M) \arrow[r, "\dl"] & \Omega^2(M) \arrow[r, "\dl"] & \dots \arrow[r, "\dl"] & \Omega^m(M) \arrow[r] \arrow[r] & 0.
+            \end{tikzcd}
+        \end{equation*}
+    \end{dfn}
+    
+    Note that the condition \(d^{k+1} \circ d^k = 0\) becomes \(\dl^2 = 0\) (which is always true) for all cases not involving the zero vector space, and any case involving the zero vector space necessarily involves the zero map, so the composite will vanish in this case as well.
+    
+    Note also that in cases like this where (for a finite-dimensional manifold) we have finite complexes we may always assume them to be padded on either side by the zero space.
+    
+    \begin{dfn}{de Rham Cohomology}{}
+        The \defineindex{de Rham cohomology} of a manifold, \(M\), denoted \(H^k(M)\) (or \(H^k_{\symrm{dR}}(M)\) if multiple cohomology theories are of interest) is \(H^k(M) = \ker \dl/\im \dl = Z^k(M)/B^k(M)\), where \(\ker \dl = \ker(\dl \colon \Omega^k(M) \to \Omega^{k + 1}(M))\) and \(\im \dl = \im (\dl \colon \Omega^{k-1}(M) \to \Omega^k(M))\).
+    \end{dfn}
+    
+    Note that we simply choose the appropriate exterior derivatives such that the kernel and image are subspaces of \(\Omega^k(M)\) in order to take the quotient.
+    
+    In friendlier notation we have
+    \begin{equation}
+        H^k(M) = \frac{\{\text{closed \(k\)-forms on \(M\)}\}}{\{\text{exact \(k\)-forms on \(M\)}\}}.
+    \end{equation}
+    An element of \(H^k(M)\) is an equivalence class, \([\omega]\), consisting of all forms \(\omega'\) such that there exists some exact \(k\)-form, \(\eta\) such that \(\omega - \omega' = \eta\).
+    Since \(\eta\) is exact this is equivalent to saying there is some \((k - 1)\)-form, \(\tau\), such that \(\omega - \omega' = \dl \tau\).
+    
+    \begin{exm}{Zeroth de Rham Cohomology}{}
+        Consider \(H^0(M)\).
+        First note that no nonzero \(0\)-forms are exact, since the only \enquote{\((-1)\)-form} is \(0\), which is such that \(\dl 0 = 0\).
+        Now suppose that \(f\) is a closed \(0\)-form on \(M\), that is, \(f \colon M \to \reals\) is a smooth function and \(\dl f = 0\).
+        Since \(\dl f = \sum_i f_x^i \dd{x^i}\) this means we must have \(f_x^i = 0\), so \(f\) is constant \emph{except} that \(f_{x^i}\) is only defined locally, that is on a given chart, \((U_\alpha, \varphi_\alpha)\).
+        Further, if there is a second chart, \((U_\beta, \varphi_\beta)\), such that \(U_\alpha \cap U_\beta \ne \emptyset\) then we must have \(f|_{\varphi_\alpha(U_\alpha \cap U_\beta)} = f|_{\varphi_\beta(U_\alpha \cap U_\beta)}\) where \(x^i\) and \(y^i\) are the coordinates corresponding to the charts \(U_\alpha\) and \(U_\beta\) respectively.
+        So, \(f\) must be constant on the overlap of the charts, and on the entirety of any chart, so \(f\) must be constant on \(U_\alpha \cup U_\beta\).
+        Thus, the only way that \(f\) can vary is if no two charts upon which \(f\) disagrees have any overlap, and no charts they overlap have any overlap and so on.
+        
+        Thus, we see that \(f\) must be constant on any one connected component of \(M\), but may vary between different connected components.
+        We call such functions \defineindex{locally constant}.
+        If \(M\) has \(r\) connected components then a basis for all of the locally constant functions is given by \(1_k\) where \(1 \le k \le r\) labels the connected components and \(1_k\) takes the constant value \(1\) on the \(k\)th connected component, vanishing elsewhere.
+        Clearly then the space of locally constant functions is isomorphic to \(\reals^r\), and we find that\footnote{We will only ever consider cohomology up to isomorphism, so we'll write \(=\) for any isomorphisms of cohomologies.} \(H^0(M) = \reals^r\). 
+    \end{exm}
+    
+    \begin{exm}{}{}
+        Suppose that \(M\) has dimensions \(m\).
+        Then \(\Omega^k(M) = 0\) for \(k > m\), and so \(H^k(M) = 0\) for any \(k > m\).
+    \end{exm}
+    
+    \begin{exm}{de Rham Cohomology of \(\reals\)}{}
+        Consider \(\reals\) as a 1-dimensional manifold.
+        We know that \(\reals\) has just a single connected component, so \(H^0(\reals) = \reals\), and \(\dim \reals = 1\), so \(H^k(\reals) = 0\) for \(k \ge 2\).
+        The only question is what is \(H^1(\reals)\)?
+        
+        If \(\omega \in \Omega^1(\reals)\) then we know that \(\dl \omega = 0\) since \(\dl \omega \in \Omega^2(\reals) = 0\), so all \(1\)-forms on \(\reals\) are closed.
+        
+        Now consider the exactness of 1-forms on \(\reals\).
+        Any exact 1-form may be written as \(f \dd{x}\) for some smooth function \(f \colon \reals \to \reals\).
+        Such a 1-form is exact if there is some 0-form, that is some smooth function, \(g \colon \reals \to \reals\) such that \(f = g'\), since then \(\dl g = g' \dd{x}\).
+        Such a function, \(g\), is simply the antiderivative of \(f\), and the antiderivative always exists because \(f\) is smooth, so the integral
+        \begin{equation}
+            g(x) = \int_0^x f(t) \dd{t}
+        \end{equation}
+        always exists.
+        Thus, every 1-form on \(\reals\) is exact.
+        
+        Combining these results we have that
+        \begin{equation}
+            H^1(\reals) = \frac{\Omega^1(\reals)}{\Omega^1(\reals)} = 0,
+        \end{equation}
+        and thus we have
+        \begin{equation}
+            H^k(\reals) = 
+            \begin{cases}
+                \reals & k = 0,\\
+                0 & k \ge 1.
+            \end{cases}
+        \end{equation}
+    \end{exm}
+    
+    \begin{exm}{de Rham Cohomology of \(S^1\)}{}
+        Now consider \(S^1\) as a 1-dimensional manifold.
+        We know that \(S^1\) has just a single connected component, so \(H^0(S^1) = \reals\), and \(\dim S^1 = 1\), so \(H^k(S^1) = 0\) for \(k \ge 2\).
+        The only question is what is \(H^1(S^1)\).
+        
+        To answer this question we need to be a bit more specific about what we mean by \(S^1\).
+        For our calculation we'll take the circle to be \(S^1 = \{(x, y) \in \reals^2 \mid f(x, y) = 0\}\) where \(f \colon \reals^2 \to \reals\) is the smooth function defined by \(f(x, y) = x^2 + y^2 - 1\).
+        Note then that \(\dl{f} \in \Omega^1(\reals^2)\).
+        In general if \(S \subseteq M\) is a submanifold defined by \(S = \{p \in M \mid f(p) = 0\}\) for some smooth function \(f \colon M \to \reals\) then \(\dl{f}|_S = 0\) since \(f|_S = 0\) and the derivative of the zero function is zero.
+        However, on the circle we can define the nowhere-vanishing 1-form, \(\omega \in \Omega^1(S^1)\) defined at a point \((x, y) \in S^1\) by
+        \begin{equation}
+            \omega_{(x, y)} =
+            \begin{cases}
+                \frac{\dl{y}}{x} & x \ne 0,\\
+                -\frac{\dl{x}}{y} & y \ne 0.
+            \end{cases}
+        \end{equation}
+        Note that \(x = 0\) and \(y = 0\) cannot both occur at once, since \((0, 0) \notin S^1\).
+        
+        Consider an arbitrary nonzero vector field
+        \begin{equation}
+            X = a \diffp{}{x} + b \diffp{}{y}.
+        \end{equation}
+        By definition we have
+        \begin{equation}
+            \dl{x}(X) = a, \qqand \dl{y}(X) = b,
+        \end{equation}
+        since \(\{\dl x, \dl y\}\) is dual to the basis \(\{\difsp{}{x}, \difsp{}{y}\}\) for vector fields on \(\reals^2\).
+        However, we're restricting to the circle, which means \(f(x, y) = x^2 + y^2 - 1 = 0\), differentiating we must have \(2x + 2y = 0\), so \(x = -y\), and from this it implies that if \(X_{(x, y)}\) is to be tangent to the circle at \((x, y)\) we must have \(a = y\) and \(b = -x\), so when \(x, y \ne 0\) \(\omega\) is well-defined.
+        
+        The fact that \(\omega\) doesn't vanish at any point then comes from the fact that if \(x \ne 0\) then said tangent vector cannot be parallel to the \(x\)-axis, and as such it has some non-zero \(\diffp{}{y}\) component which \(\dl{y}\) picks out, likewise, if \(x = 0\) then the tangent vector \emph{is} parallel to the \(x\)-axis, so it's just some nonzero scalar multiple of \(\diffp{}{x}\), and thus this nonzero scalar is picked out by \(\dl{x}\).
+        
+        We now claim that the fact that \(\omega\) is nowhere vanishing means it cannot be exact.
+        Suppose that \(\omega\) is exact, that is there is a 0-form (smooth function) \(g \colon S^1 \to \reals\) such that \(\omega = \dl{g}\).
+        Then \(\dl{g} = g_z \dd{z}\) where \(z\) is some coordinate on \(S^1\).
+        The value \(g_z = \difsp{g}{z}\) must vanish at the minimum and maximum values of \(g\), and we may take the circle to be the interval, \([0, 1]\), with endpoints identified.
+        The problem is that a smooth function, \(g \colon (0, 1) \to \reals\) must always achieve a minimum and maximum on this interval, and therefore vanishes at some point, but \(\dl{g} = \omega\) does not vanish, so this is a contradiction.
+        
+        The fact that there are non-exact differential forms implies that \(H^1(S^1) \ne 0\).
+        It can be shown that \(H^1(S^1) = \reals\).
+    \end{exm}
+    
+    \begin{lma}{}{}
+        The de Rham Cohomology is preserved by diffeomorphisms.
+        \begin{proof}
+            Suppose that \(\varphi \colon M \to N\) is a diffeomorphism.
+            Every \(k\)-form, \(\omega \in \Omega^k(N)\) is in one-to-one correspondence with a \(k\)-form \(\varphi^*\omega \in \Omega^k(M)\).
+            If \(\omega \in \Omega^k(N)\) is an exact differential form then there exists some \(\tau \in \Omega^{k-1}(N)\) such that \(\omega = \dl \tau\).
+            Then we have \(\varphi^* \omega = \varphi^* \dl \tau = \dl \varphi^* \tau\) and \(\varphi^* \tau \in \Omega^{k-1}(M)\), so \(\varphi^*\omega\) is exact.
+            If \(\omega \in \Omega^k(N)\) is closed then \(\dl{\omega} = 0\) and so \(\dl \varphi^* \omega = \varphi^* \dl \omega = \varphi^* 0 = 0\) so \(\varphi^* \omega\) is closed.
+            This shows that diffeomorphisms preserve exactness and closedness of forms, and thus the isomorphism \(\varphi^* \colon \Omega^k(N) \to \Omega^k(M)\) factors through the quotient to an isomorphism \(\varphi^* \colon H^k(N) \to H^k(M)\) by \(\varphi^*[\omega] = [\varphi^*\omega]\).
+            This is well-defined since if \(\omega, \omega' \in [\omega]\) then \(\omega - \omega' = \dl \tau\) for some \(\tau \in \Omega^{k-1}(N)\) and \(\varphi^*(\omega - \omega') = \varphi^*\omega - \varphi^*\omega' = \varphi^*\dl \tau = \dl \varphi^*\tau\) so \(\varphi^*\omega, \varphi^*\omega' \in [\varphi^*\omega]\).
+        \end{proof}
+    \end{lma}
+    
+    \begin{crl}{}{}
+        The real line, \(\reals\), and circle, \(S^1\), are not diffeomorphic.
+        \begin{proof}
+            The real line has \(H^1(\reals) = 0\) and the circle has \(H^1(S^1) \ne 0\).
+        \end{proof}
+    \end{crl}
+    
+    \section{Ring Structure on de Rham Cohomology}
+    It makes sense to extend the definition of the wedge product, \(\wedge \colon \Omega^k(M) \times \Omega^\ell(M) \to \Omega^{k + \ell}(M)\), to cohomologies.
+    To do so we simply define
+    \begin{equation}
+        [\omega] \wedge [\tau] = [\omega \wedge \tau]
+    \end{equation}
+    for \([\omega] \in H^k(M)\) and \([\tau] \in H^\ell(M)\) and \([\omega \wedge \tau] \in H^{k + \ell}(M)\).
+    We need to check that this definition makes sense, which requires that we check three things.
+    \begin{itemize}
+        \item First, we need to check that \(\omega \wedge \tau\) is a closed form, since representatives of cohomology classes must be closed.
+        This follows since \(\omega\) and \(\tau\) are closed, as they are representatives of cohomology classes, and so
+        \begin{equation}
+            \dl (\omega \wedge \tau) = \dl \omega \wedge \tau + (-1)^k \omega \wedge \dl{\tau} = 0
+        \end{equation}
+        as \(\dl \omega = 0\) ad \(\dl \tau = 0\).
+        \item Second, we need to check that \([\omega \wedge \tau]\) is independent of the representatives chosen for \([\tau]\).
+        If \(\tau' \in [\tau]\) is another possible representative of this class then there exists an exact \(\ell\)-form, \(\rho\), such that \(\tau - \tau' = \rho\), and since \(\rho\) is exact there exists an \((\ell - 1)\)-form, \(\sigma\), such that \(\rho = \dl \sigma\), so \(\tau - \tau' = \dl \sigma\), or in other words, \(\tau = \tau' + \dl{\sigma}\).
+        Then we have
+        \begin{equation}
+            \omega \wedge \tau = \omega \wedge (\tau' + \dl{\sigma}) = \omega \wedge \tau' + \omega \wedge \dl{\sigma}.
+        \end{equation}
+        Then \(\omega \wedge \tau\) and \(\omega \wedge \tau'\) represent the same equivalence class if and only if they differ by an exact form, that is, if \(\omega \wedge \dl \sigma\) is exact.
+        To see that this is the case consider the derivative
+        \begin{equation}
+            \dl (\omega \wedge \sigma) = \dl \omega \wedge \sigma + (-1)^k \omega \wedge \dl \sigma = (-1)^k \omega \wedge \dl \sigma,
+        \end{equation}
+        where we've used the fact that \(\omega\) represents a cohomology class so is closed so \(\dl \omega = 0\).
+        Then we see that \(\omega \wedge \dl \sigma = \dl((-1)^k \omega \wedge \sigma)\), showing that \(\omega \wedge \dl \sigma\) is exact, and thus \(\omega \wedge \tau\) and \(\omega \wedge \tau'\) do represent the same equivalence class.
+        \item Finally, we need to show that \([\omega \wedge \tau]\) is independent of the representative chosen for \([\omega]\), and this follows analogously to the previous point.
+    \end{itemize}
+    
+    For a manifold, \(M\), of dimension \(M\) define
+    \begin{equation}
+        H^\bullet(M) \coloneqq \bigoplus_{k=0}^m H^k(M).
+    \end{equation}
+    Then, an element \(\alpha \in H^{\bullet}(M)\) is a (finite\footnote{which is immediate as only finitely many cohomology classes are nonzero}) sum of cohomology classes in \(H^k(M)\) for some indices \(k\):
+    \begin{equation}
+        \alpha = \alpha_0 + \dotsb + \alpha_m
+    \end{equation}
+    where \(\alpha_k \in H^k(M)\).
+    We can add and elements of \(H^{\bullet}(M)\) in the obvious way, we define the sum to just be \((\alpha_0 + \dotsb + \alpha_m) + (\beta_0 + \dotsb + \beta_m) = (\alpha_0 + \beta_0) + \dotsb + (\alpha_m + \beta_m)\) where addition of cohomology classes is just addition in the quotient space.
+    We can multiply elements of \(H^{\bullet}(M)\) using the wedge product, which we declare to distribute over addition, so we consider products like
+    \begin{equation}
+        \alpha_0 \wedge (\beta_3 + \beta_6) = \alpha_0 \wedge \beta_3 + \alpha_0 \wedge \beta_6,
+    \end{equation}
+    which we've shown above gives a well-defined operation on each cohomology class which then extends by distributivity to a well-defined operation on \(H^{\bullet}(M)\).
+    
+    We see from this discussion that we have a graded ring, \(H^{\bullet}(M)\), with multiplication given by the wedge product.
+    The grading is that \(\alpha_k \in H^k(M)\) has degree \(k\), and the fact that \(\alpha_k \wedge \alpha_\ell \in H^{k + \ell}(M)\) means that the product respects this grading, as it must to be a graded ring.
+    Actually, this is a graded algebra, since the everything is also a vector space.
+    Further, we have that\footnote{imagine that a representative, \(\omega\), of \(\alpha_k\) is a wedge product of \(k\) 1-forms, and a representative, \(\tau\), of \(\alpha_\ell\) is a wedge product of \(\ell\) 1-forms. Then to move \(\omega\) past \(\tau\) you first have to anticommute the first 1-form in \(\tau\) through all \(k\) 1-forms of \(\omega\), then the same for the second 1-form in \(\tau\), and so on, eventually you've commuted all \(\ell\) 1-forms of \(\tau\) past all \(k\) 1-forms of \(\omega\), picking up a \(-1\) for each swap for a total of \(k\ell\) swaps and a sign of \((-1)^{k\ell}\).}
+    \begin{equation}
+        \alpha_k \wedge \alpha_\ell = (-1)^{k\ell} \alpha_\ell \wedge \alpha_k,
+    \end{equation}
+    so this is an anticommutative graded ring (this equation actually defines what anticommutativity means in the context of a graded ring).
+    
+    Now suppose that \(f \colon M \to N\) is a smooth map of manifolds.
+    We have seen that the pullback gives a map \(f^* \colon H^k(N) \to H^k(M)\), specifically given by \(f^*[\omega] = [f^*\omega]\).
+    This extends to a homomorphism of graded rings, \(f^* \colon H^{\bullet}(N) \to H^{\bullet}(M)\) given by \(f^*(\alpha_0 + \dotsb + \alpha_m) = f^*\alpha_0 + \dotsb + f^*\alpha_m\).
+    
+    Put more abstractly, there is a contravariant functor \(H_{\symrm{dR}}^{\bullet} \colon \Man \to \ACGrAlg[\reals]\), where \(\Man\) is the category of smooth manifolds and smooth maps, and \(\ACGrAlg[\reals]\) is the category of anticommutative graded algebras over \(\reals\).
+    It then follows by abstract nonsense (functors preserve isomorphisms) that two diffeomorphic manifolds (isomorphic in \(\Man\)) have equal de Rham cohomologies at all degrees.
+    
+    \chapter{More Cohomology}
+    \section{Poincar\'e Duality}
+    Let \(M\) be an oriented manifold of dimension \(m\) without boundary.
+    Then for \(k \in \{0, 1, \dotsc, m\}\) we have a bilinear map
+    \begin{align}
+        \Omega^k(M) \times \Omega_{\compact}^{m-k}(M) &\to \reals\\
+        (\omega, \tau) &\mapsto \int_M \omega \wedge \tau.
+    \end{align}
+    Further, suppose that \(\omega\) and \(\tau\) are closed, so \(\dl\omega = 0\) and \(\dl \tau = 0\), and that one of them, WLOG \(\omega\), is exact, so there exists some \(k-1\)-form \(\alpha\) such that \(\dl \alpha = \omega\).
+    Then
+    \begin{equation}
+        \dl(\alpha \wedge \tau) = \dl \alpha \wedge \tau + (-1)^{k-1} \alpha \wedge \dl{\tau} = \omega \wedge \tau
+    \end{equation}
+    so \(\omega \wedge \tau\) is the exterior derivative of an \((m - 1)\)-form \(\alpha \wedge \tau\) and as such by Stokes' theorem, and the fact that \(M\) has empty boundary, this integral vanishes.
+    
+    Using this the pairing induces a bilinear form on the de Rham cohomology,
+    \begin{align}
+        H^k(M) \times H^{m-k}_{\compact}(M) &\to \reals\\
+        ([\omega], [\tau]) &\mapsto \int_M \omega \wedge \tau. \label{eqn:poincare pairing}
+    \end{align}
+    This is well defined since adding a form of the form \(\dl \sigma\) to either \(\omega\) or \(\tau\) doesn't change the value of the integral as it just adds an integral of the form \(\int_M \omega \wedge \dl{\sigma}\), which we've just argued vanishes.
+    
+    Note that \(H^k_{\compact}(M)\) is defined in the obvious way by restricting our consideration to compactly supported forms before following the definition of the de Rham cohomology.
+    
+    \begin{thm}{Poincar\'e Duality}{}
+        Let \(M\) be a smooth manifold of dimension \(m\) without boundary.
+        Suppose that \(M\) has a finite good\footnote{a good cover is such that every intersection of covering sets is either empty or diffeomorphic to \(\reals^m\)} cover.
+        Then the Poincar\'e pairing (\cref{eqn:poincare pairing}) is non-degenerate.
+        Equivalently,
+        \begin{itemize}
+            \item if \(\omega \in \Omega^k(M)\) is closed and satisfies the condition that for all \(\tau \in \Omega^{m-k}_{\compact}(M)\) if \(\dl \tau = 0\) then
+            \begin{equation}
+                \int_M \omega \wedge \tau = 0
+            \end{equation}
+            then \(\omega\) is exact;
+            \item if \(\tau \in \Omega_{\compact}^{m - k}(M)\) is closed and satisfies the condition that for all \(\omega \in \Omega^k(M)\) if \(\dl \omega = 0\) then
+            \begin{equation}
+                \int_M \omega \wedge \tau = 0
+            \end{equation}
+            then \(\tau\) is exact, and further there exists some \(\sigma \in \Omega_{\compact}^{m - k - 1}(M)\) such that \(\tau = \dl \sigma\) (as opposed to just \(\sigma \in \Omega^{m - k - 1}(M)\)).
+        \end{itemize}
+    \end{thm}
+    
+    Note that the two statements are truly just expressing what non-degeneracy means in this case.
+    Specifically that for a non-zero input, that is a non-zero cohomology class, \([\omega]\), there is some non-zero cohomology class \([\tau]\) such that the pairing \(([\omega], [\tau])\) is non-zero.
+    
+    It is a general fact of non-degenerate bilinear forms \(\kappa \colon V \times U \to \reals\) (for vector spaces \(V\) and \(U\)) that they induce a linear map \(V \to U^*\) by \(v \mapsto \kappa(v, -)\).
+    
+    \begin{crl}{}{}
+        The Poincar\'e pairing induces a linear map
+        \begin{equation}
+            \poincareDuality \colon H^k(M) \to H_{\compact}^{m - k}(M)*
+        \end{equation}
+        where \(H_{\compact}^{m-k}(M) = \Hom_{\reals}(H_{\compact}^{m-k}(M), \reals)\).
+        This assigns to a cohomology class \([\omega] \in H^k(M)\) the homomorphism
+        \begin{align}
+            \poincareDuality([\omega]) \colon H_{\compact}^{m - k}(M) &\to \reals\\
+            [\tau] &\mapsto \poincareDuality([\omega])([\tau]) = \int_M \omega \wedge \tau.
+        \end{align}
+    \end{crl}
+    
+    \section{Euler Characteristic and Betti Numbers}
+    \begin{dfn}{Betti Numbers}{}
+        Let \(M\) be a compact manifold of dimension \(m\).
+        The \define{Betti numbers}\index{Betti number} of \(M\) are the dimensions of the de Rham cohomology:
+        \begin{equation}
+            b_i \coloneqq \dim (H^i(M)).
+        \end{equation}
+    \end{dfn}
+    
+    The Euler characteristic is a quantity that can be defined for a fairly general class of topological spaces, called finite CW-complexes.
+    Specifically, the \defineindex{Euler characteristic} is defined as the alternating sum \(k_0 - k_1 + k_2 - k_3 + \dotsb\) where \(k_i\) denotes the number of cells of dimension \(i\) in the complex.
+    Compact manifolds are all finite CW-complexes.
+    The following theorem then gives an alternative way to compute the Euler characteristic for a nice class of manifolds.
+    
+    \begin{thm}{Euler Characteristic}{}
+        Let \(M\) be a compact manifold of dimension \(m\) with boundary.
+        The Euler characteristic of \(M\) is given by
+        \begin{equation}
+            \chi(M) = \sum_{i=0}^m (-1)^i \dim(H^i(M)) = \sum_{i=0}^m (-1)^i b_i.
+        \end{equation}
+    \end{thm}
+    
+    \section{\v{C}ech Cohomology}
     
     
     
