@@ -3650,6 +3650,8 @@ noabbrev
         Let \(\lie{g}\) be a Lie algebra.
         A \defineindex{Cartan subalgebra} is a subalgebra \(\csa \subseteq \lie{g}\) containing only semisimple elements and which is maximal with respect to this property.
         That is, if \(\csa' \subseteq \lie{g}\) is also a subalgebra consisting of semisimple elements and \(\csa \subseteq \csa'\) then \(\csa = \csa'\).
+        
+        We call the dimension of a Cartan subalgebra, \(\csa\), the \defineindex{rank} of \(\lie{g}\).
     \end{dfn}
     
     \begin{lma}{}{}
@@ -3841,6 +3843,161 @@ noabbrev
     \begin{equation}
         E_{ij}E_{k\ell} = \delta_{jk}E_{i\ell}.
     \end{equation}
+    To see this we show that \(\ad_{H_i}\) acts on each \(H_j\) or \(E_{jk}\) by scalar multiplication.
+    First note that \(\ad_{H_i}(H_j) = 0\), since diagonal matrices commute, and thus \(\ad_{H_i}\) acts on \(H_j\) by scalar multiplication by \(0\).
+    For the action on \(E_{ij}\) it's actually more efficient to consider the action of \(\ad_{X}\) on \(E_{ij}\) where \(X\) is an arbitrary element of \(\csa\), that is \(X\) is a diagonal traceless matrix.
+    Then we can write
+    \begin{equation}
+        X = 
+        \begin{bmatrix}
+            x_1 \\
+            & x_2\\
+            && \ddots\\
+            &&& x_n
+        \end{bmatrix}
+        = \sum_{k=1}^{n} x_k E_{kk}
+    \end{equation}
+    where \(\sum_{k=1}^n x_k = 0\).
+    This then gives, for \(i \ne j\),
+    \begin{align}
+        \ad_X(E_{ij}) &= \bracket*{\sum_{k=1}^n x_k E_{kk}}{E_{ij}}\\
+        &= \sum_{k=1}^n x_k \bracket{E_{kk}}{E_{ij}}\\
+        &= \sum_{k=1}^n x_k (E_{kk}E_{ij} - E_{ij}E_{kk})\\
+        &= \sum_{k=1}^n x_k (\delta_{ki}E_{kj} - \delta_{jk}E_{ik})\\
+        &= x_i E_{ij} - x_j E_{ij}\\
+        &= (x_i - x_j) E_{ij},
+    \end{align}
+    which shows that \(E_{ij}\) is an eigenvector of \(\ad_X\) with eigenvalue \(x_i - x_j\).
+    
+    Following what we did for the \(\specialLinearLie_2\) case we would now consider the intersection of all of the eigenspaces of eigenvalue \(0\) as the Cartan subalgebra, which is exactly the span of the \(H_i\)s, and then we can show that no larger abelian subalgebra exists, and hence this is indeed a Cartan subalgebra.
+    
+    For \(i \ne j\) we have an eigenvalue of \(X \in \csa\) acting on \(E_{ij}\) given by \(x_i - x_j\).
+    We can alternatively phrase this as each \(E_{ij}\) having an associated linear map,
+    \begin{align}
+        \alpha_{ij} \colon \csa &\to \complex\\
+        X &\mapsto x_i - x_j.
+    \end{align}
+    This allows us to interpret a collection of \(\ad_X\) eigenvalues for eigenvectors \(E_{ij}\) as an element of \(\csa^*\).
+    This is an example of something we'll make lots of use of later, known as a root.
+    
+    \paragraph{Cartan Subalgebras of \(\symplecticLie(2n, \complex)\)}
+    Recall that \(\symplecticLie(2n, \complex)\) is defined to consist of all matrices of the form
+    \begin{equation}
+        \left[
+        \begin{array}{c|c}
+            X & Y\\ \hline
+            Z & W
+        \end{array}
+        \right]
+    \end{equation}
+    with \(X, Y, Z, W \in \generalLinearLie(2n, \complex)\) subject to the conditions \(X = -W^{\trans}\), \(Y = Y^{\trans}\), and \(Z = Z^{\trans}\).
+    A Cartan subalgebra of \(\symplecticLie(2n, \complex)\) consists of all matrices of the form
+    \begin{equation}
+        \left[
+        \begin{array}{c|c}
+            X & 0\\ \hline
+            0 & -X
+        \end{array}
+        \right]
+    \end{equation}
+    where
+    \begin{equation}
+        X =
+        \begin{bmatrix}
+            x_1 \\
+            & \ddots \\
+            && x_n
+        \end{bmatrix}
+    \end{equation}
+    for arbitrary \(x_i \in \complex\).
+    Note that \(\csa = \Span\{E_{ii - E_{i+n, i+n}} \mid i = 1, \dotsc, n\}\).
+    
+    \paragraph{Cartan Subalgebras of \(\specialOrthogonalLie(2n, \complex)\)}
+    Recall that \(\specialOrthogonalLie(2n, \complex)\) consists of all \(A \in \generalLinearLie(2n, \complex)\) subject to the condition that \(A + A^{\trans} = 0\).
+    A Cartan subalgebra of \(\specialOrthogonalLie(2n, \complex)\) consists of all matrices of the form
+    \begin{equation}
+        \begin{bmatrix}
+            0 & x_1\\
+            -x_1 & 0\\
+            && \ddots\\
+            &&& 0 & x_n\\
+            &&& -x_n & 0
+        \end{bmatrix}
+    \end{equation}
+    for arbitrary \(x_i \in \complex\).
+    
+    \paragraph{Cartan Subalgebras of \(\specialOrthogonalLie(2n + 1, \complex)\)}
+    Recall that \(\specialOrthogonalLie(2n + 1, \complex)\) consists of all \(A \in \generalLinearLie(2n + 1, \complex)\) subject to the condition that \(A + A^{\trans} = 0\).
+    A Cartan subalgebra of \(\specialOrthogonalLie(2n + 1, \complex)\) consists of all matrices of the form
+    \begin{equation}
+        \begin{bmatrix}{}
+            0 & x_1\\
+            -x_1 & 0\\
+            && \ddots\\
+            &&& 0 & x_n\\
+            &&& -x_n & 0\\
+            &&&&& 0
+        \end{bmatrix}
+    \end{equation}
+    for arbitrary \(x_i \in \complex\).
+    
+    The fact that \(\specialOrthogonalLie(2n, \complex)\) and \(\specialOrthogonalLie(2n + 1, \complex)\) have slightly different Cartan subalgebras propagates through to the classification of simple Lie algebras, in which we separate out \(\specialOrthogonalLie(2n, \complex)\) and \(\specialOrthogonalLie(2n + 1, \complex)\).
+    Note that the dimension of the Cartan subalgebra of both \(\specialOrthogonalLie(2n, \complex)\) and \(\specialOrthogonalLie(2n + 1, C\gamma)\) is \(n\), so they are both rank \(n\).
+    
+    \section{Roots}
+    When constructing a Cartan subalgebra of \(\specialLinearLie_n\) we defined a linear map \(\alpha_{ij} \in \csa^*\).
+    It turns out that these maps are very important in the classification of simple Lie algebras.
+    
+    \begin{dfn}{Root Space}{}
+        Let \(\lie{g}\) be a simple Lie algebra and \(\csa\) a Cartan subalgebra of \(\lie{g}\).
+        For \(\alpha \in \csa^*\) define
+        \begin{equation}
+            \lie{g}_\alpha \coloneq \{Y \in \lie{g} \mid \forall X \in \csa \, \ad_X(Y) = \alpha(X)Y\}.
+        \end{equation}
+        We call this the \define{\(\symbf{\alpha}\)-root space}\index{root space} of \(\lie{g}\) associated with \(\csa\).
+        
+        For \(\alpha \in \csa^*\setminus\{0\}\) if \(\lie{g}_{\alpha} \ne 0\) we call \(\alpha\) a \defineindex{root} of \(\lie{g}\).
+        The set of roots is usually denoted \(R \subseteq \csa^*\).
+    \end{dfn}
+    
+    Note that for \(\alpha = 0\) we have \(\csa \subseteq \lie{g}_0\) since \(\csa\) is abelian so for \(Y \in \csa\) we have \(\ad_X(Y) = 0\) for all \(X \in \csa\).
+    Actually, because \(\csa\) is its own normaliser it turns out that \(\lie{g}_0 = \csa\).
+    Further, since every element of \(\csa\) is semisimple and \(\csa\) is abelian we have the decomposition
+    \begin{equation}
+        \lie{g} = \lie{g}_0 \oplus \bigoplus_{\alpha \in \csa^*\setminus\{0\}} \lie{g}_{\alpha} = \csa \oplus \bigoplus_{\alpha \in R} \lie{g}_\alpha.
+    \end{equation}
+    This follows because the elements, \(X\), of \(\lie{h}\) give simultaneously commuting operators, \(\ad_X\), on \(\lie{g}\), which means that they're simultaneously diagonalisable, so they act on each subspace by scalar multiplication, which is exactly the same as saying that we have this decomposition.
+    Note that summing the \(\lie{g}_\alpha\) over \(\csa^*\setminus\{0\}\) or \(R\) is the same (up to isomorphism) since for \(\alpha \notin R\) \(\lie{g}_\alpha = 0\).
+    Since \(\lie{g}\) is finite-dimensional it must be that only finitely many of the \(\lie{g}_\alpha\) are non-zero, so \(R\) is a finite set.
+    
+    It turns out that for a given rank the possible root sets, \(R\), are rather limited.
+    This limitation arises from looking at how elements of \(R\) pair under the Killing form.
+    This is ultimately a generalisation of the hidden integrality of \(\specialLinearLie_2\).
+    
+    \subsection{\texorpdfstring{\(\specialLinearLie_n\)}{sln} Roots}
+    For now, let's look at \(\lie{g} = \specialLinearLie_n\).
+    Then our Cartan subalgebra, \(\csa\), consists of all diagonal matrices with trace zero and we've already seen that the roots are \(\alpha_{ij}\) for \(i \ne j\) defined by \(\alpha_{ij}(X) = x_i - x_j\) where \(X\) is a diagonal matrix with \(x_i\) on the \(i\)th row.
+    
+    For each root, \(\alpha = \alpha_{ij}\), we can construct a copy of \(\specialLinearLie_2\), which gives us a subalgebra of \(\specialLinearLie_n\).
+    To do so we need to find three generators, \(E_\alpha\), \(H_\alpha\), and \(F_\alpha\), such that \(\Span\{E_\alpha, H_\alpha, F_\alpha\} \isomorphic \specialLinearLie_2\).
+    To do this we take \(E = E_{ij}\), \(F_\alpha = E_{ji}\), and using \(\specialLinearLie_2\) commutator relations we then know that we should have \(H_\alpha = \bracket{E_\alpha}{F_\alpha} = E_{ij}E_{ji} - E_{ji}E_{ij} = \delta_{jj}E_{ii} - \delta_{ii}E_{jj} = E_{ii} - E_{jj}\).
+    It is then straightforward to check that
+    \begin{equation}
+        \bracket{H_\alpha}{E_\alpha} = 2E_\alpha, \qqand \bracket{H_\alpha}{F_\alpha} = -2F_\alpha,
+    \end{equation}
+    and so this really is a copy of \(\specialLinearLie_2\).
+    We define \(\lie{s}_\alpha = \Span\{E_\alpha, H_\alpha, F_\alpha\}\) to be this copy of \(\specialLinearLie_2\).
+    
+    Note that \(E_{\alpha_{ij}} = E_{ij} \in \lie{g}_{\alpha_{ij}}\), \(F_{\alpha_{ij}} = E_{ji} \in \lie{g}_{\alpha_{ji}} = \lie{g}_{-\alpha_{ij}}\) and \(H_{\alpha_{ij}} \in \lie{g}_0 = \csa\).
+    This gives us a good idea of where to look for copies of \(\specialLinearLie_2\) in a general simple Lie algebra.
+    
+    Notice that \(\lie{s}_\alpha\) has a natural action on \(\lie{g} = \specialLinearLie_n\) by the restriction of the adjoint action.
+    Suppose that \(Y \in \lie{g}_\beta\) for some root \(\beta \in R\).
+    Then \(\ad_{H_\alpha}(Y) = \beta(H_\alpha)Y\) by definition of the root space.
+    By \(\specialLinearLie_2\) representation theory we know that \(\beta(H_\alpha) \in \integers\) because \(\beta(H_\alpha)\) is a weight of a finite dimensional \(\specialLinearLie_2\) representation, namely the \(\lie{s}_\alpha\)-module \(\lie{g} = \specialLinearLie_n\).
+    
+    
+    
     
     
     
