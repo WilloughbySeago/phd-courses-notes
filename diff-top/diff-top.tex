@@ -26,6 +26,9 @@ nameinlink,
 noabbrev
 ]{cleveref} % Should be loaded last
 
+\let\widehatold=\widehat
+\AtBeginDocument{\let\widehat=\widehatold}
+
 % My packages
 \usepackage{NotesBoxes}
 \usepackage{NotesMaths2}
@@ -83,6 +86,7 @@ noabbrev
 \makeatletter
 \newcommand{\c@egory}{\symsfup}
 \newcommand{\Vect}[1][\field]{\c@egory{Vect}_{#1}}
+\newcommand{\Ch}[1][R]{\c@egory{Ch}_{#1}}
 \newcommand{\Man}{\c@egory{Man}}
 \newcommand{\ACGrAlg}[1][\field]{\c@egory{ACGrAlg}_{#1}}
 \makeatother
@@ -90,6 +94,8 @@ noabbrev
 \DeclareMathOperator{\im}{im}
 \newcommand{\compact}{\symrm{c}}
 \newcommand{\poincareDuality}{\symrm{PD}}
+\newcommand{\openCover}{\symcal{U}}
+\newcommand{\derham}{\symrm{dR}}
 
 \begin{document}
     \frontmatter
@@ -1120,7 +1126,7 @@ noabbrev
     The study of cohomology is then all about the study of elements of \(Z^k(M)\) which are not elements of \(B^k(M)\).
     To do this we actually look at the quotient \(Z^k(M)/B^k(M)\), which essentially sets all exact forms to be zero leaving the only non-zero elements to be (equivalence classes of) non-exact closed forms.
     
-    \subsection{Cohomology}
+    \section{Cohomology}
     In this section we'll set up a more abstract way of defining cohomology that generalises.
     For historical reasons what we're doing here is considered \emph{co}homology.
     Turning all the arrows around and removing any \enquote{co-} prefix gives us homology, but we won't concern ourselves with that here.
@@ -1149,7 +1155,24 @@ noabbrev
     
     Note that a cochain complex is exact at \(k\) if and only if \(H^k = 0\).
     
-    \subsection{de Rham Cohomology}
+    \begin{dfn}{Morphisms of Chain Complexes}{}
+        Let \(C^{\bullet}\) and \(D^{\bullet}\) be cochain complexes with boundary maps \(d^k \colon C^k \to C^{k+1}\) and \(e^k \colon D^k \to D^{k+1}\) respectively.
+        A \defineindex{morphism of cochain complexes} \(C^{\bullet} \to D^{\bullet}\) is a collection of linear maps (or \(R\)-module homomorphisms) \(f_k \colon C^k \to D^k\) such that \(f_{k+1} \circ d^k = e^{k + 1} \circ f_k\).
+    \end{dfn}
+    
+    The idea of a cochain complex morphism is that the obvious diagram,
+    \begin{equation}
+        \begin{tikzcd}
+            \dots \arrow[r, "d^{k-1}"] & C^{k} \arrow[r, "d^k"] \arrow[d, "f_k"'] & C^{k+1} \arrow[r, "d^{k+1}"] \arrow[d, "f_{k+1}"] & C^{k+2} \arrow[r, "d^{k+2}"] \arrow[d, "f_{k+2}"] & \dotsb\\
+            \dots \arrow[r, "e^{k-1}"'] & D^{k} \arrow[r, "e^k"'] & D^{k+1} \arrow[r, "e^{k+1}"'] & D^{k+2} \arrow[r, "e^{k+2}"'] & \dotsb
+        \end{tikzcd}
+    \end{equation}
+    should commute.
+    
+    The composite of two cochain complex morphisms, \(f \colon C^{\bullet} \to D^{\bullet}\) and \(g \colon D^{\bullet} \to E^{\bullet}\), is given by composing the component maps, \((g \circ f)_k = g_k \circ f_k\), and is again a cochain complex morphism, and the identity cochain morphism \(\id_{C^{\bullet}} \colon C^{\bullet} \to C^{\bullet}\) simply has componentwise identities, \((\id_{C^{\bullet}})_k = \id_{C^k}\), finally associativity is inherited from associativity of the composition of the component maps.
+    Thus, cochain complexes (formed from real vector spaces) form a category \(\Ch[\reals]\) (more generally, \(\Ch[R]\) for a ring \(R\) if the \(C^k\) are \(R\)-modules).
+    
+    \section{de Rham Cohomology}
     We are mostly interested in the special case hinted at in the motivation section, namely when \(C^k = \Omega^k(M)\) with the exterior derivative as the differential.
     
     \begin{dfn}{de Rham Cochain Complex}{}
@@ -1439,7 +1462,134 @@ noabbrev
     \end{thm}
     
     \section{\v{C}ech Cohomology}
+    The de Rham cohomology is far from the only relevant cohomology for a manifold.
+    In this section we'll briefly look at another cohomology theory which turns out to be isomorphic to the de Rham cohomology for sufficiently nice manifolds.
     
+    \subsection{Defining the \v{C}ech Cohomology}
+    Take a smooth manifold, \(M\), with an open cover \(\openCover = \{U_i\}_{i \in I}\), such that \(U_i \ne \emptyset\) for all \(i \in I\).
+    When we look at overlaps of covering sets, such as \(U_i \cap U_j\), there is some combinatorics going on.
+    For example, \(U_i \cap U_j = U_j \cap U_i\), so we don't have unique overlaps.
+    The combinatorics of this open cover under intersections reduce to the combinatorics of the indices, and in particular of the multi-index set of all \(k\)-tuples of indices such that the overlap of the corresponding covering sets is non-empty:
+    \begin{equation}
+        \symcal{I}_k(\openCover) = \{(i_0, \dotsc, i_k) \in I^k \mid U_{i_0} \cap \dotsb \cap U_{i_k} \ne \emptyset\}.
+    \end{equation}
+    There is a natural action of the symmetric group, \(S_{k+1}\), on \(\symcal{I}_k(\openCover)\).
+    The non-empty overlaps are then in bijection with the orbits of this action.
+    
+    To construct a cochain complex we need to create a sequence of vector spaces and the corresponding boundary maps.
+    The obvious choice is that the vector space corresponding to \(k \in \integers\) should, for \(k \in \integers_{> 0}\), correspond to \(\symcal{I}_k(\openCover)\).
+    We can construct a vector space \(\reals^{\symcal{I}_k(\openCover)}\) consisting of all functions \(\symcal{I}_k(\openCover) \to \reals\).
+    We can alternatively view \(c \in \reals^{\symcal{I}_k(\openCover)}\) as a tuple \(c = (c_{i_0 \dotso i_k})_{(i_0, \dotsc, i_k) \in \symcal{I}_k(\openCover)}\) where the \(c_{i_0\dotso i_k}\) are real numbers.
+    There is then a natural representation of \(S_{k+1}\) acting on this vector space by permuting indices.
+    However, this isn't actually the representation we're interested in.
+    It turns out that the useful vector space in this case is that of the alternating representation, that is, we look at the space of all tuples \(c = (c_{i_0 \dotso i_k})_{(i_0, \dotsc, i_k) \in \symcal{I}_k(\openCover)} \in \reals^{\symcal{I}_k(\openCover)}\) such that for all \(\sigma \in S_{k+1}\) we have
+    \begin{equation}
+        c_{i_{\sigma(0)} \dotso i_{\sigma(k)}} = \sgn(\sigma) c_{i_0 \dotso i_k}.
+    \end{equation}
+    We call the corresponding vector space of this representation \(C^k(\openCover, \reals)\) (the \(\reals\) is there because we chose \(\reals\) fairly arbitrarily as the set of values \(c_{i_0\dotso i_k}\) can take, we can equally replace it with any ring, \(R\), and consider \(R\)-modules \(C^k(\openCover, R)\) constructed in the same way).
+    
+    This gives us a cochain complex, called the \define{\v{C}ech complex}\index{Cech complex@\v{C}ech complex}
+    \begin{equation}
+        \begin{tikzcd}
+            0 \arrow[r] & C^0(\openCover, \reals) \arrow[r, "\delta"] & C^1(\openCover, \reals) \arrow[r, "\delta"] & C^2(\openCover, \reals) \arrow[r, "\delta"] & \dotsb.
+        \end{tikzcd}
+    \end{equation}
+    To define this we need to define the boundary maps, \(\delta \colon C^k(\openCover, \reals) \to C^{k+1}(\openCover, \reals)\), and we can do so by defining its action on \(c = (c_{i_0\dotso i_k})\) to give \(\delta c\) defined by
+    \begin{equation}
+        (\delta c)_{i_0 \dotso i_{k+1}} = \sum_{\ell = 0}^{k + 1} (-1)^{\ell} c_{i_0 \dotso \widehat{i_\ell} \dotso i_{k+1}}
+    \end{equation}
+    where \(\widehat{i_\ell}\) denotes leaving out \(i_\ell\) from the indices.
+    
+    To make this a bit more concrete let's look at what a \(k\)-cochain is for a few small values of \(k\):
+    \begin{itemize}
+        \item A \(0\)-cochain, \(c \in C^0(\openCover, \reals)\), simply assigns a real number, \(c_i\), to every open set, \(U_i\).
+        \item A \(1\)-cochain, \(c \in C^1(\openCover, \reals)\), assigns a real number, \(c_{ij}\), to every non-empty intersection \(U_i \cap U_j\) in such a way that \(c_{ij} = -c_{ji}\).
+        \item A \(2\)-cochain, \(c \in c^2(\openCover, \reals)\), assigns a real number, \(c_{ijk}\), to every non-empty intersection \(U_i \cap U_j \cap U_k\) in such a way that
+        \begin{equation}
+            c_{ijk} = c_{jki} = c_{kij} = -c_{ikj} = -c_{jik} = -c_{kji}. 
+        \end{equation}
+    \end{itemize}
+    We can then look at how the boundary operator acts in these cases:
+    \begin{itemize}
+        \item For a \(0\)-cochain, \(c = (c_i)\), so long as \(U_i \cap U_j \ne \emptyset\) we have
+        \begin{equation}
+            (\delta c)_{ij} = (-1)^0 c_{\widehat{i}j} + (-1)^1 c_{i\widehat{j}} = c_{j} - c_{i}.
+        \end{equation}
+        \item For a \(1\)-cochain, \(c = (c_{ij})\), so long as \(U_i \cap U_j \cap U_k \ne \emptyset\) we have
+        \begin{equation}
+            (\delta c)_{ijk} = (-1)^0 c_{\widehat{i}jk} + (-1)^1 c_{i\widehat{j}k} + (-1)^2 c_{ij\widehat{k}} = c_{jk} - c_{ik} + c_{ij} = c_{jk} + c_{ki} + c_{ij}.
+        \end{equation}
+    \end{itemize}
+    
+    The fact that \(\delta^2 = 0\) follows from the computation
+    \begin{align}
+        (\delta^2 c)_{i_0 \dotso i_{k+2}} &= \sum_{p = 0}^{k + 1} (-1)^{p} (\delta_c)_{i_0 \dotso \widehat{i_{p}} \dotso i_{k+1}}\\
+        &= \sum_{0 \le p < q \le k + 2} (-1)^{p + q} c_{i_0 \dotso \widehat{i_p} \dotso \widehat{i_q} \dotso i_{k+2}}\\
+        &\qquad\qquad+ \sum_{0 \le q < p \le k + 2} (-1)^{p + q - 1} c_{i_0 \dotso \widehat{i_q} \dotso \widehat{i_p} \dotso i_{k + 2}} \notag\\
+        &= 0.
+    \end{align}
+    Here we have to split the second sum up into two parts, one where \(q < p\) and one where \(q > p\).
+    These sums then turn out to differ only by an overall sign, and so cancel to give zero.
+    The sign change comes from the fact that when we allow \(q\) to range over values above \(p\) we have to adjust the index \(q\) which we're using to the position in the remaining indices after removing the index at \(p\), which results in the index position actually being \(q - 1\).
+    
+    Note that we also need to show that \(\delta c \in C^{k + 1}(\openCover, \reals)\), since from the definition all that is immediately clear is that \(\delta c \in \reals^{\symcal{I}_{k+1}(\openCover)}\).
+    This just comes down to showing that \(\delta c\) is antisymmetric in all indices, and this follows immediately from the antisymmetry of \(c\) in all indices. 
+    
+    So, we have a cochain complex, we can now take the cohomology, and we define the \defineindex{\v{C}ech cohomology}
+    \begin{equation}
+        H^k(\openCover, \reals) = \check{H}^k(\openCover, \reals) = \frac{\ker(\delta \colon C^k(\openCover, \reals) \to C^{k + 1}(\openCover, \reals))}{\im(\delta \colon C^{k-1}(\openCover, \reals) \to C^k(\openCover, \reals))}.
+    \end{equation}
+    
+    This construction so far works not just for any manifold, but for any topological space.
+    There are then some natural questions to ask:
+    \begin{itemize}
+        \item Does the \v{C}ech cohomology depend on the choice of open cover, \(\openCover\)?
+        \item If \(M\) is a manifold then how is the \v{C}ech cohomology, \(\check{H}(\openCover, \reals)\) related to the de Rham cohomology, \(H_{\derham}^k(M)\)?
+    \end{itemize}
+    
+    \begin{exm}{Zeroth \v{C}ech Cohomology}{}
+        Since the image of \(\delta \colon 0 \to C^0(\openCover, \reals)\) is \(0\) we have that
+        \begin{equation}
+            \check{H}^0(\openCover, \reals) = \frac{\ker(\delta \colon C^0(\openCover, \reals) \to C^1(\openCover, \reals))}{0} = \ker(\delta \colon C^0(\openCover, \reals) \to C^1(\openCover, \reals)).
+        \end{equation}
+        Thus, \(\check{H}^0(\openCover, \reals)\) consists of all tuples \(c = (c_i)_{i \in I}\) satisfying \(c_i = c_j\) whenever \(U_i \cap U_j \ne 0\), since these must be sent to zero by \(\delta\) as they map to \((\delta c)_{ij} = c_j - c_i\).
+        Thus, whenever covering sets overlap the corresponding elements of the \v{C}ech cohomology must be equal on those open sets.
+        In this way every 0-cocycle defines a locally constant function \(f \colon M \to \reals\) such that \(f|_{U_i} = c_i\) is constant.
+        Then if each \(U_i\) is connected we have that \(\check{H}(\openCover, \reals)\) is isomorphic to \(\reals^r\) where \(r\) is the number of connected components of \(M\).
+        This shows that so long as \(M\) is a manifold and \(\openCover\) consists only of connected sets we have \(H^0_{\derham}(M) \isomorphic \check{H}(\openCover, \reals)\).
+        
+        However, if \(\openCover = \{M\}\) then \(\check{H}(\openCover, \reals) = \reals\), so clearly there's some dependence on the choice of open cover.
+    \end{exm}
+    
+    It turns out that there is a natural chain homomorphism from the \v{H}ech complex to the de Rham complex, and this factors through the quotients to induce a homomorphism between the cohomologies.
+    Under some conditions this turns out to be an isomorphism.
+    
+    Let \(M\) be a smooth manifold with open cover \(\{\openCover\}_{i \in I}\) consisting of non-empty sets.
+    Suppose also that we have chosen a partition of unity, \(\rho_i \colon M \to [0, 1]\), subordinate to \(\openCover\).
+    We can use this to define the linear map
+    \begin{align}
+        C^k(\openCover, \reals) &\to \Omega^k(M)\\
+        c &\mapsto \omega_c
+    \end{align}
+    where \(\omega_c\) has components given by \(c\):
+    \begin{equation}
+        \omega_c \coloneqq \sum_{(i_i, \dotsc, i_k) \in \symcal{I}_k(\openCover)} c_{i_0 \dotso i_k} \rho_{i_0} \ddagger\rho_{i_1} \wedge \dotsb \wedge \dl{\rho_{i_k}}.
+    \end{equation}
+    
+    To prove that this is a chain homomorphism we need to show that \(\omega_{\delta c} = \dl \omega_c\).
+    This can be done with a direct calculation, which essentially comes down to the fact that the antisymmetry of the wedge product \(\dl{\rho_{i_0}} \wedge \dotsb \wedge \dl{\rho_{i_{k+1}}}\) kills all terms that are summed over where the resulting indices aren't antisymmetrised, and any sum over all \(\rho_i\) gives \(1\).
+    
+    This then induces a homomorphism of the cohomologies:
+    \begin{align}
+        \check{H}^{k}(\openCover, \reals) &\to H_{\derham}^{k}(M)\\
+        [c] &\mapsto [\omega_c].
+    \end{align}
+    
+    \begin{thm}{}{}
+        If \(\openCover\) is a good cover of \(M\) then this homomorphism of cohomologies is an isomorphism.
+    \end{thm}
+    
+    \chapter{Vector Bundles}
     
     
     
