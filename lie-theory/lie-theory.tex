@@ -2580,7 +2580,7 @@ noabbrev
     We need algebraic closure to guarantee the existence of an eigenvector in the one-dimensional base case.
     So, Lie's theorem pretty much holds only over \(\complex\), and a few other more \enquote{constructed} fields, such as \(\overbar{\rationals}\), the algebraic closure of \(\rationals\).
     
-    \begin{crl}{}{}
+    \begin{crl}{}{crl:solvable subalgebra consists of simple endomorphisms}
         There exists a basis of \(V\) such that any solvable subalgebra \(\lie{s} \subseteq \generalLinearLie(V)\) is a subalgebra of \(\borelLie(n, \complex)\).
         \begin{proof}
             This is the same as \cref{crl:nilpotent always corresponds to strictly upper triangular} but with solvable and upper triangular in place of nilpotent and strictly upper triangular.
@@ -3996,6 +3996,223 @@ noabbrev
     Then \(\ad_{H_\alpha}(Y) = \beta(H_\alpha)Y\) by definition of the root space.
     By \(\specialLinearLie_2\) representation theory we know that \(\beta(H_\alpha) \in \integers\) because \(\beta(H_\alpha)\) is a weight of a finite dimensional \(\specialLinearLie_2\) representation, namely the \(\lie{s}_\alpha\)-module \(\lie{g} = \specialLinearLie_n\).
     
+    \subsection{Roots for Simple Lie Algebra}
+    Let \(\lie{g}\) be a simple Lie algebra.
+    Recall that the Killing form is given by
+    \begin{equation}
+        \kappa(X, Y) = \tr(\ad_X \circ \ad_Y).
+    \end{equation}
+    
+    \begin{lma}{}{lma:killing form vanishes on ga gb with a not -b}
+        If \(\lie{g}\) is a simple Lie algebra with Cartan decomposition
+        \begin{equation}
+            \lie{g} = \csa \oplus \bigoplus_{\alpha \in R} \lie{g}_{\alpha}
+        \end{equation}
+        then if \(\alpha \ne -\beta\) we have \(\kappa(\lie{g}_\alpha, \lie{g}_\beta) = 0\).
+        \begin{proof}
+            We must show that \(\kappa(X, Y) = 0\) for all \(X \in \lie{g}_\alpha\) and \(Y \in \lie{g}_\beta\).
+            Recall that this means that \(\ad_H(X) = \alpha(H)X\) and \(\ad_H(Y) = \beta(Y)\) for all \(H \in \csa\).
+            We then have
+            \begin{align}
+                \alpha(H) \kappa(X, Y) &= \kappa(\alpha(H) X, Y)\\
+                &= \kappa(\ad_H(X), Y)\\
+                &= \kappa(\bracket{H}{X}, Y)\\
+                &= \kappa(-\bracket{X}{H}, Y)\\
+                &= -\kappa(\bracket{X}{H}, Y)\\
+                &= -\kappa(X, \bracket{H}{Y})\\
+                &= -\kappa(X, \ad_H(Y))\\
+                &= -\kappa(X, \beta(H)Y)\\
+                &= -\beta(H)\kappa(X, Y).
+            \end{align}
+            Now, since \(\alpha \ne -\beta\) we know that there is some \(H \in \csa\) such that \(\alpha(H) \ne -\beta(H)\) this simply cannot be true unless \(\kappa(X, Y) = 0\).
+        \end{proof}
+    \end{lma}
+    
+    It turns out that when \(\alpha = -\beta\) not only is the Killing form not zero, but it's actually nondegenerate.
+    In particular, this applies when we choose \(\alpha = \beta = 0\), so the Killing form restricted to \(\lie{h}\) provides a nondegenerate pairing on \(\lie{h}\).
+    
+    \begin{lma}{}{lma:killing form nondegen pairing ga g-a}
+        If \(\lie{g}\) is a simple Lie algebra with Cartan decomposition
+        \begin{equation}
+            \lie{g} = \csa \oplus \bigoplus_{\alpha \in R} \lie{g}_{\alpha}
+        \end{equation}
+        then the Killing form provides a non-degenerate pairing between \(\lie{g}_\alpha\) and \(\lie{g}_{-\alpha}\).
+        \begin{proof}
+            This simply follows from the fact that the Killing form is nondegenerate on \(\lie{g}\), and so for each \(X \in \lie{g}_\alpha\) there must be some \(Y \in \lie{g}\) such that \(\kappa(X, Y) \ne 0\), and by \cref{lma:killing form vanishes on ga gb with a not -b} we know that if \(Y \in \lie{g} \setminus \lie{g}_{-\alpha}\) then \(\kappa(X, Y) = 0\), so it must be that \(Y \in \lie{g}_{-\alpha}\).
+            Thus, if we restrict the Killing form to a pairing \(\lie{g}_\alpha \times \lie{g}_{-\alpha} \to \complex\) it is still nondegenerate.
+        \end{proof}
+    \end{lma}
+    
+    Note that we implicitly assume here that if \(\alpha \in R\) then \(-\alpha \in R\).
+    That is, we assume that if \(\lie{g}_\alpha \ne 0\) then \(\lie{g}_{-\alpha} \ne 0\).
+    Actually, this proof of nondegeneracy gives us this fact, as requiring \(\kappa\) be nondegenerate for \(\lie{g}\) forces there to be a nonzero element of \(\lie{g}_{-\alpha}\) pairing with some given nonzero element of \(\lie{g}_\alpha\) to give a nonzero value under the Killing form.
+    
+    \begin{crl}{}{}
+        Let \(R\) be the set of roots of some simple Lie algebra.
+        If \(\alpha \in R\) then \(-\alpha \in R\).
+    \end{crl}
+    
+    Since the Killing form gives a symmetric nondegenerate pairing on \(\csa\) we know from the theory of bilinear forms that it induces a canonical identification \(\iota_\kappa \colon \csa \to \csa^*\) given by \(\iota_\kappa(H) = \kappa(H, -)\).
+    
+    \begin{dfn}{}{}
+        Let \(\lie{g}\) be a simple Lie algebra with Cartan subalgebra \(\csa\).
+        Write \(\eta \colon \csa \to \csa^*\) for the induced canonical identification \(\eta = \iota_\kappa\).
+        Write \(t_\alpha \in \csa\) for the element of \(\csa\) corresponding to \(\alpha \in \csa^*\) under this canonical identification.
+        That is, \(t_\alpha = \eta^{-1}(\alpha)\).
+    \end{dfn}
+    
+    Note that by definition of the identification \(\eta\) we have that
+    \begin{equation}
+        \eta(H)(\alpha) = \kappa(H, \eta^{-1}(\alpha)) = \alpha(H)
+    \end{equation}
+    for all \(\alpha \in \csa^*\) and \(H \in \csa\).
+    In particular, \(\kappa(t_\alpha, H) = \kappa(\eta^{-1}(\alpha), H) = \alpha(H)\).
+    
+    \begin{lma}{}{lma:roots are nozero}
+        Let \(\lie{g}\) be a simple Lie algebra and \(\csa\) a Cartan subalgebra with roots \(R\).
+        If \(H \in \csa\) and \(H \ne 0\) then there exists a root \(\alpha \in R\) such that \(\alpha(H) \ne 0\).
+        \begin{proof}
+            Suppose \(\alpha(H) = 0\) for all roots.
+            Then \(\bracket{H}{X} = \alpha(H)X = 0\) for all \(X \in \lie{g}_\alpha\).
+            Since \(\csa\) is abelian it follows that \(H \in \centre(\lie{g})\), which implies \(H = 0\) since \(\lie{g}\) is simple and so has trivial centre.
+        \end{proof}
+    \end{lma}
+    
+    \begin{crl}{}{}
+        The set of roots, \(R\), spans \(\csa^*\).
+        \begin{proof}
+            Suppose \(R\) doesn't span \(\csa^*\).
+            Let \(W \subsetneq \csa^*\) be the span of \(R\).
+            Then we may define the annihilator of \(W\) in \(H\) to be the subset
+            \begin{equation}
+                W^\circ = \{H \in \csa \mid \alpha(H) = 0 \forall \alpha \in W\}.
+            \end{equation}
+            This has dimension \(\dim \csa - \dim W \ne 0\), and therefore there is some nonzero \(H \in \csa\) such that \(\alpha(H) = 0\) for all \(\alpha \in W\), and in particular for all \(\alpha \in R\), which contradicts \cref{lma:roots are nozero}.
+            Thus, we must have \(W = \csa\) so \(\dim \csa - \dim W = 0\).
+        \end{proof}
+    \end{crl}
+    
+    It turns out that \(t_\alpha\) is \emph{almost} the correct choice for \(H_\alpha\), the Cartan element of the \(\specialLinearLie_2\) subalgebra that we're looking for.
+    In fact, all we need to do is scale it by a factor of \(2/\kappa(t_\alpha, t_\alpha)\).
+    
+    \begin{lma}{}{lma:bracket of ga and g-a is multiple of ta}
+        Let \(\lie{g}\) be a simple Lie algebra with Cartan subalgebra \(\csa\) and roots \(R\).
+        If \(X \in \lie{g}_\alpha\) and \(Y \in \lie{g}_{-\alpha}\) then \(\bracket{X}{Y} = \kappa(X, Y) t_\alpha\).
+        \begin{proof}
+            We will show that \(\bracket{X}{Y} - \kappa(X, Y)t_\alpha = 0\).
+            First note that \(\bracket{X}{Y}, t_\alpha \in \csa\), so \(\bracket{X}{Y} - \kappa(X, Y) t_\alpha \in \csa\).
+            Then by nondegeneracy of \(\kappa\) restricted to \(\csa\) it is sufficient to show that
+            \begin{equation}
+                \kappa(\bracket{X}{Y} - \kappa(X, Y)t_\alpha, H) = 0
+            \end{equation}
+            for all \(H \in \csa\).
+            We have
+            \begin{align}
+                \kappa(\bracket{X}{Y}, H) &= \kappa(X, \bracket{Y}{H})\\
+                &= -\kappa(X, \bracket{H}{Y})\\
+                &= -\kappa(X, -\alpha(H)Y)\\
+                &= \alpha(H) \kappa(X, Y)\\
+                &= \kappa(t_\alpha, H) \kappa(X, Y)
+            \end{align}
+            so by linearity
+            \begin{equation}
+                \kappa(\bracket{X}{Y} - \kappa(X, Y)t_\alpha, H) = 0,
+            \end{equation}
+            and hence \(\bracket{X}{Y} - \kappa(X, Y)t_\alpha = 0\).
+        \end{proof}
+    \end{lma}
+    
+    \begin{lma}{}{lma:killing form of ta ta nonzero}
+        Let \(\lie{g}\) be a simple Lie algebra with Cartan subalgebra \(\csa\) and corresponding roots \(R\).
+        Then for all \(\alpha \in R\) the quantity \(\kappa(t_\alpha, t_\alpha)\) is nonzero.
+        \begin{proof}
+            Suppose that \(\kappa(t_\alpha, t_\alpha) = 0\) for some \(\alpha \in R\).
+            Then we have
+            \begin{equation}
+                \bracket{t_\alpha}{X} = \alpha(t_\alpha)X = \kappa(t_\alpha, t_\alpha)X = 0
+            \end{equation}
+            for \(X \in \lie{g}_\alpha\) and similarly
+            \begin{equation}
+                \bracket{t_\alpha}{Y} = -\alpha(t_\alpha)Y = -\kappa(t_\alpha, t_\alpha)Y = 0
+            \end{equation}
+            for \(Y \in \lie{g}_{-\alpha}\).
+            
+            Since the Killing form provides a nondegenerate pairing \(\lie{g}_\alpha \times \lie{g}_{-\alpha} \to \complex\) (\cref{lma:killing form nondegen pairing ga g-a}) for a choice of \(X \in \lie{g}_{\alpha}\) there must be some \(Y \in \lie{g}_{-\alpha}\) such that \(\kappa(X, Y) \ne 0\).
+            The Killing form is bilinear, so we can always rescale \(X\) or \(Y\) so that \(\kappa(X, Y) = 1\).
+            Then we have \(\bracket{X}{Y} = \kappa(X, Y)t_\alpha = t_\alpha\).
+            Consider the subalgebra \(\lie{s} = \Span\{X, Y, t_\alpha\}\).
+            This is a subalgebra as it is closed under the commutator since \cref{lma:bracket of ga and g-a is multiple of ta} shows that \(\bracket{X}{Y}\) is just a scalar multiple of \(t_\alpha\).
+            Further, we have \(\bracket{\lie{s}}{\lie{s}} = \Span\{t_\alpha\}\), since \(t_\alpha\) brackets with anything to give zero, and \(\bracket{X}{Y} = t_\alpha\).
+            Then we have \(\bracket{\bracket{\lie{s}}{\lie{s}}}{\bracket{\lie{s}}{\lie{s}}} = \bracket{\complex t_\alpha}{\complex t_\alpha} = 0\).
+            Thus, the derived series of \(\lie{s}\) terminates, so this is a solvable subalgebra.
+            We know from \cref{crl:solvable subalgebra consists of simple endomorphisms} that if \(\lie{s}\) is a solvable subalgebra then in some basis \(\lie{s}\) is a subalgebra of the algebra \(\borelLie(n, \complex)\).
+            Then since \(\bracket{\borelLie(n, \complex)}{\borelLie(n, \complex)} = \nilpotentLie(n, \complex)\) we have that in some basis \(\bracket{\lie{s}}{\lie{s}}\) is a subalgebra of \(\nilpotentLie(n, \complex)\).
+            Thus, \(\bracket{\lie{s}}{\lie{s}}\) consists of \(\ad\)-nilpotent endomorphisms of \(\lie{g}\).
+            We've shown that \(\bracket{\lie{s}}{\lie{s}}\), so this means \(t_\alpha\) is \(\ad\)-nilpotent.
+            Since \(t_\alpha \in \csa\) we also know that \(t_\alpha\) is semisimple, and being both nilpotent and semisimple implies that \(t_\alpha = 0\), a contradiction.
+        \end{proof}
+    \end{lma}
+    
+    \begin{lma}{}{}
+        Let \(\lie{g}\) be a simple Lie algebra with Cartan subalgebra \(\csa\) and corresponding roots \(R\).
+        For each \(\alpha \in R\) we have
+        \begin{itemize}
+            \item an \(\specialLinearLie_2\) triple, \(\lie{s}_\alpha = \Span\{E_\alpha, H_\alpha, F_\alpha\}\) where \(E_\alpha \in \lie{g}_\alpha\), \(F_\alpha \in \lie{g}_{-\alpha}\), and \(H_\alpha = \bracket{E_\alpha}{F_\alpha}\); and
+            \item \(H_\alpha = \displaystyle \frac{2t_\alpha}{\kappa(t_\alpha, t_\alpha)}\).
+        \end{itemize}
+        \begin{proof}
+            Choose some \(E_\alpha \in \lie{g}_\alpha\).
+            The Killing form provides a nondegenerate pairing \(\lie{g}_\alpha \times \lie{g}_{-\alpha} \to \complex\), so there exists some \(F_\alpha \in \lie{g}_{-\alpha}\) such that \(\kappa(E_\alpha, F_\alpha) \ne 0\).
+            Since the Killing form is bilinear we can always rescale \(E_\alpha\) or \(F_\alpha\) so that \(\kappa(E_\alpha, F_\alpha) = 2/\kappa(t_\alpha, t_\alpha)\), where we've used the fact that \(\kappa(t_\alpha, t_\alpha) \ne 0\) (\cref{lma:killing form of ta ta nonzero}).
+            Now set \(H_\alpha = \bracket{E_\alpha}{F_\alpha} = \kappa(X, Y)t_\alpha = 2t_\alpha/\kappa(t_\alpha, t_\alpha)\).
+            
+            The fact that this results in an \(\specialLinearLie_2\)-triple then follows from a direct calculation of brackets:
+            \begin{itemize}
+                \item \(\bracket{E_\alpha}{F_\alpha} = H_\alpha\) as required;
+                \item \(\bracket{H_\alpha}{E_\alpha} = \alpha(H_\alpha) E_\alpha\) and \(\alpha(H_\alpha) = \alpha(2t_\alpha/\kappa(t_\alpha, t_\alpha)) = 2\alpha(t_\alpha)/\kappa(t_\alpha, t_\alpha) = 2\kappa(t_\alpha, t_\alpha)/\kappa(t_\alpha, t_\alpha) = 2\) as required;
+                \item \(\bracket{H_\alpha}{F_\alpha} = -\alpha(H_\alpha) F_\alpha = -2F_\alpha\) as required.
+            \end{itemize}
+        \end{proof}
+    \end{lma}
+    
+    \begin{lma}{}{}
+        Let \(\lie{g}\) be a simple Lie algebra with Cartan subalgebra \(\csa\) and corresponding roots \(R\).
+        For each \(\alpha \in R\) we have
+        \begin{itemize}
+            \item \(\dim \lie{g}_\alpha = 1\);
+            \item \(c\alpha \in R\) if and only if \(c = \pm 1\).
+        \end{itemize}
+        \begin{proof}
+            Consider \(\lie{g}\) as an \(\specialLinearLie_2\)-module where \(\specialLinearLie_2\) is taken to be the \(\specialLinearLie_2\) triple \(\lie{s}_\alpha = \Span\{E_\alpha, H_\alpha, F_\alpha\}\) acting on \(\lie{g}\) through the restriction of the adjoint representation.
+            Let \(M\) be the space spanned by \(\csa\) and all \(\lie{g}_{c\alpha}\) for \(c \in \complex\).
+            That is
+            \begin{equation}
+                M = \csa \oplus \bigoplus_{c\alpha \in R} \lie{g}_{c\alpha}.
+            \end{equation}
+            Note that we can restrict our sum to values of \(c\) such that \(c\alpha \in R\), since if \(c\alpha \notin R\) then \(\lie{g}_{c\alpha} = 0\).
+            This is an \(\lie{s}_\alpha\)-submodule of \(\lie{g}\).
+            By the classification of simple \(\specialLinearLie_2\)-modules and Weyl's complete reducibility theorem we know that the weights of \(H_\alpha\) on \(M\) are integers.
+            Now, if \(c\alpha \in R\) then
+            \begin{equation}
+                c\alpha(H_\alpha) = c\alpha\left( \frac{2t_\alpha}{\kappa(t_\alpha, t_\alpha)} \right) = \frac{2c}{\kappa(t_\alpha, t_\alpha)} \alpha(t_\alpha) = \frac{2c}{\kappa(t_\alpha, t_\alpha)} \kappa(t_\alpha, t_\alpha) = 2c
+            \end{equation}
+            and so we have \(2c \in \integers\).
+            
+            We can decompose \(\csa\) as \(\csa = \ker \alpha \oplus \complex H_\alpha\).
+            This is possible because if \(H \in \csa\) and \(\alpha(H) \ne 0\) then \(H\) acts nontrivially on \(\lie{g}_\alpha\), specifically, \(\bracket{H}{X} = \alpha(H)X\), but we also know that \(\bracket{H_\alpha}{X} = \alpha(H_\alpha)X = 2X\), so \(H\) acts as a multiple, \(\alpha(H)/2\), of \(H_\alpha\).
+            This tells us that \(\ker \alpha\) is an \(\lie{s}_\alpha\)-submodule of \(\csa\) on which \(\lie{s}_\alpha\) acts trivially.
+            We can therefore decompose \(M\) as \(M = \lie{s}_\alpha \oplus \ker \alpha \oplus M'\) for some \(\lie{s}_\alpha\)-submodule \(M'\).
+            Since \(M_0 = \csa\) in the original decomposition of \(\lie{g}\) we must have that \(M'_0 = 0\), since there are no semisimple elements remaining for \(M'\), they're all in \(\lie{s}_\alpha\) (if they're a multiple of \(H_\alpha\)) or \(\ker \alpha\) (otherwise).
+            This means that all of the \(H_\alpha\) weights of \(M'\) are odd integers.
+            The reason for this is that if they were not then by acting with \(E_\alpha\) or \(F_\alpha\), which shift the weight by \(\pm 2\), we could get to \(M_0' = 0\), but then everything must be zero, so any even-weight subspace is trivial.
+            
+            This tells us that \(\dim \lie{g}_\alpha = 1\), since otherwise we could take two linearly independent elements of \(\lie{g}_\alpha\) and combine them to form an even weight element.
+            
+            We can also see that \(2\alpha \notin R\), since if it were then it would necessarily have even weights, that is, twice a root is never a root.
+            Now, suppose that \(\frac{1}{2}\alpha\) is a root, then \(2 \frac{1}{2}\alpha = \alpha\) cannot be a root, as it's twice a root, so \(\frac{1}{2}\alpha\) isn't a root because we're assuming \(\alpha\) is.
+            From this it follows that \(\pm \alpha\) are the only multiples of \(\alpha\) which are in \(R\).
+        \end{proof}
+    \end{lma}
     
     
     
