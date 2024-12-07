@@ -11,9 +11,14 @@
 \tikzexternalize[prefix=tikz-external/]
 
 \usepackage{tikz-cd}
+\AtBeginEnvironment{tikzcd}{\tikzexternaldisable}
+\AtEndEnvironment{tikzcd}{\tikzexternalenable}
 
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
+
+\let\widehatold=\widehat
+\AtBeginDocument{\let\widehat=\widehatold}
 
 \usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes from differential topology},pdfkeywords={differential topology, manifold, tangent space, homology, cohomology},pdfsubject={Differential Topology}]{hyperref}  % Should be loaded second last (cleveref last)
 \colorlet{hyperrefcolor}{blue!60!black}
@@ -83,6 +88,12 @@ noabbrev
 \newcommand{\Vect}[1][\field]{\c@egory{Vect}_{#1}}
 \makeatother
 \newcommand{\op}{\symrm{op}}
+\DeclareMathOperator{\Diffeo}{Diffeo}
+\newcommand{\lieDerivative}{\symcal{L}}
+\newcommand{\upperHalfSpace}{\symbb{H}}
+\newcommand{\compact}{\symrm{c}}
+\newcommand{\openCover}{\symcal{U}}
+\DeclareMathOperator{\supp}{supp}
 
 \begin{document}
     \frontmatter
@@ -1045,9 +1056,483 @@ noabbrev
     
     \begin{remark}{}{}
         We have so far assumed, and will continue to assume, that manifolds do not have boundaries.
-        A manifold with boundary can be defined in the same way as a manifold without boundary, just replace \(\reals^m\) with the upper half space, \(\symbb{H}^m = \{(x_1, \dotsc, x_m) \in \reals^m \mid x_m \ge 0\}\).
+        A manifold with boundary can be defined in the same way as a manifold without boundary, just replace \(\reals^m\) with the upper half space, \(\upperHalfSpace^m = \{(x_1, \dotsc, x_m) \in \reals^m \mid x_m \ge 0\}\).
         Then a boundary point is any point in \(M\) which maps to coordinates with \(x_m = 0\) in a chart, and all other points are interior points.
     \end{remark}
+    
+    Suppose that \(M\) is a smooth manifold with atlas \(\{(U_\alpha, \varphi_\alpha)\}_{\alpha \in A}\).
+    Let \(\omega \in \Omega^k(M)\) be a \(k\)-form on \(M\).
+    For a chosen chart, \((U_\alpha, \varphi_\alpha)\), we can express \(\omega\) in local coordinates.
+    To do this we define a differential form on \(\varphi_\alpha(U_\alpha) \subseteq \reals^m\).
+    Denote this form by \(\omega_\alpha \in \Omega^k(\varphi_\alpha(U_\alpha))\).
+    We choose this form to be such that it pulls back to the restriction of \(\omega\) to \(U_\alpha\), that is
+    \begin{equation}
+        \omega|_{U_\alpha} = \varphi_\alpha^*\omega_\alpha.
+    \end{equation}
+    
+    We can determine \(\omega_\alpha\) uniquely from this.
+    To do so we use the fact that any vector we wish to evaluate \(\omega_\alpha\) on should arise from a vector in the tangent space \(T_pM\).
+    We turn this into a vector in the tangent space \(T_{\varphi_\alpha(p)}U_\alpha\) with the pushforward, \(\dl{\varphi_\alpha}(p)\).
+    Then, for \(p \in U_\alpha \subseteq M\), \(v_i \in T_pM\), \(x = \varphi_\alpha(p)\), and \(\xi_i = \dl{\varphi_\alpha}(p)v_i\) we have
+    \begin{equation}
+        \omega_\alpha(x; \xi_1, \dotsc, \xi_k) = \omega_p(v_1, \dotsc, v_k).
+    \end{equation}
+    The right hand side is known, so this fully determines \(\omega_\alpha\).
+    
+    In more detail, recall that one way of constructing the tangent space was as
+    \begin{equation}
+        T_pM = \left( \bigcup_{p \in U_\alpha} \{\alpha\} \times \reals^m \right) / {\sim},
+    \end{equation}
+    so elements are of the form \(v_i = [\alpha, \xi_i]_p\) for some \(\alpha \in A\) and \(\xi_i \in \reals^m\).
+    Then if \(\{e_1, \dotsc, e_m\}\) is the standard basis for \(\reals^m\) we can define
+    \begin{equation}
+        f_{\alpha, I} \colon U_\alpha \to \reals
+    \end{equation}
+    for \(\alpha \in A\) and \(I = (i_1, \dotsc, i_k) \in \symcal{I}_{m,k}\) by
+    \begin{equation}
+        f_{\alpha,I}(x) = \omega_\alpha(x; e_{i_1}, \dotsc, e_{i_k}) = \omega_p([\alpha, e_{i_1}]_p, \dotsc, [\alpha, e_{i_k}]_p)
+    \end{equation}
+    for \(x \in \varphi_\alpha(U_\alpha)\) and \(p = \varphi_\alpha^{-1}(x) \in U_\alpha\).
+    Then we can write \(\omega_\alpha\) as
+    \begin{equation}
+        \omega_\alpha = \sum_{I \in \symcal{I}_{m,k}} f_{\alpha, I} \dl{x^I}.
+    \end{equation}
+    
+    In order for this local definition to make sense we must have that on the overlap of two charts, \(U_\alpha \cap U_\beta\), the two definitions agree.
+    That is, if we define \(\omega_\beta\) in the same way but for the chart \((U_\beta, \varphi_\beta)\) then we require that
+    \begin{equation}
+        \omega|_{U_\alpha \cap U_\beta} = \varphi_\alpha^*\omega_\alpha|_{\varphi_\alpha(U_\alpha \cap U_\beta)} = \varphi_\beta^*\omega_\beta|_{\varphi_\beta(U_\alpha \cap U_\beta)}.
+    \end{equation}
+    Using the fact that the pullback of an inverse is the inverse of the pullback we must have
+    \begin{equation}
+        \omega_\alpha|_{\varphi_\alpha(U_\alpha \cap U_\beta)} = (\varphi_\alpha^{-1})^* (\varphi_\beta^* \omega_\beta|_{\varphi_\beta(U_\alpha \cap U_\beta)}).
+    \end{equation}
+    Then using the fact that the pullback is contravariant we can write this as
+    \begin{equation}
+        \omega_\alpha|_{\varphi_\alpha(U_\alpha \cap U_\beta)} = (\varphi_\beta \circ \varphi_\alpha^{-1})^*\omega_\beta|_{\varphi_\beta(U_\alpha \cap U_\beta)}.
+    \end{equation}
+    It turns out that this is always true, so local coordinates work as we would like.
+    Further, one can show that if we define \(\omega_\alpha \in \Omega^k(\varphi_\alpha(U_\alpha))\) for all charts \((U_\alpha, \varphi_\alpha)\) and this condition holds then there is a unique \(\omega \in \Omega^k(M)\) which corresponds to these local coordinate forms, so we can specify a differential form just by specifying its local coordinates for all charts.
+    
+    \section{Exterior Derivative and Lie Derivative}
+    \subsection{Motivation}
+    Consider two smooth functions \(f \colon \reals^3 \to \reals\) and \(g \colon \reals^3 \to \reals^3\).
+    We have the well known operations
+    \begin{equation*}
+        \gradWord f =
+        \begin{pmatrix}
+            \partial_1 f\\ \partial_2 f\\ \partial_3 f
+        \end{pmatrix}
+        , \quad \curlWord g = 
+        \begin{pmatrix}
+            \partial_2 g_3 - \partial_3 g_2\\
+            \partial_3 g_1 - \partial_1 g_3\\
+            \partial_1 g_2 - \partial_2 g_1
+        \end{pmatrix}
+        , \qand \divWord g = \partial_1 g_1 + \partial_2 g_2 + \partial_3 g_3.
+    \end{equation*}
+    
+    These operations also satisfy the identities
+    \begin{equation}
+        \curlWord \circ \gradWord = 0, \qqand \divWord \circ \curlWord = 0.
+    \end{equation}
+    
+    Our goal of this section is to see how all three operations are actually specific cases of the exterior derivative, and these identities are then special cases of the more general identity \(\dl^2 = 0\).
+    This identity in turn will lead us to define cohomology later.
+    
+    The key to identifying this is to note that actually we shouldn't think of the curl and gradient as acting on the same objects, rather \(\divWord\) acts on \(\Omega^1(\reals^3)\) and \(\curlWord\) acts on \(\Omega^2(\reals^3)\).
+    What we're doing when we think of them as acting on \(g \colon \reals^3 \to \reals^3\) is identifying that \(\Lambda^1\reals^3 \isomorphic \reals^3 \isomorphic \Lambda^2\reals^3\).
+    
+    \subsection{The Exterior Derivative}
+    Let \(U \subseteq \reals^m\) be open.
+    The exterior derivative on \(U\) is a linear operation \(\dl \colon \Omega^K(U) \to \Omega^{k+1}(U)\).
+    There are a few ways to define the exterior derivative.
+    The choice mainly depends on how we write the differential form in the first place.
+    We give two definitions here, which are equivalent (although we won't prove this).
+    
+    \begin{dfn}{Exterior Derivative}{}
+        Let \(\omega \in \Omega^k(U)\).
+        Then \(\omega\) defines a smooth map\footnote{The notes use the notation \(\omega(x; \xi_1, \dotsc, \xi_k)\) for this.}
+        \begin{align}
+            \omega \colon U \times \underbrace{\reals^m \times \dotsb \times \reals^m}_{k \text{ times}} &\to \reals,\\
+            (x, \xi_1, \dotsc, \xi_k) &\mapsto \omega_x(\xi_1, \dotsc, \xi_k)
+        \end{align}
+        which is such that for any fixed \(x \in U\)
+        \begin{align}
+            \underbrace{\reals^m \times \dotsb \times \reals^m}_{k \text{ times}} &\to \reals\\
+            (\xi_1, \dotsc, \xi_k) &\mapsto \omega_x(\xi_1, \dotsc, \xi_k)
+        \end{align}
+        is an alternating \(k\)-form on \(\reals^m\).
+        The exterior derivative of \(\omega\) is the \((k + 1)\)-form \(\dl{\omega}\) defined by
+        \begin{equation}
+            \dl{\omega}_x(\xi_1, \dotsc, \xi_{k + 1}) = \sum_{j=1}^{k+1} (-1)^{j-1} \diff{}{t}\bigg|_{t=0} \omega_{x + t\xi_j}(\xi_1, \dotsc, \widehat{\xi_j}, \dotsc \xi_{k+1})
+        \end{equation}
+        for all \(x \in U\) and \(\xi_1, \dotsc, \xi_{k+1} \in \reals^m\) where \(\widehat{\xi_j}\) means that we skip the \(\xi_j\) evaluation.
+    \end{dfn}
+    
+    \begin{dfn}{Exterior Derivative}{}
+        Let \(\omega \in \Omega^k(U)\) and define \(f_I \colon U \to \reals\) for \(I \in \symcal{I}_{k,m}\) by \(f_I(x) = \omega_x(e_{i_1}, \dotsc, e_{i_k}) = \omega_x(e_I)\) where \(\{e_1, \dotsc, e_m\}\) is the standard basis for \(\reals^m\).
+        We then define the exterior derivative of \(\omega\) to be the \((k + 1)\)-form \(\dl\omega\) given by
+        \begin{equation}
+            \dl{\omega} = \sum_{I \in \symcal{I}_{k,m}} \dl{f_I} \wedge \dl{x^I}
+        \end{equation}
+        where
+        \begin{equation}
+            \dl{f_I} = \sum_{i=1}^{m} \diffp{f_I}{x^i} \dd{x^i}.
+        \end{equation}
+    \end{dfn}
+    
+    Note that \(\dl{f_I}\) here is just a special case of the exterior derivative when we view \(f_I\) as a 0-form.
+    
+    \begin{lma}{Properties of the Exterior Derivative}{}
+        \begin{itemize}
+            \item \(\dl{} \colon \Omega^k(U) \to \Omega^{k+1}(U)\) is a linear map;
+            \item for \(\omega \in \Omega^k(U)\) and \(\tau \in \Omega^{\ell}(U)\) we have \(\dl{(\omega \wedge \tau)} = \dl{\omega} \wedge \tau + (-1)^{k} \omega \wedge \dl{\tau}\), this is called the \defineindex{super-Leibniz rule} or the \defineindex{graded-Leibniz rule};
+            \item \(\dl^2 = 0\); and
+            \item for \(\varphi \colon U \to V\) a map between open subsets of \(\reals^m\) we have \(\varphi^*(\dl{\omega}) = \dl{(\varphi^*\omega)}\), that is, the exterior derivative commutes with pullbacks.
+        \end{itemize}
+        \begin{proof}
+            \begin{itemize}
+                \item Linearity follows immediately from the definition, linearity of the partial derivative, and linearity of forms and the wedge product.
+                \item Suppose
+                \begin{equation}
+                    \omega = \sum_{I \in \symcal{I}_{k,m}} f_I \dd{x^I}, \qqand \tau = \sum_{J \in \symcal{I}_{\ell, m}} g_J \dd{x^J}.
+                \end{equation}
+                By linearity it is sufficient to prove this for a single term, so we may take
+                \begin{equation}
+                    \omega = f \dd{x^I}, \qqand \tau = g \dd{x^J}
+                \end{equation}
+                for some smooth functions \(f, g \colon U \to \reals\) and fixed \(I \in \symcal{I}_{k,m}\) and \(J \in \symcal{I}_{\ell, m}\).
+                We then have
+                \begin{align}
+                    \dl{(\omega \wedge \tau)} &= \dl{(f \dd{x^I} \wedge g \dd{x^J})}\\
+                    &= \dl{(fg \dd{x^I} \wedge \dl{x^J})}\\
+                    &= \dl{(fg)} \wedge (\dl{x^I} \wedge \dl{x^J})\\
+                    &= ((\dl{f})g + f \dl{g}) \wedge \dl{x^I} \wedge \dl{x^J}\\
+                    &= \dl{f} \wedge \dl{x^I} \wedge g \dd{x^J} + \dl{g} \wedge f\dd{x^I} \wedge \dl{x^J}\\
+                    &= \dl{f} \wedge \dl{x^I} \wedge g \dd{x^J} + (-1)^k f\dd{x^I} \wedge \dl{g} \wedge \dl{x^J}\\
+                    &= \dl{\omega} \wedge \tau + (-1)^k \omega \wedge \dl{\tau}
+                \end{align}
+                where we've used the Leibniz rule for the exterior derivative of 0-forms, which we know holds because it's just the derivative, and the anticommutativity of the wedge product.
+                \item This follows from Schwarz's theorem, which states that partial derivatives commute.
+                The proof is by induction on \(k\), the base case is the \(0\)-form, which is just a smooth function, \(f\).
+                We have
+                \begin{align}
+                    \dl{^2f} &= \dl\left( \sum_{i=1}^{m} \diffp{f}{x^i} \dl{x^i} \right)\\
+                    &= \sum_{i=1}^m \dl\diffp{f}{x^i} \wedge \dl{x^i}\\
+                    &= \sum_{i=1}^m \sum_{j=1}^m \diffp{f}{x^j,x^i} \wedge \dl{x^j} \wedge \dl{x^i}.
+                \end{align}
+                This then vanishes because the derivative is symmetric in \(i\) and \(j\) while \(\dl{x^j} \wedge \dl{x^i}\) is antisymmetric in \(i\) and \(j\).
+                
+                Now, suppose that \(\dl^2\) vanishes for all \(k - 1\) forms, and consider a \(k\)-form \(\omega\).
+                By linearity it is again sufficient to prove this for a single term, so we may take
+                \begin{equation}
+                    \omega = f \dl{x^I},
+                \end{equation}
+                for some smooth function, \(f\), and some fixed \(I \in \symcal{I}_{k,m}\).
+                We then have
+                \begin{equation}
+                    \dl{\omega} = \dl{f} \wedge \dl{x^I} = \sum_{i=1}^m \diffp{f}{x^i} \dd{x^i}.
+                \end{equation}
+                Computing the second exterior derivative and using the graded Leibniz rule, and the fact that \(f\) is a zero form and \(\dl{f}\) is a \(1\)-form, we have
+                \begin{align}
+                    \dl^2\omega &= \dl{(\dl{f} \wedge \dl{x^I})}\\
+                    &= \dl^2 f \wedge \dl{x^I} - \dl{f} \wedge \dl^2{x^I}.
+                \end{align}
+                The first term vanishes because \(f\) is a 0-form, so this is the base case.
+                The second term vanishes because we can use the graded Leibniz rule to write
+                \begin{align}
+                    \dl{^2x^I} &= \dl{(\dl{x^{i_1}} \wedge \dotsb \wedge \dl{x^{i_k}})}\\
+                    &= \dl^2 x^{i_1} \wedge \dl{x^{i_2}} \wedge \dotsb \wedge \dl{x^{i_k}} - \dl{x^{i_1}} \wedge \dl^2{x^{i_2}} \wedge \dotsb \wedge \dl{x^{i_k}} \notag\\
+                    &+ \dotsb + (-1)^{k-1} \dl{x^{i_1}} \wedge \dl{x^{i_2}} \wedge \dotsb \wedge \dl^2{x^{i_k}}
+                \end{align}
+                and each \(\dl^2{x^i}\) vanishes as \(x^i\) is a 0-form.
+                \item First note that
+                \begin{equation}
+                    \varphi^*(\dl{x}^i) = \dl (x^i \circ \varphi)
+                \end{equation}
+                by definition of the pullback.
+                Further, this map is \(\dl{\varphi^i}\), it projects out the \(i\)th component of the result of applying \(\varphi\) to the input.
+                By linearity it is sufficient to show the desired result for a single term, \(\omega = f \dd{x^I}\).
+                We then have
+                \begin{align}
+                    \varphi^*\dl{\omega} &= \varphi^*(\dl{f} \wedge \dl{x}^I)\\
+                    &= \dl{(f \circ \varphi)} \wedge \dl{\varphi^{I}}
+                \end{align}
+                where we've used the fat that pullbacks distribute over wedge products.
+                This result is exactly the same thing that we get if we take the exterior derivative of
+                \begin{equation}
+                    \varphi^*\omega = \varphi^*(f \dd{x}^I) = ((f \circ \varphi) \dd{\varphi}^I).
+                \end{equation}
+            \end{itemize}
+        \end{proof}
+    \end{lma}
+    
+    So far we've defined the exterior derivative only on open subsets of \(\reals^m\).
+    It generalises to open subsets of a manifold by taking our open subsets of \(\reals^m\) to be charts for the manifold.
+    Specifically, let \((U_\alpha, \varphi_\alpha)\) be a chart of some manifold, \(M\), and \(\omega \in \Omega^k(M)\) a differential form on \(M\).
+    Then we know that their is a corresponding differential form on \(\varphi_\alpha(U_\alpha) \subseteq \reals^m\) such that
+    \begin{equation}
+        \omega|_{U_\alpha} = \varphi_\alpha^*\omega_\alpha.
+    \end{equation}
+    We may define \(\dl{\omega_\alpha}\) as above.
+    We can then use the fact that the exterior derivative commutes with the pullback to lift this definition to the manifold.
+    Specifically we define \(\dl{\omega}\) to be the unique \((k+1)\)-form on \(M\) satisfying
+    \begin{equation}
+        \dl{\omega}|_{U_\alpha} = \varphi^*_\alpha\dl\omega_\alpha = \dl \varphi_\alpha^* \omega_\alpha.
+    \end{equation}
+    To show that this uniquely defines \(\dl\omega\) we need to show that the definitions agree on the overlap of charts.
+    Specifically, we know that \(\omega_\alpha\) satisfy
+    \begin{equation}
+        \omega_\alpha|_{\varphi_\alpha(U_\alpha \cap U_\beta)} = (\varphi_\beta \circ \varphi_\alpha^{-1})^* \omega_\beta|_{\varphi_\beta(U_\alpha \cap U_\beta)}
+    \end{equation}
+    and applying the exterior derivative to this we get
+    \begin{equation}
+        \dl{\omega_\alpha}|_{\varphi_\alpha(U_\alpha \cap U_\beta)} = \dl (\varphi_\beta \circ \varphi_\alpha^{-1})^* \omega_\beta |_{\varphi_\beta(U_\alpha \cap U_\beta)} = (\varphi_\beta \circ \varphi_\alpha^{-1}) \dl{\omega}_\beta|_{\varphi_\beta(U_\alpha \cap U_\beta)}
+    \end{equation}
+    and so \(\dl{\omega}_\alpha\) and \(\dl{\omega}_\beta\) agree on the overlap, so \(\dl{\omega}\) is uniquely defined.
+    
+    The properties of the last lemma all lift to the manifold.
+    
+    \begin{lma}{Exterior Derivatives Properties}{}
+        \begin{itemize}
+            \item \(\dl \colon \Omega^k(M) \to \Omega^{k + 1}(M)\) is linear;
+            \item \(\dl(\omega \wedge \tau) = \dl{\omega} \wedge \tau + (-1)^{\deg \omega} \omega \wedge \tau\);
+            \item \(\dl^2 = 0\);
+            \item \(\varphi^*\dl\omega = \dl \varphi^*\omega\).
+        \end{itemize}
+    \end{lma}
+    
+    \subsection{Vector Calculus}
+    Now consider the case of \(M = \reals^3\).
+    Consider a 0-form, that is a smooth function, \(f \colon \reals^3 \to \reals\).
+    We have
+    \begin{equation}
+        \dl{f} = \sum_{i=1}^{3} \diffp{f}{x^i} = \partial_1 f + \partial_2 f + \partial_3 f.
+    \end{equation}
+    So, under the isomorphism of vector spaces \(\Omega^1(M) \to \reals^3\) given on the basis by \(\dl{x^i} \mapsto e_i\) this is exactly \(\gradWord f\).
+    
+    Now consider a 1-form, \(\omega = g_1 \dd{x^1} + g_2 \dd{x^2} + g_3 \dd{x^3}\), we have
+    \begin{align}
+        \dl{\omega} &= \dl{g_1} \wedge \dl{x^1} + \dl{g_2} \wedge \dl{x^2} + \dl g_3 \wedge \dl{x^3}\\
+        &= \sum_{i=1}^3 \left( \diffp{g_1}{x^i} \dl{x^i} \wedge \dl{x^1} + \diffp{g_2}{x^i} \dl{x}^i \wedge \dl{x^2} + \diffp{g_3}{x^i} \dl{x^i} \wedge \dl{x^3} \right)\\
+        &= \diffp{g_1}{x^1} \dl{x^1} \wedge \dl{x^1} + \diffp{g_1}{x^2} \dl{x^2} \wedge \dl{x^1} + \diffp{g_1}{x^3} \dl{x^3} \wedge \dl{x^1}\\
+        &+ \diffp{g_2}{x^1} \dl{x^1} \wedge \dl{x^2} + \diffp{g_2}{x^2} \dl{x^2} \wedge \dl{x^2} + \diffp{g_2}{x^3} \dl{x^3} \wedge \dl{x^2} \notag\\
+        &+ \diffp{g_3}{x^1} \dl{x^1} \wedge \dl{x^3} + \diffp{g_3}{x^2} \dl{x^2} \wedge \dl{x^3} + \diffp{g_3}{x^3} \dl{x^3} \wedge \dl{x^3} \notag\\
+        &= -\diffp{g_1}{x^2} \dl{x^1} \wedge \dl{x^2} - \diffp{g_1}{x^3} \dl{x^1} \wedge \dl{x^3} + \diffp{g_2}{x^1} \dl{x^1} \wedge \dl{x^2}\\
+        &- \diffp{g_2}{x^3} \dl{x^2} \wedge \dl{x^1} + \diffp{g_3}{x^1} \dl{x^1} \wedge \dl{x^3} + \diffp{g_3}{x^2} \dl{x^2} \wedge \dl{x^3} \notag\\
+        &= ( \partial_2 g_3 - \partial_3 g_2 ) \dd{x^2} \wedge \dl{x^3} + ( \partial_3 g_1 - \partial_1 g_3 ) \dd{x^1} \wedge \dl{x^3}\\
+        &+ ( \partial_1 g_2 - \partial_2 g_1 ) \dd{x^1} \wedge \dl{x^2}. \notag
+    \end{align}
+    We see that under the isomorphism of vector spaces \(\Omega^2(\reals^3) \mapsto \reals^3\) given on the basis by \(\dl{x^1} \wedge \dl{x}^2 \mapsto e_3\), \(\dl{x^1} \wedge \dl{x^3} \mapsto e_2\) and \(\dl{x^2} \wedge \dl{x^3} \mapsto e_1\) we have exactly \(\curlWord g\) where \(g = (g_1, g_2, g_3) \colon \reals^3 \to \reals^3\).
+    
+    Finally, consider a 2-form, \(\tau = h_{12} \dd{x^1} \wedge \dl{x^2} + h_{23} \dd{x^2} \wedge \dl{x^3} + h_{13} \dd{x^1} \wedge \dl{x^3}\), we have
+    \begin{align}
+        \dl{\tau} &= \dl{h_{12}} \wedge \dl{x^1} \wedge \dl{x^2} + \dl{h_{23}} \wedge \dl{x^2} \wedge \dl{x^3} + \dl{h_{13}} \wedge \dl{x^1} \wedge \dl{x^3}\\
+        &= \sum_{i=1}^3 \bigg( \diffp{h_{12}}{x^i} \dl{x^i} \wedge \dl{x^1} \wedge \dl{x^2} + \diffp{h_{23}}{x^i} \dl{x^i} \wedge \dl{x^2} \wedge \dl{x^3}\\
+        &\qquad\qquad + \diffp{h_{13}}{x^i} \dl{x^i} \wedge \dl{x^1} \wedge \dl{x^3} \bigg)\\
+        &= \diffp{h_{12}}{x^3} \dl{x^3} \wedge \dl{x^1} \wedge \dl{x^2} + \diffp{h_{23}}{x^1} \wedge \dl{x^1} \wedge \dl{x^2} \wedge \dl{x^3}\\
+        &\qquad\qquad+ \diffp{h_{13}}{x^2} \dl{x^2} \wedge \dl{x^1} \wedge \dl{x^3}\\
+        &= \left( \diffp{h_{12}}{x^3} + \diffp{h_{23}}{x^1} - \diffp{h_{13}}{x^2} \right) \dl{x^1} \wedge \dl{x^2} \wedge \dl{x^3}.
+    \end{align}
+    We see that under the isomorphism of vector spaces \(\Omega^3(M) \to \reals\) given on the basis by \(\dl{x^1} \wedge \dl{x^2} \wedge \dl{x^3} = 1\) this is exactly \(\divWord h\) where \(h = (h_{12}, h_{13}, -h_{23}) \colon \reals^3 \to \reals^3\).
+    
+    This suggests that really we should be thinking of grad, div and curl as all being the exterior derivative acting on forms of different degrees.
+    This leads us to the following picture
+    \begin{equation}
+        \begin{tikzcd}
+            \Omega^0(M) \arrow[r, "\dl = \gradWord"] & \Omega^1(M) \arrow[r, "\dl = \curlWord"] & \Omega^2(M) \arrow[r, "\dl = \divWord"] & \Omega^3(M).
+        \end{tikzcd}
+    \end{equation}
+    We can extend this picture to
+    \begin{equation}
+        \begin{tikzcd}
+            0 \arrow[r, "\dl"] & \Omega^0(M) \arrow[r, "\dl = \gradWord"] & \Omega^1(M) \arrow[r, "\dl = \curlWord"] & \Omega^2(M) \arrow[r, "\dl = \divWord"] & \Omega^3(M) \arrow[r, "\dl"] & 0
+        \end{tikzcd}
+    \end{equation}
+    by defining \(\dl 0 = 0\) for a \enquote{(\(-1\))-form}, \(0\) and noting that the exterior derivative of a \(3\)-form is a \(4\)-form, which must therefore vanish since \(\reals^3\) is only three-dimensional.
+    
+    This picture is our first example of a cochain complex.
+    Later we'll generalise this to other manifolds than \(\reals^3\).
+    
+    \subsection{Lie Derivative}
+    
+    The exterior product gives a \((k + 1)\)-form from a \(k\)-form.
+    It is then natural to ask if there is an operation that gives a \(k\)-form from a \((k + 1)\)-form, \(\omega\).
+    The answer is yes, but it's not unique.
+    Instead we get one such operation for each vector field, \(X\), it's simply partially evaluating \(\omega_p\) at \(X_p\).
+    Of course there are other options, such as which slot of \(\omega\) we evaluate \(X\) in, but this is just a choice of sign, so it's natural to take this operation to always act on the first slot.
+    
+    \begin{dfn}{Interior Product/Contraction}{}
+        Let \(\omega \in \Omega^{k}(M)\) and \(X \in \vectorFields(M)\).
+        The \defineindex{interior product} of \(X\) with \(\omega\) is defined to be the \((k - 1)\)-form \(\iota(X)\omega = \iota_X\omega\) given by
+        \begin{equation}
+            (\iota_X(\omega))_p (v_1, \dotsc, v_{k-1}) = \omega_p(X_p, v_1, \dotsc, v_{k-1})
+        \end{equation}
+        for \(p \in M\) and \(v_i \in T_pM\).
+    \end{dfn}
+    
+    One question we might ask now is if there is some way to combine the interior and exterior product to give a notion of a derivative which doesn't change the degree of a form.
+    The answer is yes, there is.
+    
+    \begin{dfn}{Lie Derivative}{}
+        Let \(\omega \in \Omega^k(M)\) and \(X \in \vectorFields(M)\).
+        Then if \(X\) is complete and \(\varphi_t \in \Diffeo(M)\) is the flow associated with \(X\) then the \defineindex{Lie derivative} of \(\omega\) along \(X\) is
+        \begin{equation}
+            \lieDerivative_X\omega = \diff{}{t}\bigg|_{t=0} \varphi^*_t \omega.
+        \end{equation}
+        If \(X\) is not complete we can still make this definition pointwise when restricting to regions on which the flow is defined.
+    \end{dfn}
+    
+    The idea of this derivative is that we want to compute the usual derivative via the limit definition.
+    If this worked we'd be looking at something of the form
+    \begin{equation}
+        \lim_{h \to 0} \frac{\omega_(p + h) - \omega_p}{h}.
+    \end{equation}
+    There are a few problems with this.
+    The first is that \(p + h\) doesn't make sense, we cannot add a point \(p \in M\) to some \(h \in \reals\).
+    Ok, let's fix this by considering two points \(p, p' \in M\) which are \enquote{close}, then we want to consider
+    \begin{equation}
+        \lim_{h \to 0} \frac{\omega_p - \omega_{p'}}{h}
+    \end{equation}
+    where \(h\) is the \enquote{distance} between the two points, \(p\) and \(p'\).
+    There's one further problem, \(\omega_p\) lives in \(\Lambda^kT_p^*M\) and \(\omega_p'\) lives in \(\Lambda^kT_{p'}^*M\).
+    These are different spaces and we cannot subtract vectors in one from vectors in the other.
+    This is where the flow \(\varphi_t\) comes in, this is a diffeomorphism \(\varphi_t \colon M \to M\) which sends \(p\) to \(p'\) after \enquote{time} \(t\), that is \(\varphi_t(p) = p'\).
+    Thus, \(\varphi_t^* \colon \Lambda^kT_{p'}^*M \to \Lambda^kT_p^*M\), and thus we can replace \(\omega_p\) with \(\omega\) and \(\omega_{p'}\) with \(\varphi_t^*\omega\), both of which can be taken at \(p \in M\) to give an element of \(\Lambda^kT_p^*M\), and we can now take their difference.
+    We have replaced \(h\) with \(t\) now as our parameter that we will take to be small, so we get the limit
+    \begin{equation}
+        \lim_{t \to 0} \frac{\omega_p - \varphi_t^*\omega_p}{t}.
+    \end{equation}
+    This defines a \(k\)-form for each \(p \in M\), so we can drop the \(p\) and take this to be an element of \(\Omega^k(M)\).
+    Then this limit is exactly the \(t\) derivative in the definition of the Lie derivative.
+    
+    Our goal was to find a derivative that doesn't change the degree of a form.
+    The Lie derivative is certainly a derivative, but does it change the degree of the form?
+    The answer is no, it doesn't and we can see this through the following result.
+    
+    \begin{thm}{Cartan's Magic Formula}{}
+        For \(\omega \in \Omega^k(M)\) and \(X \in \vectorFields(M)\) we have
+        \begin{equation}
+            \lieDerivative_X \omega = \dl \iota_X \omega + \iota_X \dl \omega.
+        \end{equation}
+    \end{thm}
+    
+    We see that the first term in Cartan's magic formula decreases the degree then increases it, and the second term does this in reverse.
+    It turns out that the effect of doing both of these in this order is exactly the derivative.
+    
+    \chapter{Integration on Manifolds}
+    \section{Defining Integration}
+    Consider a manifold, \(M\).
+    For integration to make sense \(M\) has to be oriented.
+    We won't go into details, and there are many equivalent definitions of oriented manifolds.
+    The one that we'll work with is that the Jacobian determinant of the transition maps is positive.
+    Examples of oriented manifolds include spheres, \(\reals^n\), \(S^n\), and the cylinder, but not the M\"obius loop.
+    An equivalent definition is that there is a nowhere-vanishing volume form \(\omega \in \Omega^m(M)\) for \(m = \dim M\).
+    Note that nowhere-vanishing means that the map \(\omega_p\) is never the zero map for any \(p \in M\), not that the map \(\omega_p\) has no zeros, as opposed to being non-zero, which means that \(\omega \ne 0\) as elements of \(\Omega^m(M)\).
+    
+    The standard notation for an integral,
+    \begin{equation}
+        \int f(x) \dd{x},
+    \end{equation}
+    informs our guess as to how an integral should be defined on a manifold.
+    The key idea here is that this is a 1-dimensional integral over \(\reals\) and we're integrating a 1-form, hence the \(\dl{x}\).
+    The correct generalisation turns out to be that we should always integrate a top-form, that is an \(m\)-form.
+    
+    We will perform the integration by mapping to \(\reals^m\) (or \(\upperHalfSpace^m\) if our manifold has a boundary).
+    We can then integrate normally here.
+    There are a few subtleties to this though.
+    First, in order to get a finite result we should only consider integrals of smooth differential top-forms with compact support.
+    Recall that the support, \(\supp f\), of a function, \(f\), (including forms) is the subset of the domain on which the function takes a non-zero value.
+    We write \(\Omega_{\compact}^k{M}) \subseteq \Omega^k(M)\) for the set of \(k\)-forms on \(M\) with compact support.
+    
+    Suppose that \(U \subseteq M\) is an open set region we wish to integrate over, and that \(U \subseteq U_\alpha \cap U_\beta\).
+    How should we map \(\omega\) to be a differential form on \(\reals^m\) that we can integrate?
+    We could map it under \(\varphi_\alpha\) to \(\omega_\alpha\) or under \(\varphi_\beta\) to \(\omega_\beta\), and there's no reason to prefer one over the other.
+    Actually, it turns out that the correct thing to do is some mix of these.
+    
+    \begin{dfn}{Partition of Unity}{}
+        Let \(M\) be a manifold and let \(\openCover = \{U_\alpha\}_{\alpha \in A}\) be an open cover of \(M\).
+        That is, \(U_\alpha \subseteq M\) is open and \(\bigcup_{\alpha \in A} U_\alpha = M\).
+        A \defineindex{partition of unity} subordinate to \(\openCover\) is a collection of smooth maps \(\{\rho_\alpha \colon U_\alpha \to [0, 1]\}_{\alpha \in A}\) such that on any \(U_\alpha\) only finitely many of the \(\rho_\alpha\) are nonzero and
+        \begin{equation}
+            \sum_{\alpha \in A} \rho_\alpha = 1
+        \end{equation}
+        and
+        \begin{equation}
+            \supp \rho_\alpha \subseteq U_\alpha.
+        \end{equation}
+    \end{dfn}
+    
+    The idea is that a partition of unity gives a weighting to each set in the open cover in a smooth way and we can use this to weight which of \(\omega_\alpha\) and \(\omega_\beta\) we choose on the overlap.
+    We can now define the integral on a manifold.
+    
+    \begin{dfn}{Integrals on a Manifold}{}
+        Let \(M\) be a manifold with chart \(\{(U_\alpha, \varphi_\alpha)\}_{\alpha \in A}\) and the corresponding open cover \(\openCover = \{U_\alpha\}_{\alpha \in A}\).
+        Let \(\{\rho_\alpha\}_{\alpha \in A}\) be a partition of unit subordinate to \(\openCover\).
+        Let \(\omega \in \Omega_{\compact}^m(M)\) be a top-form.
+        
+        Then, for \(U_\alpha \in \openCover\) we can work in local coordinates to get \(\omega_\alpha \in \Omega^m(\varphi_\alpha(U_\alpha))\).
+        This is such that \(\omega|_{U_\alpha} = \varphi_\alpha^*\omega_\alpha\).
+        Expanding \(\omega_\alpha\) in the standard basis we have \(\omega_\alpha = g_\alpha \dd{x^1} \wedge \dotsb \wedge \dl{x^m}\) where \(g_\alpha \colon \varphi_\alpha(U_\alpha) \to \reals\) is a smooth function.
+        
+        The integral of \(\omega\) over \(M\) is the real number
+        \begin{equation}
+            \int_M \omega \coloneqq \sum_{\alpha \in A} \int_{\varphi_\alpha(U_\alpha)} \rho_\alpha(\varphi_\alpha^{-1}(x)) g_\alpha(x) \dd{x^1} \dotsb \dl{x^m}.
+        \end{equation}
+    \end{dfn}
+    
+    \begin{remark}{}{}
+        \begin{itemize}
+            \item The sum on the right of the definition of the integral is finite because only finitely many of the products \(\rho_\alpha \omega\) are nonzero.
+            \item We \emph{do not} write \(\dl{x}\) on the left, the \enquote{\(\dl\)} which is standard in the notation for an integral is \enquote{hidden} inside the \(\omega\).
+            \item The integral forms a functional
+            \begin{align}
+                \Omega_{\compact}^c(M) &\to \reals\\
+                \omega \mapsto \int_M \omega.
+            \end{align}
+            Linearity follows from the fact that everything making up the definition of the integral is linear.
+        \end{itemize}
+    \end{remark}
+    
+    \begin{prp}{}{}
+        The value of the integral of some compactly-supported top-form, \(\omega\), over a manifold, \(M\), is independent of the choice of oriented atlas and partition of unity.
+        \begin{proof}
+            Suppose that we have a second oriented atlas, \(\{(V_\beta, \psi_\beta)\}_{\beta \in B}\), and a corresponding partition of unity \(\{\theta_\beta\}_{\beta \in B}\).
+            Then for \(\beta \in B\) to evaluate the integral we need to define \(\omega_\beta \in \Omega^m(\psi_\beta(V_\beta))\), such that \(\omega|_{V_\beta} = \psi_\beta^* \omega_\beta\).
+            Expanding in the basis we have \(\omega_\beta = h_\beta \dd{y^1} \wedge \dotsb \wedge \dl{y^m}\).
+            Then, we have
+            \begin{equation}
+                g_\alpha(x) = h_\beta(\psi_\beta \circ \varphi_\alpha^{-1}(x)) \det(\dl(\psi_\beta \circ \varphi_\alpha^{-1})(x))
+            \end{equation}
+            for all \(x \in \varphi_\alpha(U_\alpha \cap V_\beta)\).
+            This determinant is always positive, since we've chosen oriented atlases.
+            We then have
+            \begin{align}
+                \int_M \omega &= \sum_{\alpha \in A} \int_{\varphi_\alpha(U_\alpha)} (\rho_\alpha \circ \varphi_\alpha^{-1}) g_\alpha \dd{x^1} \dotsm \dl{x^m}\\
+                &= \sum_{\alpha \in A} \sum_{\beta \in B} \int_{\varphi_\alpha(U_\alpha \cap V_\beta)} (\rho_\alpha \circ \varphi_\alpha^{-1})(\theta_\beta \circ \varphi_\alpha^{-1})g_\alpha \dd{x^1} \dotsm \dl{x^m}\\
+                &= \sum_{\alpha \in A} \sum_{\beta \in B} \int_{\psi_\beta(U_\alpha \cap V_\beta)} (\rho_\alpha \circ \psi_\beta^{-1})(\theta_\beta \circ \varphi_\alpha^{-1})h_b \dd{y^1} \dotsm \dl{y^m}\\
+                &= \sum_{\beta \in B} \int_{\psi_\beta(V_\beta)} (\theta_\beta \circ \psi_\beta^{-1}) h_\beta \dd{y^1} \dotsm \dl{y^m}.
+            \end{align}
+            This is exactly the integral if we'd started with the second atlas.
+            The first second equation follows from the fact that the \(\theta_\beta\) form a partition of unity, so actually their sum is just 1, the third equation follows from the expression for \(g_\alpha\) in terms of \(h_\beta\), and the change of variables formula, then the last equation from the fact that \(\rho_\alpha\) is a partition of unity.
+        \end{proof}
+    \end{prp}
+    
+    \section{Stokes' Theorem}
+    \begin{thm}{Stokes}{}
+        Let \(M\) be an oriented manifold of dimension \(m\), potentially with boundary.
+        Let \(\omega \in \Omega_{\compact}^{m - 1}(M)\).
+        Then
+        \begin{equation}
+            \int_M \dl{\omega} = \int_{\partial M} \omega.
+        \end{equation}
+    \end{thm}
+    
+    The proof of the above is somewhat long, but essentially comes down to using the version of Stokes' theorem that we all learn in vector calculus with \(\upperHalfSpace^m\) as our region of integration and then mapping all cases to this one.
+    
+    \chapter{De Rham Cohomology}
+    
     
     
     % Appdendix
