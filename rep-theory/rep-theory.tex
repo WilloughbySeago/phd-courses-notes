@@ -1,0 +1,69 @@
+% !TeX program = lualatex
+\documentclass[fleqn]{NotesClass}
+
+\strictpagecheck
+
+\usepackage{csquotes}
+
+\usepackage{tikz}
+\usetikzlibrary{external}
+\tikzexternalize[prefix=tikz-external/]
+
+\usepackage{tikz-cd}
+\AtBeginEnvironment{tikzcd}{\tikzexternaldisable}
+\AtEndEnvironment{tikzcd}{\tikzexternalenable}
+
+\usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes from Representation Theory Course},pdfkeywords={representation theory},pdfsubject={Representation Theory}]{hyperref}  % Should be loaded second last (cleveref last)
+\colorlet{hyperrefcolor}{blue!60!black}
+\hypersetup{colorlinks=true, linkcolor=hyperrefcolor, urlcolor=hyperrefcolor}
+\usepackage[
+capitalize,
+nameinlink,
+noabbrev
+]{cleveref} % Should be loaded last
+
+% My packages
+\usepackage{NotesBoxes}
+\usepackage{NotesMaths2}
+
+\setmathfont[range={\int, \oint, \otimes, \oplus, \bigotimes, \bigoplus}]{Latin Modern Math}
+
+
+% Highlight colour
+%\definecolor{highlight}{HTML}{710D78}
+%\definecolor{my blue}{HTML}{2A0D77}
+%\definecolor{my red}{HTML}{770D38}
+%\definecolor{my green}{HTML}{14770D}
+%\definecolor{my yellow}{HTML}{E7BB41}
+
+% Title page info
+\title{Representation Theory}
+\author{Willoughby Seago}
+\date{January 13th, 2024}
+\subtitle{Notes from}
+\subsubtitle{University of Glasgow}
+\renewcommand{\abstracttext}{These are my notes from the SMSTC course \emph{Lie Theory} taught by Prof Christian Korff. These notes were last updated at \printtime{} on \today{}.}
+
+% Commands
+% Maths
+
+\begin{document}
+    \frontmatter
+    \titlepage
+    \innertitlepage{}
+    \tableofcontents
+    % \listoffigures
+    \mainmatter
+    \chapter{Introduction}
+    
+    % Appdendix
+%	\appendixpage
+%	\begin{appendices}
+%	
+%	\end{appendices}
+
+    \backmatter
+    \renewcommand{\glossaryname}{Acronyms}
+    \printglossary[acronym]
+    \printindex
+\end{document}
