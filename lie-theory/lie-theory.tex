@@ -4326,7 +4326,7 @@ noabbrev
     \begin{dfn}{Root System}{}
         Let \(E\) be a Euclidean space with inner product \(\innerprod{-}{-}\).
         A root system, \((E, R, \innerprod{-}{-})\) consists of a subset \(R \subseteq E\) such that
-        \begin{itemize}
+        \begin{enumerate}
             \item \(0 \notin R\);
             \item \(R\) is a finite set;
             \item \(\Span_{\reals} R = E\);
@@ -4336,7 +4336,7 @@ noabbrev
             \begin{equation}
                 \rootPairingShort{\beta}{\alpha} = \frac{2\innerprod{\beta}{\alpha}}{\innerprod{\alpha}{\alpha}} \in \integers.
             \end{equation}
-        \end{itemize}
+        \end{enumerate}
     \end{dfn}
     
     Of course, this definition is constructed exactly so that for a simple Lie algebra, \(\lie{g}\), with fixed Cartan subalgebra, \(\csa\), and root system \(R\), we can identify this with a root system in the above sense by identifying \(R \subseteq \csa^*\) with its image under the canonical isomorphism \(\csa^* \to \csa\), and interpreting \(s_\alpha\) as the root \(\alpha \in \csa^*\).
@@ -4394,6 +4394,7 @@ noabbrev
     Continuing on like this it doesn't take long to list all possible values of \(\rootPairingShort{\beta}{\alpha}\) and \(\rootPairingShort{\alpha}{\beta}\) and the corresponding angle, \(\theta\).
     In fact, here is such a list, in which we assume WLOG that \(\rootPairingShort{\beta}{\alpha} \le \rootPairingShort{\alpha}{\beta}\):
     \begin{equation}
+        \label{eqn:possible root angles}
         \begin{array}{r|ccccccccc}
             \rootPairingShort{\beta}{\alpha} & 0 & 1 & -1 & 1 & -1 & 1 & -1 & 1 & -1\\ \hline
             \rootPairingShort{\alpha}{\beta} & 0 & 1 & -1 & 2 & -2 & 3 & -3 & 4 & -4\\ \hline
@@ -4435,6 +4436,7 @@ noabbrev
     We also know that \(R\) contains \(-\alpha\) and \(-\beta\), and in this case that's it.
     There's nothing else so a complete picture of \(R\) is
     \begin{equation}
+        \label{eqn:A1+A1 root system}
         \tikzsetnextfilename{root-systems-A1+A1-complete}
         \begin{tikzpicture}[baseline=(current bounding box)]
             \draw[->, thick] (0, 0) -- (2, 0) node [right] {\(\alpha\)};
@@ -4592,9 +4594,578 @@ noabbrev
     It turns out that at rank 2 we actually have\footnote{The isomorphisms here are isomorphisms of root systems (which we'll define later), corresponding to isomorphisms of the classifying objects, but through the correspondence these lieft to isomorphisms of Lie algebras.} \(\dynkin{D}{2} \isomorphic \dynkin{A}{1} \oplus \dynkin{A}{1}\) and \(\dynkin{C}{2} \isomorphic \dynkin{B}{2}\), which is why we haven't seen these infinite families.
     The direct sums turn out to correspond to semisimple Lie algebras, rather than simple, and the infinite families and five exceptional cases correspond to all possible simple Lie algebras, but we're not ready to see just how this correspondence works yet.
     
-    \chapter{Weyl Groups and Simple Roots}
+    \section{Other Root System Details}
+    \begin{dfn}{Morphism of Root Systems}{}
+        Let \((E, R, \innerprod{-}{-})\) and \((E', R', \innerprod{-}{-}')\) be two root systems.
+        A \define{morphism of root systems}\index{morphism!of root systems} \((E, R, \innerprod{-}{-}) \to (E', R', \innerprod{-}{-}')\) consists of a linear map \(f \colon E \to E'\) which restricts to a function \(f|_R \colon R \to R'\) (that is, \(f(R) \subseteq R'\)) and preserves the inner product on \(R\), so that for all \(\alpha, \beta \in R\) we have
+        \begin{equation}
+            \innerprod{\alpha}{\beta} = \innerprod{f(\alpha)}{f(\beta)}'.
+        \end{equation}
+    \end{dfn}
     
-    % \chapter{Classification of Simple Lie Algebras}
+    Note that the composite of morphisms is again a morphism, and clearly the identity map on \(E\) provides such a morphism.
+    Thus, root systems form a category, the objects of which are all root systems, and the morphisms of which are as described above.
+    
+    \begin{dfn}{Direct Sum}{}
+        Let \((E, R, \innerprod{-}{-})\) and \((E', R', \innerprod{-}{-}')\) be two root systems.
+        Their \defineindex{direct sum}\index{direct sum!of root systems} is the root system \((E \oplus E', R \sqcup R', \innerprod{-}{-}_{E \oplus E'})\) where \(E \oplus E'\) is the direct sum as vector spaces, \(R \sqcup R'\) is the disjoint union viewed as a subset of \(E \oplus E'\) by writing \(\alpha \in R \sqcup R'\) as \(\alpha + 0\) if \(\alpha \in R\) and \(0 + \alpha\) if \(\alpha \in R'\), and \(\innerprod{-}{-}_{E \oplus E'}\) is the induced inner product which is
+        \begin{equation}
+            \innerprod{\alpha + \alpha'}{\beta + \beta'}_{E \oplus E'} = \innerprod{\alpha}{\beta} + \innerprod{\alpha'}{\beta'}'.
+        \end{equation}
+        That is, we simply take \(E\) and \(E'\) to be orthogonal in \(E \oplus E'\).
+    \end{dfn}
+    
+    We introduce the direct sum only to make the notation \(\dynkin{A}{1} \oplus \dynkin{A}{1}\) precise.
+    The \(\dynkin{A}{1}\) root system is the unique rank 1 root system, consisting of some root, \(\alpha\), which we freely take to have unit length, and including \(-\alpha\) as well gives the full root system, which we can draw as
+    \begin{equation}
+        \tikzsetnextfilename{root-systemes-A1}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw[->, thick] (0, 0) -- (2, 0) node [right] {\(\alpha\)};
+            \draw[->, thick] (0, 0) -- (-2, 0) node [left] {\(-\alpha\)}; 
+        \end{tikzpicture}
+    \end{equation}
+    In this case \(E = \reals\) is our root space, and in the direct sum we have \(E \oplus E = \reals \oplus \reals \isomorphic \reals^2\), and we get two orthogonal copies of \(\dynkin{A}{1}\), which is exactly what we see in \cref{eqn:A1+A1 root system}
+    
+    \chapter{Weyl Groups and Simple Roots}
+    \section{Weyl Group}
+    \begin{dfn}{Weyl Group}{}
+        The \defineindex{Weyl group}, \(W\), of a root system, \((E, R, \innerprod{-}{-})\), is the group generated by the set of all reflections
+        \begin{equation}
+            \{s_\alpha \mid \alpha \in R\} \subseteq \orthogonal(E)
+        \end{equation}
+        where
+        \begin{equation}
+            s_\alpha(v) = v - \frac{2\innerprod{v}{\alpha}}{\innerprod{\alpha}{\alpha}} \alpha.
+        \end{equation}
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        The Weyl group of a root system is finite.
+        \begin{proof}
+            We know that each reflection, \(s_\alpha\), maps \(R\) into itself.
+            We also know that \(R\) is a finite set of, say, size \(N\).
+            Thus, there is a group homomorphism \(W \hookrightarrow S_N\).
+            The fact that this homomorphism is injective follows because if \(w \in W\) acts trivially on \(R\) then, using the fact that \(R\) spans \(E\), and thus contains a basis for \(E\), we know that \(w\) acts trivially on this basis of \(E\), and thus \(w\) must be the identity.
+            Thus, \(W \hookrightarrow S_N\) has a trivial kernel.
+            Hence, \(\abs{W} \le \abs{S_N} = N!\), which is finite.
+        \end{proof}
+    \end{lma}
+    
+    \begin{exm}{}{}
+        Consider the vector space
+        \begin{equation}
+            E = \{x = \sum_{i=1}^{n} x_i e_i \in \reals^{n} \mid \sum_{i=1}^{n} x_i = 0\}
+        \end{equation}
+        where \(\{e_i\}\) is the standard basis of  of \(\reals^{n}\).
+        We may equip this with the inner product that makes \(\{\varepsilon_i\}\) an orthonormal basis, so \(\innerprod{e_i}{e_j} = \delta_{ij}\).
+        Let \(R = \{e_i - e_j \mid 1 \le i , j \le n \text{ and } i \ne j\}\).
+        We claim that \((E, R, \innerprod{-}{-})\) is a root system.
+        We can check this:
+        \begin{enumerate}
+            \item Clearly \(0 \notin R\) as \(i \ne j\) means \(e_i - e_j \ne 0\).
+            \item Clearly \(R\) is finite, a simple counting exercise shows it contains \(n^2 - n = n(n - 1)\) elements.
+            \item Suppose that \(x = \sum_{i=1}^n x_i e_i\) with \(\sum_{i=1}^n x_i = 0\).
+            Then \(x_1 = -\sum_{i=2}^n x_i\), and we can write \(x = -\left( \sum_{i=2}^n x_i \right) e_i + \sum_{i=2}^n x_i e_i = \sum_{i=2}^{n} (e_i - e_1)x_i\).
+            We can generate \(e_i - e_1\) as \(-((e_1 - e_2) + (e_2 - e_3) + \dotsb + (e_{i-1} - e_i))\), which means that this is in the span of \(R\), and so writing \(x\) as before we see that \(x\) is in the span of \(R\), so \(E = \Span_{\reals}R\) as required.
+            \item Clearly if \(e_i - e_j \in R\) then \(-(e_i - e_j) = e_j - e_i \in R\) and \(c(e_i - e_j) \notin R\) unless \(c = \pm 1\), as the coefficient of any standard basis vector in \(R\) must be either \(1\) or \(-1\).
+            \item A direct calculation shows that
+            \begin{align}
+                s_{e_i - e_j}&(e_k - e_{\ell}) = e_k - e_{\ell} - 2\frac{\innerprod{e_k - e_{\ell}}{e_i - e_j}}{\innerprod{e_i - e_j}{e_i - e_j}}(e_i - e_j)\\
+                &= e_k - e_{\ell} -2 \frac{\innerprod{e_k}{e_i} - \innerprod{e_k}{e_j} - \innerprod{e_{\ell}}{e_i} + \innerprod{e_{\ell}}{e_j}}{\innerprod{e_i}{e_i} - \innerprod{e_i}{e_j} - \innerprod{e_j}{e_i} + \innerprod{e_j}{e_j}}(e_i - e_j) \notag\\
+                &= e_k - e_{\ell} - 2 \frac{\delta_{ki} - \delta_{kj} - \delta_{\ell i} + \delta_{\ell j}}{2}(e_i - e_j)\\
+                &= e_k - e_{\ell} - (\delta_{ki} - \delta_{kj} - \delta_{\ell i} + \delta_{\ell j})(e_i - e_j).
+            \end{align}
+            We now have to consider cases.
+            If \(\{i, j\} \cap \{k, \ell\} = \emptyset\) then
+            \begin{equation}
+                s_{e_i - e_j}(e_k -e_{\ell}) = e_k - e_{\ell} \in R.
+            \end{equation}
+            If \(i = k\) but \(j \ne \ell\) then
+            \begin{equation}
+                s_{e_i - e_j}(e_k - e_{\ell}) = e_i - e_{\ell} - (e_i - e_j) = e_j - e_{\ell} \in R.
+            \end{equation}
+            Similar results hold if \(i = \ell\) and \(j \ne k\), or if \(j = k\) and \(i \ne \ell\) or \(j = \ell\) and \(i \ne k\).
+            Finally, if \(i = k\) and \(j = \ell\) we have
+            \begin{equation}
+                s_{e_i - e_j}(e_k - e_{\ell}) = e_i - e_j - 2(e_i - e_j) = e_j - e_i \in R
+            \end{equation}
+            and a similar result if \(i = \ell\) and \(j = k\).
+            This shows that \(s_{e_i - e_j}\) maps \(R\) into itself.
+            \item Finally, we have already shown in the above computation that
+            \begin{equation}
+                2\frac{\innerprod{e_k - e_{\ell}}{e_i - e_j}}{\innerprod{e_i - e_j}{e_i - e_j}} = \delta_{ki} - \delta_{kj} - \delta_{\ell i} + \delta_{\ell j} \in \integers.
+            \end{equation}
+        \end{enumerate}
+        
+        Now consider the action of \(s_{e_i - e_j}\) on one of the standard basis vectors, \(e_k\).
+        It is
+        \begin{align}
+            s_{e_i - e_j}(e_k) &= e_k - 2\frac{\innerprod{e_k}{e_i - e_j}}{2} (e_i - e_j)\\
+            &= e_k - (\innerprod{e_k}{e_i} - \innerprod{e_k}{e_j})(e_i - e_j)\\
+            &= e_k - (\delta_{ki} - \delta_{kj})(e_i - e_j).
+        \end{align}
+        Again, consider cases.
+        If \(\{i, j\} \cap \{k\} = \emptyset\) then
+        \begin{equation}
+            s_{e_i - e_j}(e_k) = e_k.
+        \end{equation}
+        If \(i = k\) then
+        \begin{equation}
+            s_{e_i - e_j}(e_k) = e_i - (\delta_{ii} - \delta_{ij})(e_i - e_j) = e_i - (e_i - e_j) = e_j
+        \end{equation}
+        and if \(j = k\) then
+        \begin{equation}
+            s_{e_i - e_j}(e_k) = e_j - (\delta_{ji} - \delta_{jj})(e_i - e_j) = e_j + (e_i - e_j) = e_i.
+        \end{equation}
+        So, we see that \(s_{e_i - e_j}\) acts on \(e_k\) as the identity if \(i, j \ne k\), and as \(e_k \mapsto e_{(i\; k)k} = e_k\) if \(i = j\) so we can identify \(W\) with a subgroup of \(S_n\) containing all transpositions \((i\; k)\), but we know that transpositions generate \(S_N\), so \(W\) must be all of \(S_n\).
+        
+        What we've done here is actually show that the the Weyl group of \(\specialLinearLie_n\) is \(S_n\), since if we write \(x = \sum_{i=1}^{n} x_i e_i\) as the matrix
+        \begin{equation}
+            \begin{bmatrix}
+                x_1 \\
+                & x_2\\
+                && \ddots\\
+                &&& x_n
+            \end{bmatrix}
+        \end{equation}
+        this gives us an isomorphism of \(E\) with the set of all real diagonal matrices with vanishing trace, but upon complexification that is exactly the standard Cartan subalgebra of \(\specialLinearLie_n\).
+    \end{exm}
+    
+    \section{Simple Roots}
+    When constructing the rank 2 root systems one may observe that we can split the roots into two parts, those with non-negative coefficients of \(\alpha\) and \(\beta\), and those with non-positive coefficients of \(\alpha\) and \(\beta\).
+    It turns out that this is always possible, and it helps us reduce the redundancy of \(R\) always containing \(-\alpha\) for each \(\alpha\).
+    
+    \begin{dfn}{Simple Roots}{}
+        Let \((E, R, \innerprod{-}{-})\) be a root system.
+        A set of \define{simple roots}\index{simple root} is a subset \(\Delta \subseteq R\) such that
+        \begin{enumerate}
+            \item \(\Delta\) is a basis for \(E\); and
+            \item each \(\beta \in R\) can be written as \(\beta = \sum_{\alpha \in \Delta} m_\alpha \alpha\) where we either have \(m_\alpha \in \integers_{\ge 0}\) for all \(\alpha\) or \(m_{\alpha} \in \integers_{\le 0}\) for all \(\alpha\).
+        \end{enumerate}
+    \end{dfn}
+    
+    So, for our rank 2 root systems as constructed we always have \(\Delta = \{\alpha, \beta\}\) as a choice of simple roots.
+    Note that the word \enquote{choice} here is key, there are many different ways to choose a set of simple roots.
+    
+    \begin{thm}{}{}
+        Let \((E, R, \innerprod{-}{-})\) be a root system.
+        Then there is a choice of \(\Delta \subseteq R\) such that \(\Delta\) is a set of simple roots.
+        Further, the Weyl group, \(W\), is generated by all reflections corresponding to simple roots (for a fixed choice of simple roots).
+        In fact, if \(\Delta\) and \(\Delta'\) are two sets of simple roots then there exists \(w \in W\) such that \(\Delta' = w(\Delta)\), so from a choice of simple roots all other choice are generated by the action of the Weyl group.
+    \end{thm}
+    
+    \begin{ntn}{}{}
+        For a chosen set of simple roots, \(\Delta \subseteq R\), it is sometimes useful to write
+        \begin{equation}
+            R^+(\Delta) = R^+ \coloneq \{\beta \in R \mid \beta = \sum_{\alpha \in \Delta} m_\alpha \alpha \text{ with } m_\alpha \in \integers_{\ge 0}\};
+        \end{equation}
+        and
+        \begin{equation}
+            R^{-}(\Delta) = R^- \coloneq \{\beta \in R \mid \beta = \sum_{\alpha \in \Delta} m_\alpha \alpha \text{ with } m_\alpha \in \integers_{\le 0}\}.
+        \end{equation}
+        We call these positive and negative roots respectively.
+        It should be noted that implicit in this is always some choice of \(\Delta\) with respect to which we measure \enquote{positiveness}.
+        
+        Note that \(R = R^+ \sqcap R^-\).
+    \end{ntn}
+    
+    \chapter{Classification of Simple Lie Algebras}
+    We are finally ready to complete the classification of simple Lie algebras over \(\complex\).
+    Here's where we're at currently:
+    \begin{itemize}
+        \item For every simple Lie algebra, \(\lie{g}\), we've identified that Cartan subalgebras, \(\csa \subseteq \lie{g}\), are important.
+        \item For every Cartan subalgebra we've identified some special subset of the dual, \(R \subseteq \csa^*\setminus\{0\}\), which has nice properties, including an integrality condition on the quantity \(2\kappa(t_\beta, t_\alpha)/\kappa(t_\alpha, t_\alpha)\) for \(\alpha, \beta \in R\).
+        \item From this we constructed root systems, which allow us to turn our Lie algebra, \(\lie{g}\), over \(\complex\), into some geometry over \(\reals\), which we can draw nice pictures of.
+        \item For each root system we've identified that we can restrict our attention to simple roots, \(\Delta \subseteq R\), without loosing information.
+    \end{itemize}
+    Here's what's left to do:
+    \begin{itemize}
+        \item The simple roots still contain more information than necessary.
+        We're only really interested in the geometry of the roots relative to each other, so we have freedom to perform global rotations and scalings.
+        It turns out that the interesting information of a root system is contained entirely by the set of inner products of simple roots.
+        \item We can study these and we find out that there's only finitely many possible such sets.
+        \item We can classify all of these sets and draw nice pictures corresponding to them.
+        \item We can go backwards, from one of these nice pictures to a simple Lie algebra over \(\complex\).
+    \end{itemize}
+    This last part is important, but it turns out to just come down to a list of rules for how to construct a Lie algebra from one of these nice pictures.
+     
+    \section{Cartan Matrices}
+    As mentioned we don't actually need to know exactly what direction roots point, or their lengths.
+    We only care about their direction and lengths relative to some fixed root, which we've been taking as a unit vector, \(\alpha\), pointing along the \(x\)-axis.
+    All of this information is just encoded in all possible inner products of pairs of roots.
+    Further, we don't actually need \emph{all} roots, just the simple roots, since the non-simple roots are just linear combinations of the simple roots with non-negative or non-positive integer coefficients, so their inner products can be reproduced using linearity.
+    
+    When we have inner products of pairs of vectors it's nice to arrange them into a matrix, so that's what we shall do.
+    The only slightly tricky thing is that rather than recording \(\innerprod{\alpha}{\beta}\) it's more useful to record \(\rootPairingShort{\beta}{\alpha}\), which is not symmetric, so neither is the corresponding matrix.
+    
+    \begin{dfn}{Cartan Matrix}{}
+        Let \((E, R, \innerprod{-}{-})\) be a root system and \(\Delta \subseteq R\) a choice of simple roots with \(\Delta = \{\alpha_1, \dotsc, \alpha_{\ell}\}\).
+        The corresponding \defineindex{Cartan matrix} is the \(\ell \times \ell\) integer matrix where the entry on row \(i\) and column \(j\) is
+        \begin{equation}
+            \rootPairingShort{\alpha_i}{\alpha_j} = \frac{2\innerprod{\alpha_i}{\alpha_j}}{\innerprod{\alpha_j}{\alpha_j}} \in \integers.
+        \end{equation}
+    \end{dfn}
+    
+    Notice that we always have the diagonal values
+    \begin{equation}
+        \rootPairingShort{\alpha_i}{\alpha_i} = \frac{2\innerprod{\alpha_i}{\alpha_i}}{\innerprod{\alpha_i}{\alpha_i}} = 2.
+    \end{equation}
+    
+    \begin{exm}{}{exm:rank 2 cartan matrices}
+        Consider the rank 2 root systems again, with the chosen simple roots \(\Delta = \{\alpha, \beta\}\), so \(\alpha_1 = \alpha\) and \(\alpha_2 = \beta\).
+        The diagonal entries of the corresponding Cartan matrix are all \(2\), and we can look up the off-diagonal entries in \cref{eqn:possible root angles}.
+        \begin{itemize}
+            \item For \(\dynkin{A}{1} \oplus \dynkin{A}{1}\) we have the off-diagonal entries \(\rootPairingShort{\alpha_1}{\alpha_2} = \rootPairingShort{\alpha}{\beta} = 0\), and \(\rootPairingShort{\alpha_2}{\alpha_1} = \rootPairingShort{\beta}{\alpha} = 0\).
+            Thus, the corresponding Cartan matrix is
+            \begin{equation}
+                \begin{bmatrix}
+                    2 & 0\\
+                    0 & 2
+                \end{bmatrix}
+                .
+            \end{equation}
+            \item For \(\dynkin{A}{2}\) we have the off-diagonal entries \(\rootPairingShort{\alpha_1}{\alpha_2} = \rootPairingShort{\alpha}{\beta} = -1\) and \(\rootPairingShort{\alpha_2}{\alpha_1} = \rootPairingShort{\beta}{\alpha} = -1\).
+            Thus, the corresponding Cartan matrix is
+            \begin{equation}
+                \begin{bmatrix}
+                    2 & -1\\
+                    -1 & 2
+                \end{bmatrix}
+                .
+            \end{equation}
+            \item For \(\dynkin{B}{2}\) we have the off-diagonal entries \(\rootPairingShort{\alpha_1}{\alpha_2} = \rootPairingShort{\alpha}{\beta} = -2\) and \(\rootPairingShort{\alpha_2}{\alpha_1} = \rootPairingShort{\beta}{\alpha} = -1\).
+            Thus, the corresponding Cartan matrix is
+            \begin{equation}
+                \begin{bmatrix}
+                    2 & -2\\
+                    -1 & 2
+                \end{bmatrix}
+                .
+            \end{equation}
+            \item For \(\dynkin{G}{2}\) we have the off-diagonal entries \(\rootPairingShort{\alpha_1}{\alpha_2} = \rootPairingShort{\alpha}{\beta} = -3\) and \(\rootPairingShort{\alpha_2}{\alpha_1} = \rootPairingShort{\beta}{\alpha} = -1\).
+            Thus, the corresponding Cartan matrix is
+            \begin{equation}
+                \begin{bmatrix}
+                    2 & -1\\
+                    -3 & 2
+                \end{bmatrix}
+                .
+            \end{equation}
+        \end{itemize}
+    \end{exm}
+    
+    \begin{thm}{}{}
+        Let \((E, R, \innerprod{-}{-})\) and \((E', R', \innerprod{-}{-}')\) be root systems with some choice of simple roots \(\Delta \subseteq R\) and \(\Delta' \subseteq R'\).
+        Suppose that there is a bijection \(\Phi \colon \Delta \to \Delta'\) such that
+        \begin{equation}
+            \rootPairingShort{\alpha}{\beta} = \rootPairingShort{\Phi(\alpha)}{\Phi(\beta)}'
+        \end{equation}
+        for all \(\alpha, \beta \in \Delta\).
+        Then \(\Phi\) linearly extends to an isomorphism of the root systems.
+        \begin{proof}
+            Since \(\Delta\) and \(\Delta'\) are bases of \(E\) and \(E'\) respectively we can always extend \(\Phi\) to an isomorphism \(\varphi \colon E \to E'\).
+            For \(\alpha \in \Delta\) we then have \(\varphi \circ s_\alpha \circ \varphi^{-1} = s_{\varphi(\alpha)}\) since this map is uniquely defined by its action on the basis \(\Delta'\).
+            Since the Weyl group, \(W\), for the first root system is generated by reflections corresponding to elements of \(\Delta\) this shows that the Weyl group, \(W'\), of the second root system is simply \(\varphi \circ W \circ \varphi^{-1}\).
+            We know also that for each \(\alpha \in R\) there exists some \(w \in W\) such that \(w(\alpha) \in \Delta\), since we can always choose a set of simple roots containing \(\alpha\) and all sets of simple roots are related by the action of some element of the Weyl group.
+            Thus, \(\varphi(\alpha) = (\varphi \circ w \circ \varphi^{-1})^{-1}(\varphi(w(\alpha))) \in R'\), and so \(\varphi(R) \subseteq R\) as required.
+            The same logic can be applied from the other side to show that \(\varphi^{-1}(R') \subseteq R'\), and thus \(\varphi(R) = R'\).
+            This shows that the restriction \(\varphi|_R \colon R \to R'\) is a bijection, and thus \(\varphi\) gives an isomorphism of root systems since \(\rootPairingShort{-}{-}\) and \(\rootPairingShort{-}{-}'\) are determined fully by their values on \(\Delta\) and \(\Delta'\) respectively.
+        \end{proof}
+    \end{thm}
+    
+    \begin{crl}{}{}
+        Specifying a Cartan matrix defines the root system up to isomorphism.
+    \end{crl}
+    
+    \section{Dynkin Diagrams}
+    We've seen that Cartan matrices are in one-to-one correspondence with isomorphism classes of root systems.
+    The possible Cartan matrices have been full classified, and the classification is through a particular picture, known as a Dynkin diagram.
+    
+    \begin{dfn}{Dynkin Diagram}{}
+        Consider a rank \(n\) root system, \((E, R, \innerprod{-}{-})\) with a choice of simple roots, \(\Delta = \{\alpha_1, \dotsc, \alpha_n\}\), and the corresponding Cartan matrix, \(M\).
+        The \defineindex{Dynkin diagram} corresponding to this data is the \(n\)-vertex directed graph whose vertices are labelled by the roots simple \(\alpha_i\), with edges between distinct vertices given as follows:
+        \begin{itemize}
+            \item there are \(k = \rootPairingShort{\alpha_i}{\alpha_j} \rootPairingShort{\alpha_j}{\alpha_i} = M_{ij}M_{ji}\) edges between the vertices labelled \(\alpha_i\) and \(\alpha_j\);
+            \item these edges are directed to point from the longer root to the shorter root, or are undirected if both roots are the same length.
+        \end{itemize}
+        We do not draw self-edges, since following the above every node would have two undirected self-edges, which just clutter things up.
+        Because all edges between a pair of nodes point in the same direction we usually decorate them with just a single arrow spanning all edges.
+    \end{dfn}
+    
+    A morphism of Dynkin diagrams is a morphism of the underlying directed graphs, and as usual when drawing a graph all that we care about is how the vertices are connected, not where we draw the vertices or how the edges are drawn.
+    
+    \begin{exm}{}{}
+        Consider the rank 2 root systems.
+        We can draw the corresponding Dynkin diagrams using the Cartan matrices computed in \cref{exm:rank 2 cartan matrices}.
+        All will have two vertices, so we just need to work out the number of edges and their directions.
+        \begin{itemize}
+            \item For \(\dynkin{A}{1} \oplus \dynkin{A}{1}\) we have \(\rootPairingShort{\alpha}{\beta} \rootPairingShort{\beta}{\alpha} = 0 \cdot 0 = 0\) so there are no edges between our two vertices:
+            \begin{equation}
+                \tikzsetnextfilename{dynkin-A1+A1}
+                \begin{tikzpicture}[baseline=(current bounding box)]
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                \end{tikzpicture}
+            \end{equation}
+            Notice that this diagram is disconnected.
+            This is a general feature of Dynkin diagrams corresponding to direct sums, and in fact we can define to direct sum of Dynkin diagrams to be their disjoint union.
+            \item For \(\dynkin{A}{2}\) we have \(\rootPairingShort{\alpha}{\beta} \rootPairingShort{\beta}{\alpha} = (-1)(-1) = 1\), so there's just one edge, and both roots have unit length, so the edge is undirected, so we have the corresponding Dynkin diagram
+            \begin{equation}
+                \tikzsetnextfilename{dynkin-A2}
+                \begin{tikzpicture}[baseline=(current bounding box)]
+                    \draw[thick] (0, 0) -- (2, 0);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                \end{tikzpicture}
+            \end{equation}
+            \item For \(\dynkin{B}{2}\) we have \(\rootPairingShort{\alpha}{\beta} \rootPairingShort{\beta}{\alpha} = (-2)(-1) = 2\), so there are two edges, and \(\beta\) is longer than \(\alpha\) so these edges point towards \(\alpha\).
+            We don't actually write the labels \(\alpha\) and \(\beta\), letting the direction make clear which is the shorter root, which is the only meaningful difference between the two roots.
+            The corresponding Dynkin diagram is thus
+            \begin{equation}
+                \tikzsetnextfilename{dynkin-B2}
+                \begin{tikzpicture}[baseline=(current bounding box)]
+                    \draw[thick, yshift=0.04cm] (0, 0) -- (2, 0);
+                    \draw[thick, yshift=-0.04cm] (0, 0) -- (2, 0);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                    \draw[thick] (0.8, 0.2) -- (1.2, 0) -- (0.8, -0.2);
+                \end{tikzpicture}
+            \end{equation}
+            \item For \(\dynkin{G}{2}\) we have \(\rootPairingShort{\alpha}{\beta} \rootPairingShort{\beta}{\alpha} = (-1)(-3) = 3\), so there are three edges, and \(\beta\) is longer than \(\alpha\) so these edges point towards \(\alpha\).
+            The corresponding Dynkin diagram is
+            \begin{equation}
+                \tikzsetnextfilename{dynkin-G2}
+                \begin{tikzpicture}[baseline=(current bounding box)]
+                    \draw[thick] (0, 0) -- (2, 0);
+                    \draw[thick, yshift=0.075cm] (0, 0) -- (2, 0);
+                    \draw[thick, yshift=-0.075cm] (0, 0) -- (2, 0);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                    \draw[thick] (0.8, 0.2) -- (1.2, 0) -- (0.8, -0.2);
+                \end{tikzpicture}
+            \end{equation}
+        \end{itemize}
+    \end{exm}
+    
+    It turns out that all Dynkin diagrams (and hence all Cartan matrices) have been classified and fall into just a few simple cases and a small number of outliers.
+    
+    \begin{thm}{Classification of Dynkin Diagrams}{}
+        Any connected Dynkin diagram is part of the following list:
+        \begin{itemize}
+            \item An infinite family \(\dynkin{A}{n}\):
+            \begin{equation*}
+                \tikzsetnextfilename{dynkin-classification-An}
+                \begin{tikzpicture}[baseline=(current bounding box), scale=0.7]
+                    \draw[dotted, very thick] (0, 0) -- (2, 0);
+                    \draw[thick] (2, 0) -- (10, 0);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (4, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (6, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (8, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (10, 0) circle [radius=0.15];
+                \end{tikzpicture}
+            \end{equation*}
+            \item An infinite family \(\dynkin{B}{n}\):
+            \begin{equation*}
+                \tikzsetnextfilename{dynkin-classification-Bn}
+                \begin{tikzpicture}[baseline=(current bounding box), scale=0.7]
+                    \draw[dotted, very thick] (0, 0) -- (2, 0);
+                    \draw[thick] (2, 0) -- (8, 0);
+                    \draw[thick, yshift=0.05cm] (8, 0) -- (10, 0);
+                    \draw[thick, yshift=-0.05cm] (8, 0) -- (10, 0);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (4, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (6, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (8, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (10, 0) circle [radius=0.15];
+                    \draw[thick] (8.8, 0.2) -- (9.2, 0) -- (8.8, -0.2);
+                \end{tikzpicture}
+            \end{equation*}
+            \item An infinite family \(\dynkin{C}{n}\):
+            \begin{equation*}
+                \tikzsetnextfilename{dynkin-classification-Cn}
+                \begin{tikzpicture}[baseline=(current bounding box), scale=0.7]
+                    \draw[dotted, very thick] (0, 0) -- (2, 0);
+                    \draw[thick] (2, 0) -- (8, 0);
+                    \draw[thick, yshift=0.05cm] (8, 0) -- (10, 0);
+                    \draw[thick, yshift=-0.05cm] (8, 0) -- (10, 0);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (4, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (6, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (8, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (10, 0) circle [radius=0.15];
+                    \draw[thick] (9.2, 0.2) -- (8.8, 0) -- (9.2, -0.2);
+                \end{tikzpicture}
+            \end{equation*}
+            \item An infinite family \(\dynkin{D}{n}\):
+            \begin{equation*}
+                \tikzsetnextfilename{dynkin-classification-Dn}
+                \begin{tikzpicture}[baseline=(current bounding box), scale=0.7]
+                    \draw[dotted, very thick] (0, 0) -- (2, 0);
+                    \draw[thick] (2, 0) -- (6, 0);
+                    \draw[thick] (6, 0) -- ++ (30:2);
+                    \draw[thick] (6, 0) -- ++ (-30:2);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (4, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (6, 0) circle [radius=0.15];
+                    \draw[thick, fill=white, xshift=6cm] (30:2) circle [radius=0.15];
+                    \draw[thick, fill=white, xshift=6cm] (-30:2) circle [radius=0.15];
+                \end{tikzpicture}
+            \end{equation*}
+            \item The exceptional \(\dynkin{G}{2}\):
+            \begin{equation*}
+                \tikzsetnextfilename{dynkin-classification-G2}
+                \begin{tikzpicture}[baseline=(current bounding box), scale=0.7]
+                    \draw[thick] (0, 0) -- (2, 0);
+                    \draw[thick, yshift=0.075cm] (0, 0) -- (2, 0);
+                    \draw[thick, yshift=-0.075cm] (0, 0) -- (2, 0);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                    \draw[thick] (0.8, 0.2) -- (1.2, 0) -- (0.8, -0.2);
+                \end{tikzpicture}
+            \end{equation*}
+            \item The exceptional \(\dynkin{F}{4}\):
+            \begin{equation*}
+                \tikzsetnextfilename{dynkin-classifcation-F4}
+                \begin{tikzpicture}[baseline=(current bounding box), scale=0.7]
+                    \draw[thick] (0, 0) -- (2, 0);
+                    \draw[thick, yshift=0.05cm] (2, 0) -- (4, 0);
+                    \draw[thick, yshift=-0.05cm] (2, 0) -- (4, 0);
+                    \draw[thick] (4, 0) -- (6, 0);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (4, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (6, 0) circle [radius=0.15];
+                    \draw[thick] (2.8, 0.2) -- (3.2, 0) -- (2.8, -0.2);
+                \end{tikzpicture}
+            \end{equation*}
+            \item The exceptional \(\dynkin{E}{6}\):
+            \begin{equation*}
+                \tikzsetnextfilename{dynkin-classifcation-E6}
+                \begin{tikzpicture}[baseline=(current bounding box), scale=0.7]
+                    \draw[thick] (0, 0) -- (8, 0);
+                    \draw[thick] (4, 0) -- (4, 2);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (4, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (6, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (8, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (4, 2) circle [radius=0.15];
+                \end{tikzpicture}
+            \end{equation*}
+            \item The exceptional \(\dynkin{E}{7}\):
+            \begin{equation*}
+                \tikzsetnextfilename{dynkin-classifcation-E7}
+                \begin{tikzpicture}[baseline=(current bounding box), scale=0.7]
+                    \draw[thick] (0, 0) -- (10, 0);
+                    \draw[thick] (4, 0) -- (4, 2);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (4, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (6, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (8, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (10, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (4, 2) circle [radius=0.15];
+                \end{tikzpicture}
+            \end{equation*}
+            \item The exceptional \(\dynkin{E}{8}\):
+            \begin{equation*}
+                \tikzsetnextfilename{dynkin-classifcation-E8}
+                \begin{tikzpicture}[baseline=(current bounding box), scale=0.7]
+                    \draw[thick] (0, 0) -- (12, 0);
+                    \draw[thick] (4, 0) -- (4, 2);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (4, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (6, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (8, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (10, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (12, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (4, 2) circle [radius=0.15];
+                \end{tikzpicture}
+            \end{equation*}
+        \end{itemize}
+        Note that \(n \in \{0, 1, 2, \dotsc\}\) is the number of vertices in any of the infinite families.
+    \end{thm}
+    
+    \begin{remark}{}{}
+        While we've said that \(\dynkin{B}{n}\) and \(\dynkin{A}{n}\) are distinct graphs from \(\dynkin{A}{n}\) in many areas of maths where Dynkin diagrams arise (which turns out to be \emph{a lot} of areas of maths) it's usually better to think of the underlying graphs of these three cases as being the same, where there's only at most one edge between two vertices.
+        Then \(\dynkin{B}{n}\) and \(\dynkin{C}{n}\) are just the same graph as \(\dynkin{A}{n}\) with some extra decoration on some edges.
+        For example, when looking at Coxeter diagrams the ones which correspond to the Dynkin diagrams \(\dynkin{A}{n}\), \(\dynkin{B}{n}\), and \(\dynkin{C}{n}\) differ only by the label attached to one of the edges, which we turn into the decoration with extra \enquote{edges} and directions.
+    \end{remark}
+    
+    In the next chapter we'll say how to go back from a Dynkin diagram to a simple Lie algebra over \(\complex\).
+    For now we just remark that the result of doing this is that
+    \begin{itemize}
+        \item \(\dynkin{A}{n}\) gives \(\specialLinearLie_{n+1}\);
+        \item \(\dynkin{B}{n}\) gives \(\specialOrthogonalLie_{2n + 1}\);
+        \item \(\dynkin{C}{n}\) gives \(\symplecticLie_{2n}\);
+        \item \(\dynkin{D}{n}\) gives \(\specialOrthogonalLie_{2n}\).
+    \end{itemize}
+    It is common to use the Dynkin labels, \(\dynkin{A}{n}\), \(\dynkin{B}{n}\), and so on for the corresponding simple complex Lie algebras, so \(\dynkin{A}{1} = \specialLinearLie_{n+1}\), \(\dynkin{B}{n} = \specialOrthogonalLie_{2n + 1}\), and so on.
+    
+    The five exceptional Dynkin diagrams also correspond to simple complex Lie algebras, but since they weren't in common use until this classification arose they don't have special names, and instead are just referred to by the Dynkin label, sometimes as is, sometimes in lower-case fraktur to match the notation for the other Lie algebras, so we have Lie algebras \(\dynkin{G}{2} = \lie{g}_2\), \(\dynkin{F}{4} = \lie{f}_4\), and \(\dynkin{E}{n} = \lie{e}_n\) for \(n = 6, 7, 8\).
+    
+    \begin{remark}{Exceptional Isomorphisms}{}
+        Note that for small \(n\) some Dynkin diagrams actually fall into more than one of the categories.
+        These coincident cases are as follows:
+        \begin{itemize}
+            \item \(\dynkin{A}{1} = \dynkin{B}{1} = \dynkin{C}{1} = \dynkin{D}{1}\) is just a single vertex:
+            \begin{equation}
+                \tikzsetnextfilename{dynkin-exceptional-isomorphism-A1}
+                \begin{tikzpicture}[baseline=(current bounding box)]
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                \end{tikzpicture}
+            \end{equation}
+            \item \(\dynkin{B}{2} = \dynkin{C}{2}\), since we can just rotate one to get the other:
+            \begin{equation}
+                \tikzsetnextfilename{dynkin-exceptional-isomorphism-B2}
+                \begin{tikzpicture}[baseline=(current bounding box)]
+                    \draw[thick, yshift=0.04cm] (0, 0) -- (2, 0);
+                    \draw[thick, yshift=-0.04cm] (0, 0) -- (2, 0);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                    \draw[thick] (0.8, 0.2) -- (1.2, 0) -- (0.8, -0.2);
+                \end{tikzpicture}
+                \ =\ 
+                \tikzsetnextfilename{dynkin-exceptional-isomorphism-C2}
+                \begin{tikzpicture}[baseline=(current bounding box)]
+                    \draw[thick, yshift=0.04cm] (0, 0) -- (2, 0);
+                    \draw[thick, yshift=-0.04cm] (0, 0) -- (2, 0);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                    \draw[thick] (1.2, 0.2) -- (0.8, 0) -- (1.2, -0.2);
+                \end{tikzpicture}
+            \end{equation}
+            \item \(\dynkin{A}{3} = \dynkin{D}{3}\) if we just straighten out \(\dynkin{D}{3}\):
+            \begin{equation}
+                \tikzsetnextfilename{dynkin-exceptional-isomorphism-A3}
+                \begin{tikzpicture}[baseline=(current bounding box)]
+                    \draw[thick] (0, 0) -- (4, 0);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (2, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (4, 0) circle [radius=0.15];
+                \end{tikzpicture}
+                \ =\ 
+                \tikzsetnextfilename{dynkin-exceptional-isomorphism-D3}
+                \begin{tikzpicture}[baseline=(current bounding box)]
+                    \draw[thick] (0, 0) -- ++ (30:2);
+                    \draw[thick] (0, 0) -- ++ (-30:2);
+                    \draw[thick, fill=white] (0, 0) circle [radius=0.15];
+                    \draw[thick, fill=white] (30:2) circle [radius=0.15];
+                    \draw[thick, fill=white] (-30:2) circle [radius=0.15];
+                \end{tikzpicture}
+            \end{equation}
+        \end{itemize}
+        Fortunately, these isomorphisms of Dynkin diagrams lead to isomorphisms of the corresponding simple Lie algebras, so it's really not a problem.
+        This is basically a problem of low dimensions, there are only so many ways to be a Lie algebra in low dimensions, and sometimes we get families of Lie algebras that aren't distinguishable until the dimension gets a little larger.
+        Specifically, these isomorphisms correspond to the isomorphisms \(\specialLinearLie_2 \isomorphic \specialOrthogonalLie_3 \isomorphic \symplecticLie_2\) and \(\specialLinearLie_4 \isomorphic \specialOrthogonalLie_6\).
+        For this reason it's common to restrict \(\dynkin{B}{n}\) to \(n \ge 2\), \(\dynkin{C}{n}\) to \(n \ge 3\), and \(\dynkin{D}{n}\) to \(n \ge 4\).
+    \end{remark}
     
 	% Appdendix
 %	\appendixpage
