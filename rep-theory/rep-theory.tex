@@ -46,6 +46,12 @@ noabbrev
 
 % Commands
 % Maths
+\renewcommand{\field}{\symbb{k}}
+\newcommand{\id}{\symrm{id}}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Hom}{Hom}
+\newcommand{\action}{\mathbin{.}}
+\newcommand{\op}{\symrm{op}}
 
 \begin{document}
     \frontmatter
@@ -55,6 +61,210 @@ noabbrev
     % \listoffigures
     \mainmatter
     \chapter{Introduction}
+    We fix some standard notation here:
+    \begin{itemize}
+        \item \(\field\) will denote an algebraically closed field, except for when we explicitly mention that the field needn't be algebraically closed.
+        \item \(A\) will denote an associative unital algebra.
+        \item Letters like \(V\), \(U\), and \(W\) will denote vector spaces over \(\field\).
+        \item Letters like \(M\) and \(N\) will denote modules.
+    \end{itemize}
+    
+    \chapter{Initial Definitions}
+    \section{Algebra}
+    \begin{dfn}{Algebra}{}
+        An \defineindex{algebra} is a \(\field\)-vector space, \(A\), equipped with a bilinear map,
+        \begin{align}
+            m \colon A \times A &\to A\\
+            (a, b) &\mapsto m(a, b) = ab.
+        \end{align}
+        
+        If this map satisfies the condition that
+        \begin{equation}
+            m(a, m(b, c)) = m(m(a, b), c), \text{ or equivalently } a(bc) = (ab)c,
+        \end{equation}
+        for all \(a, b, c \in A\) then we call \(A\) an \defineindex{associative algebra}.
+        
+        If \(A\) posses a distinguished element, \(1 \in A\), such that \(m(1, a) = a = m(a, 1)\), or equivalently \(1a = a = a1\) for all \(a \in A\) then we say that \(A\) is a \defineindex{unital algebra}.
+        
+        If \(m(a, b) = m(b, a)\), or equivalently \(ab = ba\), for all \(a, b \in A\) then we say that \(A\) is a \defineindex{commutative algebra}.
+    \end{dfn}
+    
+    Whenever we say, otherwise unqualified, \enquote{algebra} we will mean associative unital algebra unless we specify otherwise.
+    We will not assume commutativity of a general algebra.
+    
+    The condition of associativity can be written as a commutative diagram,
+    \begin{equation}
+        \begin{tikzcd}
+            A \times A \times A \arrow[r, "m \times \id_A"] \arrow[d, "\id_A \times m"'] & A \times A \arrow[d, "m"]\\
+            A \times A \arrow[r, "m"'] & A\mathrlap{,}
+        \end{tikzcd}
+    \end{equation}
+    
+    \begin{remark}{}{}
+        This diagram goes part of the way to the more abstract definition that \enquote{an associative unital (commutative) algebra is a (commutative) monoid in the category of vector spaces}.
+        This definition is nice because it is both very general and dualises to the notion of a coalgebra.
+        See the \textit{Hopf Algebra} notes for more details.
+    \end{remark}
+    
+    \begin{exm}{}{}
+        \begin{itemize}
+            \item \(A = \field\) is an algebra with the product given by the product in the field;
+            \item \(A = \field[x_1, \dotsc, x_n]\), the ring of polynomials in the variables \(x_i\) with coefficients in \(\field\), is an algebra under the addition and multiplication of polynomials.
+            \item \(A = \field \langle x_1, \dotsc, x_n \rangle\), the free algebra on \(x_i\), may be considered as the algebra of polynomials in non-commuting variables, \(x_i\).
+            \item \(A = \End V\) for \(V\) a \(\field\)-vector space is an algebra with multiplication given by composition of morphisms.
+        \end{itemize}
+    \end{exm}
+    
+    \begin{dfn}{Group Algebra}{}
+        Let \(G\) be a group.
+        The \defineindex{group algebra} or \defineindex{group ring} \(\field G = \field[G]\) is defined to be the set of finite formal linear combinations
+        \begin{equation}
+            \sum_{g \in G} c_g g
+        \end{equation}    
+        where \(c_g \in \field\) is nonzero for only finitely many values \(g\).
+        Addition is defined by
+        \begin{equation}
+            \sum_{g \in G} c_g g + \sum_{g \in G} d_g g = \sum_{g \in G} (c_g + d_g) g.
+        \end{equation}
+        Multiplication is defined by requiring that it distributes over addition and that the product of two terms in the above sums is given by
+        \begin{equation}
+            (c_g g) (d_h h) = (c_g d_h) (gh)
+        \end{equation}
+        where multiplication on the left is in \(\field G\), the multiplication \(c_g d_h\) is in \(\field\), and the multiplication \(gh\) is in \(G\).
+        
+        If we do the same construction replacing \(\field\) with a ring, \(R\), then we get the group ring, \(RG\), which is not an algebra but instead an \(R\)-module.
+    \end{dfn}
+    
+    \begin{dfn}{Algebra Homomorphism}{}
+        Let \(A\) and \(B\) be \(\field\)-algebras.
+        An \defineindex{algebra homomorphism} is a linear map \(f \colon A \to B\) such that \(f(ab) = f(a)f(b)\) for all \(a, b \in A\).
+        
+        If \(A\) and \(B\) are unital, with units \(1_A\) and \(1_B\) respectively, then we further require that \(f(1_A) = 1_B\).
+        
+        We denote by \(\Hom(A, B)\) or \(\Hom_{\field}(A, B)\) the set of all algebra homomorhpisms \(A \to B\).
+    \end{dfn}
+    
+    If \(m_A\) and \(m_B\) denote the multiplication maps of \(A\) and \(B\) respectively then we may think of a homomorphism, \(f\), as a linear map which \enquote{commutes} with the multiplication map, that is \(f \circ m_A = m_B \circ f\).
+    
+    Alternatively, an algebra, \(A\) is both an abelian group under addition, and a monoid under multiplication, and an algebra homomorhpism is both a group and monoid homomorphism with respect to these structures.
+    
+    \section{Representations and Modules}
+    There are two competing terminologies in the field, with slightly different notation and emphasis depending on which we use.
+    We'll use the more modern notion of modules most of the time, but will occasionally and interchangeably use the notion of representations as well.
+    
+    \begin{dfn}{Representation}{}
+        Let \(V\) be a \(\field\)-vector space and \(A\) a \(\field\)-algebra.
+        Any \(\rho \in \Hom(A, \End V)\) is called a \defineindex{representation} of \(A\).
+        That is, a representation of \(A\) is an algebra homomorphism \(\rho \colon A \to \End V\).
+    \end{dfn}
+    
+    \begin{dfn}{Module}{}
+        Let \(A\) be a \(\field\)-algebra.
+        A \define{left \(\symbf{A}\)-module}\index{left A-module@left \(A\)-module}, \(M\), is an abelian group, with the binary operation denoted \(+\), equipped with a \defineindex{left action}
+        \begin{align}
+            \action \colon A \times M &\to M\\
+            (a, m) &\mapsto a \action m
+        \end{align}
+        such that for all \(a, b \in A\) and \(m, n \in M\) we have\footnote{Note that M1 and M2 simply say that this is a group action on the set \(M\), and M3 and M4 two impose that this group action is compatible with both the group operation and addition in the algebra.}
+        \begin{itemize}
+            \item[M1] \((ab)\action m = a\action (b\action m)\) (note that \((ab)\) is the product in \(A\));
+            \item[M2] \(1 \action m = m\).
+            \item[M3] \(a\action(m + n) = a\action m + a\action n\);
+            \item[M4] \((a + b)\action m = a\action m + b\action m\);
+        \end{itemize}
+        
+        One can similarly define a \define{right \(\symbf{A}\)-module}\index{right A-module@right \(A\)-module}, \(M\), as an abelian group with a \defineindex{right action}
+        \begin{align}
+            \action \colon M \times A &\to M\\
+            (m, a) &\mapsto m \action a
+        \end{align}
+        such that for all \(a, b \in A\) and \(m, n \in M\) we have
+        \begin{itemize}
+            \item[M1] \((m + n) \action a = m \action a + n \action a\);
+            \item[M2] \(m \action (a + b) = m \action a + m \action b\);
+            \item[M3] \(m \action (ab) = (m \action a) \action b\);
+            \item[M4] \(m \action 1 = m\).
+        \end{itemize}
+        
+        A \define{two-sided \(\symbf{A}\)-module}\index{two-sided A-module@two-sided \(A\)-module}\index{\(A\)-module}\index{module} is then an abelian group, \(M\), which is simultaneously a left and right \(A\)-module satisfying
+        \begin{equation}
+            a \action (m \action b) = (a \action m) \action b
+        \end{equation}
+        for all \(a, b \in A\) and \(m \in M\).
+    \end{dfn}
+    
+    When it doesn't risk confusion we will write \(a \action m\) as \(am\) and \(m \action a\) as \(ma\).
+    
+    Note that a module is a generalisation of the notion of a vector space.
+    In fact, if \(A = \field\) then a module is exactly a vector space.
+    
+    More compactly, one can define a right \(A\)-module as a left \(A^{\op}\)-module, where \(A^{\op}\) is the \defineindex{opposite algebra} of \(A\), defined to be the same underlying vector space with multiplication \(*\) defined by \(a * b = ba\), where \(ba\) is the multiplication in \(A\).
+    Because of this we will almost never have reason to work with right modules, we can always turn them into a left module over the opposite algebra instead.
+    
+    Note that if \(A\) is commutative every left \(A\)-module is a right \(A\)-module and vice versa, and also a two-sided module.
+    
+    Without further clarification the term \enquote{module} will mean
+    \begin{itemize}
+        \item a left module if \(A\) is not necessarily commutative;
+        \item a two sided module if \(A\) is commutative.
+    \end{itemize}
+    
+    A representation of \(A\) and an \(A\)-module carry exactly the same information.
+    Given a representation, \(\rho \colon A \to \End V\) we may define a group action on \(V\) by \(a \action v = \rho(a)v\).
+    Composition in \(\End V\) is exactly repeated application of this action: \([\rho(a)\rho(b)]v = \rho(a)[\rho(b)v]\) (M1).
+    The unit of \(\End V\) is the identity morphism, \(\id_V\), and \(1 \in A\) must map to \(\id_V\), so \(\rho(1)v = \id_V v = v\) (M2).
+    Linearity of \(\rho(a)\) means that \(\rho(a)(v + w) = \rho(a)v + \rho(v)w\) (M3).
+    Linearity of \(\rho\) means that \(\rho(a + b)v = \rho(a)v + \rho(b)v\) (M4).
+    
+    Conversely, given an \(A\)-module, \(M\), we can define scalar multiplication by \(\lambda \in \field\) on \(M\) by \(\lambda m = (\lambda 1) m\) where \(\lambda 1\) is scalar multiplication in \(A\).
+    This makes \(M\) a vector space, and we may define a morphism \(\rho \colon A \to \End M\) by defining \(\rho(a)\) by \(\rho(a) = a \action m\), which uniquely determines \(\rho(a)\), say by considering the action on some fixed basis of \(M\).
+    
+    Further, these two constructions are inverse, given a module if we construct the corresponding representation then construct the corresponding module from that we get back the original module, and vice versa.
+    This means that the notion of a representation and a module really are the same, and we don't need to distinguish between them.
+    We will use whichever terminology and notation is better suited to the problem, which is usually the module terminology and notation.
+    
+    \begin{prp}{}{}
+        Let \(V\) be a \(\field\)-vector space, \(G\) a group, and \(\rho \colon G \to GL(V)\) a group homomorphism.
+        We may define a \(\field G\)-module by extending this map linearly, defining
+        \begin{equation}
+            \left( \sum_{g \in G} c_g g \right) \action v = \sum_{g \in G} c_g \rho(g)v.
+        \end{equation}
+        Conversely, given a left \(\field G\)-module on \(V\) we may define a group homomorphism \(\rho \colon G \to \generalLinear(V)\) by defining \(\rho(g)\) to be the linear operation \(v \mapsto g \action v\).
+        \begin{proof}
+            This is just a special case of the equivalence of representations and modules discussed above.
+        \end{proof}
+    \end{prp}
+    
+    Note that a \defineindex{group representation} is defined to be a group homomorphism \(\rho \colon G \to \generalLinear(V)\).
+    The above result shows that a group representation of \(G\) is exactly the same as an algebra representation of \(\field G\), so we can just study algebras.
+    
+    \begin{dfn}{Regular Representation}{}
+        Let \(V = A\) be an algebra and define \(\rho \colon A \to \End A\) by \(\rho(a)b = ab\).
+        This is called the \defineindex{left regular representation}.
+        Similarly, the \defineindex{right regular representation} is given by defining \(\rho(a)b = ba\).
+    \end{dfn}
+    
+    \section{Direct Sums}
+    The goal of much of representation theory is to classify possible representations.
+    To do this we usually decompose representations into smaller parts that can be more easily classified.
+    This decomposition is done by the direct sum.
+    
+    \begin{dfn}{Direct Sum}{}
+        Let \(M\) and \(N\) be \(A\)-modules.
+        The \defineindex{direct sum}, \(M \oplus N\), is the \(A\)-module given by the direct sum of the underlying abelian groups equipped with the action
+        \begin{equation}
+            a(m \oplus n) = am \oplus an
+        \end{equation}
+        for all \(a \in A\), \(m \in M\) and \(n \in N\).
+    \end{dfn}
+    
+    The required properties follow immediately from the definition:
+    \begin{itemize}
+        \item[M1] \((ab)(m \oplus n) = (ab)m \oplus (ab)n = a(bm) \oplus a(bn) = a(bm \oplus bn) = a(b(m \oplus n))\);
+        \item[M2] \(1(m \oplus n) = 1m \oplus 1n = m \oplus n\);
+        \item[M3] \(a((m \oplus n) + (m' \oplus n')) = a((m + m') \oplus (n + n')) = a(m + m') \oplus a(n + n') = (am + am') \oplus (an + an') = (am \oplus an) + (am' \oplus an') = a(m \oplus n) + a(m' \oplus n')\);
+        \item[M4] \((a + b)(m \oplus n) = (a + b)m \oplus (a + b)n = (am + bm) \oplus (an + bn) = (am \oplus an) + (bm \oplus bn) = a(m \oplus n) + b(m \oplus n)\).
+    \end{itemize}
     
     % Appdendix
 %	\appendixpage
