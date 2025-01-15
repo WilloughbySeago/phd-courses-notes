@@ -4,6 +4,7 @@
 \strictpagecheck
 
 \usepackage{csquotes}
+\usepackage{enumitem}
 
 \usepackage{tikz}
 \usetikzlibrary{external}
@@ -52,6 +53,34 @@ noabbrev
 \DeclareMathOperator{\Hom}{Hom}
 \newcommand{\action}{\mathbin{.}}
 \newcommand{\op}{\symrm{op}}
+\makeatletter
+\newcommand{\c@egory}[1]{\symsfup{#1}}
+\newcommand{\Vect}[1][\field]{#1\text{-}\c@egory{Vect}}
+\newcommand{\AMod}[1][A]{#1\text{-}\c@egory{Mod}}
+\newcommand{\ModA}[1][A]{\c@egory{Mod}\text{-}#1}
+\newcommand{\Ab}{\c@egory{Ab}}
+\newcommand{\Rep}{\c@egory{Rep}}
+\makeatother
+\DeclareMathOperator{\im}{im}
+\newcommand{\isomorphic}{\cong}
+\DeclareMathOperator{\Span}{span}
+%\DeclareMathOperator{\symplectic}{Sp}
+\ExplSyntaxOn
+% Create LaTeX interface command
+\NewDocumentCommand{\cycle}{ O{\,} m }{  % optional arg is separator, mandatory
+    %arg is comma separated list
+    (
+    \willoughby_cycle:nn { #1 } { #2 }
+    )
+}
+
+\clist_new:N \l_willougbhy_cycle_clist  % Create new clist variable
+\cs_new_protected:Npn \willoughby_cycle:nn #1 #2 {  % create LaTeX3 function
+    \clist_set:Nn \l_willougbhy_cycle_clist { #2 }  % set clist variable with
+    %clist #2 passed by user
+    \clist_use:Nn \l_willougbhy_cycle_clist { #1 }  % print list separated by #1
+}
+\ExplSyntaxOff
 
 \begin{document}
     \frontmatter
@@ -149,6 +178,7 @@ noabbrev
     Alternatively, an algebra, \(A\) is both an abelian group under addition, and a monoid under multiplication, and an algebra homomorhpism is both a group and monoid homomorphism with respect to these structures.
     
     \section{Representations and Modules}
+    \label{sec:representaitons and modules}
     There are two competing terminologies in the field, with slightly different notation and emphasis depending on which we use.
     We'll use the more modern notion of modules most of the time, but will occasionally and interchangeably use the notion of representations as well.
     
@@ -265,6 +295,498 @@ noabbrev
         \item[M3] \(a((m \oplus n) + (m' \oplus n')) = a((m + m') \oplus (n + n')) = a(m + m') \oplus a(n + n') = (am + am') \oplus (an + an') = (am \oplus an) + (am' \oplus an') = a(m \oplus n) + a(m' \oplus n')\);
         \item[M4] \((a + b)(m \oplus n) = (a + b)m \oplus (a + b)n = (am + bm) \oplus (an + bn) = (am \oplus an) + (bm \oplus bn) = a(m \oplus n) + b(m \oplus n)\).
     \end{itemize}
+    
+    \begin{dfn}{Submodule}{}
+        Let \(M\) be a left \(A\)-module.
+        An abelian subgroup \(N \trianglelefteq M\) is a \define{\(\symbf{A}\)-submodule}\index{submodule} if \(AN \subseteq N\).
+        In this case we say that \(N\) is \defineindex{invariant} under the action of \(A\).
+    \end{dfn}
+    
+    Note that by \(AN\) we mean
+    \begin{equation}
+        AN = \{an \mid a \in A , n \in N\}.
+    \end{equation}
+    So \(AN \subseteq N\) means that \(an \in N\) for all \(a \in A\) and \(n \in N\).
+    Thus, invariance means that no element of \(N\) leaves \(N\) under the action of \(A\).
+    
+    \begin{dfn}{Trivial Submodule}{}
+        Every \(A\)-module, \(M\), admits two submodules, \(M\) itself and the zero module, \(0\), which contains only \(0\).
+        We call these \define{trivial submodules}\index{trivial submodule}.
+    \end{dfn}
+    
+    Note that some texts call only \(0\) the trivial submodule, and make the distinction of a submodule vs a \emph{proper} submodule, the distinction being that \(M\) is not a proper submodule of \(M\).
+    Then when we say \enquote{nontrivial submodule} these texts will say \enquote{nontrivial proper submodule}.
+    
+    \begin{dfn}{Simple Submodule}{}
+        Let \(M\) be an \(A\)-module.
+        We say that \(M\) is \defineindex{simple} or \defineindex{irreducible} if it contains no nontrivial submodules.
+    \end{dfn}
+    
+    Typically \enquote{simple} is used for modules and \enquote{irreducible} is used more for representations, although irreducible is used for both.
+    
+    \begin{dfn}{Semisimple Submodule}{}
+        Let \(M\) be an \(A\)-module.
+        Then \(M\) is \defineindex{semisimple} or \defineindex{completely reducible} if it can be written as a direct sum of finitely many simple modules.
+    \end{dfn}
+    
+    That is, \(M\) is semisimple if 
+    \begin{equation}
+        M = \bigoplus_{i=1}^n N_i = N_1 \oplus \dotsb \oplus N_n
+    \end{equation}
+    where each \(N_i\) is simple.
+    Note that we define the empty sum to be the zero module, so the zero module is considered semisimple (and also simple, since it contains only itself as a submodule).
+    
+    Again, \enquote{semisimple} is typically used only for modules, and \enquote{completely reducible} is used primarily for representations.
+    
+    \begin{dfn}{Indecomposable}{}
+        Let \(M\) be an \(A\)-module.
+        Then \(M\) is \defineindex{indecomposable} if \(M\) cannot be written as a direct sum of nontrivial modules.
+    \end{dfn}
+    
+    The nontrivial requirement here just rules out decompositions of the form\footnote{Note that with our definition of the direct sum this really only holds up to isomorphism, since \(M\) has elements \(m\) whereas \(M \oplus 0\) has elements \((m, 0)\). However, we're yet to define morphisms between modules, and once we do we'll see that \(\oplus\) is the product in the category of modules, and as such is only defined up to isomorphism, so we may as well momentarily take the isomorphism that makes this equality true.} \(M = M \oplus 0\).
+    
+    Note that every simple (irreducible) module is indecomposable, since if it had a decomposition \(M = N_1 \oplus N_2\) with \(N_i\) nontrivial then their is a canonical copy of each \(N_i\) as a submodule of \(M\).
+    The converse does not hold in general, not all indecomposable modules are irreducible.
+    It is possible that \(M\) contains a submodule, \(N\), but that there is no submodule \(N'\) such that \(M = N \oplus N'\).
+    Contrast this to finite dimensional vector spaces where we can take \(N'\) to be the orthogonal complement (with respect to some inner product) of \(N\) and this direct sum holds.
+    We can still form the orthogonal complement of a submodule, but it will not, in general, be a submodule.
+    There are, however, many special cases, such as finite dimensional complex representations of (group algebras) finite groups, where the orthogonal complement can be defined in such a way that it is a submodule, and in this case indecomposable and irreducible coincide.
+    
+    One of the main goals of representation theory is to classify all indecomposable modules of a given algebra.
+    This then gives us an understanding of \emph{all} modules over that algebra, since any nonsimple or decomposable module may be realised as a direct sum of these classified indecomposable modules.
+    
+    \section{Module Homomorphisms}
+    \begin{dfn}{Module Homomorphism}{}
+        Let \(M\) and \(N\) be \(A\)-modules.
+        An \define{\(\symbf{A}\)-module homomorphism}\index{module homomorphism} or \defineindex{intertwiner} is a homomorphism of the underlying abelian groups \(\varphi \colon M \to N\) which \enquote{commutes} with the action of \(A\), by which we mean
+        \begin{equation}
+            \varphi(a \action m) = a \action \varphi(m)
+        \end{equation}
+        for all \(a \in A\) and \(m \in M\).
+        
+        An invertible \(A\)-module homomorphism is called an \defineindex{isomorphism} of \(A\)-modules.
+        
+        Homomorphisms of right \(A\)-modules may be defined similarly.
+    \end{dfn}
+    
+    \begin{ntn}{}{}
+        We write \(\Hom_A(M, N)\) for the set of \(A\)-module homomorphisms \(M \to N\).
+        Note that \(\Hom_A(M, N) \subseteq \Hom_{\Ab}(M, N)\) where \(\Hom_{\Ab}(M, N)\) is the set of all homomorphisms \(M \to N\) of the underlying abelian groups.
+    \end{ntn}
+    
+    Note that in \(\varphi(a \action m)\) \(a\) is acting on an element of \(M\), and in \(a \action \varphi(m)\) \(a\) is acting on an element of \(N\), so these are in general different actions.
+    Writing \(a \action {}\) for the map \(x \mapsto a \action x\) we can express the condition of commuting action as the commutativity of the diagram
+    \begin{equation}
+        \begin{tikzcd}
+            M \arrow[r, "\varphi"] \arrow[d, "a \action {}"'] & N \arrow[d, "a \action {}"]\\
+            M \arrow[r, "\varphi"'] & N
+        \end{tikzcd}
+    \end{equation}
+    for all \(a \in A\).
+    
+    \begin{lma}{}{}
+        Isomorphisms of \(A\)-modules are exactly bijective morphisms of \(A\)-modules.
+        \begin{proof}
+            Let \(\varphi \colon M \to N\) be a bijective morphism of \(A\)-modules.
+            Then the (set-theoretic) inverse, \(\varphi^{-1} \colon N \to M\), exists.
+            We claim that this is a morphism of \(A\)-modules.
+            This follows by taking \(n \in N\) to be the image of \(m \in M\) under \(\varphi\), giving
+            \begin{equation}
+                \varphi^{-1}(a \action n) = \varphi^{-1}(a \action \varphi(m)) = \varphi^{-1}(\varphi(a \action m)) = a \action m = a \action \varphi^{-1}(m).
+            \end{equation}
+            
+            Conversely, if \(\varphi \colon M \to N\) is an isomorphism of \(A\)-modules it must necessarily be that \(\varphi^{-1}\) is the (set-theoretic) inverse of the underlying function of \(\varphi\), and so \(\varphi\) must be bijective.
+        \end{proof}
+    \end{lma}
+    
+    If we instead talk of representations \((V, \rho)\) and \((W, \sigma)\) then a homomorphism of representations, \(\varphi \colon V \to W\), must satisfy \(\varphi(\rho(a)v) = \sigma(a)\varphi(v)\).
+    Further, by linearity of \(\rho\) and \(\sigma\) and the fact that \(\rho(1) = \id_V\) and \(\sigma(1) = \id_W\) we have that for \(\lambda \in \field\)
+    \begin{equation}
+        \varphi(\lambda m) = \varphi(\rho(1)\lambda m) = \varphi(\rho(\lambda 1) m) = \sigma(\lambda 1)\varphi(m) = \lambda \sigma(1) \varphi(m) = \lambda \varphi(m).
+    \end{equation}
+    This shows that \(\varphi\) must be a linear map \(\varphi \colon V \to W\).
+    In fact, we can \emph{define} a homomorphism of representations to be a linear map \(\varphi \colon M \to N\) satisfying \(\varphi(\rho(a)m) = \sigma(a)\varphi(m)\).
+    We will also write \(\Hom_A(V, W)\) for the set of representation morphisms \(V \to W\).
+    Note then that \(\Hom_A(V, W) \subseteq \Hom_{\Vect[\field]}(V, W)\) where \(\Hom_{\Vect[\field]}(V, W)\) is the set of linear maps \(V \to W\) of the underlying vector spaces.
+    Using the notation \(\Hom_A\) for both modules and representations is justified by the following remark.
+    
+    \begin{remark}
+        There is a category, \(\AMod\) (\(\ModA\)), with left (right) \(A\)-modules as objects and \(A\)-module homomorphisms as morphisms.
+        Similarly, there is a category \(\Rep(A)\) of representations of \(A\) with objects being representations \((V, \rho)\) and morphisms being homomorphisms of representations.
+        
+        In \cref{sec:representaitons and modules} we showed that we have a mapping \(F \colon \AMod \to \Rep(A)\) constructing a representation from a module, and a mapping \(G \colon \Rep(A) \to \AMod\) constructing a module from a representation.
+        In the discussion above we extend this mapping to define a representation homomorphism from a module homomorphism.
+        We can also ignore the requirement of linearity with respect to scalar multiplication in the definition of a representation homomorphism to recover a module homomorphism.
+        Further, applying either of these constructions to the appropriate identity map just gives the identity, and both constructions preserve composition.
+        These operations on homomorphisms are also inverses of each other.
+        Thus, \(F\) and \(G\) are functors and we have \(FG = \id_{\Rep(A)}\) and \(GF = \id_{\AMod}\).
+        Thus, \(\AMod\) and \(\Rep(A)\) are isomorphic as categories, justifying the fact that we will soon cease to distinguish between them.
+    \end{remark}
+    
+    \begin{lma}{}{}
+        The category \(\AMod\) defined above is indeed a category.
+        \begin{proof}
+            First note that \(\id_M \colon M \to M\) is an \(A\)-module homomorphism for any \(A\)-module, \(M\), since we have
+            \begin{equation}
+                \id_M(a \action m) = a \action m = a \action \id_M(m).
+            \end{equation}
+            Now note that if \(\varphi \colon M \to N\) and \(\psi \colon N \to P\) are module homomorphisms then \(\psi \circ \varphi \colon M \to P\) is a module homomorphism since
+            \begin{equation*}
+                (\psi \circ \varphi)(a \action m) = \psi(\varphi(a \action m)) = \psi(a \action \varphi(m)) = a \action \psi(\varphi(m)) = a \action (\psi \circ \varphi)(m)
+            \end{equation*}
+            for all \(a \in A\) and \(m \in M\).
+            Finally, composition is just composition of the underlying functions, which is associative.
+        \end{proof}
+    \end{lma}
+    
+    \section{Schur's Lemma}
+    We can now give one of the first results of representation theory.
+    It places a restriction on the types of morphisms we can have between modules when one or more of the modules is simple.
+    We give the result as a proposition and a corollary, although for historical reasons it's called a lemma.
+    The proposition is more general, and the corollary is a special case.
+    Both are known as Schur's lemma, with context determining if we use the more general result or the special case.
+    
+    Before we can prove this result however we need a couple of results about kernels and images of module morphisms.
+    
+    \begin{lma}{}{}
+        Let \(\varphi \colon M \to N\) be a morphism of modules.
+        Then \(\ker \varphi\) is a submodule of \(M\) and \(\im \varphi\) is a submodule of \(N\).
+        \begin{proof}
+            \Step{\(\ker \varphi\)}
+            We know that \(\ker \varphi\) is a subgroup of \(M\), so we only need to show that it is invariant under the action of \(A\).
+            Take \(m \in \ker \varphi\), that is \(m \in M\) is such that \(\varphi(m) = 0\), and \(a \in A\).
+            Then
+            \begin{equation}
+                \varphi(a \action m) = a \action \varphi(m) = a \action 0.
+            \end{equation}
+            For arbitrary \(m' \in M\) we have
+            \begin{equation}
+                a \action 0 = a \action (m' - m') = (a \action m') - (a \action m') = 0
+            \end{equation}
+            so \(a \action 0 = 0\) for any \(a \in A\), and thus \(\varphi(a \action m) = a \action 0 = 0\), so \(a \action m \in \ker \varphi\).
+            
+            \Step{\(\im \varphi\)}
+            We know that \(\im \varphi\) is a subgroup of \(M\), so we only need to show that it is invariant under the action of \(A\).
+            Take \(n \in \im \varphi\) and \(a \in A\).
+            There exists some \(m \in M\) such that \(n = \varphi(m)\).
+            Then
+            \begin{equation}
+                a \action n = a \action \varphi(m) = \varphi(a \action m)
+            \end{equation}
+            and \(a \action m \in M\) so \(a \action n \in \im \varphi\).
+        \end{proof}
+    \end{lma}
+    
+    \begin{prp}{Schur's Lemma}{prp:schurs lemma}
+        Let \(\field\) be any (not necessarily algebraically closed) field, and let \(A\) be an algebra over \(\field\).
+        Let \(M\) and \(N\) be \(A\)-modules and let \(\varphi \colon M \to N\) be a morphism of \(A\)-modules.
+        Then
+        \begin{enumerate}
+            \item if \(M\) is simple either \(\varphi = 0\) or \(\varphi\) is injective;
+            \item if \(N\) is simple either \(\varphi = 0\) or \(\varphi\) is surjective.
+        \end{enumerate}
+        Combined if \(M\) and \(N\) are simple then either \(\varphi = 0\) or \(\varphi\) is an isomorphism.
+        \begin{proof}
+            \Step{\(M\) Simple}
+            Let \(M\) be simple, so its only submodules are \(0\) and \(M\).
+            We know that \(\ker \varphi\) is a submodule of \(M\), so there are two cases to consider:
+            \begin{itemize}
+                \item If \(\ker \varphi = M\) then every element of \(M\) maps to \(0\), so \(\varphi = 0\).
+                \item If \(\ker \varphi = 0\) then \(\varphi\) is injective\footnote{We know that for group homomorphisms if the kernel is trivial then the map is injective, and injectivity is a set-theoretic property, so it still holds when we add the extra structure of the \(A\)-action}.
+            \end{itemize}
+            
+            \Step{\(N\) Simple}
+            Let \(N\) be simple, so its only submodules are \(0\) and \(N\).
+            We know that \(\im \varphi\) is a submodule of \(N\), so there are two cases to consider:
+            \begin{itemize}
+                \item If \(\im \varphi = 0\) then every element of \(M\) maps to \(0\), so \(\varphi = 0\).
+                \item If \(\im \varphi = N\) then \(\varphi\) is surjective.
+            \end{itemize}
+        \end{proof}
+    \end{prp}
+    
+    \begin{crl}{Schur's Lemma}{crl:schurs lemma}
+        Let \(\field\) be an algebraically closed field, and let \(A\) be an algebra over \(\field\).
+        Let \(V\) be a finite dimensional representation of \(A\).
+        Then any representation homomorphism \(\varphi \colon V \to V\) is a multiple of the identity.
+        That is, \(\varphi = \lambda \id_V\) for \(\lambda \in \field\).
+        Note that \(\lambda = 0\) subsumes the trivial case.
+        \begin{proof}
+            Let \(\lambda \in \field\) be an eigenvalue of \(\varphi\) with corresponding eigenvector \(v \in V\).
+            Note that eigenvalues exist because
+            \begin{enumerate}[label={\alph*)}]
+                \item \(V\) is finite dimensional so the determinant may be defined as a polynomial in the entries of some matrix representing \(\varphi\) in a fixed basis; and
+                \item \(\field\) is algebraically closed, so this polynomial has roots.
+            \end{enumerate}
+            Then by definition \(\varphi(v) = \lambda v\) which we can rearrange to \((\varphi - \lambda \id_V) v = 0\).
+            Thus, \(v \in \ker(\varphi - \lambda \id_V)\), and since eigenvectors are, by definition, nonzero this means that \(\ker(\varphi - \lambda \id_V) \ne 0\), so \(\varphi - \lambda \id_V\) is not injective, so by Schur's lemma (\cref{prp:schurs lemma}) we must have that \(\varphi - \lambda \id_V = 0\).
+            Thus, \(\varphi = \lambda \id_V\).
+        \end{proof}
+    \end{crl}
+    
+    \begin{crl}{}{crl:commutative algebra irreps are one dimensiona}
+        Let \(A\) be a commutative algebra over an algebraically closed field, \(\field\).
+        Then all nontrivial finite dimensional irreducible representations of \(A\) are one dimensional.
+        \begin{proof}
+            Let \(V\) be a finite dimensional irreducible representation of \(A\).
+            For \(a \in A\) define a map \(\varphi_a \colon V \to V\) by \(v \mapsto \varphi_a(v) = a \action v\).
+            This is an intertwiner: take \(b \in A\) and \(v \in V\), then we have
+            \begin{equation}
+                \varphi_a(b \action v) = a \action (b \action v) = (ab) \action v = (ba) \action v = b \action (a \action v) = b \action \varphi_a(v).
+            \end{equation}
+            Note that this is only true because \(ab = ba\).
+            
+            By Schur's lemma (\cref{crl:schurs lemma}) there exists some \(\lambda_a \in \field\) such that \(\varphi_a = \lambda_a \id_V\).
+            Then \(a \action v = \varphi_a(v) = \lambda_a v\), so every \(a \in A\) acts as scalar multiplication.
+            This means that any subspace is invariant, since every subspace is, by definition, invariant under scalar multiplication.
+            Thus, the only way that a representation can have no nontrivial invariant subspaces if if it only has trivial subspaces, which is only true if it is one dimensional (zero dimensional being ruled out by the assumption that the representation is nontrivial).
+        \end{proof}
+    \end{crl}
+    
+    \begin{exm}{}{}
+        Consider \(A = \field[x]\), which is a commutative algebra.
+        We can determine all irreducible representations of \(A\).
+        
+        A representation, \(\rho \colon \field[x] \to \End V\), is fully determined by the value of \(\rho(x)\), since given an arbitrary polynomial, \(f(x) = \sum_{i=1}^{n} a_i x^i\), its action on \(v \in V\) is determined through linearity by
+        \begin{equation}
+            f(x) \action v = \rho(f(x)) v = \rho\left( \sum_{i=1}^{n} a_i x^i \right) v = \sum_{i=1}^n a_i \rho(x)^i v.
+        \end{equation}
+        
+        Further, by \cref{crl:commutative algebra irreps are one dimensiona} we know that any irreducible representation of \(\field[x]\) is one dimensional, so it must be that \(\rho(v) = \lambda v\) for some \(\lambda \in \field\).
+        
+        Let \(V_\lambda\) denote the one-dimensional representation in 
+        which \(x\) acts as scalar multiplication by \(\lambda\).
+        We claim that \(V_\lambda \isomorphic V_{\mu}\) if and only if \(\lambda = \mu\).
+        Suppose that \(\varphi \colon V_\lambda \to V_\mu\) is an isomorphism.
+        Then \(\varphi(x \action v) = \varphi(\lambda v) = \lambda \varphi(v)\) and \(\varphi(x \action v) = x \action \varphi(v) = \mu \varphi(v)\).
+        Thus, \(\lambda = \mu\).
+        
+        So, we have classified all irreducible representations of \(\field[x]\), they are precisely the one dimensional vector spaces, \(V_\lambda\) for \(\lambda \in \field\) in which \(\rho(x) = \lambda \id_{V_\lambda}\).
+        
+        This result generalises to polynomials in an arbitrary number of variables, \(\field[x_1, \dotsc, x_n]\).
+        Then a representation is fully determined by the values of \(\rho(x_1)\) through \(\rho(x_n)\).
+        Thus an irreducible representation is a one dimensional vector space, \(V_{\lambda_1, \dotsc, \lambda_n}\) in which \(\rho(x_i) = \lambda_i \id_{V_{\lambda_1, \dotsc, \lambda_n}}\).
+        
+        Go back to the case of \(A = \field[x]\).
+        For a nontrivial (\(\lambda \ne 0\)) finite dimensional irreducible representation, \(V_\lambda\), instead of starting with the action of \(x\) we can perform a change of variables and work with \(y = x/\lambda\).
+        Then we get the representation \(V_1\).
+        This means that all finite dimensional irreducible representations of \(\field[x]\) are essentially the same, up to rescaling.
+        This also means that they're pretty boring.
+        
+        Indecomposable representations of \(\field[x]\) are more interesting on the other hand.
+        Let \(V\) be a finite dimensional representation.
+        We can fix a basis and look at matrices.
+        Suppose \(B \in \End V\), then since we work over an algebraically closed field we know that the Jordan normal form of \(B\) exists after a basis change, allowing us to write the matrix of \(B\) as
+        \begin{equation}
+            B = 
+            \begin{pmatrix}
+                J_{\lambda_1, n_1} \\
+                & J_{\lambda_2, n_2} \\
+                & & \ddots \\
+                & & & J_{\lambda_k, n_k}
+            \end{pmatrix}
+        \end{equation}
+        where \(J_{\lambda_i, n_i}\) is the \(n_i \times n_i\) Jordan block matrix
+        \begin{equation}
+            J_{\lambda_i, n_i} = 
+            \begin{pmatrix}
+                \lambda_i & 1 \\
+                & \lambda_i & 1\\
+                & & \ddots & \ddots\\
+                & & & \lambda_i & 1\\
+                & & & & \lambda_i
+            \end{pmatrix}
+            .
+        \end{equation}
+        This block diagonal decomposition of \(B\) gives us a corresponding direct sum decomposition of \(V\).
+        Each Jordan block cannot be diagonalised (with the exception of the \(1 \times 1\) Jordan blocks which are trivially diagonal).
+        Thus we cannot further decompose \(B\) and so we cannot further decompose \(V\).
+        The result is that
+        \begin{equation}
+            V = \bigoplus_{i=1}^{k} V_{\lambda_i, n_i}
+        \end{equation}
+        where \(V_{\lambda_i, n_i} = \field^{n_i}\) is an \(n_i\)-dimensional vector space upon which the action of \(B\) is given by \(J_{\lambda_i, n_i}\).
+        Then taking \(B = \varphi(x)\) defines a representation of \(\field[x]\) on \(V\), and specifically we have the subrepresentations \(V_{\lambda_i, n_i}\) in which \(x\) acts as the Jordan block \(J_{\lambda_i, n_i}\).
+    \end{exm}
+    
+    \section{Ideals and Quotients}
+    \begin{dfn}{Ideals}{}
+        Let \(A\) be an algebra.
+        A subspace, \(I \subseteq A\), such that \(AI \subseteq I\) is called a \defineindex{left ideal}.
+        Similarly if \(IA \subseteq I\) then we call \(I\) a \defineindex{right ideal}.
+        A \defineindex{two-sided ideal} is simultaneously a left and right ideal.
+    \end{dfn}
+    
+    Note that by \(AI\) we mean \(AI = \{a i \mid a \in A, i \in I\}\), so the condition that \(I\) is a left ideal is that \(ai \in I\) for all \(a \in A\) and \(i \in I\).
+    
+    \begin{exm}{}{}
+        \begin{itemize}
+            \item Any algebra, \(A\), always has \(0\) and \(A\) as ideals.
+            If these are the only ideals then we call \(A\) \defineindex{simple}.
+            \item Any left (right) ideal is a submodule of the left (right) regular representation.
+            This is simply identifying that \(A\) is an \(A\)-module with the action being left (right) multiplication and as such the notion of an ideal coincides with that of a submodule.
+            Note that the notion of a simple module coincides with the notion of a simple algebra under this identification.
+            \item If \(f \colon A \to B\) is an algebra morphism then \(\ker f\) is a two-sided ideal.
+            We know that \(\ker f\) is a subspace of \(A\), so just note that if \(a \in \ker f\) then \(f(a) = 0\) and we have
+            \begin{equation}
+                f(ba) = f(b)f(a) = f(b)0 = 0
+            \end{equation}
+            and
+            \begin{equation}
+                f(ab) = f(a)f(b) = 0f(a) = 0
+            \end{equation}
+            so \(ab\) and \(ba\) are in \(\ker f\).
+        \end{itemize}
+    \end{exm}
+    
+    We will say \enquote{ideal} when we mean either a left ideal.
+    Note that in the commutative case all left ideals are right ideals and hence two-sided ideals, so we don't need to distinguish the three cases.
+    
+    \begin{ntn}{}{}
+        Let \(A\) be an algebra and \(S \subseteq A\) a subset of \(A\).
+        Denote by \(\langle S \rangle\) the two-sided ideal generated by \(S\).
+        That is,
+        \begin{equation}
+            \langle S \rangle = \Span\{asb \mid s \in S, \text{ and } a, b \in A\}.
+        \end{equation}
+    \end{ntn}
+    
+    For example, consider \(\field[x]\).
+    Then \(\langle x \rangle\) consists of all polynomials that can be factorised as \(xf(x)\) where \(f(x)\) is an arbitrary polynomial, so \(f(x) = \sum_{i=0}^n a_i x^i\).
+    Thus, \(x f(x) = \sum_{i=0} a_i x^{i + 1}\), so \(\langle x \rangle\) consists of all polynomials with zero constant term.
+    More generally, \(\rangle x - a \rangle\) for \(a \in \field\) consists of all polynomials which factorise as \((x - a)f(x)\) for an arbitrary polynomial \(f(x)\), and thus this is the ideal consisting of all polynomials with \(a\) as a root.
+    
+    The point of defining ideals is really in order to define quotients.
+    In this way ideals are to algebras as normal subgroups are to groups.
+    
+    \begin{dfn}{Quotient}{}
+        Let \(A\) be an algebra and \(I \subseteq A\) an ideal.
+        We define the \define{quotient}\index{quotient!algebra} to be the algebra \(A/I\) whose elements are equivalence classes
+        \begin{equation}
+            [a] = a + I \coloneq \{a' \in A \mid a - a' \in I\}.
+        \end{equation}
+        Addition and scalar multiplication are defined by
+        \begin{equation}
+            [a] + [b] = (a + I) + (b + I) = [a + b] = a + b + I
+        \end{equation}
+        and
+        \begin{equation}
+            \lambda[a] = [\lambda a]
+        \end{equation}
+        for \(a, b \in A\) and \(\lambda \in \field\).
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        The quotient of an algebra by an ideal is again an algebra.
+        \begin{proof}
+            Let \(A\) be an algebra and \(I \subseteq A\) an ideal.
+            Note that the quotient of a vector space by any subspace is again a vector space, so we need only define a multiplication operation on this vector space.
+            We do so by defining
+            \begin{equation}
+                [a][b] = (a + I)(b + I) \coloneq [ab] = ab + I.
+            \end{equation}
+            We need to show that this is well-defined and satisfies the properties of multiplication in an algebra.
+            
+            \Step{Well-Defined}
+            Let \(a, a' \in A\) be representatives of the same equivalence class, \([a] = [a']\).
+            Then by definition \(a - a' \in I\).
+            For \(b \in A\) we then have
+            \begin{equation}
+                [a][b] = [ab] = [a'b + (a - a')b] = [a'b] = [a'][b].
+            \end{equation}
+            Here we've used the fact that \(a - a' \in I\) and \(I\) is an ideal so \((a - a')b \in I\), and we can add any element of \(I\) inside an equivalence class without leaving the equivalence class.
+            Similarly, one can show that \([a][b] = [a][b']\) whenever \([b] = [b']\).
+            Thus, this product is well-defined.
+            
+            \Step{Algebra}
+            Linearity in the first argument follows from a direct calculation using the properties of quotient spaces:
+            \begin{multline}
+                [(a + \lambda a')b] = [a b + \lambda a' b] = [ab] + \lambda [a' b]\\
+                = [a][b] + \lambda [a'][b]= ([a] + \lambda[a'])[b] = [a + \lambda a'][b]
+            \end{multline}
+            for \(a, a', b \in A\) and \(\lambda \in \field\).
+            Linearity in the second argument follows similarly.
+            Associativity follows from
+            \begin{equation}
+                [a]([b][c]) = [a][bc] = [a(bc)] = [(ab)c] = [ab][c] = ([a][b])[c].
+            \end{equation}
+            Unitality follows from
+            \begin{equation}
+                [1][a] = [1a] = [a], \qqand [a][1] = [a1] = [a].
+            \end{equation}
+        \end{proof}
+    \end{lma}
+    
+    \subsection{Generators and Relations}
+    One of the most common ways to define an algebra is as a quotient of another algebra by some ideal given in terms of generators.
+    The most common starting place is the free algebra, \(\field\langle x_1, \dotsc, x_m \rangle\).
+    We can then take \(f_1, \dotsc, f_n \in \field\langle x_1, \dotsc, x_m\rangle\), and form an ideal, \(\langle f_1, \dotsc, f_n \rangle\).
+    Then we may form the algebra
+    \begin{equation}
+        A = \field\langle x_1, \dotsc, x_m \rangle / \langle f_1, \dotsc, f_n \rangle.
+    \end{equation}
+    Intuitively, elements of this are non-commutative polynomials in the \(x_i\) subject to the constraint that anywhere that we can manipulate the polynomial to be written with \(f_i\) we can set that \(f_i\) equal to zero.
+    
+    For example, let \(f_{i,j} = x_i x_j - x_j x_i\) for \(i, j = 1, \dotsc, m\).
+    Consider the algebra \(A = \field \langle x_1, \dotsc, x_m \rangle / \langle f_{i,j} \rangle\) consists of non-commutative polynomials in \(x_i\) subject to the condition that \(x_i x_j - x_j x_i = 0\), which is to say \(x_i x_j = x_j x_i\), which is exactly the condition that the \(x_i\) \emph{do} commute with each other.
+    
+    Another example is \(A = \field \langle x_1, \dotsc, x_n \rangle / \langle x_i^2 - e, x_ix_{i+1}x_i - x_{i+1}x_ix_{i+1} \rangle\).
+    This sets \(x_i^2 = e\) and \(x_ix_{i+1}x_i = x_{i+1}x_ix_{i+1}\) (called the \defineindex{braid relation}).
+    These are exactly the relations defining the symmetric group, \(S_n\), when we interpret \(x_i\) as the transposition \(\cycle{i,i+1}\).
+    We're also taking linear combinations of these \(x_i\), so \(A = \field S_n\).
+    
+    \subsection{Quotient Modules}
+    \begin{dfn}{Quotient Module}{}
+        Let \(M\) be an \(A\)-module and \(N\) a submodule of \(M\).
+        We define the \define{quotient module}\index{quotient!module}, \(M/N\), to be the module consisting of equivalence classes
+        \begin{equation}
+            [m] = m + N \coloneq \{m' \in M \mid m - m' \in M\}.
+        \end{equation}
+        Addition in this module is defined by
+        \begin{equation}
+            [m] + [m'] = [m + m']
+        \end{equation}
+        for \(m, m' \in M\) and the action of \(A\) is given by
+        \begin{equation}
+            a \action [m] = [a \action m]
+        \end{equation}
+        for \(a \in A\) and \(m \in M\).
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        The quotient of a module by a submodule is again a module.
+        \begin{proof}
+            Let \(M\) be an \(A\)-module with \(N \subseteq M\) a submodule.
+            Then \(N\) is a subgroup of an abelian group, and so is automatically a normal subgroup.
+            Then we know that \(M/N\) is an abelian group also.
+            
+            Suppose that \([m] = [m']\), that is \(m\) and \(m'\) are representatives of the same equivalence class.
+            Then \(m' - m \in N\).
+            We then have
+            \begin{multline}
+                a \action [m] = a \action [m' + (m - m')] = [a \action (m' + (m - m'))]\\
+                = [a \action m' + a \action (m - m')] = [a \action m'] = a \action [m'].
+            \end{multline}
+            Here we've used the fact that \(m' - m \in N\) and \(N\) is a submodule so \(a \action (m' - m) \in N\) as well.
+            So, the action of \(a \in A\) on \([m] = [m']\) is well-defined.
+            
+            It remains to show that the action of \(A\) on \(M/N\) makes it an \(A\)-module:
+            \begin{itemize}
+                \item[M1] \((ab) \action [m] = [(ab) \action m] = [a \action (b \action m)] = a \action [b \action m] = a \action (b \action [m])\);
+                \item[M2] \(1 \action [m] = [1 \action m] = [m]\);
+                \item[M3] \(a \action ([m] + [n]) = a \action [m + n] = [a \action (m + n)] = [a \action m + a \action n] = [a \action m] + [a \action n] = a \action [m] + a \action [n]\);
+                \item[M4] \((a + b) \action [m] = [(a + b) \action m] = [a \action m + b \action m] = [a \action m] + [b \action m] = a \action [m] + b \action [m]\)
+            \end{itemize}
+            for all \(a, b \in A\) and \(m, n \in M\).
+        \end{proof}
+    \end{lma}
+    
+    \begin{remark}{}{}
+        Consider the left regular representation of \(A\).
+        As we have mentioned ideals of \(A\) are precisely submodules of the regular representation.
+        It follows that \(A/I\) is a left \(A\)-module precisely when \(I\) is a left ideal.
+    \end{remark}
+    
     
     % Appdendix
 %	\appendixpage
