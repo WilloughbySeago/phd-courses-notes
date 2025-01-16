@@ -50,6 +50,7 @@ noabbrev
 \renewcommand{\dd}{\,\symrm{d}}
 \newcommand{\groupVelocity}{c_{\symrm{g}}}
 \DeclareMathOperator{\sech}{sech}
+\newcommand{\const}{\symrm{const}}
 
 
 \begin{document}
@@ -329,6 +330,7 @@ noabbrev
     
     \chapter{Nonlinear Equations}
     \section{Simple Nonlinear Example}
+    \label{sec:simple nonlinear example}
     Consider the equation
     \begin{equation}
         u_t + (1 + u)u_x = 0.
@@ -491,6 +493,83 @@ noabbrev
     Note that this is not like the previous height dependence, where the speed of the wave varied with position.
     Here the speed of the wave depends only on the maximum value of the wave.
     This gives us an important general principle, which is that taller solitons move faster.
+    
+    There is no linear superposition in the KdV equation.
+    If \(u_1\) and \(u_2\) are two solutions, say two one-soliton solutions of the \(\sech^2\) profile above with different values of \(k\) then \(u_1 + u_2\) is, in general, not a solution.
+    
+    \chapter{Travelling Wave Solutions}
+    \section{Method}
+    There is a particular method of finding certain wave solutions to PDEs based on the solutions to the wave equation.
+    We take inspiration from the solutions \(F(x - ct)\) and \(G(x + ct)\) for the wave equation and we posit the existence of a solution \(u = f(x - ct)\) for some unknown value, \(c\).
+    We then substitute this into the one-dimensional PDE for \(u(x, t)\) and the result is an ODE in \(f\).
+    We call the solutions found this way \define{travelling wave solutions}\index{travelling wave solution}.
+    
+    In general this ODE will only have solutions for certain values of \(c\), and the solutions we find are only particular solutions, most PDEs have solutions that aren't purely travelling waves.
+    
+    \section{Simple Nonlinear Example}
+    Consider the equation
+    \begin{equation}
+        u_t + (1 + u)u_x = 0.
+    \end{equation}
+    We saw in \cref{sec:simple nonlinear example} that this has general solutions \(f(x - (1 + u)t)\), which have the property that points higher up the wave travel faster.
+    We will now look for travelling wave solutions to this equation.
+    
+    Let \(u(x, t) = f(x - ct)\) and introduce the variable \(\xi = x - ct\).
+    Then we have
+    \begin{equation}
+        u_x = \diffp{}{x} f(x - ct) = f'(x - ct) = f'(\xi)
+    \end{equation}
+    and
+    \begin{equation}
+        u_t = \diffp{}{t} f(x - ct) = -cf'(x - ct) = -cf'(\xi).
+    \end{equation}
+    Substituting these into the PDE we get the ODE
+    \begin{equation}
+        -cf_\xi + (1 + f)f_\xi = 0. 
+    \end{equation}
+    Rearranging this we get
+    \begin{equation}
+        (1 - c + f)f_\xi = 0
+    \end{equation}
+    and so we have two cases:
+    \begin{itemize}
+        \item \(f_\xi = 0\), in which case \(f = \const\); and
+        \item \(1 - c + f = 0\), in which case \(f = 1 - c = \const\).
+    \end{itemize}
+    We see that \(c\) can take on any real value, and the result is always that \(f\) is constant.
+    So, the only travelling wave solutions are constant.
+    
+    This shouldn't be too surprising.
+    When solving for travelling wave solutions we take \(c\) to be constant, and \(c\) is the speed of the travelling wave.
+    We have seen already that the speed of wave-like solutions to this equation have speeds depending on the height of the wave at that position.
+    So, the only way for the whole wave to travel at the same speed is if the whole wave is at the same height, that is if the wave is constant.
+    
+    \subsection{Adding in a Source Term}
+    Consider the modified equation
+    \begin{equation}
+        u_t + (1 + u)u_x = V(u)
+    \end{equation}
+    where \(V\) is an arbitrary function.
+    We call \(V\) a source term, because in, say, electromagnetism adding such a term to Laplace's equation (\(\laplacian \varphi = 0\)) to produce Poisson's equation (\(\laplacian \varphi = V(u)\)) this term represents a charge density, which is then a source of the electric field.
+    
+    We can proceed with our attempt to find travelling wave solutions to this equation.
+    Making the same transformation as before we get
+    \begin{equation}
+        -cf_\xi + (1 + f)f_\xi = V(f).
+    \end{equation}
+    This ODE for \(f\) is actually separable, and the solution is thus
+    \begin{equation}
+        \int \frac{1 + c - f}{V(f)} \dd{f} = \int \dl{\xi} = \xi + \const.
+    \end{equation}
+    
+    There are two problems that may arise at this point:
+    \begin{itemize}
+        \item We need to actually be able to do this integral, which is far from guaranteed.
+        \item If we successfully perform the integral then we will have expressed \(\xi\) (plus a constant) as a function of \(f\).
+        This gives an implicit formula for \(f\) which we need to invert this if we want an explicit definition.
+    \end{itemize}
+    This shows just some of the problems that can arise when looking for travelling wave solutions of even fairly simple nonlinear PDEs.
+    A more complicated PDE could give rise to an ODE for \(f\) which cannot be so easily solved, adding to the difficulty of finding travelling wave solutions.
     
     
     % Appdendix
