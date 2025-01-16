@@ -46,7 +46,42 @@ noabbrev
 
 % Commands
 % Maths
+\newcommand{\cat}[1]{\symsfup{#1}}
+\newcommand{\initial}{\symbf{0}}
+\newcommand{\terminal}{\symbf{1}}
+\makeatletter
+\newcommand{\c@egory}[1]{\symsfup{#1}}
+\newcommand{\Set}{\c@egory{Set}}
+\newcommand{\SetPt}{\c@egory{Set}_{\bullet}}
+\newcommand{\Grp}{\c@egory{Grp}}
+\newcommand{\Ab}{\c@egory{Ab}}
+\newcommand{\Ring}{\c@egory{Ring}}
+\newcommand{\Rng}{\c@egory{Rng}}
+\newcommand{\Vect}[1][\field]{\c@egory{Vect}_{#1}}
+\newcommand{\RMod}[1][R]{#1\text{-}\c@egory{Mod}}
+\newcommand{\Top}{\c@egory{Top}}
+\makeatother
+\ExplSyntaxOn
+% Create LaTeX interface command
+\NewDocumentCommand{\cycle}{ O{\,} m }{  % optional arg is separator, mandatory
+    %arg is comma separated list
+    (
+    \willoughby_cycle:nn { #1 } { #2 }
+    )
+}
 
+\clist_new:N \l_willougbhy_cycle_clist  % Create new clist variable
+\cs_new_protected:Npn \willoughby_cycle:nn #1 #2 {  % create LaTeX3 function
+    \clist_set:Nn \l_willougbhy_cycle_clist { #2 }  % set clist variable with
+    %clist #2 passed by user
+    \clist_use:Nn \l_willougbhy_cycle_clist { #1 }  % print list separated by #1
+}
+\ExplSyntaxOff
+\newcommand{\switch}{\symup{T}}
+\newcommand{\id}{\symrm{id}}
+\newcommand{\isomorphic}{\cong}
+\newcommand{\natTrans}{\Rightarrow}
+\renewcommand{\field}{\symbb{k}}
 
 \begin{document}
     \frontmatter
@@ -55,14 +90,259 @@ noabbrev
     \tableofcontents
     % \listoffigures
     \mainmatter
-    \chapter{Introduction}
+    \chapter{Category Theory}
+    We will make use of a lot of category theory throughout the course.
+    It is expected that people are familiar with the basic notions of category theory, some of which we recap here.
     
+    \section{Initial and Terminal Objects}
+    \begin{dfn}{}{}
+        Let \(\cat{C}\) be a category.
+        \begin{itemize}
+            \item An object, \(t \in \cat{C}\), is \define{terminal}\index{terminal object} if for all \(a \in \cat{C}\) the set \(\cat{C}(a, t)\) contains exactly one element.
+            \item An object, \(i \in \cat{C}\), is \define{initial}\index{initial object} if for all \(a \in \cat{C}\) the set \(\cat{C}(i, a)\) contains exactly one element.
+        \end{itemize}
+        An object that is both initial and terminal is called a \define{null}\index{null object} or \defineindex{zero object}.
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        Initial and terminal objects are unique up to unique isomorhpism.
+    \end{lma}
+    
+    \begin{ntn}{}{}
+        We denote the initial object in a category by \(\initial\) and the terminal object by \(\terminal\).
+    \end{ntn}
+    
+    \begin{exm}{}{}
+        \begin{itemize}
+            \item The category of sets, \(\Set\), has \(\initial = \emptyset\) and \(\terminal = \{\bullet\}\) (that is, any singleton set is terminal).
+            \item The category of pointe sets, \(\SetPt\), has \(\initial = \terminal = \{\bullet\}\) where \(\{\bullet\}\) is the pointed set with \(\bullet\) as its distinguished element.
+            \item The category of groups, \(\Grp\), or abelian groups, \(\Ab\), has \(\initial = \terminal = \{e\}\), that is the trivial group is a null object.
+            \item The category of rings\footnote{which we assume are unital}, \(\Ring\), has \(\initial = \integers\), since a ring homomorhpism\footnote{which we assume preserves the unit} \(\varphi \colon \integers \to \reals\) is uniquely determined by \(\varphi(1) = 1_R\) since then \(\varphi(n) = \varphi(n 1) = n \varphi(1) = n 1_R\).
+            If we allow \(0 = 1\) then the terminal object is the trivial ring, \(\terminal = \{0\}\).
+            If we do not allow \(0 = 1\) then \(\Ring\) has no terminal object\footnote{In this course we generally assume \(0 \ne 1\). I disagree with this choice.}.
+            \item The category of non-unital rings, \(\Rng\), has \(\terminal = \{0\}\), and no initial object.
+            \item \define{Abelian categories}\index{abelian category} are a special class of categories with certain properties.
+            One of these properties is that they have a null object.
+            Examples of abelian categories include \(\Ab\), \(\Vect\), and more generally \(\RMod\).
+        \end{itemize}
+    \end{exm}
+    
+    \section{Products and Coproducts}
+    \begin{dfn}{Product}{}
+        Let \(\cat{C}\) be a category.
+        A set of morphisms \(\{p_i \colon c \to c_i \mid i \in I\}\), for some indexing set, \(I\), is a \defineindex{product} of the \(p_i\) (although usually we refer to it as a product of the \(c_i\)) if given any set of morphisms \(\{f_i \colon d \to c_i \mid i \in I\}\) there exists a unique morphism \(f \colon d \to c\) such that \(f_i = p_i f\) for all \(i \in I\).
+        
+        If \(I = \emptyset\) then we define the product to be the terminal object, if it exists.
+    \end{dfn}
+    
+    \begin{dfn}{}{}
+        Let \(\cat{C}\) be a category.
+        A set of morphisms \(\{j_i \colon c_i \to c \mid i \in I\}\), for some indexing set, \(I\), is a \defineindex{coproduct} of the \(j_i\) if given any set of morphisms \(\{g_i \colon c_i \to d \mid i \in I\}\) there exists a unique morphism \(g \colon c \to d\) such that \(g_i = g j_i\) for all \(i \in I\).
+        
+        If \(I = \emptyset\) then we define the product to be the initial object, if it exists.
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        Products and coproducts are unique up to unique isomorphism.
+    \end{lma}
+    
+    We can express the definition of the (co)product as the existence of a morphism making a certain \(I\)-indexed family of diagrams commute:
+    \begin{equation}
+        \begin{tikzcd}
+            d \arrow[d, dashed, "\exists ! f"'] \arrow[dr, "f_i"]\\
+            c \arrow[r, "p_i"'] & c_i
+        \end{tikzcd}
+        \qquad \left(
+            \begin{tikzcd}
+                c \arrow[r, "j_i"] \arrow[d, dashed, "g"'] & c_i \arrow[dl, "g_i"]\\
+                d
+            \end{tikzcd}
+        \right).
+    \end{equation}
+    When we're dealing with binary (co)products (\(I = \{1, 2\}\)) we usually combine the two triangles into the commuting diagram
+    \begin{equation}
+        \begin{tikzcd}
+            & d \arrow[dl, "f_1"'] \arrow[dr, "f_2"] \arrow[d, dashed, "\exists ! f", pos=0.6]\\
+            c_1 & c \arrow[l, "p_1"] \arrow[r, "p_2"'] & c_2
+        \end{tikzcd}
+        \qquad \left(
+            \begin{tikzcd}
+                c_1 \arrow[r, "j_1"] \arrow[dr, "g_1"'] & c \arrow[d, dashed, "\exists ! g", pos=0.4] & c_2 \arrow[l, "j_2"'] \arrow[dl, "g_2"]\\
+                & d
+            \end{tikzcd}
+        \right).
+    \end{equation}
+    
+    \begin{ntn}{}{}
+        The (co)product is typically denoted in terms of the objects, with the projections (inclusions) left implicit.
+        We will denote binary products by \(\times\), other notations include \(\symrm{\Pi}\) and \(\otimes\),
+        We will denote coproducts by \(+\), other notations include \(\amalg\), \(\oplus\) and \(\sqcup\).
+        
+        We'll also use \(\prod\) and \(\coprod\) to denote products over arbitrary families.
+    \end{ntn}
+    
+    Note that there is ambiguity in the above notation in that \(I\) is not assumed to be ordered, so \(c_1 \times c_2\) and \(c_2 \times c_1\) are both valid notations for the product of \(c_1\) and \(c_2\).
+    Formally these objects may be different, but they will be isomorphic with a unique isomorphism between them so it doesn't really matter.
+    
+    Products and coproducts are functorial in their variables.
+    That is, if we have two products \(\{p_i \colon c \to c_i \mid i \in I\}\) and \(q_i \colon d \to d_i \mid i \in I\) and morphisms \(f_i \colon c_i \to d_i\) then there is a unique morphism \(h \colon c \to d\) such that for all \(i \in I\) the diagram
+    \begin{equation}
+        \begin{tikzcd}
+            c \arrow[r, "h"] \arrow[d, "p_i"'] & d \arrow[d, "q_i"]\\
+            c_i \arrow[r, "f_i"'] & d_i
+        \end{tikzcd}
+    \end{equation}
+    commutes.
+    We call \(h\) the product of the \(f_i\), and denote it \(h = \prod_{i \in I} f_i\).
+    A dual result holds for the coproduct.
+    
+    Consider the special case of the above where \(d_i = c_{\sigma^{-1}(i)}\) for some bijection \(\sigma \colon I \to I\).
+    This uniquely defines an isomorphism \(\switch_\sigma \colon \prod_I c_i \to \prod_I c_{\sigma^{-1}(i)}\).
+    The most important case of this is when \(I = \{1, 2\}\) and \(\sigma(0) = 1\) and \(\sigma(1) = 0\), in which case we have the isomorphism
+    \begin{equation}
+        \switch = \switch_{\cycle{1,2}} \colon c_1 \times c_2 \to c_2 \times c_1.
+    \end{equation}
+    Note that \(\switch\) actually depends on \(c_1\) and \(c_2\), so we should probably call it \(\switch_{c_1,c_2}\).
+    However, for any given objects \(c_1\) and \(c_2\) for which the product \(c_1 \times c_2\) exists there is such a morphism, so we typically drop the objects from the notation letting context inform us of which \(\switch\) we're using.
+    The more formal justification for this is that the functor \((c_1, c_2) \mapsto c_1 \times c_2\) is naturally isomorphic to the functor \((c_1, c_2) \mapsto c_2 \times c_1\), and \(\switch_{c_1,c_2}\) is the component of this natural isomorphism at \((c_1, c_2) \in \cat{C} \times \cat{C}\).
+    
+    Note that the composite
+    \begin{equation}
+        c_1 \times c_2 \xrightarrow{\switch_{c_1,c_2}} c_2 \times c_1 \xrightarrow{\switch_{c_2,c_1}} c_1 \times c_2
+    \end{equation}
+    is actually the identity.
+    That is,
+    \begin{equation}
+        \switch_{c_2, c_1} \circ \switch_{c_1,c_2} = \id_{\cat{C}},
+    \end{equation}
+    or more snappily, \(\switch^2 = \id_{\cat{C}}\).
+    
+    \begin{exm}{}{}
+        \begin{itemize}
+            \item In \(\Set\) the product is the Cartesian product, \(\times\), and the coproduct is the disjoin union, \(\sqcup\).
+            \item In \(\SetPt\) the product \((X, x) \times (Y, y)\) is the pointed set \((X \times Y, (x, y))\) where \(X \times Y\) is the Cartesian product.
+            The coproduct \((X, x) + (Y, y)\) is the pointed set \(((X \sqcap Y)/{\sim}, [x])\) where \(\sim\) is the equivalence relation identifying \(x\) and \(y\) in the disjoint union with each other, and \([x]\) is the equivalence class that \(x\) and \(y\) end up in under this relation.
+            More intuitively, the coproduct is just the disjoint union where we identify the base points of the original sets with each other.
+            \item In \(\Grp\) the product is the Cartesian product (also called the direct product) of the underlying sets with the operation defined pointwise.
+            The coproduct is the free product, \(G * H\), which intuitively consists of words of the form \(g_1h_1g_2h_2 \dotsm g_nh_n\) with \(g_i \in G\) and \(h_i \in H\) (and only \(g_1\) or \(h_n\) allowed to be identities).
+            \item In \(\Ring\) the product is the Cartesian product and the coproduct is a free product defined similarly to the free product of groups, but also allowing us to add elements together as well as forming products.
+            \item In \(\Ab\) any finite product or coproduct is given by the direct product (also called the direct sum).
+            \item In \(\Top\) the product and coproduct are the Cartesian product and disjoint union of the underlying sets equipped with the appropriate topologies which may be characterised as being the coarsest topologies such that the projections and inclusions are continuous.
+            \item In an \defineindex{abelian category} finite products and coproducts coincide by definition.
+            Thus, in \(\Vect\) or \(\RMod\) all finite products and coproducts are given by the direct sum.
+        \end{itemize}
+    \end{exm}
+    
+    \begin{prp}{}{}
+        Let \(\cat{C}\) be a category in which all binary products exist and there is a terminal object, \(\terminal\).
+        Then all finite products exist and for all \(c \in \cat{C}\) we have
+        \begin{equation}
+            \terminal \times c \isomorphic c \isomorphic c \times \terminal.
+        \end{equation}
+        
+        Let \(\cat{C}\) be a category in which all binary coproducts exist and there is an initial object, \(\initial\).
+        Then all finite coproducts exist and for all \(c \in \cat{C}\) we have
+        \begin{equation}
+            \initial + c \isomorphic c \isomorphic c + \initial.
+        \end{equation}
+    \end{prp}
+    
+    \section{Monoids and Comonoids}
+    \textit{I'm going to take a slightly different approach here and not define monoids in an arbitrary category with products and terminal objects, but instead move straight to monoidal categories, which subsume these cases.}
+    
+    \begin{dfn}{Monoidal Category}{}
+        A \defineindex{monoidal category}, \((\cat{C}, \otimes, I, \alpha, \lambda, \rho)\), is a category, \(\cat{C}\), with a functor
+        \begin{equation}
+            - \otimes - \colon \cat{C} \times \cat{C} \to \cat{C},
+        \end{equation}
+        object \(I \in \cat{C}\), and natural transformations
+        \begin{gather}
+            \alpha \colon - \otimes (- \otimes -) \natTrans (- \otimes -) \otimes -;\\
+            \lambda \colon I \otimes - \natTrans -;\\
+            \rho \colon - \otimes I \natTrans -.
+        \end{gather}
+        This data is subject to the following:
+        \begin{itemize}
+            \item For all \(a, b, c, d \in \cat{C}\) the diagram
+            \begin{equation}
+                \begin{tikzcd}
+                    & (ab)(cd) \arrow[r, "{\alpha_{ab,c,d}}"] & ((ab)c)d\\
+                    a(b(cd)) \arrow[ur, "{\alpha_{a,b,cd}}"] \arrow[dr, "{\id_a \otimes \alpha_{b,c,d}}"']\\
+                    & a((bc)d) \arrow[r, "{\alpha_{a,bc,d}}"'] & (a(bc))d \arrow[uu, "{\alpha_{abc} \otimes \id_d}"']
+                \end{tikzcd}
+            \end{equation}
+            commutes where we use the shorthand \(ab = a \otimes b\).
+            \item For all \(a, b \in \cat{C}\) the diagram
+            \begin{equation}
+                \begin{tikzcd}
+                    a \otimes (I \otimes b) \arrow[rr, "{\alpha_{a,I,b}}"] \arrow[dr, "\id_a \otimes \lambda_b"'] && (a \otimes I) \otimes b \arrow[dl, "\rho_a \otimes \id_b"]\\
+                    & a \otimes b
+                \end{tikzcd}
+            \end{equation}
+            commutes.
+        \end{itemize}
+    \end{dfn}
+    
+    \begin{dfn}{Braided Monoidal Category}{}
+        A \defineindex{braided monoidal category}, \((\cat{C}, \otimes, I, \alpha, \lambda, \rho, \gamma)\), is a monoidal category \((\cat{C}, \otimes, I, \alpha, \lambda, \rho)\) equipped with a natural transformation, \(\gamma\), with components
+        \begin{equation}
+            \gamma_{a,b} \colon a \otimes b \natTrans b \otimes a.
+        \end{equation}
+        This is subject to the condition that the diagrams
+        \begin{equation}
+            \begin{tikzcd}
+                & (ab)c \arrow[r, "{\gamma_{ab,c}}"] & c(ab) \arrow[dr, "{\alpha_{c,a,b}}"]\\
+                a(bc) \arrow[ur, "{\alpha_{a,b,c}}"] \arrow[dr, "{\id_a \otimes \gamma_{b,c}}"'] &&& (ca)b\\
+                & a(cb) \arrow[r, "{\alpha_{a,c,b}}"'] & (ac)b \arrow[ur, "{\gamma_{a,c} \otimes \id_b}"']
+            \end{tikzcd}
+        \end{equation}
+        and
+        \begin{equation}
+            \begin{tikzcd}
+                & a(bc) \arrow[r, "{\gamma_{a,bc}}"] & (bc)a \arrow[dr, "{\alpha_{b,c,a}^{-1}}"]\\
+                (ab)c \arrow[ur, "{\alpha_{a,b,c}^{-1}}"] \arrow[dr, "{\gamma_{a,b} \otimes \id_c}"'] &&& b(ca)\\
+                & (ba)c \arrow[r, "{\alpha_{b,a,c}^{-1}}"'] & b(ac) \arrow[ur, "{\id_b \otimes \gamma_{a,c}}"']
+            \end{tikzcd}
+        \end{equation}
+        commute.
+        Again, writing \(ab = a \otimes b\) as shorthand.
+    \end{dfn}
+    
+    \begin{dfn}{Symmetric Monoidal Category}{}
+        A \defineindex{symmetric monoidal category} is a braided monoidal category for which
+        \begin{equation}
+            \gamma_{b,a} \circ \gamma_{a,b} = \id_{a \otimes b}
+        \end{equation}
+        for all \(a, b \in \cat{C}\).
+    \end{dfn}
+    
+    The natural isomorphisms in these definitions are called the coherence morhpisms.
+    They all model a particular property mirroring a property of a monoid:
+    \begin{itemize}
+        \item \(\alpha\) is the associator, and it means that the product (which is not necessarily a categorical product) \(\otimes\) is associative up to natural isomorphism.
+        \item \(\lambda\) and \(\rho\) are the left and right unitors, and they mean that \(I\) acts as an identity element for the product \(\otimes\), again up to natural isomorphism.
+        \item \(\gamma\) (when it exists) is the braiding or symmetry of the category, and it means that the product \(\otimes\) is commutative up to natural isomorphism.
+    \end{itemize}
+    
+    \begin{exm}{}{}
+        The following are all monoidal categories, the coherence morphisms are left out of the notation (as is standard) and they can usually be worked out from context.
+        \begin{itemize}
+            \item \((\Set, \times, \{\bullet\})\);
+            \item \((\Set, \sqcup, \emptyset)\);
+            \item \((\Vect, \otimes, \field)\);
+            \item \((\RMod, \otimes_R, \field)\);
+            \item \((\cat{C}, \times, \terminal)\) where \(\cat{C}\) is any category with all binary products and a terminal object.
+        \end{itemize}
+        Note that multiple monoidal structures can exist on the same underlying category.
+        All of these are symmetric, as most examples in common practice are.
+        An example of a non-symmetric monoidal category is \([\cat{C}, \cat{C}]\), the category of endofunctors, \(\cat{C} \to \cat{C}\), with the monoidal product given by composition and the unit object being the identity functor, \(\id_{\cat{C}}\).
+    \end{exm}
     
     % Appdendix
     %	\appendixpage
     %	\begin{appendices}
-        %	
-        %	\end{appendices}
+    %	
+    %	\end{appendices}
     
     \backmatter
     \renewcommand{\glossaryname}{Acronyms}

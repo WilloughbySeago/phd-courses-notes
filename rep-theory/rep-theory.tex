@@ -64,7 +64,6 @@ noabbrev
 \DeclareMathOperator{\im}{im}
 \newcommand{\isomorphic}{\cong}
 \DeclareMathOperator{\Span}{span}
-%\DeclareMathOperator{\symplectic}{Sp}
 \ExplSyntaxOn
 % Create LaTeX interface command
 \NewDocumentCommand{\cycle}{ O{\,} m }{  % optional arg is separator, mandatory
@@ -410,7 +409,7 @@ noabbrev
     Note then that \(\Hom_A(V, W) \subseteq \Hom_{\Vect[\field]}(V, W)\) where \(\Hom_{\Vect[\field]}(V, W)\) is the set of linear maps \(V \to W\) of the underlying vector spaces.
     Using the notation \(\Hom_A\) for both modules and representations is justified by the following remark.
     
-    \begin{remark}
+    \begin{remark}{}{}
         There is a category, \(\AMod\) (\(\ModA\)), with left (right) \(A\)-modules as objects and \(A\)-module homomorphisms as morphisms.
         Similarly, there is a category \(\Rep(A)\) of representations of \(A\) with objects being representations \((V, \rho)\) and morphisms being homomorphisms of representations.
         
