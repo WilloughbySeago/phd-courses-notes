@@ -786,6 +786,144 @@ noabbrev
         It follows that \(A/I\) is a left \(A\)-module precisely when \(I\) is a left ideal.
     \end{remark}
     
+    \chapter{Tensor Products}
+    \section{Tensor Product of Modules}
+    We first define the tensor product of \(R\)-modules (\(R\) a ring). 
+    This definition can also be applied to \(A\)-modules (\(A\) an algebra) without modification.
+    
+    \begin{dfn}{Tensor Product}{}
+        Let \(R\) be a ring, \(M\) a right \(R\)-module, and \(N\) a left \(R\)-module.
+        Then the \define{tensor product}\index{tensor product!of R-modules@of \(R\)-modules}, \(M \otimes_R N\), is the abelian group \begin{equation}
+            \frac{F(\{m \otimes n \mid m \in M, n \in N\})}{I}
+        \end{equation}
+        where \(F(X)\) denotes the free abelian group on the set \(X\) and \(I\) is the normal subgroup generated from all elements of the form
+        \begin{itemize}
+            \item \((m + m') \otimes n - m \otimes n - m' \otimes n\);
+            \item \(m \otimes (n + n') - m \otimes n - m \otimes n'\);
+            \item \((m \action r) \otimes n - m \otimes (r \action n)\)
+        \end{itemize}
+        with \(m, m' \in M\), \(n, n' \in N\) and \(r \in R\).
+    \end{dfn}
+    
+    \begin{wrn}
+        The tensor product does not, in general, have the structure of an \(R\)-module.
+        It is just an abelian group.
+        In a sense the \(R\)-actions of \(M\) and \(N\) are \enquote{used up} in the construction and don't \enquote{survive} to produce a sensible notion of an \(R\)-action on \(M \otimes_R N\).
+    \end{wrn}
+    
+    \begin{ntn}{}{}
+        When \(R\) is clear from context we will write \(M \otimes N\) instead of \(M \otimes_R N\).
+        Conversely, if needed we'll write \(m \otimes_R n\) for elements of \(M \otimes_R N\) if there are multiple ways to define the tensor product.
+    \end{ntn}
+    
+    Intuitively, \(M \otimes_R N\) consists of sums of elements which we write as\footnote{We should write \([m \otimes n]\) or something similar, since what we actually have is the equivalence class of \(m \otimes n\) in \(F(\{m \otimes n\})/I\).} \(m \otimes n\) with \(m \in M\) and \(n \in N\).
+    So, one element of \(M \otimes_R N\) might be
+    \begin{equation}
+        m_1 \otimes n_1 + m_2 \otimes n_2 + m_3 \otimes n_3
+    \end{equation}
+    with \(m_i \in M\) and \(n_i \in N\).
+    Note that there are no factors of \(R\) here, this is purely an operation in the free group.
+    The quotient imposes that in \(M \otimes_R N\) we have the relations
+    \begin{align}
+        (m + m') \otimes n &= m \otimes n + m' \otimes n;\\
+        m \otimes (n + n') &= m \otimes n + m \otimes n';\\
+        (m \action r) \otimes n &= m \otimes (r \action n).
+    \end{align}
+    
+    As we mentioned the tensor product of a right and left \(R\)-module is not, in general, an \(R\)-module in any consistent way.
+    In order for the tensor product to be a module we need to have some extra module structure present in one of the two modules which then remains after the tensor product is formed.
+    Of course, this extra structure must be compatible with the existing structure, and it turns out that the following is exactly the right definition for this purpose.
+    
+    \begin{dfn}{Bimodule}{}
+        Left \(A\) and \(B\) be associative unital \(\field\)-algebras.
+        An \define{\(\symbf{(A, B)}\)-bimodule}\index{bimodule} is an abelian group, \(M\), which is both a left \(A\)-module and a right \(B\) module in such a way that
+        \begin{equation}
+            (a \action m) \action b = a \action (m \action b)
+        \end{equation}
+        for all \(a \in A\), \(b \in B\), and \(m \in M\).
+    \end{dfn}
+    
+    \begin{exm}{}{}
+        Let \(V\) be a \(\field\)-vector space and a left \(A\)-module.
+        Then \(V\) is an \((A, \field)\)-bimodule where \(a \action v\) is just the action of \(A\) on \(V\) as an \(A\)-module and \(v \action \lambda = \lambda v\) is just scalar multiplication by elements of \(\field\).
+        That this is a bimodule follows because
+        \begin{equation}
+            a \action (v \action \lambda) = a \action (\lambda v) = \lambda (a \action v) = (a \action v) \action \lambda
+        \end{equation}
+        having used the fact that the action of \(a\) on \(v\) is \(\field\)-linear.
+        
+        In fact, we can define a bimodule first (just combining the definitions of a left and right module), then a left \(A\)-module is an \((A, \field)\)-bimodule, and a right \(A\)-module is a \((\field, A)\)-bimodule.
+    \end{exm}
+    
+    \begin{lma}{}{}
+        Let \(M\) be an \((A, B)\)-bimodule, and \(N\) a left \(B\)-module.
+        Then \(M \otimes_B N\) is a left \(A\)-module with \(a \action (m \otimes n) \coloneqq (a \action m) \otimes n\).
+        \begin{proof}
+            First note that as an \((A, B)\)-bimodule \(M\) is, in particular, a right \(B\)-module.
+            Thus, the tensor product \(M \otimes_B N\) is defined as the quotient of a free abelian group by an ideal, and so is again an abelian group.
+            It remains only to show that this abelian group equipped with the action of \(A\) on the first factor is an \(A\)-module.
+            
+            To do so take an arbitrary element of \(M \otimes_B N\), which is of the form \(\sum_{i \in I} m_i \otimes n_i\) where \(I\) is some finite indexing set, \(m_i \in M\) and \(n_i \in N\).
+            We are free to define the action of \(A\) on this element to be
+            \begin{equation}
+                a \action \left( {\textstyle \sum_{i \in I}} m_i \otimes n_i \right) \coloneqq {\textstyle \sum_{i \in I}} (a \action m_i) \otimes n_i.
+            \end{equation}
+            Then when \(I\) is a singleton this reduces to \(a \action (m \otimes n) = (a \action m) \otimes n\) as required.
+            
+            We can now prove that this makes \(M \otimes_B N\) a left \(A\)-module:
+            \begin{itemize}
+                \item[M1] \((ab) \action \sum_{i} m_i \otimes n_i = \sum_{i} ((ab) \action m_i) \otimes n_i = \sum_{i} (a \action (b \action m_i)) \otimes n_i = a \action \sum_i (b \action m_i) \otimes n_i = a \action \left( b \action \sum_i m_i \otimes n_i \right)\);
+                \item[M2] \(1 \action \sum_i m_i \otimes n_i = \sum_i (1 \action m_i) \otimes n_i = \sum_i m_i \action n_i\);
+                \item[M3] \(a \action \left( \sum_{i \in I} m_i \otimes n_i + \sum_{j \in J} m_j \otimes n_j \right) = a \action \left( \sum_{i \in I \sqcup J} m_i \otimes n_i \right) = \sum_{i \in I \sqcup J} (a \action m_i) \otimes n_i = \sum_{i \in I} (a \action m_i) \otimes n_i + \sum_{j \in J} (a \action m_j) \otimes n_j\);
+                \item[M4] \((a + b) \action \sum_i m_i \otimes n_i = \sum_i ((a + b) \action m_i) \otimes n_i = \sum_i (a \action m_i + b \action m_i) \otimes n_i = \sum_i (a \action m_i) \otimes n_i + (b \action m_i) \otimes n_i = a \action \sum_i m_i \otimes n_i + b \action \sum_i m_i \otimes n_i\). 
+            \end{itemize}
+        \end{proof}
+    \end{lma}
+    
+    Similarly, if \(M\) is a right \(A\)-module and \(N\) is an \((A, B)\)-bimodule then \(M \otimes_A N\) is a right \(B\)-module with the action given by \((m \otimes n) \action b = m \otimes (n \action b)\).
+    
+    \begin{exm}{}{}
+        Any \(\field\)-vector space, \(V\), is a \((\field, \field)\)-bimodule, defining \(\lambda \action v = \lambda v = v \action \lambda\) for \(\lambda \in \field\) and \(v \in V\).
+        If \(U\) is some other vector space then we can form the \(\field\)-module \(V \otimes_{\field} U\), which is of course just the usual tensor product of vector spaces.
+        
+        In fact, this works for any commutative algebra, \(A\), we can take any \(A\)-module as an \((A, A)\)-bimodule, so if \(M\) and \(N\) are \(A\)-modules then \(M \otimes_A N\) is an \(A\)-module.
+    \end{exm}
+    
+    \subsection{Universal Property}
+    The tensor product may also be defined via a universal property.
+    
+    \begin{lma}{}{}
+        Let \(M\) be an right \(A\)-module, and let \(N\) be a left \(A\)-module.
+        Then for any abelian group, \(G\), and any group homomorphism \(f \colon M \times N \to G\) satisfying ... there is a unique group homomorhpism \(\overbar{f} \colon M \otimes_A N \to G\) such that \(\overbar{f}(m \otimes n) = f(m, n)\) for all \(m \in M\) and \(n \in N\).
+        That is, the diagram
+        \begin{equation}
+            \begin{tikzcd}
+                M \times N \arrow[r, "{-}\otimes{-}"] \arrow[dr, "f"'] & M \otimes_A N \arrow[d, "\exists ! \overbar{f}"]\\
+                & G
+            \end{tikzcd}
+        \end{equation}
+        commutes.
+        \begin{proof}
+            To make this diagram commutes we can define \(\overbar{f}(m \otimes n) = f(m, n)\).
+            The fact that \(\overbar{f}\) is a group homomorhpism means that this uniquely defines the value of \(\overbar{f}\) on any element of \(M \otimes_A N\) by
+            \begin{equation}
+                \overbar{f}\left( {\textstyle \sum_i} m_i \otimes n_i \right) = {\textstyle\sum_i} f(m_i, n_i). \qedhere
+            \end{equation}
+        \end{proof}
+    \end{lma}
+    
+    Note that \(\Hom_A(M, N)\) has the structure of an \(A\)-module with operations defined pointwise.
+    When \(M\) is an \((A, B)\)-bimodule, \(N\) is a left \(B\)-module, and \(P\) is a left \(B\)-module there is an isomorhpism
+    \begin{equation}
+        \Hom_B(M, \Hom_B(N, P)) \xrightarrow{\isomorphic} \Hom_B(M \otimes_A N, P)
+    \end{equation}
+    This is given by
+    \begin{equation}
+        f \mapsto [m \otimes n \mapsto f(m)(n)].
+    \end{equation}
+    This isomorphism is natural in all objects, and thus this is an adjunction.
+    
+    
     
     % Appdendix
 %	\appendixpage
