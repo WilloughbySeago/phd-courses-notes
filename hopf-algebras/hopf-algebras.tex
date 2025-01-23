@@ -60,6 +60,8 @@ noabbrev
 \newcommand{\Vect}[1][\field]{\c@egory{Vect}_{#1}}
 \newcommand{\RMod}[1][R]{#1\text{-}\c@egory{Mod}}
 \newcommand{\Top}{\c@egory{Top}}
+\newcommand{\Man}{\c@egory{Man}}
+\newcommand{\Mon}{\c@egory{Mon}}
 \makeatother
 \ExplSyntaxOn
 % Create LaTeX interface command
@@ -257,7 +259,7 @@ noabbrev
         \end{equation}
         object \(I \in \cat{C}\), and natural transformations
         \begin{gather}
-            \alpha \colon - \otimes (- \otimes -) \natTrans (- \otimes -) \otimes -;\\
+            \alpha \colon (- \otimes -) \otimes - \natTrans - \otimes (- \otimes -);\\
             \lambda \colon I \otimes - \natTrans -;\\
             \rho \colon - \otimes I \natTrans -.
         \end{gather}
@@ -266,16 +268,16 @@ noabbrev
             \item For all \(a, b, c, d \in \cat{C}\) the diagram
             \begin{equation}
                 \begin{tikzcd}
-                    & (ab)(cd) \arrow[r, "{\alpha_{ab,c,d}}"] & ((ab)c)d\\
-                    a(b(cd)) \arrow[ur, "{\alpha_{a,b,cd}}"] \arrow[dr, "{\id_a \otimes \alpha_{b,c,d}}"']\\
-                    & a((bc)d) \arrow[r, "{\alpha_{a,bc,d}}"'] & (a(bc))d \arrow[uu, "{\alpha_{abc} \otimes \id_d}"']
+                    & (ab)(cd) \arrow[r, "{\alpha_{a,b,cd}}"] & a(b(cd))\\
+                    ((ab)c)d \arrow[ur, "{\alpha_{ab,c,d}}"] \arrow[dr, "{\alpha_{a,b,c} \otimes \id_d}"']\\
+                    & (a(bc))d \arrow[r, "{\alpha_{a,bc,d}}"'] & a((bc)d) \arrow[uu, "{\id_a \otimes \alpha_{b,c,d}}"']
                 \end{tikzcd}
             \end{equation}
             commutes where we use the shorthand \(ab = a \otimes b\).
             \item For all \(a, b \in \cat{C}\) the diagram
             \begin{equation}
                 \begin{tikzcd}
-                    a \otimes (I \otimes b) \arrow[rr, "{\alpha_{a,I,b}}"] \arrow[dr, "\id_a \otimes \lambda_b"'] && (a \otimes I) \otimes b \arrow[dl, "\rho_a \otimes \id_b"]\\
+                    (a \otimes I) \otimes b \arrow[rr, "{\alpha_{a,I,b}}"] \arrow[dr, "\rho_a \otimes \id_b"'] && a \otimes (I \otimes b) \arrow[dl, "\id_a \otimes \lambda_b"]\\
                     & a \otimes b
                 \end{tikzcd}
             \end{equation}
@@ -291,17 +293,17 @@ noabbrev
         This is subject to the condition that the diagrams
         \begin{equation}
             \begin{tikzcd}
-                & (ab)c \arrow[r, "{\gamma_{ab,c}}"] & c(ab) \arrow[dr, "{\alpha_{c,a,b}}"]\\
-                a(bc) \arrow[ur, "{\alpha_{a,b,c}}"] \arrow[dr, "{\id_a \otimes \gamma_{b,c}}"'] &&& (ca)b\\
-                & a(cb) \arrow[r, "{\alpha_{a,c,b}}"'] & (ac)b \arrow[ur, "{\gamma_{a,c} \otimes \id_b}"']
+                & a(bc) \arrow[r, "{\gamma_{a,bc}}"] & (bc)a \arrow[dr, "{\alpha_{b,c,a}}"]\\
+                (ab)c \arrow[ur, "{\alpha_{a,b,c}}"] \arrow[dr, "{\gamma_{a,b} \otimes \id_c}"'] &&& b(ca)\\
+                & (ba)c \arrow[r, "{\alpha_{b,a,c}}"'] & b(ac) \arrow[ur, "{\id_b \otimes \gamma_{a,c}}"']
             \end{tikzcd}
         \end{equation}
         and
         \begin{equation}
             \begin{tikzcd}
-                & a(bc) \arrow[r, "{\gamma_{a,bc}}"] & (bc)a \arrow[dr, "{\alpha_{b,c,a}^{-1}}"]\\
-                (ab)c \arrow[ur, "{\alpha_{a,b,c}^{-1}}"] \arrow[dr, "{\gamma_{a,b} \otimes \id_c}"'] &&& b(ca)\\
-                & (ba)c \arrow[r, "{\alpha_{b,a,c}^{-1}}"'] & b(ac) \arrow[ur, "{\id_b \otimes \gamma_{a,c}}"']
+                & (ab)c \arrow[r, "{\gamma_{ab,c}}"] & c(ab) \arrow[dr, "{\alpha_{c,a,b}^{-1}}"]\\
+                a(bc) \arrow[ur, "{\alpha_{a,b,c}^{-1}}"] \arrow[dr, "{\id_a \otimes \gamma_{b,c}}"'] &&& (ca)b\\
+                & a(cb) \arrow[r, "{\alpha_{a,c,b}^{-1}}"'] & (ac)b \arrow[ur, "{\gamma_{a,c} \otimes \id_b}"']
             \end{tikzcd}
         \end{equation}
         commute.
@@ -327,15 +329,111 @@ noabbrev
     \begin{exm}{}{}
         The following are all monoidal categories, the coherence morphisms are left out of the notation (as is standard) and they can usually be worked out from context.
         \begin{itemize}
-            \item \((\Set, \times, \{\bullet\})\);
-            \item \((\Set, \sqcup, \emptyset)\);
+            \item \((\Set, \times, \{\bullet\})\):
+            The coherence maps are
+            \begin{itemize}
+                \item \(\alpha_{a,b,c}((x,y),z) = (x,(y,z))\);
+                \item \(\lambda_a(\bullet, x) = x\);
+                \item \(\rho_a(x, \bullet) = x\);
+                \item \(\gamma_{a,b}(x,y) = (y,x)\);
+            \end{itemize}
+            \item \((\Set, \sqcup, \emptyset)\):
             \item \((\Vect, \otimes, \field)\);
-            \item \((\RMod, \otimes_R, \field)\);
+            \item \((\RMod, \otimes_R, R)\);
             \item \((\cat{C}, \times, \terminal)\) where \(\cat{C}\) is any category with all binary products and a terminal object.
         \end{itemize}
         Note that multiple monoidal structures can exist on the same underlying category.
         All of these are symmetric, as most examples in common practice are.
         An example of a non-symmetric monoidal category is \([\cat{C}, \cat{C}]\), the category of endofunctors, \(\cat{C} \to \cat{C}\), with the monoidal product given by composition and the unit object being the identity functor, \(\id_{\cat{C}}\).
+    \end{exm}
+    
+    We are now ready to give the definition of a monoid in a monoidal category in its full glory.
+    
+    \begin{dfn}{Monoid}{}
+        Let \(\cat{C}\) be a monoidal category.
+        A \defineindex{monoid}, \((m, \mu, \eta)\), is an object, \(m \in \cat{C}\), equipped with morphisms
+        \begin{equation}
+            \mu \colon m \otimes m \to m, \qqand \iota \colon I \to m,
+        \end{equation}
+        called \defineindex{multiplication} and \defineindex{unit} respectively, such that the diagrams
+        \begin{equation}
+            \begin{tikzcd}
+                & m \otimes (m \otimes m) \arrow[r, "\id_m \otimes \mu"] & m \otimes m \arrow[dd, "\mu"]\\
+                (m \otimes m) \otimes m \arrow[ur, "{\alpha_{m,m,m}}"] \arrow[dr, "\mu \otimes \id_m"]\\
+                & m \otimes m \arrow[r, "\mu"'] & m
+            \end{tikzcd}
+        \end{equation}
+        and
+        \begin{equation}
+            \begin{tikzcd}
+                I \otimes m \arrow[r, "\eta \otimes \id_m"] \arrow[dr, "\lambda_m"'] & m \otimes m \arrow[d, "\mu"'] & m \otimes I \arrow[l, "\id_m \otimes \eta"'] \arrow[dl, "\rho_m"]\\
+                & m
+            \end{tikzcd}
+        \end{equation}
+        commute.
+        
+        If \(\cat{C}\) is symmetric monoidal category with braiding \(\gamma\) then \((m, \mu, \eta)\) is a \defineindex{commutative monoid} if
+        \begin{equation}
+            \begin{tikzcd}
+                m \otimes m \arrow[rr, "\gamma_{m,m}"] \arrow[dr, "\mu"'] && m \otimes m \arrow[dl, "\mu"]\\
+                & m
+            \end{tikzcd}
+        \end{equation}
+        commutes, that is, \(\mu \circ \gamma_{m,m} = \mu\).
+    \end{dfn}
+    
+    \begin{exm}{}{}
+        \begin{itemize}
+            \item A monoid, \((M, \mu, \eta)\), in the monoidal category \(\Set\) (under the Cartesian product, which we assume to be the monoidal structure of \(\Set\) unless stated otherwise) is just a monoid in the usual sense.
+            The map \(\mu \colon M \times M \to M\) is just the multiplication map on \(M\), and \(\eta \colon \{\bullet\} \to M\) picks out an element of \(M\), namely \(\eta(\bullet)\).
+            
+            The first diagram states that the multiplication in \(M\) is associative, which we can see by starting at \((M \times M) \times M\) and tracing both directions around the diagram, taking \(x, y, z \in M\) going the top path gives 
+            \begin{align}
+                \mu \circ (\id_m \times \mu) \circ \alpha_{m,m,m}((x, y), z) &= \mu \circ (\id_m \times \mu)(x, (y, z))\\
+                &= \mu(\id_m (x), \mu(y, z))\\
+                &= \mu(x, \mu(y, z))
+            \end{align}
+            and going along the bottom path gives
+            \begin{align}
+                \mu \circ (\mu \times \id_m)((x, y), z) &= \mu(\mu(x, y), \id_m(z))\\
+                &= \mu(\mu(x, y), z).
+            \end{align}
+            Writing \(\mu(a, b) = a b\) these two results become \(x(yz)\) and \((xy)z\).
+            Demanding that they are equal is thus associativity of multiplication.
+            
+            The second diagram asserts that the distinguished element, \(e = \eta(\bullet) \in M\), is the identity for this multiplication map.
+            The left triangle gives us
+            \begin{equation}
+                \mu \circ (\eta \times \id_m)(\bullet, x) = \mu(e, x) = ex \qand \lambda_m(\bullet, x) = x,
+            \end{equation}
+            so imposing equality gives us that \(ex = x\), so \(e\) is a left identity.
+            Similarly, the right triangle gives us that \(e\) is a right identity.
+            
+            The commutativity condition, assuming it holds, states that \(\mu \circ \gamma_{m,m}(x, y) = \mu(y, x) = yx\) and \(\mu(x, y) = xy\) agree, so it's just stating that the multiplication in this monoid is commutative.
+            
+            \item A monoid in the category of monoids, \((\Mon, \times, \{\bullet\})\), is a commutative monoid, this follows from the Eckmann--Hilton argument\footnote{Suppose that we have a set, \(M\), equipped with two binary operations, \(\circ\) and \(\diamond\) with associated units \(1_\circ\) and \(1_\diamond\). These are compatible if \((a \circ b) \diamond (c \circ d) = (a \diamond c) \circ (b \diamond d)\) (a result known as the interchange law, note that this is true of vertical and horizontal composition of natural transformations). Then using these properties we have \(1_\circ = 1_{\circ} \circ 1_{\circ} = (1_\diamond \diamond 1_\circ) \circ (1_\circ \diamond 1_\diamond) = (1_\diamond \circ 1_\circ) \diamond (1_\circ \circ 1_\diamond) = 1_\diamond \diamond 1_\diamond = 1_\diamond\), so the units coincide and we write \(1 = 1_\circ = 1_\diamond\). Then for \(x, y \in M\) we have \(a \circ b = (1 \diamond a) \circ (b \diamond 1) = (1 \circ b) \diamond (a \circ 1) = b \diamond a = (b \circ 1) \diamond (1 \circ a) = (b \diamond 1) \circ (1 \diamond a) = b \circ a\), thus \(\circ\) is commutative, and from this we see that \(b \circ a = b \diamond a\), so \(\diamond\) and \(\circ\) coincide. Note that one can also prove associativity of these operations: \((ab)c = (ab)(1c) = (a1)(bc) = a(bc)\), where now that we know that the two multiplications are the same we just use juxtaposition.}, which demonstrates that if there are two compatible monoidal structures then they actually agree and must be commutative.
+            Similarly, a monoid in the category of groups, \(\Grp\), is an abelian group.
+            
+            \item A monoid in the category of topological spaces, \((\Top, \times, \{\bullet\})\), is a topological monoid, that is a monoid for which the multiplication and unit maps are continuous.
+            A monoid in the category of smooth manifolds, \((\Man, \times, \{\bullet\})\), is a Lie monoid (a Lie group without the condition that inverses exist).
+            
+            \item A monoid in the category of abelian groups, \((\Ab, \otimes_{\integers}, \integers)\), is a ring, the group operation providing the addition and the monoid multiplication providing the multiplication.
+            Distributivity of multiplication over addition is witnessed by the requirement that \(\mu\) is a group homomorphism, so
+            \begin{equation}
+                \mu(x, y + z) = \mu(x, y) + \mu(x, z)
+            \end{equation}
+            which gives
+            \begin{equation}
+                x(y + z) = xy + xz
+            \end{equation}
+            and similar for distributivity on the right.
+            
+            \item For a commutative\footnote{commutativity is required for the tensor product of \(R\)-modules to be an \(R\)-module, we could instead look at a category of bimodules for a slightly more general result} ring, \(R\), a monoid in the category of \(R\)-modules, \((\RMod, \otimes_{R}, R)\), is an \(R\)-algebra.
+            The monoid multiplication provides the multiplication of the algebra, which is commutative exactly when this is a commutative monoid.
+            Note that \(R = \field\) is a special case of this, in which case the monoidal category is \(\Vect\).
+            
+            \item A monoid in the monoidal category of endofunctosr, \([\cat{C}, \cat{C}]\), is a monad.
+        \end{itemize}
     \end{exm}
     
     % Appdendix
