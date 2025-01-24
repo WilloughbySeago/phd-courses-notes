@@ -60,8 +60,10 @@ noabbrev
 \newcommand{\Vect}[1][\field]{\c@egory{Vect}_{#1}}
 \newcommand{\RMod}[1][R]{#1\text{-}\c@egory{Mod}}
 \newcommand{\Top}{\c@egory{Top}}
+\newcommand{\TopPt}{\c@egory{Top}_{\bullet}}
 \newcommand{\Man}{\c@egory{Man}}
 \newcommand{\Mon}{\c@egory{Mon}}
+\newcommand{\hTopPt}{\c@egory{hTop}_{\bullet}}
 \makeatother
 \ExplSyntaxOn
 % Create LaTeX interface command
@@ -359,7 +361,7 @@ noabbrev
         \begin{equation}
             \begin{tikzcd}
                 & m \otimes (m \otimes m) \arrow[r, "\id_m \otimes \mu"] & m \otimes m \arrow[dd, "\mu"]\\
-                (m \otimes m) \otimes m \arrow[ur, "{\alpha_{m,m,m}}"] \arrow[dr, "\mu \otimes \id_m"]\\
+                (m \otimes m) \otimes m \arrow[ur, "{\alpha_{m,m,m}}"] \arrow[dr, "\mu \otimes \id_m"']\\
                 & m \otimes m \arrow[r, "\mu"'] & m
             \end{tikzcd}
         \end{equation}
@@ -428,13 +430,71 @@ noabbrev
             \end{equation}
             and similar for distributivity on the right.
             
-            \item For a commutative\footnote{commutativity is required for the tensor product of \(R\)-modules to be an \(R\)-module, we could instead look at a category of bimodules for a slightly more general result} ring, \(R\), a monoid in the category of \(R\)-modules, \((\RMod, \otimes_{R}, R)\), is an \(R\)-algebra.
+            \item For a commutative\footnote{commutativity is required for the tensor product of \(R\)-modules to be an \(R\)-module, we could instead look at a category of bimodules for a slightly more general result.} ring, \(R\), a monoid in the category of \(R\)-modules, \((\RMod, \otimes_{R}, R)\), is an \(R\)-algebra.
             The monoid multiplication provides the multiplication of the algebra, which is commutative exactly when this is a commutative monoid.
             Note that \(R = \field\) is a special case of this, in which case the monoidal category is \(\Vect\).
             
-            \item A monoid in the monoidal category of endofunctosr, \([\cat{C}, \cat{C}]\), is a monad.
+            \item A monoid in the monoidal category of endofunctors, \([\cat{C}, \cat{C}]\), is a monad.
         \end{itemize}
     \end{exm}
+    
+    So far all we've achieved is a somewhat complex unification of many similar algebraic structures.
+    The nice thing is that now we've defined monoids in terms of commutative diagrams as well as picking them up and placing them in other categories we can also dualise the definition.
+    
+    \begin{dfn}{Comonoid}{}
+        Let \(\cat{C}\) be a monoidal category.
+        A comonoid, \((c, \Delta, \varepsilon)\), is an object, \(c \in \cat{C}\), equipped with morphisms
+        \begin{equation}
+            \Delta \colon c \to c \otimes c, \qqand \varepsilon \colon c \to I,
+        \end{equation}
+        called \defineindex{comultiplication} and \defineindex{counit} respectively, such that the diagrams
+        \begin{equation}
+            \begin{tikzcd}
+                & c \otimes (c \otimes c) \arrow[dl, "{\alpha_{c,c,c}^{-1}}"', pos=0.4] &  c \otimes c \arrow[l, "\id_c \otimes \Delta"']\\
+                (c \otimes c) \otimes c\\
+                & c \otimes c \arrow[ul, "\Delta \otimes \id_c", pos=0.4] & c \arrow[l, "\Delta"] \arrow[uu, "\Delta"']
+            \end{tikzcd}
+        \end{equation}
+        and
+        \begin{equation}
+            \begin{tikzcd}
+                I \otimes c & c \otimes c \arrow[l, "\varepsilon \otimes \id_c"'] \arrow[r, "\id_c \otimes \varepsilon"] & c \otimes I\\
+                & c \arrow[ul, "\lambda_c^{-1}"] \arrow[ur, "\rho_c^{-1}"'] \arrow[u, "\Delta"] &
+            \end{tikzcd}
+        \end{equation}
+        commute.
+        
+        If \(\cat{C}\) is a symmetric monoidal category with braiding \(\gamma\) then \((c, \Delta, \varepsilon)\) is a \defineindex{cocommutative comonoid} if
+        \begin{equation}
+            \begin{tikzcd}
+                c \otimes c && c \otimes c \arrow[ll, "{\gamma_{c,c}}"']\\
+                & c \arrow[ul, "\Delta"] \arrow[ur, "\Delta"']
+            \end{tikzcd}
+        \end{equation}
+        commutes, that is, \(\gamma_{c,c} \circ \Delta = \Delta\).
+    \end{dfn}
+    
+    Comonoids typically aren't as familiar as monoids, but nonetheless they're important, in particular Hopf algebras are both monoids and comonoids (in a compatible way with one other piece of data).
+    
+    \begin{exm}{}{}
+        \begin{itemize}
+            \item In \((\Set, \times, \{\bullet\})\) any set, \(X\), has a unique comonoid structure given by declaring that \(\Delta(x) = (x, x) \in X \times X\) and \(\varepsilon(x) = \bullet\) is the unique element of the singleton set, \(I = \{\bullet\}\).
+            This makes comonoids particularly boring in \(\Set\), which explains why they tend not to be so familiar.
+            \item In \((\Set, \sqcup, \emptyset)\) the only comonoid is \(\emptyset\), since to define a comonoid structure on some non-empty set, \(X\), we'd have to have a map \(\varepsilon \colon X \to \emptyset\), and no such maps exist.
+            \item In \(\Vect\) any \(\field\)-vector space, \(V\), may be equipped with a comonoid structure as follows.
+            First, pick a basis, \(\{e_i\}\).
+            Then define comultiplication by \(\Delta(e_i) = \sum_i e_i \otimes e_i\), and the counit by \(e_i \mapsto 1 \in \field\), both extended by linearity to the whole space.
+            \item For a commutative ring, \(R\), a comonoid in \((\RMod, \otimes_R, R)\) is called a coalgebra (more on these later).
+            A specific example is the polynomial ring \(R[X]\), which is a comonoid when we define the comultiplication to be \(\Delta(X) = X \otimes X\) and the counit to be \(\varepsilon(X) = 1 \in R\).
+            \item The monoidal category \((\TopPt, \vee, \{\bullet\})\) of based topological spaces under the wedge product (union and then identify the base points) has the sphere, \(S^n\), as an \emph{almost} comonoid.
+            There's a map \(S^n \vee S^n \to S^n\) that almost works as the comultiplication.
+            The only problem is that coassociativity only holds up to homotopy.
+            We can get a proper comonoid by instead considering \((\hTopPt, \vee, \{\bullet\})\), the monoidal category of based topological spaces up to homotopy.
+            \item A comonoid in the monoidal category of endofunctors, \([\cat{C}, \cat{C}]\), is a comonad.
+        \end{itemize}
+    \end{exm}
+    
+    % TODO: Introduce string diagrams?
     
     % Appdendix
     %	\appendixpage
