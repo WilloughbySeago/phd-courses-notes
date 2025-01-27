@@ -68,6 +68,10 @@ noabbrev
 \newcommand{\Man}{\c@egory{Man}}
 \newcommand{\Mon}{\c@egory{Mon}}
 \newcommand{\hTopPt}{\c@egory{hTop}_{\bullet}}
+\newcommand{\Alg}[1][\field]{\c@egory{Alg}_{#1}}
+\newcommand{\CAlg}[1][\field]{\c@egory{CAlg}_{#1}}
+\newcommand{\Coalg}[1][\field]{\c@egory{Coalg}_{#1}}
+\newcommand{\CCoalg}[1][\field]{\c@egory{CCoalg}_{#1}}
 \makeatother
 \ExplSyntaxOn
 % Create LaTeX interface command
@@ -95,6 +99,14 @@ noabbrev
 \newcommand{\action}{\mathbin{.}}
 \DeclareMathOperator{\Hom}{Hom}
 \newcommand{\op}{\symrm{op}}
+\newcommand{\incl}{\symrm{incl}}
+\DeclareMathOperator{\im}{im}
+\newcommand{\universalEnveloping}{\symcal{U}}
+\DeclareMathOperator{\coker}{coker}
+\newcommand{\trans}{\top}
+\DeclarePairedDelimiterX{\bracket}[2]{[}{]}{#1, #2}
+\newcommand{\tsum}{{\textstyle \sum}}
+\DeclareMathOperator{\Span}{span}
 
 % String diagrams
 \tikzset{wire/.style = {thick}}
@@ -476,8 +488,8 @@ noabbrev
         and
         \begin{equation}
             \begin{tikzcd}
-                I \otimes c & c \otimes c \arrow[l, "\varepsilon \otimes \id_c"'] \arrow[r, "\id_c \otimes \varepsilon"] & c \otimes I\\
-                & c \arrow[ul, "\lambda_c^{-1}"] \arrow[ur, "\rho_c^{-1}"'] \arrow[u, "\Delta"] &
+                I \otimes c \arrow[dr, "\lambda_c"'] & c \otimes c \arrow[l, "\varepsilon \otimes \id_c"'] \arrow[r, "\id_c \otimes \varepsilon"] & c \otimes I \arrow[dl, "\rho_c"]\\
+                & c \arrow[u, "\Delta"]
             \end{tikzcd}
         \end{equation}
         commute.
@@ -995,6 +1007,455 @@ noabbrev
     is a short exact sequence.
     
     
+    \chapter{Algebras}
+    In this chapter we introduce the notion of an algebra, its dual, and both at the same time.
+    This takes us most of the way to a definition of Hopf algebras, which require just one more component, but we leave that for the next chapter.
+    
+    We will look at algebras over a field, \(\field\), meaning we work with \(\Vect\), but most of this works over an arbitrary commutative ring, \(R\), replacing \(\Vect\) with \(\RMod\).
+    
+    \section{Algebras}
+    Most of the definitions we give in this section should be of familiar objects.
+    However, we endeavour to give our definitions in terms of commutative diagrams, since this is what we need in order to dualise these ideas later.
+    
+    \begin{dfn}{Algebra}{}
+        An \defineindex{algebra}, \((A, \mu, \eta)\), is a monoid in \(\Vect\).
+    \end{dfn}
+    
+    This is a rather abstract definition but it's exactly the same definition that one would give when first meeting algebras over a field.
+    In particular, \(A\) is a vector space, and we're equipping it with a linear map \(\mu \colon A \otimes A \to A\) which we take to be multiplication, so \(\mu(a \otimes b) = ab\).
+    Note that a first course may define multiplication as a bilinear map \(A \times A \to A\), but the universal property of the tensor product means that this is exactly the same as a linear map \(A \otimes A \to A\).
+    Our definition also comes with a unit map, \(\eta \colon \field \to A\), which is defined entirely by the value of \(\eta(1)\) and linearity.
+    Of course, \(\eta(1)\) is then exactly the unit of the multiplication, which we will also call \(1\) or \(1_A\).
+    
+    Consider the pentagon diagram in the definition of a monoid.
+    Chasing an arbitrary element \((a \otimes b) \otimes c \in (A \otimes A) \otimes A\) around this diagram we get
+    \begin{equation}
+        \begin{tikzcd}
+            & a \otimes (b \otimes c) \arrow[r, mapsto, "\id_A \otimes \mu"] & a \otimes bc \arrow[dd, mapsto, "\mu"]\\
+            (a \otimes b) \otimes c \arrow[ur, mapsto, "{\alpha_{A,A,A}}"] \arrow[dr, mapsto, "\mu \otimes \id_A"']\\
+            & ab \otimes c \arrow[r, mapsto, "\mu"'] & (ab)c = a(bc).
+        \end{tikzcd}
+    \end{equation}
+    So, this diagram exactly tells us that multiplication is associative.
+    Considering the left-hand triangle of the second diagram for \(\alpha \in \field\) and \(a \in A\) we have
+    \begin{equation}
+        \begin{tikzcd}
+            \alpha \otimes a \arrow[r, mapsto, "\eta \otimes \id_A"] \arrow[dr, mapsto, "\lambda_A"'] & \eta(\alpha) \otimes a = \alpha 1_A \otimes a \arrow[d, mapsto, "\mu"]\\
+            & \alpha a
+        \end{tikzcd}
+    \end{equation}
+    which commutes because \(\lambda_A(\alpha \otimes a) \coloneqq \alpha a\) where  on the right the multiplication is scalar multiplication in \(A\).
+    
+    An alternative way to package this same information is that an algebra is a ring, \(A\), equipped with a ring homomorphism \(\eta \colon \field \to A\), whose image is contained in the centre of \(A\).
+    That \(\eta(\field) \subseteq Z(A)\) is needed so that \(\eta\) specifies an action of \(\field\) on \(A\) by \(\alpha \action a = \eta(\alpha)a\).
+    
+    Since \(\field\) is a field the unit, \(\eta \colon \field \to A\), is an \emph{injective} ring homomorphism.
+    We will identify the image of \(\eta\) with \(\field\), so that we can view \(\field\) as a subring of \(A\).
+    For example, if we work with a matrix algebra then we identify \(\alpha \in \field\) with \(\alpha I_n\) where \(I_n\) is the identity matrix of appropriate size.
+    
+    \begin{exm}{}{}
+        \begin{itemize}
+            \item The trivial algebra is \((\field, \mu, \eta)\) with \(\mu\) being the isomorphism \(\field \otimes \field \to \field\) given by \(\mu(\alpha \otimes \beta) = \alpha \beta\), and \(\eta\) being the identity.
+            \item Any other associative algebra that you care to name, matrices, \(\reals\), \(\complex\), \(\quaternions\), \(\field[X]\), \(\universalEnveloping(\lie{g})\), and so on.
+        \end{itemize}
+    \end{exm}
+    
+    \begin{dfn}{Algebra Homomorphism}{}
+        An \defineindex{algebra homomorphism}, \((A, \mu, \eta) \to (A', \mu', \eta')\), is a linear map \(\theta \colon A \to A'\) such that the following diagrams commute:
+        \begin{equation}
+            \begin{tikzcd}
+                A \otimes A \arrow[r, "\theta \otimes \theta"] \arrow[d, "\mu"'] & A' \otimes A' \arrow[d, "\mu'"]\\
+                A \arrow[r, "\theta"'] & A'
+            \end{tikzcd}
+            \qqand
+            \begin{tikzcd}[column sep=small]
+                & \field \arrow[dl, "\eta"'] \arrow[dr, "\eta'"]\\
+                A \arrow[rr, "\theta"'] && A' \mathrlap{.}
+            \end{tikzcd}
+        \end{equation}
+    \end{dfn}
+    
+    Of course, the first diagram commuting gives
+    \begin{equation}
+        \begin{tikzcd}
+            a \otimes b \arrow[r, mapsto, "\theta \otimes \theta"] \arrow[d, mapsto, "\mu"'] & \theta(a) \otimes \theta(a) \arrow[d, mapsto, "\mu'"]\\
+            ab \arrow[r, mapsto, "\theta"'] & \theta(ab) = \theta(a)\theta(b)\mathrlap{,}
+        \end{tikzcd}
+    \end{equation}
+    which is just says that as well as the linear map \(\theta\) preserving the additive structure it also preserves the multiplicative structure, and the second diagram commuting gives
+    \begin{equation}
+        \begin{tikzcd}[column sep=small]
+            & 1 \arrow[dl, mapsto, "\eta"'] \arrow[dr, mapsto, "\eta'"]\\
+            1_A \arrow[rr, mapsto, "\theta"'] && \theta(1_A) = 1_{A'} \mathrlap{,}
+        \end{tikzcd}
+    \end{equation}
+    which just says that \(\theta\) preserves the multiplicative unit.
+    Thus, an algebra homomorphism is exactly a ring homomorphism that preserves the linear structure.
+    
+    \begin{dfn}{Ideal}{}
+        Let \((A, \mu, \eta)\) be an algebra.
+        An \defineindex{ideal}, \(I\), is a subspace of \(A\) such that there is a commutative diagram
+        \begin{equation}
+            \begin{tikzcd}
+                A \otimes I \arrow[r, "\id_A \otimes \incl"] \arrow[d, dashed] & A \otimes A \arrow[d, "\mu"'] & I \otimes A \arrow[l, "\incl \otimes \id_A"] \arrow[d, dashed]\\
+                I \arrow[r, "\incl"'] & A & I \arrow[l, "\incl"]
+            \end{tikzcd}
+        \end{equation}
+        where \(\incl \colon I \hookrightarrow A\) is inclusion of the subspace.
+    \end{dfn}
+    
+    The idea is that the two dashed arrows are simply applying the multiplication map to (linear combinations of) elements of the form \(a \otimes i\) (or \(i \otimes a\)) with \(a \in A\) and \(i \in I\), to produce an element of \(I\), which we can then include in \(A\), and this should be the same as just performing the multiplication in \(A\).
+    
+    Consider the exact sequence of vector spaces
+    \begin{equation}
+        0 \to \field \to A \to \coker \eta \to 0.
+    \end{equation}
+    Here \(\coker \eta\) is just \(A / \im \eta \).
+    This splits to give \(A \isomorphic \field \oplus \coker \eta = \field \oplus (A / \im \eta)\).
+    This makes sense based on dimensions, \(\field\) is one-dimensional, \(A/\im \eta\) is then \((\dim A - 1)\)-dimensional, and so their sum has \(\dim A\) dimensions.
+    This splitting however depends on how we identify \(\im \eta\) with elements of \(A\), and there is not, in general, a unique way to do this.
+    Essentially, this identification comes down to a basis choice for \(A\) (extending the basis \(\{1_A\}\) for \(\field \subseteq A\) to a full basis of \(A\)).
+    
+    To get around this non-canonicity we sometimes look at \define{augmented algebras}\index{augmented algebra}.
+    These are equipped with an extra homomorphism of \(\field\)-algebras, \(\varepsilon \colon A \to \field\).
+    Then \(\ker \varepsilon\) is an ideal of \(A\) and we have orthogonal short exact sequences
+    \begin{equation}
+        \begin{tikzcd}
+            & & 0 \arrow[d]\\
+            & & \field \arrow[d, "\eta"'] \arrow[dr, equal]\\
+            0 \arrow[r] & \ker \varepsilon \arrow[r] \arrow[dr, dashed] & A \arrow[r, "\varepsilon"'] \arrow[d] & \field \arrow[r] & 0\\
+            & & \coker \eta \arrow[d]\\
+            & & 0
+        \end{tikzcd}
+    \end{equation}
+    The composite \(\ker \varepsilon \to A \to \coker \eta\) is an isomorphism.
+    This gives us the canonical (for a fixed choice of \(\varepsilon\)) decomposition
+    \begin{equation}
+        A \isomorphic \field \oplus \ker \varepsilon \isomorphic \field \oplus \coker \eta.
+    \end{equation}
+    
+    \begin{dfn}{Opposite Algebra}{}
+        Given an algebra \((A, \mu, \eta)\) the \defineindex{opposite algebra} is \((A, \mu \circ \switch, \eta)\).
+        We will denote this by \(A^{\op}\).
+    \end{dfn}
+    
+    That is, the opposite algebra has the same underlying vector space, \(A\), but the order of multiplication is swapped.
+    Writing \(a^{\op}\) to denote \(a \in A\) viewed as an element of \(A^{\op}\) we have
+    \begin{equation}
+        a^{\op} b^{\op} = \mu^{\op}(a \otimes b) = \mu \circ \switch (a \otimes b) = \mu(b \otimes a) = ba = (ba)^{\op}.
+    \end{equation}
+    The identity map \(A \to A^{\op}\) is an algebra homomorphism if and only if \(A\) is commutative.
+    There is not always an isomorphism \(A \to A^{\op}\), but sometimes there is.
+    
+    \begin{exm}{}{}
+        Consider the matrix algebra \(\matrices{n}{\field}\).
+        Then the transpose provides an isomorphism
+        \begin{align}
+            (-)^{\trans} \colon \matrices{n}{\field} &\to \matrices{n}{\field}^{\op}
+        \end{align}
+        since \((X Y)^{\trans} = Y^{\trans} X^{\trans}\).
+        
+        More generally, if \(A\) is any algebra with specified isomorphism \(\varphi \colon A \to A^{\op}\) then we can define \enquote{conjugate transpose} as an isomorphism
+        \begin{equation}
+            (-)^{\dagger} \colon \matrices{n}{A} \to \matrices{n}{A^{\op}}^{\op}
+        \end{equation}
+        by defining \(X^{\dagger} = (\varphi(x_{j,i}))\) when \(X = (x_{i,j})\).
+        The most obvious example being that \(A = \complex\) (viewed as an \(\reals\)-algebra) and \(\varphi(z) = \overbar{z}\) is the complex conjugate.
+    \end{exm}
+    
+    \begin{exm}{}{}
+        Consider the ring of polynomials, \(\field[X_1, \dotsc, X_n]\).
+        This is a commutative \(\field\)-algebra.
+        Taking an ideal, \(I \subseteq \field[X_1, \dotsc, X_n]\), we can form the quotient \(\field[X_1, \dotsc, X_n]/I\), which is again a commutative algebra with the multiplication operation defined by
+        \begin{equation}
+            (f(\vv{X}) + I) (g(\vv{X}) + I) = f(\vv{X})g(\vv{X}) + I.
+        \end{equation}
+        The quotient map \(\field[X_1, \dotsc, X_n] \to \field[X_1, \dotsc, X_n] / I\) given by \(f(\vv{X}) \mapsto f(\vv{X}) + I\) is an algebra homomorphism.
+        
+        We can also take the ring of non-commutative polynomials, \(\field\langle X_1, \dotsc, X_n \rangle\).
+        This, and its quotients, are \(\field\)-algebras.
+        In fact, we can actually take \(I\) to be the ideal of \(\field\langle X_1, \dotsc, X_n\rangle\) generated by all elements of the form \(X_iX_j - X_jX_i\) and then \(\field\langle X_1, \dotsc, X_n\rangle / I \isomorphic \field[X_1, \dotsc, X_n]\).
+    \end{exm}
+    
+    \begin{exm}{Weyl Algebra}{}
+        Fix some nonzero \(h \in \field\), then we can form the \defineindex{Weyl algebra}
+        \begin{equation}
+            W_h \coloneqq \frac{\field\langle X, Y \rangle}{(XY - YX - h)}.
+        \end{equation}
+        This can be identified with the ring of formal differential operators on \(\field[X]\) by taking \(Y = h\diff{}{X}\).
+        One can prove inductively that
+        \begin{equation}
+            \bracket{Y}{X^n} = h n X^{n-1},
+        \end{equation}
+        so \(Y\) really does behave like a derivative.
+        
+        Taking \(\field = \complex\), \(h = i \hbar\), \(X = x\) and \(Y = i\hbar p\) we get the algebra of position and momentum variables from quantum mechanics.
+    \end{exm}
+    
+    Given two algebras, \((A_1, \mu_1, \eta_1)\) and \((A_2, \mu_2, \eta_2)\), their tensor product is the algebra \((A_1 \otimes A_2, \mu, \eta)\) where \(\mu\) is the composite
+    \begin{equation}
+        A_1 \otimes A_2 \otimes A_1 \otimes A_2 \xrightarrow{\id_{A_1} \circ \switch \circ \id_{A_2}} A_1 \otimes A_1 \otimes A_2 \otimes A_2 \xrightarrow{\mu_1 \otimes \mu_2} A_1 \otimes A_2.
+    \end{equation}
+    We're being a bit sloppy with the associators here, there should really be brackets and then reassociating happening, but then the composite in question would be
+    \begin{align}
+        (A_1 \otimes A_2) \otimes (A_1 \otimes A_2) &\xrightarrow{\alpha_{A_1,A_2,A_1\otimes A_2}} A_1 \otimes (A_2 \otimes (A_1 \otimes A_2))\\
+        &\xrightarrow{\id_{A_1} \otimes \alpha^{-1}_{A_2,A_1,A_2}} A_1 \otimes ((A_2 \otimes A_1) \otimes A_2)\\
+        &\xrightarrow{\id_{A_1} \otimes (\gamma_{A_2,A_1} \otimes \id_{A_2})} A_1 \otimes ((A_1 \otimes A_2) \otimes A_2)\\
+        &\xrightarrow{\id_{A_1} \otimes \alpha_{A_1,A_2,A_2}} A_1 \otimes (A_1 \otimes (A_2 \otimes A_2))\\
+        &\xrightarrow{\alpha^{-1}_{A_1,A_1,A_2\otimes A_2}} (A_1 \otimes A_1) \otimes (A_2 \otimes A_2)\\
+        &\xrightarrow{\mu_1 \otimes \mu_2} A_1 \otimes A_2,
+    \end{align}
+    so you can see why we don't include associators normally.
+    The unit is given by the composite
+    \begin{equation}
+        \field \xrightarrow{\isomorphic} \field \otimes \field \xrightarrow{\eta_1 \otimes \eta_2} A_1 \otimes A_2.
+    \end{equation}
+    Note that the choice of isomorphism \(\field \to \field \otimes \field\) doesn't matter, all of these isomorphisms are of the form \(1 \mapsto \alpha \otimes \alpha^{-1}\) for some \(\alpha \in \field^{\times}\), and so
+    \begin{multline}
+        \eta(1) = (\eta_1 \otimes \eta_2)(\alpha \otimes \alpha^{-1}) = \eta_1(\alpha) \otimes \eta_2(\alpha^{-1})\\
+        = \alpha \eta_1(1) \otimes \alpha^{-1}\eta_2(1) = (\alpha \alpha^{-1}) (\eta_1(1) \otimes \eta_2(1)) = \eta_1(1) \otimes \eta_2(1)
+    \end{multline}
+    which is independent of the choice of \(\alpha\).
+    
+    All of this is fairly abstract, but it's just saying that given basic tensors \(a_1 \otimes a_2, b_1 \otimes b_2 \in A_1 \otimes A_2\) their product is
+    \begin{equation}
+        (a_1 \otimes a_2)(b_1 \otimes b_2) = a_1b_1 \otimes a_2b_2.
+    \end{equation}
+    
+    \begin{exm}{}{}
+        Given an algebra, \(A\), its \defineindex{enveloping algebra} (not to be confused with a \emph{universal enveloping algebra}) is \(A^{\symrm{e}} \coloneqq A \otimes A^{\op}\), on which the product is
+        \begin{equation}
+            (a_1 \otimes a_2)(b_1 \otimes b_2) = a_1b_1 \otimes b_2a_1
+        \end{equation}
+        with all products on the right performed in \(A\).
+        This has applications to the study of bimodules over \(A\) and to Hochschild (co)homology.
+    \end{exm}
+    
+    In string diagrams the tensor product has the multiplication
+    \begin{equation}
+        \tikzexternaldisable
+        \tikzsetnextfilename{string-diagram-tensor-product-multiplication}
+        \begin{tikzpicture}[baseline=(mu.base)]
+            \node [morphism, minimum width=1.5cm] (mu) {\(\mu\)};
+            \draw [wire] ($(mu.north) - (0.5, 0)$) -- ++ (0, 0.75) node [above] {\tiny\(A_1 \otimes A_2\)};
+            \draw [wire] ($(mu.north) + (0.5, 0)$) -- ++ (0, 0.75) node [above] {\tiny\(A_1 \otimes A_2\)};
+            \draw [wire] (mu.south) -- ++ (0, -0.75) node [below] {\tiny\(A_1 \otimes A_2\)};
+            \node [right=1cm of mu.base] {\(=\)};
+            \draw [wire] (1.8, 0.5) coordinate (start) node [above] {\tiny\(A_1\)} arc (-180:0:0.5) node [above, xshift=0.1em] {\tiny\(A_1\)};
+            \draw [wire] ($(start) + (0.7, 0)$) node [above, xshift=-0.1em] {\tiny\(A_2\)} arc (-180:0:0.5) node [above] {\tiny\(A_2\)};
+            \node [monoid dot] at ($(start) + (0.5, -0.5)$) {};
+            \node [monoid dot] at ($(start) + (1.2, -0.5)$) {};
+            \draw [wire] ($(start) + (0.5, -0.5)$) -- ++ (0, -0.5) node [below] {\tiny\(A_1\)};
+            \draw [wire] ($(start) + (1.2, -0.5)$) -- ++ (0, -0.5) node [below] {\tiny\(A_2\)};
+        \end{tikzpicture}
+    \end{equation}
+    
+    \begin{thm}{}{}
+        Algebras and commutative algebras form the symmetric monoidal categories \(\Alg\) and \(\CAlg\) under the tensor product with the trivial algebra as the unit object.
+        
+        In \(\Alg\) and \(\CAlg\) the Cartesian product is the categorical product.
+        
+        In \(\CAlg\) the tensor product is the categorical coproduct and \(\field\) is initial.
+    \end{thm}
+    
+    \section{Coalgebras}
+    We can dualise many of these ideas to get new structures.
+    
+    \begin{dfn}{Coalgebra}{}
+        A \defineindex{coalgebra}, \((C, \Delta, \varepsilon)\), is a comonoid in \(\Vect\).
+    \end{dfn}
+    
+    \begin{exm}{}{}
+        The trivial coalgebra over \(\field\) is \((\field, \Delta, \varepsilon)\) with \(\Delta\) given by one of the isomorphisms \(\field \to \field \otimes \field\) (any choice will give an isomorphic coalgebra), so on basic tensors we can take this to be \(\alpha \mapsto \alpha \otimes 1 = 1 \otimes \alpha\), and we can actually distribute the overall factor of \(\alpha\) across the two elements in the tensor product, so most generically for some fixed \(\beta\) we have \(\beta \alpha \otimes \beta^{-1}\), all of these are equal by linearity of the tensor product.
+        The counit in this case is the identity map \(\field \to \field\).
+    \end{exm}
+    
+    \begin{dfn}{Coalgebra Homomorphism}{}
+        A \defineindex{coalgebra homomorphism}, \((C, \Delta, \varepsilon) \to (C', \Delta', \varepsilon')\), is a linear map \(\theta \colon C \to C'\) such that the following diagrams commute:
+        \begin{equation}
+            \begin{tikzcd}
+                C \otimes C \arrow[r, "\theta \otimes \theta"] & C' \otimes C'\\
+                C \arrow[u, "\Delta"] \arrow[r, "\theta"'] & C' \arrow[u, "\Delta'"']
+            \end{tikzcd}
+            \qqand
+            \begin{tikzcd}[column sep=small]
+                & \field\\
+                C \arrow[ur, "\varepsilon"] \arrow[rr, "\theta"'] && C' \mathrlap{.} \arrow[ul, "\varepsilon'"']
+            \end{tikzcd}
+        \end{equation}
+    \end{dfn}
+    
+    \begin{dfn}{Coideal}{}
+        Let \((C, \Delta, \varepsilon)\) be a colagebra.
+        A \defineindex{coideal}, \(J\), is a subspace of \(A\) if the coproduct restricts to a map \(J \to C \otimes J + J \otimes C\) (where \(+\) is the sum of subspaces, so this is the subset \(\{c \otimes j \mid c \in C, j \in J\} \cup \{j \otimes c \mid j \in J, c \in C\}\) of \(C \otimes C\)) such that \(\varepsilon(J) = \{0\}\) and there is a commutative diagram
+        \begin{equation}
+            \begin{tikzcd}
+                J \arrow[d, "\incl"] \arrow[r] & C \otimes J + J \otimes C \arrow[d, "\incl"]\\
+                C \arrow[r, "\Delta"] \arrow[d] & C \otimes C \arrow[d]\\
+                C/J \arrow[r, dashed] & C/J \otimes C/J.
+            \end{tikzcd}
+        \end{equation}
+    \end{dfn}
+    
+    This construction is such that the image of \(\theta\) is a subcoalgebra (a coalgebra with an inclusion homomorphism \(\im \theta \hookrightarrow C'\)) isomorphic to the quotient \(C/\ker \theta\), with the comultiplication of this coalgebra being the map \(\overbar{\Delta} \colon C/J \to C/J \otimes C/J\) making up the bottom of the diagram in the definition.
+    
+    A \defineindex{coaugmented coalgebra} is a coalgebra equipped with an extra homomorhpism of \(\field\)-coalgebras, \(\eta \colon \field \to C\).
+    Then \(\coker \eta\) is a subspace of \(C\) and we have orthogonal short exact sequences
+    \begin{equation}
+        \begin{tikzcd}
+            & & 0\arrow[d]\\
+            & & \ker \varepsilon \arrow[d] \arrow[dr, dashed, "\isomorphic"]\\
+            0 \arrow[r] & \field \arrow[r, "\eta"] \arrow[dr, equal] & C \arrow[r] \arrow[d, "\varepsilon"] & \coker \eta \arrow[r] & 0\\
+            & & \field \arrow[d] \\
+            & & 0
+        \end{tikzcd}
+    \end{equation}
+    giving a canonical decomposition of vector spaces
+    \begin{equation}
+        C \isomorphic \field \oplus \ker \varepsilon \isomorphic \field \oplus \coker \eta.
+    \end{equation}
+    
+    \begin{dfn}{Opposite Coalgebra}{}
+        Given a coalgebra \((C, \Delta, \varepsilon)\) the \defineindex{opposite coalgebra} is \((C, \switch \circ \Delta, \varepsilon)\).
+        We will denote this by \(C^{\op}\).
+    \end{dfn}
+    
+    The interpretation of the opposite coalgebra is slightly more complicated than the interpretation of the opposite algebra.
+    Suppose that \(c_i'\) and \(c_i''\) are such that
+    \begin{equation}
+        \Delta(c) = \sum_i c_i' \otimes c_i''.
+    \end{equation}
+    Then in the opposite algebra we have
+    \begin{equation}
+        \Delta^{\op}(c^{\op}) = \switch(\Delta(c)) = \switch\left( \tsum_i c_i' \otimes c_i'' \right) = \tsum_i c_i'' \otimes c_i'.
+    \end{equation}
+    
+    \begin{ntn}{Sweedler Notation}{}
+        Sometimes in coalgebra calculations it is useful to use the notation
+        \begin{equation}
+            \Delta(c) = \sum c_{(1)} \otimes c_{(2)} = \sum c_1 \otimes c_2.
+        \end{equation}
+        We'll use the brackets, but not everyone does.
+        The idea here is that \(c_{(1)}\) and \(c_{(2)}\) are some elements of \(C\) which run over some set that we are summing over.
+        We use the indices \((1)\) and \((2)\) to keep track of the order.
+        Note that in general a choice of \(c_{(1)}\) and \(c_{(2)}\) is not unique for a given \(c\), for example, we could always rescale \(c_{(1)}\) by some factor, \(\alpha\), and \(c_{(2)}\) by \(\alpha^{-1}\), but there may be less trivial ways to consider different sets.
+        It is also common to drop the summation symbol entirely (cf.\@ the Einstein summation convention).
+        The advantage to this notation is that it can make for much faster calculations than the huge commutative diagrams we're forced to use otherwise.
+        
+        For example, in this notation the coassociativity condition (which is a pentagon diagram) becomes the condition that going one way around the diagram we get
+        \begin{align}
+            (\Delta \otimes \id_C) \circ \Delta(c) &= (\Delta \otimes \id_C)\left( \tsum c_{(1)} \otimes c_{(2)} \right)\\
+            &= \tsum \Delta(c_{(1)}) \otimes \id_C(c_{(2)})\\
+            &= \tsum \tsum (c_{(1)})_{(1)} \otimes (c_{(1)})_{(2)} \otimes c_{(2)}
+        \end{align}
+        and going the other way around we get
+        \begin{align}
+            (\id_C \otimes \Delta) \circ \Delta(c) &= (\id_C \otimes \Delta) \left( \tsum c_{(1)} \otimes c_{(2)} \right)\\
+            &= \tsum \id_C(c_{(1)}) \otimes \Delta(c_{(2)})\\
+            &= \tsum c_{(1)} \otimes \tsum (c_{(2)})_{(1)} \otimes (c_{(2)})_{(1)},
+        \end{align}
+        and we demand that these are equal.
+        This is \dots better(?) than commutative diagrams?
+        
+        The counit conditions become that
+        \begin{align}
+            \lambda_C \circ (\varepsilon \otimes \id_C) \circ \Delta(c) &= \lambda_C \circ (\varepsilon \otimes \id_C) \left( \tsum c_{(1)} \otimes c_{(2)} \right)\\
+            &= \lambda_C \left( \tsum \varepsilon(c_{(1)}) \otimes \id_C(c_{(2)}) \right)\\
+            &= \tsum \varepsilon(c_{(1)}) c_{(2)}
+        \end{align}
+        and
+        \begin{align}
+            \rho_C \circ (\id_C \otimes \varepsilon) \circ \Delta(c) &= \rho_C \circ (\id_C \otimes \varepsilon) \left( \tsum c_{(1)} \otimes c_{(2)} \right)\\
+            &= \rho_C \left( \tsum \id_C(c_{(1)}) \otimes \varepsilon(c_{(2)}) \right)\\
+            &= \tsum c_{(1)} \varepsilon(c_{(2)})\\
+            &= \tsum \varepsilon(c_{(2)}) c_{(1)}
+        \end{align}
+        where we follow the convention of writing scalars on the left in the last line.
+        The counit condition then is that both of these expressions must just be \(c\) again.
+    \end{ntn}
+    
+    Given two coalgebras, \((C_1, \Delta_1, \varepsilon_1)\) and \((C_2, \Delta_2, \varepsilon_2)\), their tensor product is the coalgebra \((C_1 \otimes C_2, \Delta, \varepsilon)\) where the comultiplication is the composite
+    \begin{equation}
+        C_1 \otimes C_2 \xrightarrow{\Delta_1 \otimes \Delta_2} C_1 \otimes C_1 \otimes C_2 \otimes C_2 \xrightarrow{\id_{C_1} \otimes \switch \otimes \id_{C_2}} (C_1 \otimes C_2) \otimes (C_1 \otimes C_2)
+    \end{equation}
+    and the counit is the composite
+    \begin{equation}
+        C_1 \otimes C_2 \xrightarrow{\varepsilon_1 \otimes \varepsilon_2} \field \otimes \field \xrightarrow{\isomorphic} \field.
+    \end{equation}
+    So, given \(c \in C_1\) and \(c' \in C_2\) with the comultiplications
+    \begin{equation}
+        \Delta_1(c) = \tsum c_{(1)} \otimes c_{(2)}, \qand \Delta_2(c') = \tsum c_{(1)}' \otimes c_{(2)}'
+    \end{equation}
+    the comultiplication on \(c \otimes c'\) is
+    \begin{equation}
+        \Delta(c \otimes c') = \tsum (c_{(1)} \otimes c'_{(1)}) \otimes (c_{(2)} \otimes c'_{(2)}) \in (C_1 \otimes C_2) \otimes (C_1 \otimes C_2).
+    \end{equation}
+    
+    \begin{thm}{}{}
+        Coalgebras and cocommutative coalgebras form the symmetric monoidal categories \(\Coalg\) and \(\CCoalg\) under the tensor product with the trivial coalgebra as the unit object.
+        
+        In \(\Coalg\) and \(\CCoalg\) the Cartesian product is the categorical coproduct.
+        
+        In \(\CCoalg\) the tensor product is the categorical product and \(\field\) is terminal.
+    \end{thm}
+    
+    \begin{exm}{Divided Powers Coalgebra}{}
+        Consider the vector space \(C = \Span_{\field} \{\gamma_0, \gamma_1, \dotsc\}\).
+        This is a cocommutative coalgebra when equipped with the comultiplication
+        \begin{equation}
+            \Delta(\gamma_n) = \sum_{0 \le i \le n} \gamma_i \otimes \gamma_{n-i}
+        \end{equation}
+        and the counit
+        \begin{equation}
+            \varepsilon(\gamma_n) = 
+            \begin{cases}
+                1 & n = 0;\\
+                0 & n \ne 1.
+            \end{cases}
+        \end{equation}
+        This is called the \defineindex{divided powers coalgebra} because if we think of \(\gamma_n\) as representing \(X^n/n!\) then the coproduct comes from the binomial expansion applied to
+        \begin{equation}
+            X^n \mapsto (X \otimes 1 + 1 \otimes X)^n
+        \end{equation}
+        which, formally, is
+        \begin{equation}
+            \sum_{i \le 0 \le n} \frac{n!}{(n - i!)i!} (X \otimes 1)^{i}(1 \otimes X)^{n - i} = \sum_{i \le 0 \le n} \frac{n!}{(n - i)! i!} x^i \otimes x^{n-i}
+        \end{equation}
+        This coalgebra therefore lets us consider things like Taylor series when the notion of \(1/n!\) is not well defined.
+    \end{exm}
+    
+    \begin{exm}{Trigonometric Coalgebra}{}
+        Consider the vector space \(C = \Span_{\field}\{s, c\}\).
+        This is a cocommutative coalgebra with the comultiplication given by
+        \begin{align}
+            \Delta(c) &= s \otimes c + c \otimes s,\\
+            \Delta(s) &= c \otimes c - s \otimes s,
+        \end{align}
+        and the counit given by
+        \begin{equation}
+            \varepsilon(c) = 1, \qqand \varepsilon(s) = 0.
+        \end{equation}
+        The idea here is that \(c\) and \(s\) represent \(\cos\) and \(\sin\), then \(\varepsilon\) is evaluation at 0, and \(\Delta\) is evaluation at \(a + b\), using the summation formulae to evaluate at \(a \otimes b\) on the right.
+    \end{exm}
+    
+    \begin{exm}{}{}
+        Let \(M\) be a finite monoid (just a normal monoid in \(\Set\)).
+        Then the vector space \(\Set(M, \field)\) (with pointwise operations) is a coalgebra under the coproduct
+        \begin{equation}
+            \begin{alignedat}{3}
+                \Delta \colon \Set(M, \field) &\to \Set(M \times M, \field) &&\isomorphic \Set(M, \field) \times \Set(M, \field)\\
+                f &\mapsto f \circ \mu &&\mapsto \sum_{x, y \in M} f(xy) \delta_x \otimes \delta_y
+            \end{alignedat}
+        \end{equation}
+        where \(\delta_x \in \Set(M, \field)\) is the Kronecker delta given by
+        \begin{equation}
+            \delta_x(y) = \delta_{xy} = 
+            \begin{cases}
+                1 & y = x,\\
+                0 & y \ne x.
+            \end{cases}
+        \end{equation}
+    \end{exm}
     
     % Appdendix
     %	\appendixpage
