@@ -80,6 +80,8 @@ noabbrev
     \clist_use:Nn \l_willougbhy_cycle_clist { #1 }  % print list separated by #1
 }
 \ExplSyntaxOff
+\newcommand{\universalEnveloping}{\symcal{U}}
+\DeclarePairedDelimiterX{\bracket}[2]{[}{]}{#1, #2}
 
 \begin{document}
     \frontmatter
@@ -912,16 +914,63 @@ noabbrev
         \end{proof}
     \end{lma}
     
-    Note that \(\Hom_A(M, N)\) has the structure of an \(A\)-module with operations defined pointwise.
-    When \(M\) is an \((A, B)\)-bimodule, \(N\) is a left \(B\)-module, and \(P\) is a left \(B\)-module there is an isomorhpism
+    Note that \(\Hom_A(M, N)\) inherits the module structure of \(N\) via pointwise operations.
+    Let \(M\) be an \((A, B)\)-bimodule, \(N\) a \((B, C)\)-bimodule, and \(P\) an \((A, C)\)-bimodule for three algebras, \(A\), \(B\), and \(C\).
+    Then we can form the tensor product \(M \otimes_B N\), which is an \(A\)-module, and we can consider the hom-set \(\Hom_A(M \otimes_B N, P)\), of left \(A\)-module homomorphisms, this is itself an \(A\)-module, and in fact is an \((A, A)\)-bimodule.
+    We can also form the hom-set \(\Hom_C(N, P)\) of right \(C\)-module homomorhpisms, which is an left \(A\)-module under pointwise action using the \(A\)-module structure of \(P\).
+    Then we can take the hom-set \(\Hom_B(M, \Hom_C(N, P))\), which is an \(A\)-module under pointwise the action.
+    Then it turns out that we actually have an isomorphism
     \begin{equation}
-        \Hom_B(M, \Hom_B(N, P)) \xrightarrow{\isomorphic} \Hom_B(M \otimes_A N, P)
+        \Hom_A(M \otimes_B N, P) \xrightarrow{\isomorphic} \Hom_B(M, \Hom_C(N, P))
     \end{equation}
-    This is given by
-    \begin{equation}
-        f \mapsto [m \otimes n \mapsto f(m)(n)].
-    \end{equation}
+    given by sending \(f\) to \(g\) defined by \(g(m)(n) = f(m \otimes n)\).
     This isomorphism is natural in all objects, and thus this is an adjunction.
+    
+    \section{Tensor Algebra}
+    \begin{dfn}{Tensor Algebra}{}
+        Let \(V\) be a vector space over \(\field\).
+        Then the \defineindex{tensor algebra}, \(TV\), is defined to be
+        \begin{equation}
+            \bigoplus_{n=0}^{\infty} V^{\otimes n} = \field \oplus V \oplus (V \otimes V) \oplus (V \otimes V \otimes V) \oplus \dotsb.
+        \end{equation}
+        Multiplication is defined by \(ab = a \otimes b \in V^{\otimes(n = m)}\) for \(a \in V^{\otimes n}\) and \(b \in V^{\otimes m}\), and extended linearly.
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        Let \(V\) be an \(n\)-dimensional vector space over \(\field\).
+        Then \(TV\) is isomorphic to \(\field\langle x_1, \dotsc, x_n \rangle\), the free algebra on \(n\) indeterminates.
+        \begin{proof}
+            Pick a basis for \(V\).
+            Identify this basis with the \(x_i\).
+            Elements of \(TV\) are linear combinations of tensor products of these basis elements, so we can identify them with polynomials in non-commuting variables.
+            For example, given the basis \(\{e_i\}\) for \(V\) we have that \(e_1 \otimes e_2 \otimes e_1\) maps to \(x_1x_2x_1\), and \(e_1 \otimes e_2 + e_1 \otimes e_3 \otimes e_2\) maps to \(x_1x_2 + x_1x_3x_2\).
+        \end{proof}
+    \end{lma}
+    
+    The nice thing about the tensor algebra is that it gives us a basis free way to work with the free algebra, that is a way that is independent of the choice of generators.
+    As it is there is no commutativity imposed on the product in \(TV\), we can impose some commutativity condition by taking quotients.
+    
+    \begin{dfn}{Quotients of the Tensor Algebra}{}
+        Let \(V\) be a vector space over \(\field\).
+        We define following quotients:
+        \begin{itemize}
+            \item \(SV \coloneqq TV/\langle v \otimes w - w \otimes v \rangle\), the \defineindex{symmetric algebra}; and
+            \item \(\Lambda V \coloneqq TV/\langle v \otimes w + w \otimes v \rangle\), the \defineindex{exterior algebra}.
+        \end{itemize}
+        If \(\lie{g} = V\) is a Lie algebra then we may define the quotient \(\universalEnveloping(\lie{g}) \coloneqq TV/\langle v \otimes w - w \otimes v - \bracket{v}{w} \rangle\), the \defineindex{universal enveloping algebra}.
+    \end{dfn}
+    
+    The idea is that for \(SV\) we impose that\footnote{identifying elements with their equivalence class} \(v \otimes w = w \otimes v\), which makes \(SV\) isomorphic to \(\field[x_1, \dotsc, x_n]\) for \(n = \dim V\).
+    For \(\Lambda V\) we impose that \(v \otimes w = -w\otimes v\) (usually the product here is written as \(v \wedge w\)).
+    Finally, for \(\universalEnveloping(\lie{g})\) we impose that the bracket, \(\bracket{v}{w}\) is exactly the commutator \(v \otimes w - w \otimes v\).
+    This last case is nice because it allows us to treat the abstract bracket as if it were a commutator.
+    
+    Note that the tensor algebra, as well as the quotients \(SV\) and \(\Lambda V\), are graded algebras, meaning that they have decompositions as direct sums:
+    \begin{equation}
+        SV = \bigoplus_{n = 0}^{\infty} S^nV, \qqand \Lambda V = \bigoplus_{n = 0}^{\infty} \Lambda^n V.
+    \end{equation}
+    Here \(S^nV\) (\(\Lambda^nV\)) is the \(n\)th (anti)symmetric tensor power of \(V\), that is, it's \(V^{\otimes n}\) modulo the relation that factors (anti)commute.
+    Note that \(S^nV\) is isomorphic to the subalgebra of \(\field[x_1, \dotsc, x_n]\) consisting of homogeneous polynomials of degree \(n\).
     
     \chapter{Jacobson's Density Theorem}
     \section{Semisimple Representations}

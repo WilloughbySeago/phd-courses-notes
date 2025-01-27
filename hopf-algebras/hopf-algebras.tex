@@ -8,6 +8,9 @@
 \usepackage{tikz}
 \usetikzlibrary{external}
 \tikzexternalize[prefix=tikz-external/]
+\usetikzlibrary{positioning}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{calc}
 
 \usepackage{tikz-cd}
 \AtBeginEnvironment{tikzcd}{\tikzexternaldisable}
@@ -42,7 +45,7 @@ noabbrev
 \date{January 16th, 2024}
 \subtitle{Notes from}
 \subsubtitle{University of Glasgow}
-\renewcommand{\abstracttext}{These are my notes from the SMSTC course \emph{Hopf Algebras} taught by Dr Andrew Baker. These notes were last updated at \printtime{} on \today{}.}
+\renewcommand{\abstracttext}{These are my notes from the SMSTC course \emph{Hopf Algebras} taught by Dr Andrew Baker. For category theory details I have been referring to Riehl's \emph{Category Theory in Context}. These notes were last updated at \printtime{} on \today{}.}
 
 % Commands
 % Maths
@@ -59,9 +62,12 @@ noabbrev
 \newcommand{\Rng}{\c@egory{Rng}}
 \newcommand{\Vect}[1][\field]{\c@egory{Vect}_{#1}}
 \newcommand{\RMod}[1][R]{#1\text{-}\c@egory{Mod}}
+\newcommand{\ModR}[1][R]{\c@egory{Mod}\text{-}#1}
 \newcommand{\Top}{\c@egory{Top}}
+\newcommand{\TopPt}{\c@egory{Top}_{\bullet}}
 \newcommand{\Man}{\c@egory{Man}}
 \newcommand{\Mon}{\c@egory{Mon}}
+\newcommand{\hTopPt}{\c@egory{hTop}_{\bullet}}
 \makeatother
 \ExplSyntaxOn
 % Create LaTeX interface command
@@ -84,6 +90,20 @@ noabbrev
 \newcommand{\isomorphic}{\cong}
 \newcommand{\natTrans}{\Rightarrow}
 \renewcommand{\field}{\symbb{k}}
+\newcommand{\leftadjointto}{\dashv}
+\newcommand{\rightadjointto}{\vdash}
+\newcommand{\action}{\mathbin{.}}
+\DeclareMathOperator{\Hom}{Hom}
+\newcommand{\op}{\symrm{op}}
+
+% String diagrams
+\tikzset{wire/.style = {thick}}
+\tikzset{over wire/.style={thick, preaction={draw, background color, line width=#1}}}
+\tikzset{over wire/.default={1.5mm}}
+\colorlet{background color}{white}
+\tikzset{morphism/.style = {draw, rounded corners}}
+\tikzset{monoid dot/.style = {circle, draw, fill, inner sep=0pt, minimum width=2mm}}
+\tikzset{comonoid dot/.style = {circle, draw, fill=background color, inner sep=0pt, minimum width=2mm}}
 
 \begin{document}
     \frontmatter
@@ -359,7 +379,7 @@ noabbrev
         \begin{equation}
             \begin{tikzcd}
                 & m \otimes (m \otimes m) \arrow[r, "\id_m \otimes \mu"] & m \otimes m \arrow[dd, "\mu"]\\
-                (m \otimes m) \otimes m \arrow[ur, "{\alpha_{m,m,m}}"] \arrow[dr, "\mu \otimes \id_m"]\\
+                (m \otimes m) \otimes m \arrow[ur, "{\alpha_{m,m,m}}"] \arrow[dr, "\mu \otimes \id_m"']\\
                 & m \otimes m \arrow[r, "\mu"'] & m
             \end{tikzcd}
         \end{equation}
@@ -428,13 +448,553 @@ noabbrev
             \end{equation}
             and similar for distributivity on the right.
             
-            \item For a commutative\footnote{commutativity is required for the tensor product of \(R\)-modules to be an \(R\)-module, we could instead look at a category of bimodules for a slightly more general result} ring, \(R\), a monoid in the category of \(R\)-modules, \((\RMod, \otimes_{R}, R)\), is an \(R\)-algebra.
+            \item For a commutative\footnote{commutativity is required for the tensor product of \(R\)-modules to be an \(R\)-module, we could instead look at a category of bimodules for a slightly more general result.} ring, \(R\), a monoid in the category of \(R\)-modules, \((\RMod, \otimes_{R}, R)\), is an \(R\)-algebra.
             The monoid multiplication provides the multiplication of the algebra, which is commutative exactly when this is a commutative monoid.
             Note that \(R = \field\) is a special case of this, in which case the monoidal category is \(\Vect\).
             
-            \item A monoid in the monoidal category of endofunctosr, \([\cat{C}, \cat{C}]\), is a monad.
+            \item A monoid in the monoidal category of endofunctors, \([\cat{C}, \cat{C}]\), is a monad.
         \end{itemize}
     \end{exm}
+    
+    So far all we've achieved is a somewhat complex unification of many similar algebraic structures.
+    The nice thing is that now we've defined monoids in terms of commutative diagrams as well as picking them up and placing them in other categories we can also dualise the definition.
+    
+    \begin{dfn}{Comonoid}{}
+        Let \(\cat{C}\) be a monoidal category.
+        A comonoid, \((c, \Delta, \varepsilon)\), is an object, \(c \in \cat{C}\), equipped with morphisms
+        \begin{equation}
+            \Delta \colon c \to c \otimes c, \qqand \varepsilon \colon c \to I,
+        \end{equation}
+        called \defineindex{comultiplication} and \defineindex{counit} respectively, such that the diagrams
+        \begin{equation}
+            \begin{tikzcd}
+                & c \otimes (c \otimes c) \arrow[dl, "{\alpha_{c,c,c}^{-1}}"', pos=0.4] &  c \otimes c \arrow[l, "\id_c \otimes \Delta"']\\
+                (c \otimes c) \otimes c\\
+                & c \otimes c \arrow[ul, "\Delta \otimes \id_c", pos=0.4] & c \arrow[l, "\Delta"] \arrow[uu, "\Delta"']
+            \end{tikzcd}
+        \end{equation}
+        and
+        \begin{equation}
+            \begin{tikzcd}
+                I \otimes c & c \otimes c \arrow[l, "\varepsilon \otimes \id_c"'] \arrow[r, "\id_c \otimes \varepsilon"] & c \otimes I\\
+                & c \arrow[ul, "\lambda_c^{-1}"] \arrow[ur, "\rho_c^{-1}"'] \arrow[u, "\Delta"] &
+            \end{tikzcd}
+        \end{equation}
+        commute.
+        
+        If \(\cat{C}\) is a symmetric monoidal category with braiding \(\gamma\) then \((c, \Delta, \varepsilon)\) is a \defineindex{cocommutative comonoid} if
+        \begin{equation}
+            \begin{tikzcd}
+                c \otimes c && c \otimes c \arrow[ll, "{\gamma_{c,c}}"']\\
+                & c \arrow[ul, "\Delta"] \arrow[ur, "\Delta"']
+            \end{tikzcd}
+        \end{equation}
+        commutes, that is, \(\gamma_{c,c} \circ \Delta = \Delta\).
+    \end{dfn}
+    
+    Comonoids typically aren't as familiar as monoids, but nonetheless they're important, in particular Hopf algebras are both monoids and comonoids (in a compatible way with one other piece of data).
+    
+    \begin{exm}{}{}
+        \begin{itemize}
+            \item In \((\Set, \times, \{\bullet\})\) any set, \(X\), has a unique comonoid structure given by declaring that \(\Delta(x) = (x, x) \in X \times X\) and \(\varepsilon(x) = \bullet\) is the unique element of the singleton set, \(I = \{\bullet\}\).
+            This makes comonoids particularly boring in \(\Set\), which explains why they tend not to be so familiar.
+            Taking \(X = \reals\) and picturing \(\reals \times \reals\) as the plane the image of \(\Delta\) is thus the diagonal line \(y = x\), which is why \(x \mapsto (x, x)\) is sometimes called the diagonal map, and explains the choice of \(\Delta\) (D for Diagonal) as the notation for the comultiplication.
+            \item In \((\Set, \sqcup, \emptyset)\) the only comonoid is \(\emptyset\), since to define a comonoid structure on some non-empty set, \(X\), we'd have to have a map \(\varepsilon \colon X \to \emptyset\), and no such maps exist.
+            \item In \(\Vect\) any \(\field\)-vector space, \(V\), may be equipped with a comonoid structure as follows.
+            First, pick a basis, \(\{e_i\}\).
+            Then define comultiplication by \(\Delta(e_i) = \sum_i e_i \otimes e_i\), and the counit by \(e_i \mapsto 1 \in \field\), both extended by linearity to the whole space.
+            \item For a commutative ring, \(R\), a comonoid in \((\RMod, \otimes_R, R)\) is called a coalgebra (more on these later).
+            A specific example is the polynomial ring \(R[X]\), which is a comonoid when we define the comultiplication to be \(\Delta(X) = X \otimes X\) and the counit to be \(\varepsilon(X) = 1 \in R\).
+            \item The monoidal category \((\TopPt, \vee, \{\bullet\})\) of based topological spaces under the wedge product (union and then identify the base points) has the sphere, \(S^n\), as an \emph{almost} comonoid.
+            There's a map \(S^n \vee S^n \to S^n\) that almost works as the comultiplication.
+            The only problem is that coassociativity only holds up to homotopy.
+            We can get a proper comonoid by instead considering \((\hTopPt, \vee, \{\bullet\})\), the monoidal category of based topological spaces up to homotopy.
+            \item A comonoid in the monoidal category of endofunctors, \([\cat{C}, \cat{C}]\), is a comonad.
+        \end{itemize}
+    \end{exm}
+    
+    \subsection{String Diagrams}
+    When working with monoidal categories a common notation is \define{string diagrams}\index{string diagram}.
+    These are used to represent expressions like \(f \otimes (g \circ h)\) with \(h \colon a \to b\), \(g \colon d \to e\) and \(h \colon c \to d\).
+    The idea is that an object is represented by its identity morphism, which we draw as a string, labelled with its object if necessary:
+    \begin{equation}
+        \id_a = 
+        \tikzsetnextfilename{string-diagram-identity-morphism}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw [wire] (0, 0) node [above] {\(a\)} -- (0, -1) node [below] {\(a\)};
+        \end{tikzpicture}
+    \end{equation}
+    An arbitrary morphism, \(f \colon a \to b\), is then denoted with a box, we read the diagram from top to bottom\footnote{conventions vary here, some read bottom to top, some left to right}, with the incoming wire being the domain, \(a\), and the outgoing wire the codomain, \(b\):
+    \begin{equation}
+        f = 
+        \tikzsetnextfilename{string-diagram-morphism}
+        \begin{tikzpicture}[baseline=(f.base)]
+            \node [morphism] (f) {\(f\)};
+            \draw [wire] (f) -- ++ (0, 0.75) node [above] {\(a\)};
+            \draw [wire] (f) -- ++ (0, -0.75) node [below] {\(b\)};
+        \end{tikzpicture}
+    \end{equation}
+    Composition of morphisms is then denoted by chaining together strings, so if \(f \colon a \to b\) and \(g \colon b \to c\) we write \(g \circ f\) as
+    \begin{equation}
+        g \circ f = 
+        \tikzsetnextfilename{string-diagram-composition}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \node [morphism] (f) {\(f\)};
+            \node [morphism, below=0.75 cm of f] (g) {\(g\)};
+            \draw [wire] (f) -- ++ (0, 0.75) node [above] {\(a\)};
+            \draw [wire] (f) -- (g) node [midway, right] {\(b\)};
+            \draw [wire] (g) -- ++ (0, -0.75) node [below] {\(c\)};
+        \end{tikzpicture}
+    \end{equation}
+    The monoidal product is written by just placing the two wires next to each other, so \(a \otimes b\) is represented by the monoidal product of the corresponding morphisms \(\id_a \otimes \id_b\):
+    \begin{equation}
+        \label{eqn:identity on monoidal product}
+        \id_a \otimes \id_b =
+        \tikzsetnextfilename{string-diagram-monoidal-product}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw [wire] (0, 0) node [above] {\(a\)} -- ++ (0, -1) node [below] {\(a\)};
+            \draw [wire] (1, 0) node [above] {\(b\)} -- ++ (0, -1) node [below] {\(b\)};
+        \end{tikzpicture}
+    \end{equation}
+    Note that since \(\otimes\) is functorial we have \(\id_a \otimes \id_b = \id_{a \otimes b}\), and so we can interpret this diagram as
+    \begin{equation}
+        \id_{a \otimes b} =
+        \tikzsetnextfilename{string-diagram-monoidal-product-again}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw [wire] (0, 0) -- ++ (0, -1);
+            \draw [wire] (1, 0) -- ++ (0, -1);
+            \draw [decoration={brace}, decorate] (-0.1, 0.1) -- (1.1, 0.1) node [midway, above] {\(a \otimes b\)};
+            \draw [decoration={brace, mirror}, decorate] (-0.1, -1.1) -- (1.1, -1.1) node [midway, below] {\(a \otimes b\)};
+        \end{tikzpicture}
+    \end{equation}
+    
+    The unit object of the monoidal structure is usually not drawn, since we can always apply an appropriate unitor isomorphism to remove it.
+    In fact, none of the structure morphisms of the monoidal structure are drawn.
+    Instead these morphisms are implicit whenever they're needed to make the morphism that the diagram represents type check.
+    This is basically like not writing brackets and unit objects when we compute products in a group, even though we could (and maybe formally should) in certain places.
+    
+    If we have a braided monoidal category then we draw the braiding, a morphism \(\sigma_{a,b} \colon a \otimes b \to b \otimes a\), and its inverse, \(\sigma_{a,b}^{-1} \colon b \otimes a \to a \otimes b\), as crossing wires:
+    \begin{equation}
+        \sigma_{a,b} = 
+        \tikzsetnextfilename{string-diagram-braiding}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw [wire, rounded corners] (1, 0) node [above] {\(b\)} -- ++ (0, -0.3) -- ++ (-1, -0.4) -- ++ (0, -0.3) node [below] {\(b\)};
+            \draw [over wire, rounded corners] (0, 0) node [above] {\(a\)} -- ++ (0, -0.3) -- ++ (1, -0.4) -- ++ (0, -0.3) node [below] {\(a\)};
+        \end{tikzpicture}
+        \qquad \sigma_{a,b}^{-1} = 
+        \tikzsetnextfilename{string-diagram-inverse-braiding}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw [wire, rounded corners] (0, 0) node [above] {\(b\)} -- ++ (0, -0.3) -- ++ (1, -0.4) -- ++ (0, -0.3) node [below] {\(b\)};
+            \draw [over wire, rounded corners] (1, 0) node [above] {\(a\)} -- ++ (0, -0.3) -- ++ (-1, -0.4) -- ++ (0, -0.3) node [below] {\(a\)};
+        \end{tikzpicture}
+    \end{equation}
+    The fact that in a \emph{braided} monoidal category we don't, in general, have \(\sigma_{b,a} \circ \sigma_{a,b} = \id_{a \otimes b}\) is expressed by the fact that disentangle the following diagram to get \cref{eqn:identity on monoidal product} without passing one wire through the other, note that we assume the end points of wires are fixed, and we don't allow moves like passing over the end of the wires, imagine everything is constrained to a box with the wires attached to opposite sides of the box:
+    \begin{equation}
+        \sigma_{b,a} \circ \sigma_{a,b} =
+        \tikzsetnextfilename{string-diagram-composite-braidings}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw [wire, rounded corners] (1, 0) node [above] {\(b\)} -- ++ (0, -0.3) -- ++ (-1, -0.4) -- ++ (0, -0.3) coordinate (b);
+            \draw [over wire, rounded corners] (0, 0) node [above] {\(a\)} -- ++ (0, -0.3) -- ++ (1, -0.4) -- ++ (0, -0.3) coordinate (a);
+            \draw [wire, rounded corners] (a) -- ++ (0, -0.3) -- ++ (-1, -0.4) -- ++ (0, -0.3) node [below] {\(a\)};
+            \draw [over wire, rounded corners] (b) -- ++ (0, -0.3) -- ++ (1, -0.4) -- ++ (0, -0.3) node [below] {\(b\)};
+        \end{tikzpicture}
+    \end{equation}
+    Conversely, we can disentangle the following to get the identity:
+    \begin{equation}
+        \sigma_{a,b}^{-1} \circ \sigma_{a,b} =
+        \tikzsetnextfilename{string-diagram-composite-braiding-and-inverse}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw [wire, rounded corners] (1, 0) node [above] {\(b\)} -- ++ (0, -0.3) -- ++ (-1, -0.4) -- ++ (0, -0.3) coordinate (b);
+            \draw [over wire, rounded corners] (0, 0) node [above] {\(a\)} -- ++ (0, -0.3) -- ++ (1, -0.4) -- ++ (0, -0.3) coordinate (a);
+            \draw [wire, rounded corners] (b) -- ++ (0, -0.3) -- ++ (1, -0.4) -- ++ (0, -0.3) node [below] {\(b\)};
+            \draw [over wire, rounded corners] (a) -- ++ (0, -0.3) -- ++ (-1, -0.4) -- ++ (0, -0.3) node [below] {\(a\)};
+        \end{tikzpicture}
+        =
+        \tikzsetnextfilename{string-diagram-composite-braiding-and-inverse-gives-identity}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw [wire] (0, 0) node [above] {\(a\)} -- ++ (0, -2) node [below] {\(a\)};
+            \draw [wire] (1, 0) node [above] {\(b\)} -- ++ (0, -2) node [below] {\(b\)};
+        \end{tikzpicture}
+    \end{equation}
+    
+    For a symmetric monoidal category we do have that \(\sigma_{a,b}^{-1} = \sigma_{b,a}\).
+    This is represented in the string diagrams by allowing strings to pass through each other, and because of this we don't need to draw one string passing over the other, so we draw the symmetry as
+    \begin{equation}
+        \sigma_{a,b} = 
+        \tikzsetnextfilename{string-diagram-symmetry}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw [wire, rounded corners] (1, 0) node [above] {\(b\)} -- ++ (0, -0.3) -- ++ (-1, -0.4) -- ++ (0, -0.3) node [below] {\(b\)};
+            \draw [wire, rounded corners] (0, 0) node [above] {\(a\)} -- ++ (0, -0.3) -- ++ (1, -0.4) -- ++ (0, -0.3) node [below] {\(a\)};
+        \end{tikzpicture}
+        = \sigma_{b,a}^{-1}.
+    \end{equation}
+    Then the fact that \(\sigma_{b,a} \circ \sigma_{a,b} = \id_{a \otimes b}\) is expressed by
+    \begin{equation}
+        \sigma_{b,a} \circ \sigma_{a,b} =
+        \tikzsetnextfilename{string-diagram-composite-symmetries}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw [wire, rounded corners] (1, 0) node [above] {\(b\)} -- ++ (0, -0.3) -- ++ (-1, -0.4) -- ++ (0, -0.3) coordinate (b);
+            \draw [wire, rounded corners] (0, 0) node [above] {\(a\)} -- ++ (0, -0.3) -- ++ (1, -0.4) -- ++ (0, -0.3) coordinate (a);
+            \draw [wire, rounded corners] (b) -- ++ (0, -0.3) -- ++ (1, -0.4) -- ++ (0, -0.3) node [below] {\(b\)};
+            \draw [wire, rounded corners] (a) -- ++ (0, -0.3) -- ++ (-1, -0.4) -- ++ (0, -0.3) node [below] {\(a\)};
+        \end{tikzpicture}
+        =
+        \tikzsetnextfilename{string-diagram-composite-symmetries-gives-identity}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw [wire] (0, 0) node [above] {\(a\)} -- ++ (0, -2) node [below] {\(a\)};
+            \draw [wire] (1, 0) node [above] {\(b\)} -- ++ (0, -2) node [below] {\(b\)};
+        \end{tikzpicture}
+    \end{equation}
+    
+    Given a monoid object, \((m, \mu, \eta)\), we have morphisms \(\mu \colon m \otimes m \to m\) and \(\eta \colon I \to m\).
+    We represent these as
+    \begin{equation}
+        \mu = 
+        \tikzsetnextfilename{string-diagram-monoid-multiplication-mu}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \node [morphism, minimum width=1.5cm] (mu) {\(\mu\)};
+            \draw [wire] ($(mu.north) + (-0.5, 0)$) -- ++ (0, 0.75);
+            \draw [wire] ($(mu.north) + (0.5, 0)$) -- ++ (0, 0.75);
+            \draw [wire] (mu.south) -- ++ (0, -0.75);
+        \end{tikzpicture}
+    \end{equation}
+    Note that all the wires here are \(m\), as we can deduce from the domain and codomain of \(\mu\), so we'll stop labelling wires when it's easy to work out what they are.
+    The interpretation of this diagram is that two copies of \(m\) enter from the top, then we apply the monoid multiplication to combine them into one.
+    It's common to replace the \(\mu\) box with just a dot, just to make the diagrams slightly less busy:
+    \begin{equation}
+        \mu =
+        \tikzsetnextfilename{string-diagram-monoid-multiplication-dot}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw [wire] (0, 0) arc (-180:0:0.5);
+            \node [monoid dot] at (0.5, -0.5) {};
+            \draw [wire] (0.5, -0.5) -- ++ (0, -0.5);
+        \end{tikzpicture}
+    \end{equation}
+    
+    The unit map, \(\eta \colon I \to m\) starts at the monoidal unit and ends at \(m\), so we can draw this as a map
+    \begin{equation}
+        \eta =
+        \tikzsetnextfilename{string-diagram-monoid-unit-eta-unit-object}
+        \begin{tikzpicture}[baseline=(eta.base)]
+            \node [morphism] (eta) {\(\eta\)};
+            \draw [wire] (eta) -- ++ (0, -0.75) node [left] {\(m\)};
+            \draw [wire, dashed] (eta) -- ++ (0, 0.75) node [left] {\(I\)};
+        \end{tikzpicture}
+         \, = \,
+        \tikzsetnextfilename{string-diagram-monoid-unit-eta-no-unit-object}
+        \begin{tikzpicture}[baseline=(eta.base)]
+            \node [morphism] (eta) {\(\eta\)};
+            \draw [wire] (eta) -- ++ (0, -0.75);
+        \end{tikzpicture}
+        \, = \,
+        \tikzsetnextfilename{string-diagram-monoid-unit-dot}
+        \begin{tikzpicture}[baseline=-0.1cm]
+            \node [monoid dot] (eta) {};
+            \draw [wire] (eta) -- ++ (0, -0.75);
+        \end{tikzpicture}
+    \end{equation}
+    Here we use a dashed line to denote the unit object, or most the time we just don't draw it.
+    Again, most of the time we just replace \(\eta\) with a dot as well.
+    
+    If instead we have a comonoid object, \((c, \Delta, \varepsilon)\), then we simply flip all of the diagrams upside down, this is just what happens to diagrams when we take duals.
+    This gives us the comonoid maps, \(\Delta \colon c \to c \otimes c\) and \(\varepsilon \colon c \to I\), expressed as the string diagrams
+    \begin{equation}
+        \Delta =
+        \tikzsetnextfilename{string-diagram-comonoid-comultiplication-delta}
+        \begin{tikzpicture}[baseline=(delta.base)]
+            \node [morphism, minimum width=1.5cm] (delta) {\(\Delta\)};
+            \draw [wire] (delta.north) -- ++ (0, 0.75);
+            \draw [wire] ($(delta.south) + (-0.5, 0)$) -- ++ (0, -0.75);
+            \draw [wire] ($(delta.south) + (0.5, 0)$) -- ++ (0, -0.75);
+        \end{tikzpicture}
+        \, = \,
+        \tikzsetnextfilename{string-diagram-comonoid-comultiplication-dot}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw (0, 0) arc (180:0:0.5);
+            \draw (0.5, 0.5) -- ++ (0, 0.5);
+            \node [comonoid dot] at (0.5, 0.5) {};
+        \end{tikzpicture}
+    \end{equation}
+    and
+    \begin{equation}
+        \varepsilon =
+        \tikzsetnextfilename{string-diagram-comonoid-counit-epsilon-unit-object}
+        \begin{tikzpicture}[baseline=(epsilon.base)]
+            \node [morphism] (epsilon) {\(\varepsilon\)};
+            \draw [wire] (epsilon) -- (0, 0.75) node [left] {\(c\)};
+            \draw [wire, dashed] (epsilon) -- (0, -0.75) node [left] {\(I\)};
+        \end{tikzpicture}
+        \, = \,
+        \tikzsetnextfilename{string-diagram-comonoid-counit-epsilon-no-unit-object}
+        \begin{tikzpicture}[baseline=(epsilon.base)]
+            \node [morphism] (epsilon) {\(\varepsilon\)};
+            \draw [wire] (epsilon) -- (0, 0.75);
+        \end{tikzpicture}
+        \, = \,
+        \tikzexternaldisable
+        \tikzsetnextfilename{string-diagram-comonoid-counit-dot}
+        \begin{tikzpicture}[baseline=-0.1cm]
+            \coordinate (epsilon) at (0, 0);
+            \draw [wire] (epsilon) -- (0, 0.75);
+            \node [comonoid dot] at (epsilon) {};
+        \end{tikzpicture}
+    \end{equation}
+    
+    \section{Adjunctions and Monads}
+    We now (briefly) introduce two important concepts of category theory.
+    The first is adjunction, the idea that often functors come in opposing pairs.
+    It's usually too restrictive to require that a pair of functors are inverses\footnote{As a general rule imposing equalities on functors is usually not a good idea.}, and instead the natural requirement is that they compose to something that is naturally isomorphic to the identity.
+    This gives rise to the notion of an adjunction.
+    There are several equivalent definitions of adjunctions.
+    The one we give here is perhaps the most standard.
+    
+    \begin{dfn}{Adjoint Functors}{}
+        \index{adjoint functor}\index{adjunction}
+        Let \(\cat{C}\) and \(\cat{D}\) be categories.
+        Let \(L \colon \cat{D} \to \cat{C}\) and \(R \colon \cat{C} \to \cat{D}\) be functors.
+        We say that \(L\) is \defineindex{left adjoint} to \(R\), or \(R\) is \defineindex{right adjoint} to \(L\), or write \(L \leftadjointto R\) (\(R \rightadjointto L\)) if there is a natural isomorphism
+        \begin{equation}
+            \cat{C}(L-, -) \isomorphic \cat{D}(-, R-).
+        \end{equation}
+    \end{dfn}
+    
+    Note that the functors \(\cat{C}(L-, -)\) and \(\cat{D}(-, R-)\) in this definition have domain \(\cat{D} \times \cat{C}\), and codomain\footnote{assuming locally small categories} \(\Set\).
+    
+    \begin{lma}{}{}
+        Left and right adjoints are unique up to unique natural isomorphism.
+    \end{lma}
+    
+    \begin{exm}{}{}
+        \begin{itemize}
+            \item A \defineindex{forgetful functor} is a functor \(\cat{C} \to \cat{D}\) which \enquote{forgets} some structure in \(\cat{C}\) to produce an object of \(\cat{D}\).
+            For example, there is a functor \(U \colon \Grp \to \Set\) that sends a group to its underlying set, or a functor \(U \colon \Vect \to \Ab\) which forgets about scalar multiplication and sends a vector space to its underlying set of vectors equipped with addition as the group operation.
+            Forgetful functors tend to have left adjoints, \(\cat{D} \to \cat{C}\), which are then termed \define{free functors}\index{free functor}.
+            The idea of these functors is that they produce an object of \(\cat{C}\) from an object of \(\cat{D}\) in the most general way possible.
+            For example, the left adjoint to the forgetful functor \(U \colon \Grp \to \Set\) is the free group functor, \(F \colon \Set \to \Grp\) which constructs the free group on a given set.
+            Similarly, the forgetful functor \(U \colon \Vect \to \Set\), which sends a vector space to its underlying set of vectors, is right adjoint to the free vector space functor, \(F \colon \Set \to \Vect\), which sends a set to the vector space for which that set is a basis.
+            
+            Take this last example, the adjunction means we have an isomorphism
+            \begin{equation}
+                \Vect(F-, -) \isomorphic \Set(-, U-).
+            \end{equation}
+            Taking a vector space, \(V\), and set, \(X\), this becomes a bijection
+            \begin{equation}
+                \Vect(FX, V) \isomorphic \Set(X, UV).
+            \end{equation}
+            Given a linear map \(FX \to V\) we can restrict to the basis \(X\) and this gives us a function \(X \to UV\).
+            Conversely, given a function \(X \to UV\) we can extend this by linearity to a linear map \(FX \to V\).
+            This is the bijection in question.
+            
+            \item Consider the functor \(\Pi \colon \Set \times \Set \to \Set\) which sends a pair of sets, \((X, Y)\), to its Cartesian product, \(X \times Y\).
+            This is right adjoint to the diagonal functor \(\Delta \colon \Set \to \Set \times \Set\) which sends \(X\) to \((X, X)\).
+            The adjunction here corresponds to an isomorphism
+            \begin{equation}
+                (\Set \times \Set)(\Delta-, -) \isomorphic \Set(-, \Pi-)
+            \end{equation}
+            which, given a set, \(X\), and a pair of sets, \((Y, Z)\), gives rise to an isomorphism
+            \begin{equation}
+                (\Set \times \Set)((X, X), (Y, Z)) \isomorphic \Set(X, Y \times Z).
+            \end{equation}
+            Morphisms in \(\Set\times \Set\) are just pairs of morphisms in \(\Set\), so this is expressing the fact that a pair of function \((f \colon X \to Y, g \colon X \to Z)\) is really the same as a single function \((f \times g) \colon X \to Y \times Z\).
+            Given \((f, g)\) we can construct \(f \times g\) by defining \((f \times g)(x) = (f(x), g(x))\), and given \(f \times g\) we can define \(f\) and \(g\) by defining \(f = \pi_1 \circ (f \times g)\) and \(g = \pi_2 \circ (f \times g)\), where \(\pi_i\) is projection onto the \(i\)th factor.
+            This adjunction is then related to the fact that \(\times\) is the product in \(\Set\).
+            
+            \item Consider a pair of rings, \(R\) and \(S\), and some fixed ring homomorphism \(f \colon R \to S\).
+            We can view \(S\) as a right \(R\)-module by \(s \action r = sf(s)\).
+            We may consider the following three functors between categories of right modules:
+            \begin{itemize}
+                \item \(f_! \colon \ModR \to \ModR[S]\) given by \(f_!M = M \otimes_R S\) (extension of scalars);
+                \item \(f_* \colon \ModR \to \ModR[S]\) given by \(f_*M = \Hom_R(S, M)\);
+                \item \(f^* \colon \ModR[S] \to \ModR\) given by \(f^*N = N_R\) where \(N_R\) in which \(n \action r = n \action f(r)\) with the action on the left being that of \(N_R\) and on the right the action of \(N\).
+            \end{itemize}
+            These three constructions are actually related by a pair of adjunctions, namely, \(f_!\) is left adjoint to restriction of scalars, \(f^*\), and \(f^*\) is left adjoint to \(f_*\).
+            
+            \item The inclusion \(\Ab \hookrightarrow \Grp\) is left adjoint to the abelianisation functor, \(\Grp \to \Ab\), defined by \(G \mapsto G/[G, G]\).
+            
+            \item 
+        \end{itemize}
+    \end{exm}
+    
+    We will now give the two most common alternative definitions of adjunctions, which we derive here from our definition.
+    Given an adjunction, \(L \leftadjointto R\), we have an isomorhpism
+    \begin{equation}
+        \cat{C}(L-, -) \isomorphic \cat{D}(-, R-).
+    \end{equation}
+    To make this a bijection of sets we need an object of \(\cat{D} \times \cat{C}\) to apply these functors to.
+    Suppose that we have some object \(x \in \cat{D}\), then we can produce an object of \(\cat{C}\) using \(L\), namely \(Lx \in \cat{C}\).
+    We can then apply these functors to \((x, Lx) \in \cat{D} \times \cat{C}\), and we get
+    \begin{equation}
+        \cat{C}(Lx, Lx) \isomorphic \cat{D}(x, RLx).
+    \end{equation}
+    The nice thing about this is that we know a special element of \(\cat{C}(Lx, Lx)\), namely \(\id_{Lx}\).
+    In fact, looking at where identities map is a good way to study hom-functors in general, and is what underpins the Yoneda lemma.
+    Let \(\eta_x \colon x \to RLx\) be the image of \(\id_{Lx}\) under this isomorphism.
+    We call \(\eta_x\) a \defineindex{universal morphism}.
+    
+    Similarly, given \(y \in \cat{C}\) we may produce \(Ry \in \cat{D}\) and then we can apply these functors to \((Ry, y) \in \cat{D} \times \cat{C}\), giving the bijection
+    \begin{equation}
+        \cat{C}(LRy, y) \isomorphic \cat{D}(Ry, Ry).
+    \end{equation}
+    Let \(\varepsilon_y \colon LRy \to y\) be the image of \(\id_{Ry}\) under this isomorphism.
+    
+    It turns out that these universal morphisms satisfy the property that for all morhpisms \(f \colon Ly \to x\) there exists a unique morphism \(g \colon y \to Rx\) such that
+    \begin{equation}
+        \begin{tikzcd}
+            Fy \arrow[dr, "f"] \arrow[d, dashed, "Lg"']\\
+            LRx \arrow[r, "\varepsilon_x"'] & x
+        \end{tikzcd}
+    \end{equation}
+    commutes and for all morphisms \(g \colon y \to Rx\) there exists a unique morphism \(f \colon Ly \to x\) such that 
+    \begin{equation}
+        \begin{tikzcd}
+            y \arrow[r, "\eta_y"] \arrow[dr, "g"'] & RLy \arrow[d, dashed, "Rf"]\\
+            & Rx
+        \end{tikzcd}
+    \end{equation}
+    commutes.
+    
+    An assignment of such universal morhpisms for all objects of \(\cat{C}\) and \(\cat{D}\) is actually equivalent to defining the adjunction by taking \(\Phi \colon \cat{C}(L-, -) \natTrans \cat{D}(-, R-)\) to be defined by \(\Phi_{y,x}(f) = Gf \circ \eta_y\) and \(\Phi_{y,x}^{-1}(g) = \varepsilon_x \circ Fg\).
+    Thus, one may define an adjunction via universal morphisms.
+    
+    We can take the universal morphisms, \(\eta_x\) and \(\varepsilon_y\), for all \(x \in \cat{D}\) and \(y \in \cat{C}\), and combine them into natural transformations \(\eta \colon \id_{\cat{D}} \natTrans RL\) and \(\varepsilon \colon LR \natTrans \id_{\cat{C}}\).
+    These are called the \defineindex{unit} and \defineindex{counit} of the adjunction, and they make the diagrams
+    \begin{equation}
+        \begin{tikzcd}
+            L \arrow[r, Rightarrow, "L\eta"] \arrow[dr, Rightarrow, "\id_L"'] & LRL \arrow[d, Rightarrow, "\varepsilon L"]\\
+            & L
+        \end{tikzcd}
+        \qqand 
+        \begin{tikzcd}
+            R \arrow[r, Rightarrow, "\eta R"] \arrow[dr, Rightarrow, "\id_R"'] & RLR \arrow[d, Rightarrow, "R\varepsilon"]\\
+            & R
+        \end{tikzcd}
+    \end{equation}
+    commute.
+    Specifying a unit and counit such that these diagrams commute is the same as specifying an adjunction.
+    Thus, one may define an adjunction via its unit and counit.
+    
+    In components the diagrams above become
+    \begin{equation}
+        \begin{tikzcd}
+            Ly \arrow[r, "L \eta_y"] \arrow[dr, "\id_{Ly}"'] & LRLy \arrow[d, "\varepsilon_{Ly}"]\\
+            & Ly
+        \end{tikzcd}
+        \qqand
+        \begin{tikzcd}
+            Rx \arrow[r, "\eta_{Rx}"] \arrow[dr, "\id_{Rx}"']& RLRx \arrow[d, "R\varepsilon_x"]\\
+            & Rx \mathrlap{.}
+        \end{tikzcd}
+    \end{equation}
+    Applying \(R\) to the left diagram and \(L\) to the right diagram these become
+    \begin{equation}
+        \begin{tikzcd}
+            RLy \arrow[r, "RL \eta_y"] \arrow[dr, "\id_{RLy}"'] & RLRLy \arrow[d, "R\varepsilon_{Ly}"]\\
+            & RLy
+        \end{tikzcd}
+        \qqand
+        \begin{tikzcd}
+            LRx \arrow[r, "L\eta_{Rx}"] \arrow[dr, "\id_{LRx}"']& LRLRx \arrow[d, "LR\varepsilon_x"]\\
+            & LRx \mathrlap{.}
+        \end{tikzcd}
+    \end{equation}
+    Going back to natural transformations these become
+    \begin{equation}
+        \begin{tikzcd}
+            RL \arrow[r, Rightarrow, "RL \eta"] \arrow[dr, Rightarrow, "\id_{RL}"'] & RLRL \arrow[d, Rightarrow, "R\varepsilon L"]\\
+            & RL
+        \end{tikzcd}
+        \qqand
+        \begin{tikzcd}
+            LR \arrow[r, Rightarrow, "L\eta R"] \arrow[dr, Rightarrow, "\id_{LR}"']& LRLR \arrow[d, "LR\varepsilon"]\\
+            & LR \mathrlap{.}
+        \end{tikzcd}
+    \end{equation}
+    These are exactly the diagrams that must commute for \((RL, R\varepsilon L, \eta)\) and \((LR, L\eta R, \varepsilon^{-1})\) into monads!
+    So, every adjunction gives rise to a monad, and conversely every monad gives rise to (typically) multiple adjunctions, but we don't have time for that.
+    We should at least define a monad though.
+    
+    \begin{dfn}{Monad}{}
+        A monad is a monoid in a category of endofunctors.
+    \end{dfn}
+    
+    Ok, not the most useful definition immediately, here's what it means if we spell it out.
+    We have the monoidal category \([\cat{C}, \cat{C}]\), whose objects are endofunctors, \(\cat{C} \to \cat{C}\), and whose morphisms are natural transformations.
+    The monoidal product is composition of endofunctors, and the monoidal unit is the identity functor, \(\id_{\cat{C}}\).
+    A monad is a triple, \((T, \mu, \eta)\) consisting of an endofunctor, \(T \colon \cat{C} \to \cat{C}\), and natural transformations \(\mu \colon T^2 \natTrans T\) and \(\eta \colon \id_{\cat{C}} \natTrans T\).
+    These are, of course, subject to the fact that the relevant diagrams must commute, but we won't go into those details.
+    
+    \section{Details of \texorpdfstring{\(\Vect\)}{Vect k}}
+    Much of our work will take place in the context of \(\Vect\), which is a symmetric monoidal category under the tensor product.
+    In this section we'll look at some results specific to \(\Vect\).
+    
+    First, \(\Vect\) is an abelian category, which for our purposes simply means that it has coincident initial and terminal objects, specifically the zero vector space, \(0\).
+    It also has all finite products and coproducts, which again coincide, and are given by the direct sum.
+    Another part of the definition of an abelian category is that it is \(\Ab\)-enriched, meaning that the hom sets are actually abelian groups in a way that is compatible with composition.
+    For \(\Vect\) this abelian group structure is simply pointwise addition of linear maps.
+    In fact, \(\Vect\) is actually a \defineindex{closed}\footnote{The functor \(- \otimes a\) has a right adjoint for all objects \(a\).} symmetric monoidal category, meaning that it's actually enriched over itself, so the functor
+    \begin{equation}
+        \hom(-, -) = \Hom_{\field}(-, -) = \Vect(-, -)
+    \end{equation}
+    takes values in \(\Vect\), with scalar multiplication of linear maps given pointwise.
+    
+    The additive structure of \(\Vect\) is actually relatively simple.
+    One way we can see this is that every short exact sequence
+    \begin{equation}
+        0 \to U \to V \to W \to 0
+    \end{equation}
+    splits.
+    That is, we always have\footnote{More rigorously, we should say that the short exact sequence above is isomorphic to a short exact sequence \(0 \to U \to U \oplus W \to W \to 0\), where \(U \to U \oplus W\) is inclusion and \(U \oplus W \to W\) is projection. This means that not only is \(V \isomorphic U \oplus W\) but that composing this isomorphism with \(U \to V\) gives inclusion and this isomorphism with projection gives \(V \to W\).} \(V \isomorphic U \oplus W\).
+    This is not the case in the more general setting of \(\RMod\) where short exact sequences do not always split.
+    
+    More concretely, given the above short exact sequence of vector spaces we can always take \(W = U^{\perp}\) with respect to some inner product which we can induce from a basis for \(U\) carried through the image and then extended to a basis for \(V\).
+    So the fact that not all \(R\)-modules are free comes into play here.
+    
+    There are some common adjunctions that one may meet when working with vector spaces, we've already mentioned these, but we state them here for completeness.
+    
+    \begin{lma}{}{}
+        There is an adjunction \(- \otimes V \leftadjointto \hom(V, -)\).
+    \end{lma}
+    
+    \begin{lma}{}{}
+        There is an adjunction \(F \leftadjointto U\) where \(F \colon \Set \to \Vect\) is the free vector space functor and \(U \colon \Vect \to \Set\) is the forgetful functor.
+    \end{lma}
+    
+    The free vector space may be defined by
+    \begin{equation}
+        FX = \{\alpha \colon X \to \field \mid \alpha \text{ is finitely supported}\}.
+    \end{equation}
+    That is, \(\alpha\) is a function \(X \to \field\) such that \(\alpha(x) = 0\) for all but finitely many \(x \in X\).
+    The idea is that \(\alpha(x)\) is the coefficient of the basis vector \(x\) in the expansion of \(\alpha\) in the basis \(X\).
+    Note that if \(V\) is a vector space with basis \(B\) then we have that \(V \isomorphic FB\), which says that every vector space is free.
+    The same is not true in the more general setting of \(\RMod\), in which finding a basis is not always possible.
+    
+    The dual space is defined by
+    \begin{equation}
+        V^* = \hom(V, \field).
+    \end{equation}
+    For finite dimensional vector spaces we have a (non-canonical) isomorphism \(V \isomorphic V^*\), and a canonical isomorphism \(V \isomorphic V^{**}\).
+    For infinite dimensional vector spaces we have an inclusion \(V \hookrightarrow V^*\), but this is not an isomorphism.
+    
+    Note that for a fixed vector space, \(W\), we have the functors
+    \begin{equation}
+        W \otimes -, \quad - \otimes W, \quad \hom(W, -),
+    \end{equation}
+    which are all functors \(\Vect \to \Vect\), and the functor \(\hom(-, W) \colon \Vect^{\op} \to \Vect\).
+    These are all \defineindex{exact} meaning that they preserve short exact sequences, that is, if
+    \begin{equation}
+        0 \to V' \to V \to V'' \to 0
+    \end{equation}
+    is a short exact sequence then \(F \colon \Vect \to \Vect\) is an exact functor if
+    \begin{equation}
+        0 \to FV' \to FV \to FV'' \to 0
+    \end{equation}
+    is a short exact sequence, and \(G \colon \Vect^{\op} \to \Vect\) is an exact functor if
+    \begin{equation}
+        0 \to GV'' \to GV \to GV' \to 0
+    \end{equation}
+    is a short exact sequence.
+    
+    
     
     % Appdendix
     %	\appendixpage
