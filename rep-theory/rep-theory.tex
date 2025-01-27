@@ -323,7 +323,7 @@ noabbrev
     
     Typically \enquote{simple} is used for modules and \enquote{irreducible} is used more for representations, although irreducible is used for both.
     
-    \begin{dfn}{Semisimple Submodule}{}
+    \begin{dfn}{Semisimple}{}
         Let \(M\) be an \(A\)-module.
         Then \(M\) is \defineindex{semisimple} or \defineindex{completely reducible} if it can be written as a direct sum of finitely many simple modules.
     \end{dfn}
@@ -923,6 +923,99 @@ noabbrev
     \end{equation}
     This isomorphism is natural in all objects, and thus this is an adjunction.
     
+    \chapter{Jacobson's Density Theorem}
+    \section{Semisimple Representations}
+    Recall that a module is semisimple if it is a direct sum of simple modules, and a simple module is one with no nontrivial submodules.
+    
+    \begin{exm}{}{}
+        Let \(V\) be an \(n\)-dimensional simple \(A\)-module.
+        Then \(\End V\) is an \(A\)-module as well, with \(A\) acting by left matrix multiplication (after fixing some basis so that elements of \(\End V\) can be identified with matrices and then identifying elements of \(A\) acting on \(\End V\) with the corresponding linear operator on \(V\)).
+        With this construction \(\End V\) is semisimple, in particular
+        \begin{equation}
+            \End V \isomorphic \underbrace{V \oplus \dotsb \oplus V}_{n \text{ terms}} \eqcolon nV.
+        \end{equation}
+        This isomorphism is given by fixing some basis, \(\{v_1, \dotsc, v_n\} \subseteq V\), and then defining a linear map \(\End V \to nV\) by \(\varphi \mapsto (\varphi(v_1), \dotsc, \varphi(v_n))\).
+        Viewing \(v_i\) as column matrices \(\varphi(v_i)\) is simply the \(i\)th column of the matrix corresponding to \(\varphi\) in this basis.
+    \end{exm}
+    
+    In this example \(\End V\) ends up being a direct sum of a single simple module.
+    In the general semisimple case any simple module can appear in the decomposition.
+    If we restrict ourselves to finite dimensions then we can get a pretty good handle on which simple modules appear in such a decomposition.
+    In particular, any finite-dimensional semisimple module, \(V\), may be decomposed as
+    \begin{equation}
+        V = \bigoplus_{i \in I} m_i V_i
+    \end{equation}
+    with \(m_i \in \integers_{\ge 0}\) and \(V_i\) running over all finite dimensional simple modules.
+    We call \(m_i\) the \defineindex{multiplicity} of \(V_i\) in \(V\).
+    Note that since this decomposition is unique up to the order of the terms.
+    
+    \begin{lma}{}{}
+        Let \(V\) be a finite dimensional semisimple \(A\)-module, with decomposition
+        \begin{equation}
+            V = \bigoplus_{i \in I} m_i V_i
+        \end{equation}
+        with \(m_i \in \integers_{\ge 0}\) and \(V_i\) simple.
+        Then the multiplicity, \(m_i\), is given by
+        \begin{equation}
+            m_i = \dim( \Hom_A(V_i, V) ).
+        \end{equation}
+        \begin{proof}
+            We make use of the fact that\footnote{\(\Hom(V_i, -)\) is right adjoint (to \(-\otimes_AV_i\)) and as such preserves colimits}
+            \begin{equation}
+                \Hom_A(V_i, V' \oplus V'') \isomorphic \Hom_A(V_i, V') \oplus \Hom_A(V_i, V'').
+            \end{equation}
+            This extends to all finite direct sums.
+            
+            Note that \(\Hom_A(V_i, V)\) is an \((A, \field)\)-bimodule with the left action \((a \action \varphi)(v) = \varphi(a \action v)\) and right action \((\varphi \action \lambda)(v) = \lambda \varphi(v)\).
+            Further, \(V_i\) is a right \(\field\)-module with the action \(v \action \lambda = \lambda v = (\lambda 1_A) \action v\).
+            Thus, \(\Hom_A(V_i, V) \otimes_{\field} V_i\) is a left \(A\)-module.
+            
+            We can define a map
+            \begin{equation}
+                \label{eqn:map between + hom Vi V x Vi and V}
+                \begin{aligned}
+                    \psi \colon \bigoplus_{i \in I} \Hom_A(V_i, V) \otimes_{\field} V_i &\to V\\
+                    \bigoplus_{i \in I} \varphi_i \otimes v_i &\mapsto \sum_i \varphi_i(v_i).
+                \end{aligned}
+            \end{equation}
+            This is an \(A\)-module isomorphism:
+            \begin{align}
+                \psi\left( a \action {\textstyle \bigoplus_{i \in I}} \varphi_i \otimes v_i \right) &= \psi\left( {\textstyle \bigoplus_{i\in I}} \varphi_i \otimes (a \action v_i) \right)\\
+                &= {\textstyle \sum_{i \in I}} \varphi_i(a \action v_i)\\
+                &= {\textstyle \sum_{i \in I}} a \action \varphi_i(v_i)\\
+                &= a \action {\textstyle \sum_{i \in I}} \varphi_i(v_i)\\
+                &= a \action \psi\left( {\textstyle \bigoplus_{i \in I}} \varphi_i \otimes v_i \right).
+            \end{align}
+            Linearity is clear from the definition.
+            It remains only to show that this map is invertible.
+            By linearity it is sufficient to show that the map
+            \begin{align}
+                \Hom(V_i, V) \otimes V_i &\to V\\
+                \varphi_i \otimes v_i &\mapsto \varphi_i(v_i)
+            \end{align}
+            is an isomorphism.
+            Since \(V_i\) is simple Schur's lemma tells us that this map is either zero or surjective.
+            It is clearly not zero, since we can simply choose some vector \(v_i\) and some nonzero map \(\varphi_i\) on which \(\varphi_i(v_i) \ne 0\).
+            Thus, this map is surjective.
+            A surjective linear map between finite dimensional modules is an isomorphism.
+            Hence, the map in \cref{eqn:map between + hom Vi V x Vi and V} is an isomorphism.
+            
+            We then have
+            \begin{align}
+                \dim V &= \dim\left( {\textstyle \bigoplus_{i \in I}} \Hom_A(V_i, V) \right)\\
+                &= {\textstyle \sum_{i \in I}} \dim(\Hom_A(V_i, V)) \dim(V_i)
+            \end{align}
+            and
+            \begin{align}
+                \dim V &= \dim\left( {\textstyle \bigoplus_{i \in I}} m_i V_i \right)\\
+                &= {\textstyle \sum_{i \in I}} m_i \dim (V_i).
+            \end{align}
+            Since these are finite sums and this must hold for arbitrary semisimple modules \(V\), including the case where \(V = V_i\) is actually simple, we must have that
+            \begin{equation*}
+                m_i = \dim(\Hom_A(V_i)). \qedhere
+            \end{equation*}
+        \end{proof}
+    \end{lma}
     
     
     % Appdendix
