@@ -1363,15 +1363,15 @@ noabbrev
             &= \lambda_C \left( \tsum \varepsilon(c_{(1)}) \otimes \id_C(c_{(2)}) \right)\\
             &= \tsum \varepsilon(c_{(1)}) c_{(2)}
         \end{align}
-        and
+        must be \(c\), and similarly
         \begin{align}
             \rho_C \circ (\id_C \otimes \varepsilon) \circ \Delta(c) &= \rho_C \circ (\id_C \otimes \varepsilon) \left( \tsum c_{(1)} \otimes c_{(2)} \right)\\
             &= \rho_C \left( \tsum \id_C(c_{(1)}) \otimes \varepsilon(c_{(2)}) \right)\\
             &= \tsum c_{(1)} \varepsilon(c_{(2)})\\
             &= \tsum \varepsilon(c_{(2)}) c_{(1)}
         \end{align}
-        where we follow the convention of writing scalars on the left in the last line.
-        The counit condition then is that both of these expressions must just be \(c\) again.
+        must also be \(c\).
+        In the last line we follow the convention of always writing scalars on the left.
     \end{ntn}
     
     Given two coalgebras, \((C_1, \Delta_1, \varepsilon_1)\) and \((C_2, \Delta_2, \varepsilon_2)\), their tensor product is the coalgebra \((C_1 \otimes C_2, \Delta, \varepsilon)\) where the comultiplication is the composite
@@ -1456,6 +1456,100 @@ noabbrev
             \end{cases}
         \end{equation}
     \end{exm}
+    
+    \section{Dualising Between Algebras and Coalgebras}
+    The definition of a coalgebra is dual to that of an algebra.
+    We can use this to turn any coalgebra into an algebra.
+    Going the other way, turning an algebra into a coalgebra, only works some of the time.
+    
+    Given a coalgebra, \((C, \Delta, \varepsilon)\), the dual space \(C^* \hom(C, \field)\), can be equipped with structure, \((C^*, \mu, \eta)\) by defining \(\mu\) to be the composite
+    \begin{equation}
+        C^* \otimes C^* \hookrightarrow (C \otimes C)^* \xrightarrow{\Delta^*} C^*
+    \end{equation}
+    where \(\Delta^* \colon (C \otimes C)^* \to C^*\) is the dual of \(\Delta\) (that is, the image of the morphism \(\Delta\) under the dual functor \((-)^* \colon \Vect^{\op} \to \Vect\), specifically \(\Delta^*(\omega) = \omega \circ \Delta\) where \(\omega \colon C \otimes C \to \field\) is linear).
+    
+    We can write this in Sweedler notation, if \(c \in C\) is such that
+    \begin{equation}
+        \Delta(c) = \sum c_{(1)} \otimes c_{(2)}
+    \end{equation}
+    and \(\alpha, \beta \in C^*\) then we can define \(\mu(\alpha \otimes \beta)\) to be the map sending \(c\) to
+    \begin{equation}
+        \mu(\alpha \otimes \beta)(c) = \sum \alpha(c_{(2)}) \beta(c_{(1)}).
+    \end{equation}
+    Note the swapping of the order here.
+    This is because we follow the common algebra convention of identifying
+    \begin{equation}
+        (V \otimes U)^* \hookrightarrow U^* \otimes V^*,
+    \end{equation}
+    so \((-)^*\) reverses the order of elements of a tensor product.
+    Note that other fields (notably topology related fields) follow the opposite convention.
+    Note also that this is always an inclusion, and is an isomorphism only when \(V\) and \(U\) are finite dimensional.
+    
+    Defining the unit is simpler, we just take \(\eta = \varepsilon^* \colon \field \to C^*\), identifying that \(\field^* \isomorphic \field\) as a linear map \(\field \to \field\) is just multiplication by some constant.
+    This definition makes the unit
+    \begin{equation}
+        \eta(t) = \varepsilon^*(t) = t \varepsilon.
+    \end{equation}
+    This last line is just the composite of the map that multiplies by \(t\) followed by \(\varepsilon\), and then using linearity we can simplify this to \(t \varepsilon\).
+    
+    We can demonstrate that the resulting structure is indeed an algebra using some calculations.
+    For example, associativity follows by considering \(c \in C\) with \(\Delta(c) = \sum c_{(1)} \otimes c_{(2)}\) and \(\alpha, \beta, \gamma \in C^*\), then
+    \begin{align}
+        \mu(\mu(\alpha, \beta), \gamma)(c) &= \sum \mu(\alpha, \beta)(c_{(2)}) \gamma(c_{(1)})\\
+        &= \sum \alpha((c_{(2)})_{(2)}) \beta((c_{(2)})_{(1)}) \gamma(c_{(1)})\\
+        &= \sum \alpha(c_{(2)}) \beta((c_{(1)})_{(2)}) \gamma((c_{(1)})_{(1)})\\
+        &= \sum \alpha(c_{(2)}) \mu(\beta, \gamma)(c_{(1)})\\
+        &= \mu(\alpha, \mu(\beta, \gamma))(c)
+    \end{align}
+    where in the middle we've used the coassociativity of the comultiplication.
+    Alternatively, this fact can be proven by constructing some large commutative diagram.
+    Similarly, one can show that \(\eta\) really is a unit, for example
+    \begin{align}
+        \mu \circ (\eta \otimes \id_{C^*})(t, \alpha)(c) &= \mu(t\varepsilon, \alpha)(c)\\
+        &= \sum t\varepsilon(c_{(2)}) \alpha(c_{(1)})\\
+        &= t \alpha\left( \tsum \varepsilon(c_{(2)}) c_{(1)} \right)\\
+        &= t \alpha(c)\\
+        &= \lambda_{C^*}(t\varepsilon \otimes \alpha)(c)
+    \end{align}
+    where we've used the fact that \(t \varepsilon(c_{(2)})\) is a scalar and so we can use linearity to bring it, and the sum, inside \(\alpha\), then we've used the counit law, and finally rewritten things with a unitor.
+    This then expresses the fact that the left unit law holds.
+    
+    Finally, note that if \(C\) is cocommutative then \(C^*\) will be commutative:
+    \begin{align}
+        \mu(\alpha, \beta)(c) &= \sum \alpha(c_{(2)}) \beta(c_{(1)})\\
+        &= \sum \alpha(c_{(1)}) \beta(c_{(2)})\\
+        &= \sum \beta(c_{(2)}) \alpha(c_{(1)})\\
+        &= \mu(\beta, \alpha)(c)
+    \end{align}
+    where cocommutativity is what allows us to swap the \(1\) and \(2\) indices going to the second line.
+    
+    \begin{prp}{}{}
+        Given a coalgebra, \((C, \Delta, \varepsilon)\), there is a dual algebra, \((C^*, \mu, \eta)\) with maps defined as above.
+        Further, \(C^*\) is commutative if and only if \(C\) is cocommutative.
+        
+        Further, this construction gives a functor \(\Coalg^{\op} \to \Alg\), meaning any coalgebra homomorphism \(\theta \colon (C, \Delta, \varepsilon) \to (C', \Delta', \varepsilon')\) induces an algebra homomorphism \(\theta^* \colon (C^{\prime *}, \mu', \varepsilon') \to (C^*, \mu, \varepsilon)\).
+    \end{prp}
+    
+    If \((A, \mu, \eta)\) is a finite dimensional algebra then we can dualise it similarly to get a coalgebra.
+    However, if \(A\) is infinite dimensional then this doesn't work.
+    Fortunately, there are a couple of ways to fix this.
+    One involves topological vector spaces and completing things.
+    The other, simpler, fix is to use the restricted dual instead.
+    
+    \begin{dfn}{Restricted Dual}{}
+        Let \(V\) be a vector space over \(\field\).
+        The \defineindex{restricted dual}, \(V^{\circ}\), is the vector space
+        \begin{equation}
+            V^{\circ} \coloneqq \{\alpha \in V^* \mid \text{ there exists some cofinite subspace} U \subseteq V \text{ such that } U \subseteq \ker \alpha\}.
+        \end{equation}
+        Let \(V\) be an algebra over \(\field\).
+        The \defineindex{restricted dual}, \(A^{\circ}\), is the vector space
+        \begin{equation}
+            A^{\circ} \coloneqq \{\alpha \in A^* \mid \text{ there exists some cofinite ideal} I \subseteq A \text{ such that } I \subseteq \ker \alpha\}.
+        \end{equation}
+    \end{dfn}
+    
+    The idea is that \(\alpha \in A^*\) is in \(A^{\circ}\) if and only if it factors through a finite dimensional quotient algebra, \(A/I\).
     
     % Appdendix
     %	\appendixpage

@@ -82,6 +82,24 @@ noabbrev
 \ExplSyntaxOff
 \newcommand{\universalEnveloping}{\symcal{U}}
 \DeclarePairedDelimiterX{\bracket}[2]{[}{]}{#1, #2}
+\DeclareMathOperator{\Mat}{Mat}
+\RenewDocumentCommand{\matrices}{s o m m}{
+    \IfBooleanTF{#1}{
+        \IfNoValueTF{#2}{
+            \Mat_{#3}\left( #4 \right)
+        }{
+            \Mat_{#2 \times #3}\left( #4 \right)
+        }
+    }{
+        \IfNoValueTF{#2}{
+            \Mat_{#3}(#4)
+        }{
+            \Mat_{#2 \times #3}(#4)
+        }
+    }
+}
+\newcommand{\trans}{\top}
+\DeclareMathOperator{\Rad}{Rad}
 
 \begin{document}
     \frontmatter
@@ -1066,6 +1084,253 @@ noabbrev
         \end{proof}
     \end{lma}
     
+    The decomposition into simple submodules also puts restrictions on the non-simple submodules that we can have.
+    First, every submodules of a semisimple module must itself be semisimple, meaning it has its own decomposition into simple modules.
+    Further, the simple modules that can appear in the decomposition of the submodule are only the ones that appear in the decomposition of the module.
+    Finally, the multiplicity with which these simple modules appear in the submodule must be at most the multiplicity with which they appear in the original module.
+    That is, the only way to form a submodule of a semisimple module is to take some subset of the simple modules that appear in the decomposition and take their direct sum.
+    
+    \begin{prp}{}{prp:submodules of semisimple modules}
+        Let \(V\) be a semisimple finite-dimensional \(A\)-module with decomposition
+        \begin{equation}
+            V = \bigoplus_{i=1}^m n_i V_i
+        \end{equation}
+        with the \(V_i\) pairwise-nonisomorhpic simple \(A\)-modules.
+        Let \(W \subseteq V\) be a submodule.
+        Then
+        \begin{equation}
+            W = \sum_{i=1}^m r_i V_i
+        \end{equation}
+        with \(0 \le r_i \le n_i\) for all \(i\), and the inclusion \(\varphi \colon W \hookrightarrow V\) decomposes as
+        \begin{equation}
+            \varphi = \bigoplus_{i=1}^m \varphi_i
+        \end{equation}
+        where \(\varphi_i \colon r_i V_i \to n_i V_i\) are maps given by \(\varphi_i(v_1, \dotsc, v_{r_i}) = (v_1, \dotsc, v_{r_i}) \action X_i\) where \(X_i \in \matrices[r_i]{n_i}{\field}\) acts on the row vector by right matrix multiplication and has rank \(r_i\).
+        \begin{proof}
+            The proof is by induction on \(n = \sum_{i=1}^m n_i\).
+            For the base case we just have that \(V\) is simple, and so its only submodules are the zero module (the empty direct sum) or \(V\) itself, in which case the statement clearly holds.
+            
+            Now suppose that this is the case when \(\sum_{i} n_i = n - 1\).
+            Fix some submodule, \(W \subseteq V\).
+            If \(W = 0\) then we're done, so suppose \(W \ne 0\).
+            Fix some simple submodule, \(P \subseteq W\).
+            Such a \(P\) exists as a consequence of \cref{lma:every finite dimensional module has a simple submodule}.
+            By Schur's lemma \(P\) must be isomorphic to \(V_i\) for some \(i\), and the inclusion \(\varphi|_P \colon P \to V\) factors through \(n_i V_i\) by
+            \begin{equation}
+                P \xrightarrow{\isomorphic} V_i \hookrightarrow n_i V_i \hookrightarrow V.
+            \end{equation}
+            Identifying \(P\) with \(V_i\) this map is given by
+            \begin{equation}
+                v \mapsto (v q_1, \dotsc, v q_{n_i})
+            \end{equation}
+            with \(q_i \in \field\) not all zero.
+            
+            The group \(G_i = \generalLinear_{n_i}(\field)\) acts on \(n_i V_i\) by right matrix multiplication.
+            We can also act trivially on \(n_j V_j\) for \(j \ne i\).
+            Then \(G_i\) acts on \(V\).
+            This gives an action of \(G_i\) on the set of submodules of \(V\), and this action preserves the property that we're trying to establish, that under the action of \(g_i \in G_i\) the matrix \(X_i\) goes to \(X_i g_i\) while the matrices \(X_j\) (\(j \ne i\)) are left unchanged.
+            Taking \(g_i \in G_i\) such that \((1_1, \dotsc, q_{n_i})g_i = (1, 0, \dotsc, 0)\), which is always possible as \(g_i\) is invertible, we have that \(Wg_i\) contains the first summand, \(V_i\), of \(n_i V_i\).
+            Thus, \(Wg_i \isomorphic V_i \oplus W'\) where 
+            \begin{equation}
+                W' \subseteq n_1 V_1 \oplus \dotsb \oplus (n_i - 1)V_i \oplus \dotsb \oplus n_m V_m
+            \end{equation}
+            is the kernel of the projection of \(Wg_i\) onto the first summand \(V_i\).
+            The inductive hypothesis then holds for this subspace, and so it has a decomposition
+            \begin{equation}
+                W' \isomorphic \bigoplus_{j=1}^m r_j' V_i
+            \end{equation}
+            with \(0 \le r_i' \le n_i - 1\) and \(0 \le r_j \le n_j\) for \(j \ne i\), and so taking
+            \begin{equation}
+                W \isomorphic V_i \oplus W \isomorphic \bigoplus_{j=1}^m r_jV_i
+            \end{equation}
+            with \(r_i = r_i' + 1\) and \(r_j = r_j'\) we get the desired result.
+        \end{proof}
+    \end{prp}
+    
+    \begin{lma}{}{lma:every finite dimensional module has a simple submodule}
+        Any nonzero finite dimensional \(A\)-module contains a simple submodule.
+        \begin{proof}
+            The proof is by induction on dimension.
+            Let \(V\) be a finite dimensional nonzero \(A\)-module.
+            We start with \(\dim V = 1\).
+            Then \(V\) is itself simple, and we are done.
+            Suppose then that all \(A\)-modules of dimension at most \(k\) contain a simple submodule.
+            Consider the case when \(\dim V = k + 1\).
+            If \(V\) is simple we are done.
+            If \(V\) is not simple then it contains a proper submodule, \(W\).
+            Since \(W\) is a \emph{proper} submodule it has dimension less than \(k + 1\), and thus the induction hypothesis holds.
+            Thus, \(W\) has a simple submodule, which is then also a simple submodule of \(V\).
+            Then, by induction, the statement holds for all finite dimensional \(A\)-modules.
+        \end{proof}
+    \end{lma}
+    
+    \begin{remark}{}{}
+        We assumed that \(\field\) was algebraically closed in the use of Schur's lemma above.
+        However, this is not required for a modified result to hold.
+        If we replace \(\matrices[r_i]{n_i}{\field}\) with \(\matrices[r_i]{n_i}{D_i}\) where \(D_i = \End_A (V_i)\) then the result holds for any field \(\field\).
+        The \(D_i\) are division algebras (algebras in which division by any nonzero element is defined).
+        When \(\field\) \emph{is} algebraically closed Schur's lemma applies and tells us that the maps \(V_i \to V_i\) are just scalar multiplication, allowing us to identify \(D_i\) with \(\field\) to get the result as stated above.
+    \end{remark}
+    
+    \begin{crl}{}{crl:linearly independent set reaches all of V under action of A}
+        Let \(V\) be a finite dimensional simple \(A\)-module.
+        Given two subsets \(\{x_1, \dotsc, x_n\}, \{y_1, \dotsc, y_n\} \subseteq V\) with the first being linearly independent there exists some \(a \in A\) such that \(a \action x_i = y_i\).
+        \begin{proof}
+            The proof is by contradiction, so suppose that this is not the case.
+            Then \(W = \{(a \action x_1, \dotsc, a \action x_n) \mid a \in A\}\) must be a proper submodule of \(nV\), that is there is some element of \(V\) we can pick for one of the \(y_i\) such that we cannot reach \((y_1, \dotsc, y_n)\) by the action of \(a\).
+            Then since \(V\) is simple we know that \(W = rV\) for some \(r < n\), a strict inequality since we have a \emph{proper} submodule.
+            By \cref{prp:submodules of semisimple modules} we know that there is some \(X \in \matrices[r]{n}(\field)\) and some \(u_1, \dotsc, u_r \in V\) such that
+            \begin{equation}
+                (u_1, \dotsc, u_r) \action X = (x_1, \dotsc, x_n).
+            \end{equation}
+            To achieve this result we've just considered the \(a = 1\) case to get \((x_1, \dotsc, x_n) \in W = rV\).
+            Since \(r < n\) we know that there is some \((z_1, \dotsc, z_n) \in \field^n \setminus \{0\}\) such that \(X \action (z_1, \dotsc, z_n)^{\trans} = 0\), because \(X\) only has rank \(r\).
+            Thus, we can consider
+            \begin{align}
+                0 &= (u_1, \dotsc, u_r) \action X \action (z_1, \dotsc, z_n)^{\trans}\\
+                &= (x_1, \dotsc, x_n) \cdot (z_1, \dotsc, z_n)^{\trans}\\
+                &= \sum_{i=1}^n z_i x_i.
+            \end{align}
+            Since the \(x_i\) are linearly independent this means that \(z_i = 0\), a contradiction. 
+        \end{proof}
+    \end{crl}
+    
+    \section{Density Theorem}
+    We're now ready to start working towards a result known as the density theorem.
+    This result says that a certain class of algebras are basically just direct sums of matrix algebras.
+    We have to prove some technical results first though.
+    
+    \begin{thm}{}{thm:representation maps are surjections}
+        Let \(V\) be a finite dimensional \(A\)-module.
+        \begin{enumerate}
+            \item If \(V\) is simple then the associated algebra morphism \(r \colon A \to \End V\) is surjective.
+            \item If \(V = \oplus_{i=1^m} V_i\) with the \(V_i\) pairwise nonisomorphic finite dimensional simple \(A\)-modules then
+            \begin{equation}
+                r = \bigoplus_{i=1}^m r_i \colon A \to \bigoplus_{i=1}^m \End V_i
+            \end{equation}
+            is surjective.
+        \end{enumerate}
+        \begin{proof}
+            \begin{enumerate}
+                \item Fix some basis, \(\{v_1, \dotsc, v_n\} \subseteq V\), and let \(w_i = \varphi(v_i)\) for some \(\varphi \in \End V\).
+                Then by \cref{crl:linearly independent set reaches all of V under action of A} there exists some \(a \in A\) such that \(a \action v_i = w_i\), and thus \(r(a) = \varphi\), so \(r\) is surjective.
+                \item Let \(B_i\) be the image of \(A\) in \(\End V_i\).
+                Notice that \(\End V_i \isomorphic d_i V_i\) where \(d_i = \dim V_i\).
+                Let \(B\) be the image of \(A\) in \(\bigoplus_i \End V_i\).
+                Then \(B \isomorphic \bigoplus_i B_i \isomorphic \bigoplus_i d_i V_i\), and the first part tells us that \(B_i = \End V_i\) by surjectivity of each representation map, and thus \(B \isomorphic \bigoplus \End V_i\), so \(r\) is surjective.
+            \end{enumerate}
+        \end{proof}
+    \end{thm}
+    
+    The next result considers what happens when we have an algebra that is a direct sum of matrix algebras.
+    Before the proof however we need the following definition.
+    
+    \begin{dfn}{Dual Module}{}
+        Let \(V\) be a left \(A\)-module.
+        Then the \defineindex{dual module} is \(V^* = \Hom_{\field}(V, \field)\) with the action defined by \((f \action a)(v) = f(a \action v)\) for all \(f \in V^*\), \(a \in A\), and \(v \in V\).
+    \end{dfn}
+    
+    \begin{thm}{}{}
+        Let \(\field\) be a field which is not necessarily algebraically closed.
+        Let \(A\) be the \(\field\)-algebra given by
+        \begin{equation}
+            A = \bigoplus_{i=1}^r \matrices{d_i}{\field}
+        \end{equation}
+        for some \(d_i \in \naturals\).
+        Then
+        \begin{enumerate}
+            \item the simple \(A\)-modules are \(\field^{d_i}\) with \((X_1, \dotsc, X_r)\) acting by matrix multiplication by \(X_i\); and
+            \item any finite dimensional \(A\)-module is semisimple.
+        \end{enumerate}
+        \begin{proof}
+            \begin{enumerate}
+                \item Let \(v, w \in \field^{d_i}\) be such that \(v \ne 0\).
+                Then there exists some linear map sending \(v\) to \(w\), and hence some matrix \(X \in \matrices{d_i}{\field}\) such that \(Xv = w\).
+                Thus, \(V_i = \field^{d_i}\) must be simple since any nonzero subspace containing \(v\) and not \(w\) cannot be a submodule.
+                \item Let \(W\) be a finite dimensional left \(A\)-module.
+                Consider its dual, \(W^*\), which we can think of as a left \(A^{\op}\)-module.
+                The algebra \(A^{\op}\) is given by
+                \begin{equation}
+                    A^{\op} = \bigoplus_{i} \matrices{d_i}{\field}^{\trans} \isomorphic \bigoplus_i \matrices{d_i}{\field}
+                \end{equation}
+                and we identify \(a \in A\) with \(a^{\trans} \in A^{\op}\) where \((X_1, \dotsc, X_r)^{\trans} = (X_1^{\trans}, \dotsc, X_r^{\trans})\).
+                Really nothing is going on here since we're considering square matrices so taking the transpose changes individual elements but doesn't change the set of all matrices under consideration.
+                
+                What this lets us do is interpret \(W^*\) as an \(A\)-module with \(a \action f = f \action a^{\trans}\).
+                We can fix a basis \(\{f_1, \dotsc, f_n\} \subseteq W^*\), and then define a surjection
+                \begin{align}
+                    \varphi \colon nA &\twoheadrightarrow W^*\\
+                    a_1 \oplus \dotsb \oplus a_n &\mapsto a_1 \action f_1 + \dotsb + a_n \action f_n.
+                \end{align}
+                This is a surjection by \cref{thm:representation maps are surjections}.
+                We can consider the dual map, \(\varphi^* \colon W \hookrightarrow (nA)^* \isomorphic nA\), which will be an injection.
+                Further, \(W \isomorphic \im \varphi^* \subseteq nA\) is a submodule of the semisimple module \(nA\) (where \(a \action (b_1 \oplus \dotsb \oplus b_n) = ab_1 \oplus \dotsb \oplus ab_n\)) and we can apply \cref{prp:submodules of semisimple modules} to conclude that \(W\) is semisimple.
+            \end{enumerate}
+        \end{proof}
+    \end{thm}
+    
+    What we have just shown is that matrix algebras, and their direct sums, have particularly nice properties.
+    We understand their simple modules well, they're just \(\field^{d}\) with \(d\) appearing as the number of rows of some matrix, and all finite dimensional modules are semisimple, so all are just some direct sum \(\bigoplus_i \field^{d_i}\).
+    The logical next question is when is a given algebra, \(A\), isomorphic to some direct sum of matrix algebras?
+    It turns out that there's a simple subspace we can consider that vanishes only when \(A\) is a direct sum of matrix algebras.
+    
+    \begin{dfn}{Radical}{}
+        Let \(A\) be an algebra.
+        We call
+        \begin{equation}
+            \Rad A = \{a \in A \mid a \text{ acts as zero on any simple } A \text{-module}\} \subseteq A
+        \end{equation}
+        the \defineindex{radical} of \(A\).
+    \end{dfn}
+    
+    \begin{dfn}{Nilpotent Ideal}{}
+        Let \(A\) be an algebra.
+        We call \(a \in A\) a \define{nilpotent element}\index{nilpotent!element} if there exists some \(k \in \naturals\) such that \(a^k = 0\).
+        A \define{nilpotent ideal}\index{nilpotent!ideal} is an ideal in which all elements are nilpotent.
+    \end{dfn}
+    
+    \begin{prp}{}{}
+        \begin{enumerate}
+            \item \(\Rad A\) is a two-sided ideal.
+            \item If \(A\) is finite dimensional then any nilpotent two-sided ideal is contained in \(\Rad A\).
+            \item \(\Rad A\) is the largest two-sided nilpotent ideal.
+        \end{enumerate}
+        \begin{proof}
+            \begin{enumerate}
+                \item We first show that \(\Rad A\) is a subspace.
+                Let \(V\) be a simple \(A\)-module.
+                Then if \(a, b \in \Rad A\) we have 
+                \begin{equation}
+                    (a + b) \action v = a \action v + b \action v = 0 + 0 = 0
+                \end{equation}
+                for all \(v \in V\), and thus \(\Rad A\) is closed under addition.
+                If \(\lambda \in \field\) we also have
+                \begin{equation}
+                    (\lambda a) \action v = \lambda(a \action v) = \lambda 0 = 0,
+                \end{equation}
+                and so \(\Rad A\) is closed under scalar multiplication.
+                Thus, \(\Rad A\) is a subspace of \(A\).
+                
+                Let \(a \in \Rad A\) and \(b \in A\).
+                Then we know that if \(V\) is a simple \(A\)-module \(a \action v = 0\) for all \(v \in V\).
+                We therefore have
+                \begin{equation}
+                    (ab) \action v = a \action (b \action v) = 0, \qand (ba) \action v = b \action (a \action v) = b \action 0 = 0
+                \end{equation}
+                since \(b \action v \in V\) so \(a\) acts on it by zero, and \(b\) acts linearly so it sends \(0\) to \(0\).
+                Thus, \(ab, ba \in \Rad A\), so \(\Rad A\) is a two-sided ideal.
+                \item Let \(V\) be a simple \(A\)-module and \(I\) a nilpotent ideal.
+                Fix some nonzero \(v \in V\).
+                Then \(I \action v \subseteq V\) is a submodule.
+                By simplicity of \(V\) there are two possibilities
+                \begin{itemize}
+                    \item \(I \action v = V\), and since \(v \in V\) there must be some \(x \in I\) such that \(x \action v = v\), but then we cannot have that \(x^k = 0\) for any \(k \in \naturals\) as we must have \(x^k \action v = v\), so we can't have \(I \action v = V\) if \(I\) is nilpotent;
+                    \item \(I \action v = 0\), in which case every element of \(I\) acts as zero on any element of \(V\), and so \(I \subseteq \Rad A\).
+                \end{itemize}
+                \item % First show that filtrations exist, then prove result
+            \end{enumerate}
+        \end{proof}
+    \end{prp}
     
     % Appdendix
 %	\appendixpage
