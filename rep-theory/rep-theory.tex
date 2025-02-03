@@ -100,6 +100,7 @@ noabbrev
 }
 \newcommand{\trans}{\top}
 \DeclareMathOperator{\Rad}{Rad}
+\DeclareMathOperator{\Irr}{Irr}
 
 \begin{document}
     \frontmatter
@@ -1204,7 +1205,7 @@ noabbrev
         Let \(V\) be a finite dimensional \(A\)-module.
         \begin{enumerate}
             \item If \(V\) is simple then the associated algebra morphism \(r \colon A \to \End V\) is surjective.
-            \item If \(V = \oplus_{i=1^m} V_i\) with the \(V_i\) pairwise nonisomorphic finite dimensional simple \(A\)-modules then
+            \item If \(V = \oplus_{i=1}^m V_i\) with the \(V_i\) pairwise nonisomorphic finite dimensional simple \(A\)-modules then
             \begin{equation}
                 r = \bigoplus_{i=1}^m r_i \colon A \to \bigoplus_{i=1}^m \End V_i
             \end{equation}
@@ -1230,7 +1231,7 @@ noabbrev
         Then the \defineindex{dual module} is \(V^* = \Hom_{\field}(V, \field)\) with the action defined by \((f \action a)(v) = f(a \action v)\) for all \(f \in V^*\), \(a \in A\), and \(v \in V\).
     \end{dfn}
     
-    \begin{thm}{}{}
+    \begin{thm}{}{thm:reps of matrix algebras}
         Let \(\field\) be a field which is not necessarily algebraically closed.
         Let \(A\) be the \(\field\)-algebra given by
         \begin{equation}
@@ -1327,8 +1328,175 @@ noabbrev
                     \item \(I \action v = V\), and since \(v \in V\) there must be some \(x \in I\) such that \(x \action v = v\), but then we cannot have that \(x^k = 0\) for any \(k \in \naturals\) as we must have \(x^k \action v = v\), so we can't have \(I \action v = V\) if \(I\) is nilpotent;
                     \item \(I \action v = 0\), in which case every element of \(I\) acts as zero on any element of \(V\), and so \(I \subseteq \Rad A\).
                 \end{itemize}
-                \item % First show that filtrations exist, then prove result
-            \end{enumerate}
+                \item Let 
+                \begin{equation}
+                    0 = A_0 \subseteq A_1 \subseteq A_1 \subseteq \dotsb \subseteq A_n = A
+                \end{equation}
+                be a filtration of the regular representation of \(A\) such that \(A_{i+1}/A_i\) is simple.
+                Such a filtration exists by \cref{lma:filtrations exist}.
+                
+            \end{enumerate}Let \(x \in \Rad A\), then \(x\) acts on the simple \(A\)-module \(A_{i+1}/A_i\) by zero, and so \(x\) must map any element of \(A_{i+1}\) to some element of \(A_i\), since that will then be sent to zero in the quotient.
+            Thus \(x^n\) acts as zero on all of \(A_n = A\), and so \(\Rad A\) is nilpotent.
+            By the previous part we also know that \(\Rad A\) contains any nilpotent two-sided ideal, and so \(\Rad A\) is the largest two-sided nilpotent ideal (ordered by inclusion).
+        \end{proof}
+    \end{prp}
+    
+    \begin{dfn}{Filtration}{}
+        Let \(V\) be an \(A\)-module.
+        A finite \defineindex{filtration} of \(V\) is a sequence of submodules
+        \begin{equation}
+            0 = V_0 \subseteq V_1 \subseteq \dotsb \subseteq V_n = V.
+        \end{equation}
+    \end{dfn}
+    
+    \begin{lma}{}{lma:filtrations exist}
+        Let \(V\) be a finite dimensional \(A\)-module.
+        Then there is a filtration
+        \begin{equation}
+            0 = V_0 \subseteq V_1 \subseteq \dotsb \subseteq V_n = V
+        \end{equation}
+        for which \(V_{i+1}/V_i\) is a simple \(A\)-module for all \(i\).
+        \begin{proof}
+            We induct on \(\dim V\).
+            If \(\dim V = 0\) then we have the filtration \(0 = V_0 = V\) and we are done.
+            Suppose the result holds for all dimensions less than \(\dim V\).
+            If \(V\) is simple then we have the filtration \(0 = V_0 \subseteq V_1 = V\) and \(V/0 \isomorphic V\) is simple, so we're done.
+            Suppose then that \(V\) is not simple, and pick some nontrivial submodule \(V_1 \subsetneq V\).
+            Take the module \(U = V/V_1\).
+            Since \(V_1 \ne 0\) we know that \(\dim (V / V_1) < \dim V\), and so by the induction hypothesis there is a filtration
+            \begin{equation}
+                0 = U_0 \subseteq U_1 \subseteq \dotsb \subseteq U_{n-1} = U
+            \end{equation}
+            such that \(U_{i+1}/U_i\) is simple.
+            Let \(\pi \colon V \twoheadrightarrow V/V_1\) be the canonical projection.
+            For \(i \ge 2\) define \(V_i = \pi^{-1}(U_i)\) to be the preimage of \(U_i\) under this projection.
+            Then we have the filtration
+            \begin{equation}
+                0 = V_0 \subseteq V_1 \subseteq \dotsb \subseteq V_n = V.
+            \end{equation}
+            
+            Note that here we've used the fact that the preimage under a module morphism of a submodule of the codomain is a submodule of the domain, which can be seen as follows: take \(v \in V_i\) and we have some \(u \in U_i\) such that \(\pi(v) = u\), then
+            \begin{equation}
+                a \action u = a \action \pi(v) = \pi(a \action v) \in U_i
+            \end{equation}
+            which shows that \(a \action v \in V_i\) also, so \(V_i\) is closed under the action of \(A\), and the preimage of a subspace is again a subspace.
+            
+            All we have to do now is show that the given filtration has the desired property.
+            To see that this is indeed the case consider \(V_{i+1}/V_i = \pi^{-1}(U_{i+1})/\pi^{-1}(U_i) \isomorphic \pi^{-1}(U_{i+1}/U_i)\) which shows that \(V_{i+1}/V_i\) is the preimage of a simple module, and must therefore be simple itself, if it wasn't then the image of any nontrivial submodule of \(V_{i+1}/V_i\) would provide a nontrivial submodule of \(U_{i+1}/U_i\).
+         \end{proof}
+    \end{lma}
+    
+    The following result gives us a handle on the number of simple \(A\)-modules in the finite dimensional case.
+    It also shows that given any algebra we can always quotient by the radical to get something isomorphic to a direct sum of endomorphism spaces, which is isomorphic to a direct sum of matrix algebras.
+    In this way the radical consists of the elements which obstruct our attempt to understand \(A\) as being formed from matrix algebras.
+    
+    \begin{ntn}{}{}
+        We write \(\Irr(A)\) for the set of isomorphism classes of simple \(A\)-modules.
+        We further assume that each isomorphism class has some canonical choice of representative, which we'll call \(V_i\), so we can take \(\Irr(A) = \{V_i\}\).
+        We assume that sums over the index \(i\) in \(V_i\) run over all simple \(A\)-modules.
+    \end{ntn}
+    
+    \begin{thm}{}{thm:dimension of A geq dim squared of irreps}
+        Any finite dimensional algebra, \(A\), has only finitely many simple \(A\)-modules, \(V_i\), (up to isomorphism) and
+        \begin{equation}
+            \sum_i (\dim V_i)^2 \le \dim A.
+        \end{equation}
+        Further,
+        \begin{equation}
+            A / \Rad A \isomorphic \bigoplus_i \End V_i.
+        \end{equation}
+        \begin{proof}
+            Let \(V\) be a simple \(A\)-module and take some \(v \in V\) with \(v \ne 0\).
+            Then \(A \action v \ne 0\) since \(1 \in A\) so \(v \in A \action v\).
+            Thus, by simplicity we must have that \(A \action v = V\).
+            Further, \(V\) is finite dimensional since \(A\) is finite dimensional, and if we could construct infinitely many linearly independent elements by acting on \(v\) with elements of \(A\) those infinitely many elements of \(A\) would be linearly independent in \(A\), a contradiction.
+            
+            Now let \(\{V_i\} = \Irr(A)\) be the set of simple \(A\)-modules.
+            Then by \cref{thm:representation maps are surjections} we have a surjection
+            \begin{equation}
+                \bigoplus_i \rho_i \colon A \twoheadrightarrow \End V_i.
+            \end{equation}
+            Thus, we have
+            \begin{align}
+                \dim \left( {\textstyle\bigoplus_{i}} \End V_i\right) &= {\textstyle\sum_i} \dim( \End V_i)\\
+                &= {\textstyle\sum_i} (\dim V_i)^2
+            \end{align}
+            where we've used the fact that the dimension of a direct sum is the sum of the dimensions, and \(\End V\) has dimension \((\dim V)^2\), which can be seen by fixing a basis for \(V\) and considering elements of \(\End V\) as \((\dim V) \times (\dim V)\) matrices.
+            Finally, since the above map is a surjection the dimension is bounded by \(\dim A\), and thus we have
+            \begin{equation}
+                \sum_i (\dim V_i)^2 \le \dim A
+            \end{equation}
+            as claimed.
+            
+            We have that
+            \begin{equation}
+                \ker\left( {\textstyle \bigoplus_i} \, \rho_i \right) = \Rad A
+            \end{equation}
+            since by definition elements of this kernel are sent to the zero map when when they act on each simple module, \(V_i\), and this is exactly the definition of said elements being in \(\Rad A\).
+            Thus, by the first isomorphism theorem we have that
+            \begin{equation*}
+                A/\ker\left( {\textstyle \bigoplus_i} \, \rho_i \right) = A/\Rad A \isomorphic \bigoplus_i \End V_i. \qedhere
+            \end{equation*}
+        \end{proof}
+    \end{thm}
+    
+    We now give a definition of a semisimple algebra.
+    Note that several equivalent definitions are in use, and some of these are covered in \cref{prp:equivalent definitions of semisimple algebra}.
+    
+    \begin{dfn}{Semisimple Algebra}{}
+        A finite dimensional algebra, \(A\), is \define{semisimple}\index{semisimple!algebra} if \(\Rad A = 0\).
+    \end{dfn}
+    
+    \begin{prp}{}{prp:equivalent definitions of semisimple algebra}
+        Let \(A\) be a finite dimensional algebra, then the following are equivalent:
+        \begin{enumerate}[label=(\textsc{\roman*})]
+            \item \(A\) is semisimple, that is \(\Rad A = 0\);
+            \item \(\dim A = \sum_i (\dim V_i)^2\) where \(V_i\) runs over all simple \(A\)-modules;
+            \item \(A \isomorphic \bigoplus_i \matrices{d_i}{\field}\) for some \(d_i \in \naturals\);
+            \item Any finite dimensional \(A\)-module is semisimple.
+            In particular, the regular representation is semisimple.
+        \end{enumerate}
+        \begin{proof}
+            \Step{(i) \(\implies\) (ii)}
+            We have that
+            \begin{equation}
+                A/\Rad A \isomorphic \bigoplus_i \End V_i
+            \end{equation}
+            and taking dimensions we have
+            \begin{equation}
+                \dim(A/\Rad A) = \sum_i (\dim V_i)^2.
+            \end{equation}
+            If \(A\) is semisimple then \(\Rad A = 0\) and this reduces to the equality
+            \begin{equation}
+                \dim A = \sum_i (\dim V_i)^2.
+            \end{equation}
+            
+            \Step{(i) \(\implies\) (iii)}
+            By \cref{thm:dimension of A geq dim squared of irreps} we know that
+            \begin{equation}
+                A/\Rad A \isomorphic \bigoplus_i \End V_i
+            \end{equation}
+            and if \(A\) is semisimple then \(\Rad A = 0\) so this reduces to
+            \begin{equation}
+                A \isomorphic \bigoplus_i \End V_i.
+            \end{equation}
+            Fixing some basis for \(V_i\) we may identify elements of \(\End V_i\) with matrices in \(\matrices{d_i}{\field}\) where \(d_i = \dim V_i\).
+            Thus, we have
+            \begin{equation}
+                A \isomorphic \bigoplus_i \matrices{d_i}{\field}.
+            \end{equation}
+            
+            \Step{(iii) \(\implies\) (iv)}
+            By the second part of \cref{thm:reps of matrix algebras} we have that any finite dimensional \(A\)-module is semisimple.
+            
+            \Step{(iv) \(\implies\) (i)}
+            Consider the regular representation of \(A\) which decomposes as
+            \begin{equation}
+                A \isomorphic \bigoplus_i n_i V_i
+            \end{equation}
+            with \(V_i\) simple and \(n_i \in \integers_{\ge 0}\).
+            Take some \(x \in \Rad A\), then by definition \(x\) acts as zero on each \(V_i\) submodule, and so acts as zero on all of \(A\), in particular \(x \action 1 = 0\).
+            In the regular representation the action of \(x\) is just multiplication, so \(x \action 1 = x1 = x\), thus we must have \(x = 0\), and hence \(\Rad A = 0\).
         \end{proof}
     \end{prp}
     
