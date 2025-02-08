@@ -101,6 +101,7 @@ noabbrev
 \newcommand{\trans}{\top}
 \DeclareMathOperator{\Rad}{Rad}
 \DeclareMathOperator{\Irr}{Irr}
+\DeclareMathOperator{\tr}{tr}
 
 \begin{document}
     \frontmatter
@@ -1499,6 +1500,379 @@ noabbrev
             In the regular representation the action of \(x\) is just multiplication, so \(x \action 1 = x1 = x\), thus we must have \(x = 0\), and hence \(\Rad A = 0\).
         \end{proof}
     \end{prp}
+    
+    One question that we may ask is how many simple \(A\)-modules are there (up to isomorphism)?
+    Of course, if we can find the decomposition \(A \isomorphic \bigoplus_i \End V_i\) then we have answered the question, but we can often answer the question much faster with the following result definition and result.
+    
+    \begin{dfn}{Centre}{}
+        Let \(A\) be an algebra.
+        The \defineindex{centre} of \(A\), denoted \(Z(A)\), is the subalgebra
+        \begin{equation}
+            Z(A) \coloneqq \{a \in A \mid ab = ba \forall b \in A\}.
+        \end{equation}
+    \end{dfn}
+    
+    That is, the centre is the subspace consisting of all elements of \(A\) that commute with all other elements of \(A\).
+    This is clearly a subspace since if \(a, a' \in Z(A)\) then \((a + \lambda a')b = ab + \lambda a'b = ba + \lambda ba' = b(a + \lambda a')\) for all \(b \in A\) and \(\lambda \in \field\).
+    This is in fact a subalgebra since if \(a, a' \in Z(A)\) then \(aa'b = aba' = aa'b\) so \(aa' \in Z(A)\).
+    
+    \begin{lma}{}{}
+        Let \(A\) be a finite dimensional semisimple algebra.
+        Then
+        \begin{equation}
+            \abs{\Irr(A)} = \dim Z(A).
+        \end{equation}
+        \begin{proof}
+            First note that if \(A_1\) and \(A_2\) are algebras then
+            \begin{equation}
+                Z(A_1 \oplus A_2) = Z(A_1) \oplus Z(A_2),
+            \end{equation}
+            since if \((a_1, a_2) \in Z(A_1 \oplus A_2)\) then we have
+            \begin{equation}
+                (a_1, a_2)(b_1, b_2) = (b_1, b_2)(a_1, a_2)
+            \end{equation}
+            for all \(b_1, b_2 \in A_1 \oplus A_2\), and evaluating the left hand side gives \((a_1b_1, a_2b_2)\) and the right hand side gives \((b_1a_1, b_2a_2)\), so this equality holds if and only if \(a_ib_i = b_ia_i\) for all \(b_i \in A_i\), in other words, if \(a_i \in Z(A_i)\) and thus if and only if \((a_1, a_2) \in Z(A_1) \oplus Z(A_2)\).
+            
+            Since \(A\) is semisimple we know that \(\Rad A = 0\), and thus
+            \begin{equation}
+                A/\Rad A = A/0 \isomorphic A \isomorphic \bigoplus_i \End V_i
+            \end{equation}
+            by \cref{thm:dimension of A geq dim squared of irreps}.
+            Thus, we have
+            \begin{equation}
+                Z(A) = \bigoplus_i Z(\End(V_i)).
+            \end{equation}
+            Further, since \(V_i\) is a simple module we know by Schur's lemma (\cref{prp:schurs lemma}) that if an element commutes with all other elements then said element is just scalar multiplication, and further any multiplication by a scalar gives such a map, so
+            \begin{equation}
+                Z(\End V_i) \isomorphic \field.
+            \end{equation}
+            
+            Combining these two results we have
+            \begin{equation}
+                Z(A) \isomorphic \bigoplus_i \field = \abs{\Irr A} \field
+            \end{equation}
+            and so
+            \begin{equation}
+                \dim Z(A) = \abs{\Irr A}
+            \end{equation}
+            where we've used the fact that the sum is indexed by simple \(A\)-modules, so has exactly as many terms as there are simple \(A\)-modules, and of course, \(\dim \field = 1\).
+        \end{proof}
+    \end{lma}
+    
+    Note that if \(A\) is not semisimple then this result no longer holds, since \(A/\Rad A \ncong A\).
+    However, given a simple \(A\)-module, \(V\), we know that all elements of \(\Rad A\) act on \(V\) by zero, and thus there is a corresponding \((A/\Rad A)\)-module \(V'\), which has the same underlying space, but now elements of \(A/\Rad A\) act by \([a] \action v = a \action v\) for any representative \(a\) of this equivalence class.
+    This gives a well-defined action precisely because elements of \(\Rad A\) act by zero, so if \(a'\) is some other representative then \(a - a' \in \Rad A\) and thus \(0 = (a - a') \action v = a \action v - a' \action v\) and thus \(a \action v = a' \action v\) as required.
+    
+    In fact, more generally if \(I\) is an ideal of \(A\) and \(V\) is an \(A\)-module on which all elements of \(I\) act as zero then \(A/I\) acts on \(V\) by \([a] \action v = a \action v\).
+    This can be quite useful when we define algebras via a quotient, first construct an \(A\)-module, \(V\), then show that the ideal \(I \subseteq A\) acts as zero on \(V\), then we automatically get an \((A/I)\)-module structure for \(V\).
+    
+    \chapter{Character Theory}
+    In this chapter we study character theory.
+    The general idea being that for finite dimensional representations we can identify elements of \(A\) with linear maps \(V \to V\) which we can identify with matrices.
+    We can then take the trace of these matrices, which is a nice thing to do because the trace is basis independent, despite the identification of elements and matrices requiring us to pick a basis.
+    We can then learn a surprising amount just looking at these traces, which we call characters.
+    
+    \section{Definitions}
+    \begin{dfn}{Character}{}
+        Let \(A\) be an algebra and \(V\) a finite dimensional \(A\)-module with the corresponding algebra homomorphism \(\rho \colon A \to \End V\).
+        Then the \defineindex{character} of \(V\) is the map
+        \begin{align}
+            \chi_V \colon A &\to \field\\
+            a &\mapsto \chi_V(a) = \tr_V \rho(a)
+        \end{align}
+    \end{dfn}
+    
+    Note that we write \(\tr_V\) to denote the trace of matrices corresponding to elements of \(\End V\) after fixing some basis.
+    We do this because later we'll want to take characters over different modules, and it's helpful to be able to distinguish which space the matrices we're taking the trace of act on.
+    When there's no chance of confusion we'll drop the subscript \(V\).
+    
+    \begin{dfn}{}{}
+        Let \(A\) be an algebra with subalgebras \(B, C \subseteq A\).
+        Then we denote by \(\bracket{B}{C}\) the subspace
+        \begin{equation}
+            \bracket{B}{C} = \Span \{\bracket{b}{c} \mid b \in B \text{ and } c \in C\}
+        \end{equation}
+        where \(\bracket{b}{c} = bc - cb\).
+    \end{dfn}
+    
+    Note that for any \(A\)-module, \(V\), with corresponding character \(\chi_V\), we have \(\bracket{A}{A} \subseteq \ker \chi_V\), since
+    \begin{align}
+        \chi_V(\bracket{a}{b}) &= \tr(\rho(\bracket{a}{b}))\\
+        &= \tr(\rho(a)\rho(b) - \rho(b)\rho(a))\\
+        &= \tr(\rho(a)\rho(b)) - \tr(\rho(b)\rho(a))\\
+        &= \tr(\rho(a)\rho(b)) - \tr(\rho(a)\rho(b))\\
+        &= 0,
+    \end{align}
+    having used the cyclic property of the trace.
+    Thus \(\bracket{a}{b} \in \ker \chi_V\) for all \(a, b \in A\), and since the kernel is a subspace any linear combination of commutators will also vanish under \(\chi_V\), showing that \(\bracket{A}{A} \subseteq \ker \chi_V\).
+    
+    This tells us that the character also gives a well-defined map
+    \begin{equation}
+        \tilde{\chi}_V \colon A / \bracket{A}{A} \to \field
+    \end{equation}
+    defined by
+    \begin{equation}
+        \tilde{\chi}_V([a]) = \chi_V(a) = \tr_V(\rho(a)).
+    \end{equation}
+    In fact, it will prove more useful to define the character to be such a map.
+    This allows us to view the character as an element of the dual space
+    \begin{equation}
+        \tilde{\chi}_V \in (A/\bracket{A}{A})^* = \hom_{\field}(A/\bracket{A}{A}, \field).
+    \end{equation}
+    We will do this, and do not distinguish between \(\chi_V\) and \(\tilde{\chi}_V\) in the notation.
+    
+    This is a useful thing to do because now the characters live in a vector space, and that lets us do linear-algebra-things to them, like look for a basis of this space.
+    
+    \begin{thm}{}{}
+        Let \(A\) be a finite dimensional algebra.
+        The characters of distinct finite-dimensional simple \(A\)-modules are linearly independent in \((A/\bracket{A}{A})^*\).
+        Further, if \(A\) is finite dimensional and semisimple then the characters of simple \(A\)-modules provide a basis for \((A/\bracket{A}{A})^*\).
+        \begin{proof}
+            \Step{Linear Independence}
+            Let that \(A\) be a finite dimensional (not necessarily semisimple) algebra.
+            Then there is a finite number, \(n\), of simple \(A\)-modules, \(V_i\) for \(i = 1, \dotsc, n\), with corresponding algebra homomorphisms \(\rho_i \colon A \to \End V_i\).
+            Then by the density theorem we have a surjection
+            \begin{equation}
+                \rho_1 \oplus \dotsb \oplus \rho_n \colon A \twoheadrightarrow \End V_1 \oplus \dotsb \oplus \End V_n.
+            \end{equation}
+            Suppose that
+            \begin{equation}
+                \sum_i \lambda_i \chi_{V_i} = 0
+            \end{equation}
+            with \(\lambda_i \in \field\).
+            If \(a \in A\) we must therefore have
+            \begin{equation}
+                \sum_i \lambda_i \chi_{V_i}(a) = 0.
+            \end{equation}
+            Now take some arbitrary \(M \in \End V_1 \oplus \dotsb \oplus \End V_n\), which we view as a matrix by fixing some basis, which fixes a basis for each \(V_i\).
+            We can then identify that \(M = M_1 \oplus \dotsb \oplus M_n\), where each \(M_i \in \End V_i\) is viewed as a matrix through the corresponding fixed basis.
+            We can then consider the sum
+            \begin{equation}
+                \sum_i \lambda_i \tr_{V_i} M_i
+            \end{equation}
+            where the \(\lambda_i\) are the same coefficients as before.
+            By surjectivity of \(\rho_1 \oplus \dotsb \oplus \rho_n\) we know that there is some \(a \in A\) such that \(M = (\rho_1 \oplus \dotsb \oplus \rho_n)(a)\), and thus \(M_i = \rho_i(a)\).
+            This then gives that the sum above is
+            \begin{equation}
+                \sum_i \lambda_i \tr_{V_i}(\rho_i(a)) = \sum_i \lambda_i \chi_{V_i}(a) = 0.
+            \end{equation}
+            Now, we are free to choose \(M\), and hence \(M_i\), such that \(\tr_{V_i} M_i\) takes on any value in \(\field\), which means that the only way this equation can hold for an arbitrary choice of \(M\) is if \(\lambda_i = 0\) for all \(i = 1, \dotsc, n\).
+            Thus, the \(\chi_{V_i}\) are linearly independent.
+            
+            \Step{Basis}
+            Now suppose that \(A\) is a finite dimensional semisimple algebra.
+            We have shown that the characters, \(\chi_{V_i}\), corresponding to simple \(A\)-modules, are linearly independent elements of \((A/\bracket{A}{A})^*\).
+            We now show that they are also a spanning set of \((A / \bracket{A}{A})^*\).
+            
+            Since \(A\) is semisimple we have that
+            \begin{equation}
+                A \isomorphic \bigoplus_{i=1}^n \matrices{d_i}{\field}
+            \end{equation}
+            where \(d_i = \dim V_i\).
+            We have the following well known fact about derived subalgebras of Lie algebras (\cref{lma:derived subalgebra of gln}):
+            \begin{equation}
+                \bracket{\matrices{d}{\field}}{\matrices{d}{\field}} = \bracket{\generalLinearLie_{d_i}(\field)}{\generalLinearLie_{d_i}(\field)} = (\generalLinearLie_{d_i}(\field))' = \specialLinearLie_d(\field).
+            \end{equation}
+            The Lie algebra \(\specialLinearLie_d(\field)\) consists precisely of the \(d \times d\) matrices over \(\field\) with zero trace.
+            Further, for algebra \(B\) and \(C\), we have
+            \begin{equation}
+                \bracket{B \oplus C}{B \oplus C} = \bracket{B}{B} \oplus \bracket{C}{C}, 
+            \end{equation}
+            which follows immediately by linearity.
+            Thus, we have
+            \begin{equation}
+                \bracket{A}{A} \isomorphic \bigoplus_{i=1}^n \specialLinearLie_{d_i}(\field).
+            \end{equation}
+            It then follows that
+            \begin{align}
+                A / \bracket{A}{A} &\isomorphic \left( \bigoplus_{i=1}^n \matrices{d_i}{\field} \right) / \left( \bigoplus_{i=1}^n \specialLinearLie_{d_i}(\field) \right)\\
+                &= \left( \bigoplus_{i=1}^n \generalLinearLie_{d_i}(\field) \right) / \left( \bigoplus_{i=1}^n \specialLinearLie_{d_i}(\field) \right)\\
+                &\isomorphic \bigoplus_{i=1}^n \generalLinearLie_{d_i}(\field)/\specialLinearLie_{d_i}(\field)\\
+                &\isomorphic \bigoplus_{i=1}^n \field\\
+                &= \field^n.  
+            \end{align}
+            This shows that we have \(n\)-linearly independent elements, \(\chi_{V_i}\), and \(\dim(A/\bracket{A}{A}) = n\), so these linearly independent elements are actually a basis.
+        \end{proof}
+    \end{thm}
+    
+    \begin{lma}{}{lma:derived subalgebra of gln}
+        The derived subalgebra of \(\generalLinearLie_n(\field)\) is \(\specialLinearLie_n(\field)\).
+        \begin{proof}
+            First note that \(\generalLinearLie_n(\field) = \matrices{n}{\field}\) is the (Lie algebra) of \(n \times n\) matrices with entries in \(\field\).
+            The elementary matrices, \(E_{ij}\), form a basis of \(\generalLinearLie_n(\field)\).
+            Note that \(E_{ij}\), for \(i, j = 1, \dotsc, n\), are matrices which are zero everywhere except in row \(i\) and column \(j\), where they have a \(1\).
+            So, it is sufficient to show that the commutator of any two elementary matrices is in \(\specialLinearLie_n(\field)\), and then any linear span of such commutators will be in \(\specialLinearLie_n(\field)\).
+            To do this first note that
+            \begin{equation}
+                E_{ij}E_{kl} = \delta_{jk} E_{il}.
+            \end{equation}
+            Then we have
+            \begin{align}
+                \bracket{E_{ij}}{E_{kl}} &= E_{ij}E_{kl} - E_{kl}E_{ij}\\
+                &= \delta_{jk}E_{il} - \delta_{li}E_{kj}.
+            \end{align}
+            Now we consider cases:
+            \begin{enumerate}
+                \item if \(i \ne l\) and \(j \ne k\) we get \(0\);
+                \item if \(l \ne i\) and \(j = k\) we get \(E_{il}\);
+                \item if \(l = i\) and \(j \ne k\) we get \(-E_{kj}\);
+                \item if \(i = l\) and \(j = k\) we get \(E_{ii} - E_{jj}\).
+            \end{enumerate}
+            We see that in each case the matrix we get is traceless, specifically in the last case if \(i \ne j\) then the diagonal contains a \(1\) and a \(-1\), and if \(i = j\) then we have zero, and the second and third case have zero on the diagonal since \(i \ne l\) and \(k \ne j\) in these two cases.
+            Thus, each matrix we get from \(\bracket{E_{ij}}{E_{kl}}\) is an element of \(\specialLinearLie_n(\field)\).
+        \end{proof}
+    \end{lma}
+    
+    \begin{lma}{}{}
+        Characters are invariant under isomorphism.
+        \begin{proof}
+            Let \(V\) and \(W\) be isomorphic finite dimensional \(A\)-modules.
+            Then \(V\) and \(W\) are related by an isomorphism, \(V \to W\), but fixing bases for both we can view this isomorphism as a basis change, and the character is independent of basis choice.
+        \end{proof}
+    \end{lma}
+    
+    \begin{lma}{}{lma:character and quotient}
+        Let \(V\) be a finite dimensional \(A\)-module, and let \(W \subseteq V\) be a submodule.
+        Then
+        \begin{equation}
+            \chi_V = \chi_W + \chi_{V/W}.
+        \end{equation}
+        \begin{proof}
+            Fix a basis for \(W\) and extend this to a basis of \(V\).
+            This can be done since \(V = W \oplus V/W\) as vector spaces.
+            Then any linear map \(\varphi \colon V \to V\) such that \(\varphi(W) \subseteq W\) decomposes into a linear map \(W \to W\) and a linear map \(V/W \to V/W\).
+            Since \(W\) is a submodule \(\rho(a)\) is exactly such a linear map for all \(a \in A\), and thus
+            \begin{equation}
+                \tr_V \rho(a) = \tr_W \rho(a) + \tr_{V/W} \rho(a),
+            \end{equation}
+            and so
+            \begin{equation*}
+                \chi_V = \chi_W + \chi_{V/W}. \qedhere
+            \end{equation*}
+        \end{proof}
+    \end{lma}
+    
+    \section{Jordan--H\"older and Krull--Schmidt Theorems}
+    We can now prove two standard results about filtrations using character theory.
+    
+    \begin{thm}{Jordan--H\"older}{}
+        Let \(V\) be a finite dimensional \(A\)-module with filtrations
+        \begin{equation}
+            0 = V_0 \subseteq V_1 \subseteq \dotsb \subseteq V_n = V
+        \end{equation}
+        and
+        \begin{equation}
+            0 = V_0' \subseteq V_1' \subseteq \dotsb \subseteq V_m' = V
+        \end{equation}
+        such that \(W_i = V_i/V_{i-1}\) and \(W'_{i} = V_i'/V'_{i-1}\) are simple.
+        Then
+        \begin{enumerate}
+            \item \(n = m\); and
+            \item There exists some \(\sigma \in S_n\) such that \(W_i \isomorphic W'_{\sigma(i)}\), that is, the two series give rise to the same simple \(A\)-modules (up to isomorphism), but possibly in different orders.
+        \end{enumerate}
+        \begin{proof}
+            ~
+            \begin{wrn}
+                This proof holds only in characteristic 0.
+                The result does hold in general though, and can be proven in positive characteristic by induction on the dimension of \(V\).
+                The problem in characteristic \(p\) is that the coefficients only end up being determined \(\bmod p\).
+            \end{wrn}
+            
+            Consider the character \(\chi_V\).
+            Using the first series and \cref{lma:character and quotient} we know that
+            \begin{equation}
+                \chi_V = \bigoplus_{i=1}^n \chi_{W_i},
+            \end{equation}
+            and using the second series we know that
+            \begin{equation}
+                \chi_V = \bigoplus_{i=1}^m \chi_{W'_i}.
+            \end{equation}
+            Since the characters of the simple \(A\)-modules form a basis of \((A/\bracket{A}{A})^*\) any decomposition such as the above must be unique, and thus we have \(n = m\) and there is some permutation, \(\sigma \in S_n\) such that \(\chi_{W_i} = \chi_{W'_{\sigma(i)}}\), and thus \(W_i \isomorphic W'_{\sigma(i)}\).
+        \end{proof}
+    \end{thm}
+    
+    \begin{dfn}{Jordan--H\"older Series}{}
+        Given a finite dimensional \(A\)-module, \(V\), admitting a filtration
+        \begin{equation}
+            0 = V_0 \subseteq V_1 \subseteq \dotsb \subseteq V_n = V
+        \end{equation}
+        such that \(V_i/V_{i-1}\) are simple we call \(n\) the \defineindex{length} of \(V\), and the set of simple modules \(\{V_i/V_{i-1}\}\) is called the \defineindex{Jordan--H\"older series} of \(V\).
+    \end{dfn}
+    
+    Note that by the Jordan--H\"older theorem the length and Jordan--H\"older series are well-defined, being independent of the choice of filtration, so long as the quotient of successive modules is simple.
+    
+    The following result holds for finite length modules.
+    Note that finite length is a strictly weaker condition than finite dimension, since finite dimension guarantees the existence of 
+    
+    \begin{thm}{Krull--Schmidt}{}
+        Every finite length \(A\)-module, \(V\), is a direct sum of indecomposable modules.
+        Further, this decomposition is unique up to isomorphism and permutation of the summands.
+        \begin{proof}
+            \Step{Existence}
+            Let \(V\) be a finite length \(A\)-module.
+            We may suppose that \(V = V_1 \oplus V_2\) with \(V_i\) \(A\)-modules, and without loss of generality we assume that \(V_1\) cannot be written as a sum of indecomposables.
+            Then we must be able to decompose \(V_1\) again.
+            Continuing on we see that this gives rise to an infinite length filtration, contradicting the assumption that \(V\) has finite length.
+            
+            \Step{Uniqueness}
+            We make use of \cref{lma:endomorphisms of fin dim indecomposable are iso or nilpotent}.
+            Using this result take two decompositions into indecomposables
+            \begin{equation}
+                V = V_1 \oplus \dotsb \oplus V_m = V_1' \oplus \dotsb \oplus V_m'.
+            \end{equation}
+            We will prove that \(V_k \isomorphic V'_k\) for some \(k\).
+            Let
+            \begin{equation}
+                i_k \colon V_k \hookrightarrow V, \qqand i'_k \colon V'_k \hookrightarrow V
+            \end{equation}
+            be the natural inclusions, and
+            \begin{equation}
+                p_k \colon V \twoheadrightarrow V_k, \qand p'_k \colon V \twoheadrightarrow V'_k
+            \end{equation}
+            be the natural projections.
+            Then we have the map
+            \begin{equation}
+                \theta_k \colon p_1 \circ i'_k \circ p'_k \circ i_1 \colon V_1 \to V_1,
+            \end{equation}
+            which is a composite of module morphisms, so is itself a module morphism.
+            We also have that \(\sum_k \theta_k = \id_V\), since summing over all \(k\) the image of \(i'_k \circ p'_k\) in the middle runs over all of \(V\),
+            We know that \(\id_V\) is not nilpotent, so by the contrapositive of \cref{lma:endomorphisms of fin dim indecomposable are iso or nilpotent} we know that at least one of the \(\theta_k\)s must be an isomorphism.
+            Without loss of generality we assume that \(\theta_1\) is an isomorphism.
+            Then we have that
+            \begin{equation}
+                V_1 = \im(p'_1 \circ i_1) \oplus \ker(p_1 \circ i'_1),
+            \end{equation}
+            but \(V_1\) is indecomposable, so \(p'_1 \circ i_1 \colon V_1 \to V_1'\) must be an isomorphism.
+            We may then consider \(V_2 \oplus \dotsb V_m \isomorphic V'_2 \oplus \dotsb V_m\), and by the same logic we may take \(V_2 \isomorphic V'_2\).
+            Repeating this eventually terminates after \(m\) applications.
+        \end{proof}
+    \end{thm}
+    
+    
+    
+    \begin{lma}{}{lma:endomorphisms of fin dim indecomposable are iso or nilpotent}
+        Let \(W\) be a finite dimensional indecomposable \(A\)-module.
+        Then
+        \begin{enumerate}
+            \item any module morphism \(\theta \colon W \to W\) is either an isomorphism or nilpotent;
+            \item if \(\theta_i \colon W \to W\) for \(i = 1, \dotsc, n\) is a set of nilpotent module morphisms then \(\theta = \sum_i \theta_i\) is also a nilpotent module morphism.
+        \end{enumerate}
+        \begin{proof}
+            We work over an algebraically closed field, thus \(W\) splits into a sum of generalised eigenspaces.
+            These are submodules of \(W\).
+            Thus, \(\theta\) can have only one eigenvalue, call it \(\lambda\).
+            If \(\lambda = 0\) then \(\theta\) is nilpotent, and if \(\lambda \ne 0\) then \(\theta\) is an isomorphism.
+            
+            We prove that the sum of nilpotents is nilpotent by induction on \(n\).
+            For the base case, \(n = 1\), we clearly have that \(\theta = \theta_1\) is nilpotent.
+            Suppose then that the hypothesis holds up to \(n\) summands, and that at \(n\) summands \(\theta\) is not nilpotent.
+            Then \(\theta\) must be an isomorphism, and thus its inverse exists, and we have \(\id_W = \theta \theta^{-1} = \theta^{-1} \sum_{i=1}^n \theta_i = \sum_{i=1}^n \theta^{-1}\theta_i\).
+            Since the morphisms \(\theta^{-1}\theta_i\) are not isomorphisms they are nilpotent, and thus \(\id_W - \theta^{-1}\theta_n = \theta^{-1}\theta_1 + \dotsb + \theta^{-1}\theta_{n-1}\) is an isomorphism, but it's also a sum of \(n - 1\) nilpotents, so it should be nilpotent, a contradiction.
+            Thus by induction any such sum of nilpotents is itself nilpotent.
+        \end{proof}
+    \end{lma}
+    
+    
     
     % Appdendix
 %	\appendixpage
