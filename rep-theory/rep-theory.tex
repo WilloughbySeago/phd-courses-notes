@@ -102,6 +102,7 @@ noabbrev
 \DeclareMathOperator{\Rad}{Rad}
 \DeclareMathOperator{\Irr}{Irr}
 \DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Char}{char}
 
 \begin{document}
     \frontmatter
@@ -1872,7 +1873,98 @@ noabbrev
         \end{proof}
     \end{lma}
     
+    \section{Tensor Products}
+    Let \(A\) and \(B\) be \(\field\)-algebras.
+    Then \(A \otimes_{\field} B\) is also a \(\field\)-algebra when equipped with the product
+    \begin{equation}
+        (a \otimes b)(a' \otimes b') = aa' \otimes bb'
+    \end{equation}
+    for \(a, a' \in A\) and \(b, b' \in B\).
     
+    \begin{thm}{}{}
+        Let \(A\) and \(B\) be \(\field\)-algebras.
+        Let \(V\) be a simple finite dimensional \(A\)-module, and \(W\) a simple finite dimensional \(B\)-module.
+        Then \(V \otimes_{\field} W\) is a simple \((A \otimes_{\field} B)\)-module.
+        Further, any finite dimensional simple \((A \otimes_{\field} B)\)-module is of this form with \(V\) and \(W\) unique.
+        \begin{proof}
+            By the density theorem we have surjections \(A \twoheadrightarrow \End V\) and \(B \twoheadrightarrow \End W\).
+            Thus, we have a surjection
+            \begin{equation}
+                A \otimes B \twoheadrightarrow \End V \otimes \End W \isomorphic \End(V \otimes W).
+            \end{equation}
+            Thus, \(V \otimes W\) must be simple, as any submodules would only arise as submodules of \(V\) and \(W\).
+            
+            Now suppose that \(U\) is a simple \((A \otimes B)\)-module, and let \(A'\) and \(B'\) denote the images of \(A\) and \(B\) in \(\End U\).
+            Then \(A'\) and \(B'\) are finite dimensional, and we can assume without loss of generality that \(A\) and \(B\) are also finite dimensional.
+            By \cref{clm:rad of tensor product} we have that
+            \begin{equation}
+                \Rad(A \otimes B) = \Rad(A) \otimes B + A \otimes \Rad(B)
+            \end{equation}
+            and thus, we have
+            \begin{equation}
+                (A \otimes B)/\Rad(A \otimes B) = A/\Rad(A) \otimes B/\Rad(B).
+            \end{equation}
+            Since all of the algebras in question are matrix algebras the assertion follows.
+        \end{proof}
+    \end{thm}
+    
+    \begin{clm}{}{clm:rad of tensor product}
+        For \(\field\)-algebras \(A\) and \(B\) we have
+        \begin{equation}
+            \Rad(A \otimes B) = \Rad(A) \otimes B + A \otimes \Rad(B).
+        \end{equation}
+        \begin{proof}
+            Consider the simple module \(V \otimes W\), where \(V\) is a simple \(A\)-module and \(W\) is a simple \(B\)-module.
+            We know that if \(a \otimes b \in \Rad(A \otimes B)\) then \(a \otimes b\) acts as zero on \(V \otimes W\).
+            We also know that if \(v \otimes w \in V \otimes W\) then \(a \otimes b\) acts as
+            \begin{equation}
+                (a \otimes b) \action (v \otimes w) = (a \action v) \otimes (b \action w).
+            \end{equation}
+            If this is to vanish then it must be that either \(a \action v = 0\) or \(b \action w = 0\).
+            Thus, \(a \in \Rad A\) or \(b \in \Rad B\), and so \(a \otimes b \in \Rad A \otimes B + A \otimes \Rad B\).
+            Conversely, clearly any element of this set acts trivially on \(V \otimes W\), and thus we have containment the other way.
+        \end{proof}
+    \end{clm}
+    
+    \chapter{Representation Theory of Finite Groups}
+    Throughout this chapter \(G\) will be a finite group.
+    
+    In this chapter we will look at representations of finite groups.
+    We have already developed much of the required theory because group representations, \(\rho \colon G \to \generalLinear(V)\), are in one-to-one correspondence with \(\field G\)-modules.
+    Note that we write \(G\)-module and \(\Hom_{G}(V, W)\) for \(\field G\)-module and \(\Hom_{\field G}(V, W)\).
+    
+    \section{Maschke's Theorem}
+    \begin{thm}{Maschke}{}
+        Let \(\Char \field\) be coprime to \(\abs{G}\).
+        Then
+        \begin{enumerate}
+            \item \(\field G\) is semisimple;
+            \item \(\field G \isomorphic \bigoplus_i \End V_i\) with the isomorphism given on the basis by \(g \mapsto \bigoplus_i \rho_i(g)\) where \(\rho_i \colon G \to \generalLinear(V_i)\) are the irreducible representations of \(G\).
+        \end{enumerate}
+        \begin{proof}
+            We know that semisimplicity of \(\field G\) implies that \(\field G\) decomposes as in the second point (\cref{prp:equivalent definitions of semisimple algebra}), so we need only show that \(\field G\) is semisimple.
+            
+            To prove that \(\field G\) is semisimple it is sufficient to prove that given a \(G\)-module, \(V\), and a \(G\)-submodule \(W \subseteq V\) there is some \(G\)-submodule, \(W'\) such that \(V = W \oplus W'\).
+            This will show that any finite-dimensional \(\field G\)-module is semisimple, and hence that \(\field G\) is semisimple by \cref{prp:equivalent definitions of semisimple algebra}.
+            
+            Given a \(G\)-module, \(V\), and a \(G\)-submodule, \(W\), we always have \emph{as vector spaces} some \(\overbar{W} \subseteq V\) such that \(V = W \oplus \overbar{W}\).
+            We will construct from \(\overbar{W}\) a \(G\)-submodule \(W'\) such that \(V = W \oplus W'\).
+        \end{proof}
+    \end{thm}
+    
+    \begin{crl}{}{}
+        We have
+        \begin{equation}
+            \field G \isomorphic \bigoplus_i (\dim V_i) V_i
+        \end{equation}
+        and
+        \begin{equation}
+            \abs{G} = \sum_i (\dim V_i)^2.
+        \end{equation}
+        \begin{proof}
+            This is simply Maschke's theorem applied to the regular representation, which is just \(G\) acting on itself by multiplication, where we've used \(\abs{G} = \dim \field G\).
+        \end{proof}
+    \end{crl}
     
     % Appdendix
 %	\appendixpage
