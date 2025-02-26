@@ -1949,6 +1949,53 @@ noabbrev
             
             Given a \(G\)-module, \(V\), and a \(G\)-submodule, \(W\), we always have \emph{as vector spaces} some \(\overbar{W} \subseteq V\) such that \(V = W \oplus \overbar{W}\).
             We will construct from \(\overbar{W}\) a \(G\)-submodule \(W'\) such that \(V = W \oplus W'\).
+            
+            Let \(p \colon V \twoheadrightarrow W\) be projection onto the subspace \(W\).
+            That is, \(p|_W = \id_W\) and \(p|_{\overbar{W}} = 0\).
+            We may define
+            \begin{equation}
+                P = \frac{1}{\abs{G}} \sum_{g \in G} \rho(g) p \rho(g)^{-1}
+            \end{equation}
+            where \(\rho \colon G \to \generalLinear(V)\) is our representation map.
+            Now consider \(W' = \ker P\).
+            We claim that \(W'\) is a submodule and \(V = W \oplus W'\).
+            
+            To verify these we need to show that \(G \action W' \subseteq W'\) and that \(P\) is projection onto \(W\).
+            Suppose that \(w \in W'\), that is \(Pw = 0\).
+            Then for \(h \in G\) we have
+            \begin{align}
+                P(h \action w) &= P\rho(h)w\\
+                &= \frac{1}{\abs{G}} \sum_{g \in G} \rho(g) p \rho(g)^{-1}\rho(h)w\\
+                &= \frac{1}{\abs{G}} \sum_{g \in G} \rho(g) p \rho(g^{-1}h) w\\
+                &= \frac{1}{\abs{G}} \sum_{g' \in G} \rho(hg') p \rho(g'^{-1}) w\\
+                &= \rho(h) \frac{1}{\abs{G}} \sum_{g' \in G} \rho(g') p \rho(g'^{-1}) w\\
+                &= \rho(h) P w\\
+                &= 0
+            \end{align}
+            where we've reparametrised the sum using \(g'^{-1} = g^{-1}h\), so \(g' = h^{-1} g\) and \(g = hg'\).
+            This is a common trick when dealing with sums over group elements like this one.
+            We have successfully shown that \(h \action w \in \ker P\) if \(w \in \ker P\), and thus \(h \action w \in W'\).
+            
+            We can now verify that \(P\) is a projection onto \(W\).
+            For this we have to show that \(P|_W = \id_W\), and \(P(V) \subseteq W\), which combined imply that \(P^2 = P\).
+            For the first if \(w \in W\) consider
+            \begin{equation}
+                Pw = \frac{1}{\abs{G}} \sum_{g \in G} \rho(g) p \rho(g)^{-1}w.
+            \end{equation}
+            Since \(W\) is a submodule we know that \(\rho(g)^{-1}w \in W\), then since \(p\) is a projection onto \(W\) we know that \(p\rho(g)^{-1}w = \rho(g)^{-1}w\), and thus \(\rho(g)p\rho(g)^{-1}w = \rho(g)\rho(g)^{-1}w = w\).
+            So, the sum reduces to
+            \begin{equation}
+                Pw = \frac{1}{\abs{G}} \sum_{g \in G} w = \frac{\abs{G}}{\abs{G}} w = w.
+            \end{equation}
+            Thus, \(P|_W = \id_W\) as claimed.
+            Now we can show that \(P(V) \subseteq W\).
+            For \(v \in V\) consider
+            \begin{equation}
+                Pv = \frac{1}{\abs{G}} \sum_{g \in G} \rho(g) p \rho(g)^{-1}v.
+            \end{equation}
+            By definition \(V\) is closed under the action of \(g\), so \(\rho(g)^{-1}v \in V\), then by definition \(p \rho(g)^{-1} v \in W\), and since \(W\) is a submodule \(\rho(g)p\rho(g)^{-1} v \in W\) for all \(g \in G\).
+            Submodules are closed under taking linear combinations, so \(Pv \in W\).
+            Thus, \(P\) is a projection onto \(W\), and so we have the decomposition of vector spaces \(V = W \oplus W'\), and we've already shown that \(W'\) is actually a submodule, so this is a decomposition of \(G\)-modules.
         \end{proof}
     \end{thm}
     
@@ -1965,6 +2012,41 @@ noabbrev
             This is simply Maschke's theorem applied to the regular representation, which is just \(G\) acting on itself by multiplication, where we've used \(\abs{G} = \dim \field G\).
         \end{proof}
     \end{crl}
+    
+    The converse of Maschke's theorem holds also.
+    
+    \begin{prp}{}{}
+        If \(\field G\) is semisimple then \(\Char \field\) and \(\abs{G}\) are coprime.
+        \begin{proof}
+            By Maschke's theorem we can write
+            \begin{equation}
+                \field G \isomorphic \bigoplus_{i=1}^r \End V_i
+            \end{equation}
+            where the \(V_i\) are simple \(G\)-modules and \(V_1 = \field\) is the trivial representation.
+            Then we have
+            \begin{equation}
+                \field G \isomorphic \field \oplus \bigoplus_{i=2}^r \End V_i \isomorphic \field \oplus \bigoplus_{i=2}^r d_i V_i
+            \end{equation}
+            with \(d_i = \dim V_i\).
+            Schur's lemma then tells us that every homomorphism of \(G\)-modules \(\field \to \field G\) is a scalar multiple of some fixed homomorphism \(\Lambda \colon \field \to \field G\), and every \(G\)-module homomorphism \(\field G \to \field\) is a scalar multiple of some fixed homomorphism \(\varepsilon \colon \field G \to \field\).
+            More symbolically, the hom-spaces \(\Hom_{\field G}(\field, \field G)\) and \(\Hom_{\field G}(\field G, \field)\) are one-dimensional with bases \(\Lambda\) and \(\varepsilon\) respectively, so are simply \(\field \Lambda\) and \(\field \varepsilon\).
+            We are free to choose these maps to be such that \(\varepsilon(g) = 1\) for all \(g \in G\), and \(\Lambda(1) = \sum_{g \in G} g\).
+            Then we have
+            \begin{equation}
+                \varepsilon(\Lambda(1)) = \varepsilon\left( {\textstyle \sum_{g \in G}} g \right) = \sum_{g \in G} \varepsilon(g) = \sum_{g \in G} 1 = \abs{G}.
+            \end{equation}
+            Now, if \(\abs{G} = kp\) where \(p = \Char \field\) then \(\abs{G} = 0\) in \(\field G\) and so this sum says that \(\varepsilon \circ \Lambda(1) = 0\), which means that \(\Lambda\) has no left-inverse since \(a \varepsilon \circ \Lambda(1) = 0\) for all \(a \in \field\), which rules out all maps \(\field G \to \field\) (since all are of the form \(a\varepsilon\) for some \(a \in \field\)) as inverses for \(\Lambda\), since these would have to give \(a \varepsilon \circ \Lambda(1) = 1\).
+        \end{proof}
+    \end{prp}
+    
+    \begin{exm}{}{}
+        Consider \(G = \integers/p\integers\), and \(\field\) a field of characteristic \(p\).
+        Clearly, \(\Char \field = p\) and \(\abs{G} = p\) are not coprime.
+        
+        A consequence of this is that every simple \(\integers/p\integers\)-module over \(\field\) is trivial.
+        This follows because \(x^p - 1 = (x - 1)^p\) over \(\field\).
+    \end{exm}
+    
     
     % Appdendix
 %	\appendixpage
