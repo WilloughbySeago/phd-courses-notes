@@ -5,6 +5,7 @@
 
 \usepackage{csquotes}
 \usepackage{enumitem}
+\usepackage{ytableau}
 
 \usepackage{tikz}
 \usetikzlibrary{external}
@@ -60,6 +61,8 @@ noabbrev
 \newcommand{\ModA}[1][A]{\c@egory{Mod}\text{-}#1}
 \newcommand{\Ab}{\c@egory{Ab}}
 \newcommand{\Rep}{\c@egory{Rep}}
+\newcommand{\Set}{\c@egory{Set}}
+\newcommand{\Alg}[1][\field]{{#1}\text{-}\c@egory{Alg}}
 \makeatother
 \DeclareMathOperator{\im}{im}
 \newcommand{\isomorphic}{\cong}
@@ -103,6 +106,11 @@ noabbrev
 \DeclareMathOperator{\Irr}{Irr}
 \DeclareMathOperator{\tr}{tr}
 \DeclareMathOperator{\Char}{char}
+\newcommand{\classFunctions}{\symcal{X}}
+\newcommand{\conjugacyClasses}{\symcal{C}}
+\DeclareMathOperator{\Func}{Func}
+\newcommand{\partition}{\vdash}
+\DeclarePairedDelimiterX{\innerprod}[2]{\langle}{\rangle}{#1, #2}
 
 \begin{document}
     \frontmatter
@@ -2044,9 +2052,391 @@ noabbrev
         Clearly, \(\Char \field = p\) and \(\abs{G} = p\) are not coprime.
         
         A consequence of this is that every simple \(\integers/p\integers\)-module over \(\field\) is trivial.
-        This follows because \(x^p - 1 = (x - 1)^p\) over \(\field\).
+        This follows because in a finite group of order \(p\) we have that \(x^p = 1\), so \(x^p - 1\) acts as zero, but over a field of characteristic \(p\) we have that \(x^p - 1 = (x - 1)^p\), and thus \((x - 1)^p\) acts as zero, so \(x - 1\) acts as \(0\) (as \(0\) is the only element of the group which doesn't act as \(1\) when raised to the power of \(p\)), so \(x\) must act as \(1\).
     \end{exm}
     
+    \section{Group Characters}
+    \begin{dfn}{Group Character}{}
+        Let \(G\) be a group and \(\rho \colon G \to \generalLinear(V)\) a representation on a finite dimensional space, \(V\).
+        Then the \defineindex{character} of \(V\) is the map
+        \begin{align}
+            \chi_V \colon G \to \field\\
+            & g \mapsto \chi_V(g) = \tr_V(\rho(g)).
+        \end{align}
+    \end{dfn}
+    Of course, if \(\tilde{\chi}_V \colon \field G \to \field\) is the character of the corresponding representation of the group algebra \(\field G\) then \(\chi_V = \tilde{\chi}_V|_G\), viewing \(G\) as a subset of \(\field G\) in the canonical way (i.e., restricting to the canonical basis).
+    
+    \begin{dfn}{Class Function}{}
+        Let \(G\) be a group.
+        A \defineindex{class function} of \(G\) is a map \(f \colon G \to \field\) such that \(f(g) = f(hgh^{-1})\) for all \(g, h \in G\).
+        We write
+        \begin{equation}
+            \classFunctions(G) = \{f \colon G \to \field \mid f(g) = f(hgh^{-1}) \forall g, h \in G\}
+        \end{equation}
+        for the set of all class functions.
+    \end{dfn}
+    
+    That is, class functions are functions which are invariant under conjugation of their argument.
+    Another way of putting this, which explains the name, is that class functions are exactly those functions which are constant on each conjugacy class.
+    Because of this we can identify
+    \begin{equation}
+        \classFunctions(G) \isomorphic_{\Set} \Func(\conjugacyClasses(G), \field)
+    \end{equation}
+    where \(\conjugacyClasses(G)\) is the set of all conjugacy classes and
+    \begin{equation}
+        \Func(A, B) = \{f \colon A \to B\} = \Set(A, B).
+    \end{equation}
+    
+    Actually, under pointwise addition and scalar multiplication \(\classFunctions(G)\) is a vector space.
+    Further, under mild conditions the irreducible characters provide a basis for this space.
+    
+    \begin{thm}{}{}
+        If \(\Char \field\) and \(\abs{G}\) are coprime then the irreducible characters, \(\chi_{V_i}\), of \(G\) form a basis for \(\classFunctions(G)\).
+        \begin{proof}
+            From Maschke's theorem we know that \(A = \field G\) is semisimple.
+            We have proven that the irreducible algebra characters \(\widetilde{\chi}_{V_i}\) form a basis for \((A/\bracket{A}{A})^*\).
+            We then have
+            \begin{align}
+                (A/\bracket{A}{A})^* &= \{f \in \Hom_{\field}(\field G, \field) \mid gh - hg \in \ker f \forall g, h \in G\} \notag\\
+                &= \{f \in \Hom_{\field}(\field G, \field) \mid f(gh) - f(hg) = 0 \forall g, h \in G\} \notag\\
+                &= \{f \in \Hom_{\field}(\field G, \field) \mid f(gh) = f(hg) \forall g, h \in G\} \notag\\
+                &\isomorphic_{\Vect} \{f \in \Func(G, \field) \mid f(gh) = f(hg) \forall g, h \in G\} \notag\\
+                &= \classFunctions(G). \notag
+            \end{align}
+        \end{proof}
+    \end{thm}
+    
+    \begin{crl}{}{}
+        The number of irreducible representations of \(G\) is equal to the number of conjugacy classes:
+        \begin{equation}
+            \abs{\Irr(G)} = \abs{\conjugacyClasses(G)}.
+        \end{equation}
+    \end{crl}
+    
+    \begin{exm}{}{}
+        Consider the symmetric group, \(G = S_n\).
+        Using cycle notation if we write every element as a product of disjoint cycles then two elements are in the same conjugacy class if and only if they have the same cycle type.
+        
+        More concretely, take \(S_4\), then the cycle type of \(\cycle{1,2,3,4}\) is \((4)\), the cycle type of \(\cycle{1,2}\cycle{3,4}\) is \((2, 2)\), the cycle type of \(\cycle{1,2,3}\) is \((3, 1)\) (note that \(\cycle{1,2,3} = \cycle{1,2,3}\cycle{4}\), and we have to include all elements of \(\{1, 2, 3, 4\}\)).
+        So, for example, \(\cycle{1,2,3}\) and \(\cycle{2,3,4}\) are conjugate, and so are \(\cycle{1,2}\cycle{3,4}\) and \(\cycle{1,3}\cycle{2,4}\).
+        
+        We can identify conjugacy classes with cycle types, and we can identify cycle types with partitions of \(n\).
+        A \defineindex{partition} of \(n\) being a tuple \(\lambda = (\lambda_1, \lambda_2, \dotsc, \lambda_k)\) such that \(\lambda_1 \ge \lambda_2 \ge \dotsb \ge \lambda_k \ge 0\) \(\lambda_1 + \lambda_2 + \dotsb + \lambda_k = n\).
+        We write \(\lambda \partition n\) to denote that \(\lambda\) is a partition of \(n\).
+        
+        A common, and useful notation, for partitions is that of \define{Young diagrams}\index{Young diagram}.
+        Here we take a partition, \(\lambda\), and write a row of \(\lambda_i\) boxes in the \(i\)th row (rows counted from the top down).
+        For example, \(\cycle{1,2}\cycle{3,4}\) has cycle type \(\lambda = (2, 2)\), and the corresponding Young diagram is
+        \begin{equation}
+            \lambda = \ydiagram{2,2}\,.
+        \end{equation}
+        Similarly, \(\cycle{1,2,3}\) has cycle type \(\mu = (3, 1)\), and the corresponding Young diagram is
+        \begin{equation}
+            \mu = \ydiagram{3,1}\,.
+        \end{equation}
+        
+        So, we have a bijection between
+        \begin{itemize}
+            \item conjugacy classes of \(S_n\);
+            \item partitions of \(n\);
+            \item Young diagrams with \(n\) boxes.
+        \end{itemize}
+        
+        It will turn out that Young diagrams, and the related Young tableaux, come up a lot when we start counting things related to the symmetric group.
+        
+        Later, we will explicitly define the irreducible representation, \(V_\lambda\), of \(S_n\) corresponding to a partition \(\lambda \partition n\).
+        % TODO: reference to definition of specht module
+    \end{exm}
+    
+    Note that if \(\Char \field\) divides \(\abs{G}\) then \(\field G\) is not generally semisimple and we typically have \(\abs{\conjugacyClasses(G)} \ge \abs{\Irr(G)}\).
+    
+    \begin{crl}{}{}
+        For a field of characteristic \(0\) two \(G\)-modules, \(V\) and \(W\), are isomorphic if and only if \(\chi_V = \chi_W\).
+        \begin{proof}
+            Under these conditions \(\field G\) is semisimple, and thus we can decompose both representations as
+            \begin{equation}
+                V = \bigoplus_i n_i V_i, \qqand W = \bigoplus_i m_i V_i
+            \end{equation}
+            where \(V_i\) are irreducible representations and \(n_i, m_i \in \integers_{\ge 0}\).
+            Then we have
+            \begin{align}
+                \chi_V(g) &= \tr_V(\rho_V(g))\\
+                &= \tr_{\bigoplus_i n_i V_i}(n_i\rho_{V_i}(g))\\
+                &= \sum_{i} n_i \tr_{V_i}(\rho_{V_i}(g))\\
+                &= \sum_i n_i \chi_{V_i}(g)
+            \end{align}
+            and similarly
+            \begin{equation}
+                \chi_W(g) = \sum_i m_i \chi_{V_i}(g).
+            \end{equation}
+            Since the characters are a basis we have equality between these only if \(n_i = m_i\), and thus both representations have the same decomposition, so are isomorphic.
+        \end{proof}
+    \end{crl}
+    
+    There is an isomorphism of vector spaces \(\field G \isomorphic_{\Vect} \Func(G, \field)\) on the basis by identifying \(g\) with \(\delta_g\) for \(g \in G\) where
+    \begin{equation}
+        \delta_g(h) = \delta_{g,h} = 
+        \begin{cases}
+            1 & g = h\\
+            0 & g \ne h
+        \end{cases}
+    \end{equation}
+    is the \defineindex{Kronecker delta}.
+    
+    We can define the \defineindex{convolution} product, \(*\), on \(\Func(G, \field)\) by
+    \begin{equation}
+        (\psi * \varphi)(g) = \sum_{h \in G} \psi(h) \varphi(h^{-1}g).
+    \end{equation}
+    This product makes \(\Func(G, \field)\) an algebra, and extends the above isomorphism to an isomorphism of algebras, \(\field G \isomorphic_{\Alg} \Func(G, \field)\), since
+    \begin{align}
+        (\delta_g * \delta_h)(k) &= \sum_{\ell \in G} \delta_g(\ell) \delta_h(\ell^{-1}k)\\
+        &= \sum_{\ell \in G} \delta_{g,\ell} \delta_{h,\ell^{-1}k}
+    \end{align}
+    and terms in this sum vanish except for when \(g = \ell\) and \(h = \ell^{-1}k\), which means that \(h = g^{-1}k\), or \(k = gh\).
+    So we only get a nonzero output if \(k = gh\), which means that this convolution is exactly \(\delta_{gh}\), which is of course the same as taking the product of \(g\) and \(h\) in \(\field G\) then mapping to \(\Func(G, \field)\).
+    
+    \begin{prp}{}{}
+        Let
+        \begin{equation}
+            \vv{c} = \sum_{g \in c} g
+        \end{equation}
+        where \(c \in \conjugacyClasses(G)\) is some conjugacy class.
+        Then \(Z(\field G) = \langle \vv{c} \mid C \in \conjugacyClasses(G) \rangle\) and \(Z(\field G) \isomorphic \classFunctions(G)\).
+        \begin{proof}
+            We first show that for each conjugacy class, \(c\), \(\vv{c}\) is in \(Z(\field G)\).
+            To do so we show that \(\vv{c}\) commutes with all elements of \(G\), so taking \(g \in G\) we have
+            \begin{align}
+                \vv{c}g &= \sum_{h \in C} hg\\
+                &= \sum_{h \in C} ghg^{-1}g\\
+                &= \sum_{h \in C} gh\\
+                &= g \sum_{h \in C} h\\
+                &= g\vv{c}. 
+            \end{align}
+            Here we've used the fact that conjugation by \(g\) is a permutation on \(c\), and thus changing \(h\) to \(ghg^{-1}\) in the sum doesn't change the sum, it just permutes the terms.
+            
+            The result follows from \cref{lma:invariant subspace spanned by orbit sums} applied to the special case where \(X = G\) with the action given by conjugation, in which case the invariant subspace is exactly the centre of \(\field G\).
+        \end{proof}
+    \end{prp}
+    
+    \begin{lma}{}{lma:invariant subspace spanned by orbit sums}
+        Let \(G\) be a finite group acting on a finite set, \(X\).
+        The invariant subspace of the free vector space \(\field X\) is spanned by elements of the form \(\vv{o} = \sum_{x \in o} x\) where \(o\) ranges over all orbits of the group action.
+        \begin{proof}
+            Consider \(\vv{o}\) for some orbit, \(o\), we have
+            \begin{equation}
+                g \action \vv{o} = \sum_{x \in o} g \action o = \vv{o}.
+            \end{equation}
+            This follows since acting with \(g\) is just a permutation of the orbit, \(o\), and thus the sum is unchanged, it's just a permutation of the terms in the sum.
+            
+            Conversely, suppose that \(v = \sum_{x \in X} v_x x\) is invariant under the action of \(G\).
+            Then we have
+            \begin{equation}
+                g \action v = \sum_{x \in X} v_x (g \action x)
+            \end{equation}
+            and by invariance we demand that this is equal to
+            \begin{equation}
+                v = \sum_{x \in X} v_x x = \sum_{g^{-1}\action x \in X} v_{g^{-1} \action x} x,
+            \end{equation}
+            so we can conclude that \(v_x = v_{g^{-1} \action x}\) for all \(g \in G\), and thus \(v_x = v_y\) whenever \(x\) and \(y\) lie in the same orbit.
+            Hence, \(v\) is a linear combination of the elements \(\vv{o}\), and so the \(\vv{o}\) are a basis of the invariant subspace of \(\field X\).
+        \end{proof}
+    \end{lma}
+    
+    \begin{exm}{Finite Abelian Group}{}
+        Let \(G\) be a finite abelian group.
+        Since \(G\) is abelian every element of \(G\) is in its own conjugacy class, so
+        \begin{equation}
+            \abs{\Irr(G)} = \abs{\conjugacyClasses(G)} = \abs{G}.
+        \end{equation}
+        By the structure theorem we know that
+        \begin{equation}
+            G \isomorphic \integers_{n_1} \times \dotsb \times \integers_{n_k}
+        \end{equation}
+        for some \(n_i \in \integers_{\ge 0}\).
+        Since \(G\) is abelian Schur's lemma tells us that all representations are one dimensional.
+        Further, these irreducible representations form a group under pointwise multiplication:
+        \begin{equation}
+            (\rho_1 \cdot \rho_2)(g) = \rho_1(g)\rho_2(g).
+        \end{equation}
+        The identity, \(\varepsilon\), is the trivial representation, \(\varepsilon(g) = 1\).
+        The inverse of \(\rho\) is the representation \(g \mapsto 1/\rho(g)\).
+        
+        Each irreducible representation is a map \(\rho \colon G \to \field^{\times} \isomorphic \generalLinear(\field)\).
+        Thus, in this case the representations coincide with the characters.
+        
+        We call the group \(G^{\vee} \coloneqq (\Irr(G), \cdot)\) the \defineindex{character group} or \defineindex{dual group} of \(G\).
+        
+        Consider now \(G = \integers_n\) and \(\field = \complex\).
+        Then we have the irreducible representation
+        \begin{align}
+            \rho \colon \integers_n &\to \complex\\
+            m &\mapsto \e^{2\pi im/n}
+        \end{align}
+        and \(\integers_n^{\vee} = \{\rho^k \mid k = 1, \dotsc, n\}\), which clearly gives an isomorphism \(\integers_n^{\vee} \isomorphic \integers_n\).
+        
+        In fact, for any finite abelian group we have \(G^{\vee} \isomorphic G\), but not uniquely.
+        However, we do have a canonical isomorphism \(G \isomorphic (G^{\vee})^{\vee}\) given by \(g \mapsto (\chi \mapsto \chi(g))\).
+    \end{exm}
+    
+    \section{Dual Representations}
+    \begin{dfn}{Dual Representation}{}
+        Let \(\rho \colon G \to \generalLinear(V)\) be a representation of a finite group on a finite dimensional vector space.
+        Then the dual space, \(V^*\), gives rise to a representation, \(\rho^* \colon G \to \generalLinear(V^*)\), with the on \(f \in V^*\) given by
+        \begin{equation}
+            (g \action f)(v) = (\rho^*(g)f)(v) = f(\rho(g^{-1})v)
+        \end{equation}
+        for all \(v \in V\).
+    \end{dfn}
+    
+    For \(\field = \complex\) we can further simply this by identifying that \(\rho^*(g) = \overline{\rho(g^{-1})}^{\trans}\).
+    That is, \(g\) acts on \(V^*\) by the Hermitian conjugate of the action of \(g^{-1}\) on \(V\).
+    
+    \begin{lma}{}{}
+        We have \(\chi_{V^*}(g) = \chi_{V}(g^{-1})\).
+        \begin{proof}
+            This follows from a direct calculation:
+            \begin{align}
+                \chi_{V^*}(g) &= \tr_{V^*}(\rho^*(g))\\
+                &= \tr_{V}(\rho(g^{-1}))\\
+                &= \chi_V(g^{-1}). \notag\qedhere
+            \end{align}
+        \end{proof}
+    \end{lma}
+    
+    Note that \(\chi_V(g) = \sum_{i} \lambda_i\) where \(\lambda_i\) are the eigenvalues of \(\rho(g)\).
+    We also know that for a finite group we have \(\rho(g)^{\abs{G}} = \rho(g^{\abs{G}}) = \rho(e) = I\), and thus the eigenvalues of \(\rho(g)\) must be roots of unity.
+    For \(\field = \complex\) we have \(\chi_{V^*}(g) = \sum_{i} \lambda_i^{-1} = \overline{\chi_V(g)}\), and thus \(V \isomorphic V^*\) as \(G\)-modules if and only if \(\chi_V(g) \in \reals\) for all \(g \in G\).
+    
+    \section{Tensor Products of Representations}
+    \begin{dfn}{}{}
+        Let \(\rho_V \colon G \to \generalLinear(V)\) and \(\rho_W \colon G \to \generalLinear(W)\) be representations of \(G\).
+        Then there is a representation
+        \begin{equation}
+            \rho_V \otimes \rho_W \colon G \to \generalLinear(V) \otimes \generalLinear(W) \isomorphic \generalLinear(V \otimes W)
+        \end{equation}
+        given by
+        \begin{equation}
+            (\rho_V \otimes \rho_W)(g) = \rho_V(g) \otimes \rho_W(g).
+        \end{equation}
+    \end{dfn}
+    
+    Note that the character of a tensor product of representations is given by
+    \begin{equation}
+        \chi_{V \otimes W}(g) = \chi_V(g) \chi_W(g).
+    \end{equation}
+    
+    \begin{exm}{Schur--Weyl Duality}{}
+        Consider the group \(G = \generalLinear(V)\).
+        Then \(V^{\otimes n}\) carries a left \(G\)-module structure given on simple tensors by
+        \begin{equation}
+            g \action (v_{i_1} \otimes \dotsb \otimes v_{i_n}) = (g \action v_{i_1} \otimes \dotsb \otimes g \action v_{i_n})
+        \end{equation}
+        where \(g \action v_{i_k}\) is the obvious action of \(g \in \generalLinear(V)\) on \(v_{i_k} \in V\).
+        
+        The space \(V^{\otimes n}\) also naturally carries a right \(S_n\)-module action, given on simply tensors by
+        \begin{equation}
+            (v_{i_1} \otimes \dotsb \otimes v_{i_n}) \action w = v_{i_{w(1)}} \otimes \dotsb \otimes v_{i_{w(n)}}.
+        \end{equation}
+        That is, \(w \in S_n\) just permutes the terms in the tensor product.
+        
+        These two actions are compatible, in a sense they \enquote{commute}, since it doesn't matter if we act with \(g \in \generalLinear(V)\) on \(v_{i_k}\) then rearrange the order of the factors, or if we rearrange the order of the factors then act with \(g\).
+        
+        The result is that \(V^{\otimes n}\) is a \((\generalLinear(V), S_n)\)-bimodule.
+    \end{exm}
+    
+    \section{Orthogonality of Characters}
+    For this section we will work over \(\field = \complex\).
+    
+    \begin{lma}{}{}
+        Let \(G\) be a finite group.
+        Then we may define a bilinear form
+        \begin{equation}
+            \innerprod{-}{-} \colon \classFunctions(G) \times \classFunctions(G) \to \complex
+        \end{equation}
+        by
+        \begin{equation}
+            \innerprod{\psi}{\varphi} \coloneqq \frac{1}{\abs{G}} \sum_{g \in G} \psi(g) \overline{\varphi(g)}.
+        \end{equation}
+        This gives a well-defined Hermitian inner product on \(\classFunctions(G)\).
+        \begin{proof}
+            Linearity in the first argument and conjugate linearity in the second follow because we defined the inner product as a sum over \(\psi\) and \(\overline{\varphi}\).
+            Conjugate symmetry is clear from the definition.
+            This is positive definite, for \(\psi \ne 0\) we have
+            \begin{equation}
+                \innerprod{\psi}{\psi} = \frac{1}{\abs{G}} \sum_{g \in G} \psi(g)\overline{\psi(g)} = \frac{1}{\abs{G}} \sum_{g \in G} \abs{\psi(g)}^2
+            \end{equation}
+            which is clearly a sum of non-negative terms and so is positive, since at least one term must be nonzero as \(\psi \ne 0\).
+        \end{proof}
+    \end{lma}
+    
+    \begin{thm}{}{}
+        Let \(V\) and \(W\) be \(G\)-modules, then
+        \begin{equation}
+            \innerprod{\chi_V}{\chi_W} = \dim(\Hom_G(V, W)).
+        \end{equation}
+        In particular, if \(V\) and \(W\) are irreducible then
+        \begin{equation}
+            \innerprod{\chi_V}{\chi_W} =
+            \begin{cases}
+                1 & V \isomorphic W,\\
+                0 & \text{otherwise}.
+            \end{cases}
+        \end{equation}
+        \begin{proof}
+            By definition we have
+            \begin{align}
+                \innerprod{\chi_V}{\chi_W} &= \frac{1}{\abs{G}} \sum_{g \in G} \chi_V(g) \overline{\chi_W(g)}\\
+                &= \frac{1}{\abs{G}} \sum_{g \in G} \chi_V(g) \chi_{W^*}(g)\\
+                &= \frac{1}{\abs{G}} \sum_{g \in G} \chi_{V \otimes W^*}(g)\\
+                &= \frac{1}{\abs{G}} \sum_{g \in G} \tr_{V \otimes W^*}(\rho(g))\\
+                &= \tr_{V \otimes W^*}\bigg( \frac{1}{\abs{G}} \sum_{g \in G} \rho(g) \bigg).
+            \end{align}
+            Now, we can identify that
+            \begin{equation}
+                P = \frac{1}{\abs{G}} \sum_{g \in G} g \in Z(\complex G).
+            \end{equation}
+            Thus, what we have above is \(\tr_{V \otimes W^*}(\rho(P))\).
+            
+            If \(X \in \Irr(G)\) then
+            \begin{equation}
+                P|_X =
+                \begin{cases}
+                    \id_X & X \isomorphic \complex,\\
+                    0 & \text{otherwise}.
+                \end{cases}
+            \end{equation}
+            Thus, for any representation, \(X\), \(P|_X\) is projection onto \(X^G\), the subspace fixed by the action of \(G\).
+            Hence,
+            \begin{align}
+                \tr_{V \otimes W^*}(\rho(P)) &= \dim(\Hom_G(\complex, V \otimes W^*))\\
+                &= \dim(V \otimes W^*)^G\\
+                &= \dim \Hom_G(V, W)
+            \end{align}
+            having used the fact that \(V \otimes W^* \isomorphic \Hom_{\complex}(V, W)\) and \(\Hom_{\complex}(V, W)^G \isomorphic \Hom_G(V, W)\).
+        \end{proof}
+    \end{thm}
+    
+    \begin{crl}{}{}
+        A \(G\)-module, \(V\), is simple if and only if \(\innerprod{\chi_V}{\chi_V} = 1\).
+    \end{crl}
+    
+    \begin{thm}{}{}
+        Let \(g, h \in G\), then
+        \begin{equation}
+            \sum_{X \in \Irr(G)} \chi_X(g) \overline{\chi_X(h)} = 
+            \begin{cases}
+                \abs{Z_g} & g \text{ conjugate to }h,\\
+                0 & \text{otherwise},
+            \end{cases}
+        \end{equation}
+        where \(Z_g = \{h \in G \mid gh = hg\}\) is the centraliser of \(g\) in \(G\).
+        \begin{proof}
+            This follows by a calculation:
+            \begin{align}
+                \sum_{X \in \Irr(G)} \chi_X(g) \overline{\chi_X(h)} &= ...
+            \end{align}
+        \end{proof}
+    \end{thm}
     
     % Appdendix
 %	\appendixpage
