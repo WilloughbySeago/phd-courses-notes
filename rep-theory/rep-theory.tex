@@ -2431,18 +2431,214 @@ noabbrev
         \end{equation}
         where \(Z_g = \{h \in G \mid gh = hg\}\) is the centraliser of \(g\) in \(G\).
         \begin{proof}
-            This follows by a calculation:
+            We start with the following calculation:
             \begin{align}
-                \sum_{X \in \Irr(G)} \chi_X(g) \overline{\chi_X(h)} &= ...
+                \sum_{X \in \Irr(G)} \chi_X(g) \overline{\chi_X(h)} &= \sum_{X \in \Irr(G)} \chi_X(g) \chi_{X^*}(h)\\
+                &= \sum_{X \in \Irr(G)} \tr_X(\rho_X(g)) \tr_{X^*}(\rho_{X^*}(h))\\
+                &= \tr_{\bigoplus_{X \in \Irr(G)} X \otimes X^*} (\rho_X(g) \otimes \rho_{X^*}(h))\\
+                &= \tr_{\bigoplus_{X \in \Irr(G)} X \otimes X^*} (\rho_X(g) \otimes \rho_X(h^{-1}))\\
+                &= \tr_{\bigoplus_{X \in \Irr(G)} \End X} (x \mapsto \rho(g)x\rho(h^{-1}))\\
+                &= \tr_{\complex G} (y \mapsto gyh^{-1}).
             \end{align}
+            Here we've used the fact that \(X \otimes X^* \isomorphic \End X\), with the isomorphism given by \(A \otimes B \mapsto (x \mapsto AxB^*)\).
+            We've then used the fact that
+            \begin{equation}
+                \complex G \isomorphic \bigoplus_{X \in \Irr(G)} \End X,
+            \end{equation}
+            since \(\complex G\) is semisimple.
+            
+            We now consider cases, the first being when \(g\) and \(h\) are not conjugate.
+            Suppose that \(g_i\) generate \(G\).
+            Then \(gg_ih^{-1} \ne g_i\).
+            Thus, the map \(y \mapsto gyh^{-1}\), viewed as a matrix, has no on-diagonal elements, and so has vanishing trace.
+            
+            If instead \(g\) and \(h\) are conjugate then using the fact that characters are class functions and applying the same logic as above we have
+            \begin{align}
+                \sum_{X \in \Irr(G)} \chi_X(g) \overline{\chi_X(h)} &= \sum_{X \in \Irr(G)} \chi_X(g) \overline{\chi_X(g)}\\
+                &= \tr_{\complex G}(y \mapsto gyg^{-1}).
+            \end{align}
+            Further, viewing \(y \mapsto gyg^{-1}\) as a matrix we can see that the \((y, y)\) component on the diagonal is \(1\) precisely if \(yg = gy\), and \(0\) otherwise.
+            That is, there are precisely as many \(1\)s on the diagonal as elements of \(Z_g\), and so \(\tr_{\complex G}(y \mapsto gyg^{-1}) = \abs{Z_g}\).
         \end{proof}
     \end{thm}
     
+    \subsection{Unitary Representations}
+    \begin{dfn}{Unitary Representation}{}
+        Let \(G\) be a group and consider a complex vector space, \(V\), equipped with an inner product, \(\innerprod{-}{-}\).
+        We say that the representation \(\rho \colon G \to \generalLinear(V)\) is \define{unitary}\index{unitary representation} if \(\rho(g)\) is a unitary operator, that is, if
+        \begin{equation}
+            \innerprod{\rho(g)v}{\rho(g)w} = \innerprod{v}{w}
+        \end{equation}
+        for all \(g \in G\) and \(v, w \in V\).
+        
+        Alternatively, a \define{unitary representation} of \(G\) is a homomorphism \(\rho \colon G \to \unitary(V) \subseteq \generalLinear(V)\) where
+        \begin{equation}
+            \unitary(V) = \{\varphi \in \generalLinear(V) \mid \innerprod{\varphi(v)}{\varphi(u)} = \innerprod{v}{u}\}
+        \end{equation}
+        is the \defineindex{unitary group}.
+    \end{dfn}
+    
+    Unitary representations are particularly important in quantum mechanics.
+    The idea is that \(V\) is a state space, that is \(V\) is the space of possible wave functions, \(\psi\) (or \(\ket{\psi}\)).
+    As is standard we restrict to normalised wavefunctions
+    To each quantity we may want to measure we associate some element of \(V^*\), which we write as \(\bra{\varphi}\) if the corresponding element of \(V\) is \(\ket{\varphi}\) (note that there is a canonical isomorphism \(V \isomorphic V^*\) because we have the inner product (Riesz representation theorem)).
+    Then the probability of being measured to be in the state \(\ket{\varphi}\) when in the state \(\ket{\psi}\) is \(\braket{\varphi}{\psi} = \innerprod{\varphi}{\psi}\).
+    
+    A unitary representation, \(\rho \colon G \to \unitary(V)\), is then interpreted as a symmetry of our system, since the probabilities that we measure are unaffected by this action.
+    
+    Consider a complex vector space, \(V\).
+    Note that \(V \otimes V\) inherits the inner product \(\innerprod{u_1 \otimes v_1}{u_2 \otimes v_2}_{V \otimes V} = \innerprod{u_1}{v_1}_V \innerprod{u_2}{v_2}_V\).
+    Without further knowledge of \(V\) there are two unitary representations of \(S_2\) on \(V \otimes V\), they are \(u \otimes v \mapsto v \otimes u\) and \(u \otimes v \mapsto -v \otimes u\).
+    
+    The physical interpretation of this is that if \(V\) is the state space of a single particle then \(V \otimes V\) is the state space of two identical particles.
+    The two options for \(S_2\) actions then correspond to the two fundamental types of particles.
+    If \(u \otimes v \mapsto v \otimes u\) we call the particles \define{bosons}\index{boson}, and if \(u \otimes v \mapsto -v \otimes u\) we call the particles \define{fermions}\index{fermion}.
+    
+    It turns out that if we're given a finite dimensional complex representation, \(\rho \colon G \to \generalLinear(V)\), of a \emph{finite} group we can always construct a new inner product on \(V\) such that this is a unitary representation.
+    
+    \begin{thm}{}{}
+        Let \(G\) be a finite group and \(V\) a complex finite-dimensional inner product space with inner product \(\innerprod{-}{-}\).
+        Let \(\rho \colon G \to \generalLinear(V)\) be a representation of \(G\).
+        Then there exists an inner product, \((-,-)\), on \(V\) with respect to which \(\rho\) gives a unitary representation.
+        \begin{proof}
+            We define an inner product on \(V\) by
+            \begin{equation}
+                (u, v) = \sum_{g \in G} \innerprod{\rho(g)u}{\rho(g)v}.
+            \end{equation}
+            That this is linear follows from the fact that the action of \(G\) is linear and \(\innerprod{-}{-}\) is linear.
+            The fact that this is positive definite follows because each term in the sum is nonnegative, and for \(u \ne v\) we must have \(\rho(g)u \ne \rho(g)v\) since \(\rho(g)\) is invertible, and thus \(\innerprod{\rho(g)u}{\rho(g)v} \ne 0\) for \(u \ne v\).
+            
+            That this new inner product is invariant under the action of \(G\) follows from a simple calculation:
+            \begin{align}
+                (\rho(g)u, \rho(g)v) &= \sum_{h \in G} \innerprod{\rho(h)\rho(g)u}{\rho(h)\rho(g)v}\\
+                &= \sum_{h \in G} \innerprod{\rho(hg)u}{\rho(hg)v}\\
+                &= \sum_{k \in G} \innerprod{\rho(k)u}{\rho(k)v}\\
+                &= (u, v),
+            \end{align}
+            where we've reindexed the sum with \(k = hg\).
+        \end{proof}
+    \end{thm}
+    
+    Another nice property of unitary representations is that since they respect the inner product we get all of the structure of vector spaces that comes with it, including the splitting of short exact sequences, which is just a fancy way of saying that given a vector space, \(V\), with subspace \(W \subseteq V\) we always have the orthogonal complement, \(W' = \{w' \in V \mid \innerprod{w}{w'} = 0 \forall w \in W\}\), which is such that \(V \isomorphic W \oplus W'\).
+    
+    \begin{thm}{}{}
+        Any finite dimensional unitary representation of any group is completely reducible.
+        \begin{proof}
+            Let \(V\) be a finite dimensional unitary representation of a group, \(G\).
+            If \(V\) is irreducible we are done.
+            Else, let \(W \subseteq V\) be a subrepresentation.
+            Then \(W' = \{w' \in V \mid \innerprod{w}{w'} = 0\}\) is a subrepresentation also since if \(w' \in W'\) then \(\rho(g)w' \in W'\) because for any \(w \in W'\) we have \(\innerprod{w}{\rho(g)w'} = \innerprod{\rho(g)\tilde{w}}{\rho(g)w'} = \innerprod{\tilde{w}}{w'} = 0\) where \(\tilde{w} = \rho(g)^{-1}w\) is an element of \(W\) because \(W\) is closed under the action of \(g^{-1}\).
+            Thus, \(W\) and \(W'\) are subrepresentations, and as vector spaces we know that \(V \isomorphic W \oplus W'\).
+            
+            If either of \(W\) or \(W'\) is not irreducible we may iterate this process.
+            Eventually this process will terminate as at each iteration the dimensions of the new spaces are lower than the dimension of the original space, and we started with a finite dimensional space.
+        \end{proof}
+    \end{thm}
+    
+    \chapter{Applications of Characters}
+    \section{Computing Tensor Products}
+    Suppose we have simple \(G\)-modules, \(V\) and \(W\).
+    Then the tensor product \(V \otimes W\) is again a \(G\)-module with the action \(g \action (v \otimes w) = (g \action v) \otimes (g \action w)\).
+    Assuming that \(\field G\) is semisimple (so \(\Char \field\) and \(\abs{G}\) are coprime) we can decompose \(V \otimes W\) as a direct sum of simple \(G\)-modules:
+    \begin{equation}
+        V \otimes W = \bigoplus_{U \in \Irr(G)} N^U_{VW} U.
+    \end{equation}
+    Here the coefficients, \(N^U_{VW}\), are just the multiplicities of \(U\) in this decomposition.
+    These are nonnegative integer values.
+    
+    We can compute the coefficients, \(N^U_{VW}\), using characters.
+    First, note that the character of \(V \otimes W\) is \(\chi_{V \otimes W} = \chi_V \chi_W\) and using the above decomposition we have
+    \begin{equation}
+        \chi_{V \otimes W} = \sum_{U \in \Irr(G)} N^U_{VW} \chi_U.
+    \end{equation}
+    Taking inner products on both sides and using the orthogonality of irreducible characters we have
+    \begin{align}
+        \innerprod{\chi_{V \otimes W}}{\chi_U} &= \innerprod*{\sum_{U' \in \Irr(G)} N^{U'}_{VW}\chi_{U'}}{\chi_U}\\
+        &= \sum_{U' \in \Irr(G)} N^{U'}_{VW} \innerprod{\chi_{U'}}{\chi_U}\\
+        &= \sum_{U' \in \Irr(G)} N^{U'}_{VW} \delta_{U'U}\\
+        &= N^U_{VW}.
+    \end{align}
+    Here \(\delta_{U'U} = 0\) if \(U' \ncong U\) and \(\delta_{U'U} = 1\) if \(U' \isomorphic U\) as \(G\)-modules.
+    So, by computing characters we can completely determine the decomposition of \(V \otimes W\) into irreducibles, and since this decomposition is unique (up to order and isomorphism) we have completely determined \(V \otimes W\).
+    
+    \section{Frobenius--Schur Indicator}
+    \subsection{Bilinear Forms and Dual Spaces}
+    Suppose \(V\) is a finite dimensional vector space over \(\field\).
+    Then we know that \(V \isomorphic V^*\), but there is no canonical choice of isomorphism.
+    If we fix some isomorphism \(\delta \colon V \to V^*\) then we can define a nondegenerate bilinear form \(\innerprod{-}{-}_\delta \colon V \times V \to \field\) by
+    \begin{equation}
+        \innerprod{u}{v}_\delta = \delta(u)(v). 
+    \end{equation}
+    Conversely, if we have a nondegenerate bilinear form \(\innerprod{-}{-} \colon V \times V \to \field\) then we may define an isomorphism \(\varphi \colon V \to V^*\) by \(u \mapsto \varphi_u\) where \(\varphi_u(v) = \innerprod{u}{v}\).
+    
+    However, this doesn't \emph{quite} determine a \emph{unique} isomorphism, because we made the arbitrary choice to define \(\varphi_u(v)\) to be \(\innerprod{u}{v}\), rather than \(\innerprod{v}{u}\).
+    To fix this we can just assume that \(\innerprod{-}{-}\) is not just a bilinear form, but either a symmetric or antisymmetric bilinear form.
+    Then \(\varphi\) is uniquely determined for symmetry, or determined up to a sign for antisymmetry.
+    We can always construct a symmetric bilinear form by symmetrising, if \((-,-)\) has no specific symmetry then \(\innerprod{u}{v} = [(u, v) \pm (v, u)]/2\) is symmetric for \(+\) and antisymmetric for \(-\).
+    
+    This analysis also carries over from the theory of vector spaces to a \(G\)-module, \(M\).
+    The dual, \(M^*\), is a \(G\)-module with the action defined by \(g \action f(v) = f(g^{-1} \action v)\).
+    The only subtlety being that to get a left action we use \(g^{-1}\) in the action.
+    The only change we need to make is that the nondegenerate (anti)symmetric bilinear form needs to be invariant under the action of \(G\).
+    That is, we should have \(\innerprod{g \action u}{g \action v} = \innerprod{u}{v}\) for all \(u, v \in M\).
+    For example, if \(M\) is equipped with an inner product then \(G\) should act unitarily on \(M\).
+    Thus, if \(\innerprod{-}{-}\) is a symmetric \(G\)-invariant bilinear form on \(M\) then we may define an isomorphism \(\varphi \colon M \to M^*\) by \(u \mapsto \varphi_u\) where \(\varphi_u(v) = \innerprod{u}{v}\).
+    This is an isomorphism of vector spaces, and it's an isomorphism of \(G\)-modules because
+    \begin{equation}
+        \varphi(g \action u)(v) = \varphi_{g \action u}(v) = \innerprod{g \action u}{v}
+    \end{equation}
+    and
+    \begin{equation}
+        (g \action \varphi(u))(v) = (g \action \varphi_u)(v) = \varphi_u(g^{-1} \action v) = \innerprod{u}{g^{-1} \action v}.
+    \end{equation}
+    These are equal, to see this simply act on the arguments of the first with \(g^{-1}\), which doesn't change anything as \(\innerprod{-}{-}\) is \(G\)-invariant, and we get
+    \begin{equation}
+        \innerprod{g \action u}{v} = \innerprod{g^{-1} \action (g \action u)}{g^{-1} \action v} = \innerprod{g^{-1}g \action u}{g^{-1} \action v} = \innerprod{u}{g^{-1} \action v}.
+    \end{equation}
+    
+    The question then becomes when does a given \(G\)-module, \(M\), admit such a nondegenerate (anti)symmetric invariant bilinear form?
+    There are three possibilities, which we classify as follows.
+    
+    \begin{dfn}{}{}
+        Let \(G\) be a finite group and \(M\) a \(G\)-module.
+        We say that \(M\) is of
+        \begin{enumerate}
+            \item[(\(-1\))] \defineindex{complex type} if \(M^* \ncong M\);
+            \item[\(0\)] \defineindex{real type} if \(M\) admits a nondegenerate symmetric invariant bilinear form;
+            \item[\(1\)] \defineindex{quaternionic type} if \(M\) admits a nondegenerate antisymmetric invariant bilinear form.
+        \end{enumerate}
+    \end{dfn}
+    
+    This naming convention comes from considering the real vector space \(\End_{\reals G}M\) for \(M\) a simple \(G\)-module over \(\complex\).
+    This is the space of linear maps \(M \to M\) which commute with the action of \emph{real} linear combinations of group elements.
+    It turns out that \(\End_{\reals G}M\) is isomorphic to one of \(\complex\), \(\reals\), or \(\quaternions\), precisely when \(M\) is of complex, real, or quaternionic type.
+    
+    
+    
     % Appdendix
-%	\appendixpage
-%	\begin{appendices}
-%	
-%	\end{appendices}
+	\appendixpage
+	\begin{appendices}
+	    \chapter{Complex, Real and Quaternionic Types}
+        \section{Complexification}
+        Let \(G\) be a finite group and let \(M\) be a simple \(G\)-module over \(\reals\).
+        We first consider the complexification, \(M_{\complex} \coloneqq \complex \otimes_{\reals} M\) which is a complex vector space with scalar multiplication defined by \(w(z \otimes m) = (wz) \otimes m\) for \(w, z \in \complex\) and \(m \in M\).
+        It is convention to simply write \(zm\) for \(z \otimes m\).
+        This is simply extension of scalars, we can identify \(M_{\complex}\) as \enquote{\(M\) but we define formal multiplication by complex numbers}.
+        
+        The complexified space, \(M_{\complex}\), is a \(G\)-module still, it just inherits the action of \(G\) on \(M\).
+        Specifically, \(g \action (z \otimes m) = z \otimes (g \action m)\) for \(g \in G\), \(z \in \complex\), and \(m \in M\).
+        We usually just write \(g \action zm = z(g \action m)\).
+        
+        For \(x, y \in \reals\) with \(z = x + iy\) we can write \(z \otimes m\) as
+        \begin{equation}
+            (x + iy) \otimes m = x \otimes m + iy \otimes m = x (1 \otimes m) + y (i \otimes m).
+        \end{equation}
+        This lets us decompose \(M_{\complex}\) as
+        \begin{equation}
+            M_{\complex} = 1 \otimes M \oplus i \otimes M.
+        \end{equation}
+        
+	\end{appendices}
 
     \backmatter
     \renewcommand{\glossaryname}{Acronyms}
