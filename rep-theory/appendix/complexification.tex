@@ -1,0 +1,35 @@
+\chapter{Complex, Real and Quaternionic Types}
+\section{Complexification}
+Let \(G\) be a finite group and let \(M\) be a simple \(G\)-module over \(\reals\).
+We first consider the complexification, \(M_{\complex} \coloneqq \complex \otimes_{\reals} M\) which is a complex vector space with scalar multiplication defined by \(w(z \otimes m) = (wz) \otimes m\) for \(w, z \in \complex\) and \(m \in M\).
+It is convention to simply write \(zm\) for \(z \otimes m\).
+This is simply extension of scalars, we can identify \(M_{\complex}\) as \enquote{\(M\) but we define formal multiplication by complex numbers}.
+
+The complexified space, \(M_{\complex}\), is a \(G\)-module still, it just inherits the action of \(G\) on \(M\).
+Specifically, \(g \action (z \otimes m) = z \otimes (g \action m)\) for \(g \in G\), \(z \in \complex\), and \(m \in M\).
+We usually just write \(g \action zm = z(g \action m)\).
+
+For \(x, y \in \reals\) with \(z = x + iy\) we can write \(z \otimes m\) as
+\begin{equation}
+    (x + iy) \otimes m = x \otimes m + iy \otimes m = x (1 \otimes m) + y (i \otimes m).
+\end{equation}
+This lets us decompose \(M_{\complex}\) as
+\begin{equation}
+    M_{\complex} = (1 \otimes M) \oplus (i \otimes M).
+\end{equation}
+This is somewhat sloppy notation, we really have \((\reals 1 \otimes_{\reals} M) \oplus (\reals i \otimes_{\reals} M)\), and since \(\reals c \isomorphic \reals\) and \(\reals \otimes M \isomorphic M\) for any real vector space, \(M\), we have that \(M_{\complex} \isomorphic M \oplus M\), where the first copy is thought of as the real part, and the second as the imaginary part.
+This gives a second way of thinking of the complexification of \(M\), it's exactly the same process that we apply to get the complex numbers out of the reals.
+We'll use the familiar notation of \(\complex\) to write \(m \in M_{\complex}\) as \(a + ib\) when we view it like this.
+With this interpretation the action of \enquote{multiplication by \(i\)} is \(a + ib \mapsto -b + ia\).
+This can be encoded in the block matrix
+\begin{equation}
+    J = 
+    \begin{pmatrix}
+        0 & -\id_V\\
+        \id_V & 0
+    \end{pmatrix}
+    .
+\end{equation}
+The action of \(g \in G\) on \(M_{\complex}\) when viewed as \(M \oplus M\) is \(g \action (a + ib) = (g \action a) + i(g \action b)\).
+This extends to \(g \in \reals G\).
+Note that we still consider the real group algebra, and any complex coefficient we might want to include is treated separately by the action of \(x\id_{M_{\complex}} + Jy\).
