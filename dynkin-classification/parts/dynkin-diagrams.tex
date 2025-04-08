@@ -1,0 +1,531 @@
+\addtocounter{chapter}{-1}
+\chapter{Dynkin Classification}
+\section{On the Ubiquity of Dynkin Classifications}
+The Dynkin classification arises in many areas of mathematics, from representation theory to algebraic geometry, and from combinatorics to string theory and spin structures, and many more.
+Of these we will only touch on the first three.
+
+The structure of these notes follows that of the original spring school.
+Each day was focused on a different topic, and each day refers to a chapter here.
+Some of these days focused on the classification more than others, but all were about objects for which the Dynkin classification plays an important role.
+
+Exactly which Dynkin diagrams are allowed in a given classification (or which of the related Coxeter diagrams appears for the first topic) depends on the situation at hand, but in all cases we get at least the \(\A\), \(\D\), and \(\E\) types, leading to the so-called \ADE-classification.
+
+The precise reason why Dynkin diagrams, particularly the \ADE-types, appear so frequently is somewhat of a mystery.
+Often, but not always, at least not in an obvious way, it's because there is some root system involved, which is a set of vectors in \(\reals^n\) subject to some conditions (), the structure of which may be used to generate more complicated objects.
+% TODO: reference to definition of abstract root system
+Each root system has a corresponding bilinear form, and it is the properties of this inner product which usually restrict which root systems appear in a given classification.
+The Dynkin diagrams then are just a neat way of encapsulating the minimum amount of information required to define a root system.
+This is done by first picking a special basis for the root system (a set of so-called simple roots) and then encoding the relative positions of these basis vectors in a graph.
+The vertices of the graph correspond to elements of this basis, and the number of edges is controlled by the value of the bilinear form when evaluated at the corresponding basis vectors.
+The direction of any directed edges is chosen such that the arrow points towards the shorter vector.
+One may then argue that the omnipresence of the Dynkin classification is simply because many problems come down to, or can be phrased as, arranging some points in space subject to some relation between the position vectors relative angles and lengths.
+
+\section{Coxeter and Dynkin Diagrams}
+Throughout the first day the following Dynkin diagrams were on the board for reference.
+We start with our main focus, the (finite type) Dynkin diagrams.
+We'll then list the (finite type) Coxeter diagrams, which are similar but distinct.
+Finally, we'll list the affine Coxeter diagrams.
+
+\subsection{Dynkin Diagrams}
+Here are the (\define{finite type}) \define{Dynkin diagrams}.
+The subscript in each case is the number of nodes, which is also known as the \define{rank}.
+Dotted edges just mean a chain of nodes connected by single edges.
+When there are multiple edges there is an arrow, which indicates the direction of all of those edges.
+These finite-type Dynkin diagrams correspond to root systems which generate a positive definite bilinear form, giving a genuine inner product.
+\begingroup
+\allowdisplaybreaks
+\begin{align}
+    \A[n] &= \qquad
+    \tikzsetnextfilename{dynkin-diagram-A}
+    \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}]
+        \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+        \draw [dynkin wire] (0, 0) -- ++ (2, 0);
+        \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+        \draw [dynkin wire, dashed] (2, 0) -- ++ (1, 0);
+        \draw [dynkin wire] (3, 0) -- (5, 0);
+        \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (4, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (5, 0) circle [radius=0.1cm];
+    \end{tikzpicture}
+    \\
+    \B[n] &= \qquad
+    \tikzsetnextfilename{dynkin-diagram-B}
+    \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}]
+        \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+        \draw [dynkin wire] (0, 0) -- ++ (2, 0);
+        \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+        \draw [dynkin wire, dashed] (2, 0) -- ++ (1, 0);
+        \draw [dynkin wire] (3, 0) -- (4, 0);
+        \draw [dynkin wire] (4, -0.05) -- ++ (1, 0);
+        \draw [dynkin wire] (4, 0.05) -- ++ (1, 0);
+        \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (4, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (5, 0) circle [radius=0.1cm];
+        \draw [-{>[width=0.3cm, length=0.15cm]}, dynkin wire] (4.55, 0) -- ++ (0.001, 0);
+    \end{tikzpicture}
+    \\
+    \C[n] &= \qquad
+    \tikzsetnextfilename{dynkin-diagram-C}
+    \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}]
+        \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+        \draw [dynkin wire] (0, 0) -- ++ (2, 0);
+        \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+        \draw [dynkin wire, dashed] (2, 0) -- ++ (1, 0);
+        \draw [dynkin wire] (3, 0) -- (4, 0);
+        \draw [dynkin wire] (4, -0.05) -- ++ (1, 0);
+        \draw [dynkin wire] (4, 0.05) -- ++ (1, 0);
+        \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (4, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (5, 0) circle [radius=0.1cm];
+        \draw [-{>[width=0.3cm, length=0.15cm]}, dynkin wire] (4.45, 0) -- ++ (-0.001, 0);
+    \end{tikzpicture}
+    \\
+    \D[n] &= \qquad
+    \tikzsetnextfilename{dynkin-diagram-D}
+    \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}, baseline=-0.1cm]
+        \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+        \draw [dynkin wire] (0, 0) -- ++ (2, 0);
+        \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+        \draw [dynkin wire, dashed] (2, 0) -- ++ (1, 0);
+        \draw [dynkin wire] (3, 0) -- (4, 0);
+        \draw [dynkin wire] (4, 0) -- ++ (60:1) coordinate (A);
+        \draw [dynkin wire] (4, 0) -- ++ (-60:1) coordinate (B);
+        \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (4, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (A) circle [radius=0.1cm];
+        \draw [dynkin node] (B) circle [radius=0.1cm];
+    \end{tikzpicture}
+    \\
+    \E[6] &= \qquad
+    \tikzsetnextfilename{dynkin-diagram-E6}
+    \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}, baseline=-0.1cm]
+        \draw [dynkin wire] (0, 0) -- ++ (4, 0);
+        \draw [dynkin wire] (2, 0) -- ++ (0, 1);
+        \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (4, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (2, 1) circle [radius=0.1cm];
+    \end{tikzpicture}
+    \\
+    \E[7] &= \qquad
+    \tikzsetnextfilename{dynkin-diagram-E7}
+    \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}, baseline=-0.1cm]
+        \draw [dynkin wire] (0, 0) -- ++ (5, 0);
+        \draw [dynkin wire] (2, 0) -- ++ (0, 1);
+        \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (4, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (5, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (2, 1) circle [radius=0.1cm];
+    \end{tikzpicture}
+    \\
+    \E[8] &= \qquad
+    \tikzsetnextfilename{dynkin-diagram-E8}
+    \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}, baseline=-0.1cm]
+        \draw [dynkin wire] (0, 0) -- ++ (6, 0);
+        \draw [dynkin wire] (2, 0) -- ++ (0, 1);
+        \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (4, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (5, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (6, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (2, 1) circle [radius=0.1cm];
+    \end{tikzpicture}
+    \\
+    \G[2] &= \qquad
+    \tikzsetnextfilename{dynkin-diagram-G2}
+    \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}]
+        \draw [dynkin wire] (0, 0) -- ++ (1, 0);
+        \draw [dynkin wire] (0, -0.05) -- ++ (1, 0);
+        \draw [dynkin wire] (0, 0.05) -- ++ (1, 0);
+        \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+        \draw [-{>[width=0.3cm, length=0.15cm]}, dynkin wire] (0.55, 0) -- ++ (0.001, 0);
+    \end{tikzpicture}
+    \\
+    \F[4] &= \qquad
+    \tikzsetnextfilename{dynkin-diagram-F4}
+    \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}]
+        \draw [dynkin wire] (0, 0) -- ++ (1, 0);
+        \draw [dynkin wire] (1, -0.05) -- ++ (1, 0);
+        \draw [dynkin wire] (1, 0.05) -- ++ (1, 0);
+        \draw [dynkin wire] (2, 0) -- ++ (1, 0);
+        \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+        \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+        \draw [-{>[width=0.3cm, length=0.15cm]}, dynkin wire] (1.55, 0) -- ++ (0.001, 0);
+    \end{tikzpicture}
+\end{align}
+\endgroup
+Note that some of these are the same, we have the following graph isomorphisms:
+\begin{itemize}
+    \item \(\A[1] \isomorphic \B[1] \isomorphic \C[1] \isomorphic \D[1]\), all of which are just a single node;
+    \item \(\B[2] \isomorphic \C[2]\), both of which are two nodes connected by a double directed edge;
+    \item \(\A[3] \isomorphic \D[3]\), both of which are three nodes connected in a row by single edges;
+\end{itemize}
+Note that the sensible definition of \(\D[2]\) is two disconnected notes, just the ones appearing in the far right of the picture above.
+This gives us the graph isomorphism \(\D[2] \isomorphic \A[1] \sqcup \A[1]\).
+
+There are two ways around these isomorphisms, one is to restrict the valid indices as follows:
+\begin{itemize}
+    \item for \(\B[n]\) we require \(n \ge 2\);
+    \item for \(\C[n]\) we require \(n \ge 3\);
+    \item for \(\D[n]\) we require \(n \ge 4\).
+\end{itemize}
+The other is to just allow these, but to keep track of whether we think of one of these graphs as being part of, say the \(\A\) or \(\D\) series.
+I prefer this second approach, since it will give us interesting isomorphisms between the objects we classify.
+These so-called exceptional isomorphisms are best known on the level of Lie algebras, where they correspond to
+\begin{itemize}
+    \item \(\specialLinearLie_2 \isomorphic \specialOrthogonalLie_3 \isomorphic \symplecticLie_2\);
+    \item \(\specialOrthogonalLie_5 \isomorphic \symplecticLie_4\);
+    \item \(\specialLinearLie_4 \isomorphic \specialOrthogonalLie_6\);
+    \item \(\specialLinearLie_2 \oplus \specialLinearLie_2 \isomorphic \specialOrthogonalLie_2\).
+\end{itemize}
+
+\subsection{Coxeter Diagrams}
+The \define{Coxeter diagrams} are similar to Dynkin diagrams, and the two are often conflated.
+Coxeter diagrams are undirected graphs, with edge labellings.
+The rule is that any unlabelled edges are labelled \(3\), and any two nodes not connected by an edge actually have an undrawn edge labelled \(2\).
+Every Dynkin diagram has, ignoring ordering, a corresponding Coxeter diagram, in which the directed edges are replaced by labelled edges with labels greater than \(3\).
+There are also some Coxeter diagrams which don't have corresponding Dynkin diagrams.
+We will see why these distinctions are made later, for now we just list the Coxeter diagrams.
+The Coxeter diagrams are as below, they have the same labelling as the corresponding Dynkin diagrams, further confusing the two.
+\begingroup
+\allowdisplaybreaks
+\begin{align}
+    \A[n] &= \qquad
+    \tikzsetnextfilename{coxeter-diagram-A}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}]
+        \draw [coxeter wire] (0, 0) -- ++ (2, 0);
+        \draw [coxeter wire, dashed] (1.9, 0) -- ++ (1.05, 0);
+        \draw [coxeter wire] (3, 0) -- (5, 0);
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+        \node [coxeter node] at (4, 0) {};
+        \node [coxeter node] at (5, 0) {};
+    \end{tikzpicture}
+    \\
+    \B[n] = \C[n] &= \qquad
+    \tikzsetnextfilename{coxeter-diagram-BC}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}]
+        \draw [coxeter wire] (0, 0) -- ++ (2, 0);
+        \draw [coxeter wire, dashed] (1.9, 0) -- ++ (1.05, 0);
+        \draw [coxeter wire] (3, 0) -- (5, 0);
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+        \node [coxeter node] at (4, 0) {};
+        \node [coxeter node] at (5, 0) {};
+        \node [above] at (4.5, 0) {\(4\)};
+    \end{tikzpicture}
+    \\
+    \D[n] &= \qquad
+    \tikzsetnextfilename{coxeter-diagram-D}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}, baseline=-0.1cm]
+        \draw [coxeter wire] (3, 0) -- (4, 0);
+        \draw [coxeter wire] (4, 0) -- ++ (60:1) coordinate (A);
+        \draw [coxeter wire] (4, 0) -- ++ (-60:1) coordinate (B);
+        \draw [coxeter wire] (0, 0) -- ++ (2, 0);
+        \draw [coxeter wire, dashed] (2, 0) -- ++ (1, 0);
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+        \node [coxeter node] at (4, 0) {};
+        \node [coxeter node] at (A) {};
+        \node [coxeter node] at (B) {};
+    \end{tikzpicture}
+    \\
+    \E[6] &= \qquad
+    \tikzsetnextfilename{coxeter-diagram-E6}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}, baseline=-0.1cm]
+        \draw [coxeter wire] (0, 0) -- ++ (4, 0);
+        \draw [coxeter wire] (2, 0) -- ++ (0, 1);
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+        \node [coxeter node] at (4, 0) {};
+        \node [coxeter node] at (2, 1) {};
+    \end{tikzpicture}
+    \\
+    \E[7] &= \qquad
+    \tikzsetnextfilename{coxeter-diagram-E7}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}, baseline=-0.1cm]
+        \draw [coxeter wire] (0, 0) -- ++ (5, 0);
+        \draw [coxeter wire] (2, 0) -- ++ (0, 1);
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+        \node [coxeter node] at (4, 0) {};
+        \node [coxeter node] at (5, 0) {};
+        \node [coxeter node] at (2, 1) {};
+    \end{tikzpicture}
+    \\
+    \E[8] &= \qquad
+    \tikzsetnextfilename{coxeter-diagram-E8}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}, baseline=-0.1cm]
+        \draw [coxeter wire] (0, 0) -- ++ (6, 0);
+        \draw [coxeter wire] (2, 0) -- ++ (0, 1);
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+        \node [coxeter node] at (4, 0) {};
+        \node [coxeter node] at (5, 0) {};
+        \node [coxeter node] at (6, 0) {};
+        \node [coxeter node] at (2, 1) {};
+    \end{tikzpicture}
+    \\
+    \G[2] &= \qquad
+    \tikzsetnextfilename{coxeter-diagram-G2}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}]
+        \draw [coxeter wire] (0, 0) -- ++ (1, 0);
+        \node [above] at (0.5, 0) {\(6\)};
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+    \end{tikzpicture}
+    \\
+    \F[4] &= \qquad
+    \tikzsetnextfilename{coxeter-diagram-F4}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}]
+        \draw [coxeter wire] (0, 0) -- ++ (3, 0);
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+        \node [above] at (1.5, 0) {\(4\)};
+    \end{tikzpicture}
+    \\
+    \H[2] &= \qquad
+    \tikzsetnextfilename{coxeter-diagram-H2}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}]
+        \draw [coxeter wire] (0, 0) -- ++ (1, 0);
+        \node [above] at (0.5, 0) {\(5\)};
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+    \end{tikzpicture}
+    \\
+    \H[3] &= \qquad
+    \tikzsetnextfilename{coxeter-diagram-H3}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}]
+        \draw [coxeter wire] (0, 0) -- ++ (2, 0);
+        \node [above] at (0.5, 0) {\(5\)};
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+    \end{tikzpicture}
+    \\
+    \H[4] &= \qquad
+    \tikzsetnextfilename{coxeter-diagram-H4}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}]
+        \draw [coxeter wire] (0, 0) -- ++ (3, 0);
+        \node [above] at (0.5, 0) {\(5\)};
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+    \end{tikzpicture}
+    \\
+    \I[2][m] &= \qquad
+    \tikzsetnextfilename{coxeter-diagram-I2}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}]
+        \draw [coxeter wire] (0, 0) -- ++ (1, 0);
+        \node [above] at (0.5, 0) {\(m\)};
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+    \end{tikzpicture}
+\end{align}
+\endgroup
+
+As with the Dynkin diagrams there are certain graph isomorphisms here for specific values of indices.
+In addition to the isomorphisms of the Dynkin diagrams we also have the following:
+\begin{itemize}
+    \item \(\G[2] \isomorphic \I[2][6]\);
+    \item \(\H[2] \isomorphic \I[2][5]\).
+\end{itemize}
+
+\subsection{Affine Coxeter Diagrams}
+The final type of diagram we'll need are the affine Coxeter diagrams.
+We won't be particularly interested in the structures that these classify, they tend to be infinite versions of the finite versions the finite types generate, but they are needed to prove the classification of Coxeter groups.
+These affine types are formed from the finite types by adding another node.
+There are generally many ways to do this, but most end up giving isomorhpic graphs.
+In fact, for every outer automorphism of the original graph there is a unique (up to isomorhpism) way to add an extra node.
+We will give only the simplest here, which are the ones corresponding to the identity automorphism.
+The other types are called \enquote{twisted} affine Coxeter graphs.
+There are two common notations for the affine Coxeter graph, they are \(\affA[n]\) and \(\A[n]^{(1)}\).
+The advantage of the second is that the superscript can index the corresponding outer automorhpism, since we're not interested in the twisted case the tilde will be sufficient for our purposes.
+
+Here are all the untwisted affine Coxeter graphs.
+The new node is the one in colour.
+Note that the index is now one fewer than the number of nodes.
+\begingroup
+\allowdisplaybreaks
+\begin{align}
+    \affA[1] &= \qquad
+    \tikzsetnextfilename{affine-coxeter-diagram-A1}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}, baseline=-0.1cm]
+        \draw [coxeter wire] (0, 0) -- (1, 0);
+        \node [above] at (0.5, 0) {\(\infty\)};
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node, dark orange] at (1, 0) {};
+    \end{tikzpicture}
+    \\
+    \affA[n] &= \qquad
+    \tikzsetnextfilename{affine-coxeter-diagram-A}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}]
+        \draw [coxeter wire] (0, 0) -- ++ (2, 0);
+        \draw [coxeter wire, dashed] (1.9, 0) -- ++ (1.05, 0);
+        \draw [coxeter wire] (2.5, 1.5) -- (0, 0);
+        \draw [coxeter wire] (2.5, 1.5) -- (5, 0);
+        \draw [coxeter wire] (3, 0) -- (5, 0);
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+        \node [coxeter node] at (4, 0) {};
+        \node [coxeter node] at (5, 0) {};
+        \node [coxeter node, dark orange] at (2.5, 1.5) {};
+    \end{tikzpicture}
+    \\
+    \affB[n] &= \qquad
+    \tikzsetnextfilename{affine-coxeter-diagram-B}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}]
+        \draw [coxeter wire, dashed] (1.9, 0) -- ++ (1.05, 0);
+        \draw [coxeter wire] (1, 0) -- (2, 0);
+        \draw [coxeter wire] (3, 0) -- (5, 0);
+        \draw [coxeter wire] (1, 0) -- ++ (120:1) coordinate (A);
+        \draw [coxeter wire] (1, 0) -- ++ (-120:1) coordinate (B);
+        \node [coxeter node] at (A) {};
+        \node [coxeter node, dark orange] at (B) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+        \node [coxeter node] at (4, 0) {};
+        \node [coxeter node] at (5, 0) {};
+        \node [above] at (4.5, 0) {\(4\)};
+    \end{tikzpicture}
+    \\
+    \affC[n] &= \qquad
+    \tikzsetnextfilename{affine-coxeter-diagram-C}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}]
+        \draw [coxeter wire] (-1, 0) -- ++ (3, 0);
+        \draw [coxeter wire, dashed] (1.9, 0) -- ++ (1.05, 0);
+        \draw [coxeter wire] (3, 0) -- (5, 0);
+        \node [coxeter node, dark orange] at (-1, 0) {};
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+        \node [coxeter node] at (4, 0) {};
+        \node [coxeter node] at (5, 0) {};
+        \node [above] at (4.5, 0) {\(4\)};
+        \node [above] at (-0.5, 0) {\(4\)};
+    \end{tikzpicture}
+    \\
+    \D[n] &= \qquad
+    \tikzsetnextfilename{affine-coxeter-diagram-D}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}, baseline=-0.1cm]
+        \draw [coxeter wire] (3, 0) -- (4, 0);
+        \draw [coxeter wire] (4, 0) -- ++ (60:1) coordinate (C);
+        \draw [coxeter wire] (4, 0) -- ++ (-60:1) coordinate (D);
+        \draw [coxeter wire] (1, 0) -- (2, 0);
+        \draw [coxeter wire] (3, 0) -- (4, 0);
+        \draw [coxeter wire] (1, 0) -- ++ (120:1) coordinate (A);
+        \draw [coxeter wire] (1, 0) -- ++ (-120:1) coordinate (B);
+        \node [coxeter node] at (A) {};
+        \node [coxeter node, dark orange] at (B) {};
+        \draw [coxeter wire, dashed] (2, 0) -- ++ (1, 0);
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+        \node [coxeter node] at (4, 0) {};
+        \node [coxeter node] at (C) {};
+        \node [coxeter node] at (D) {};
+    \end{tikzpicture}
+    \\
+    \E[6] &= \qquad
+    \tikzsetnextfilename{affine-coxeter-diagram-E6}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}, baseline=-0.1cm]
+        \draw [coxeter wire] (0, 0) -- ++ (4, 0);
+        \draw [coxeter wire] (2, 0) -- ++ (0, 2);
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+        \node [coxeter node] at (4, 0) {};
+        \node [coxeter node] at (2, 1) {};
+        \node [coxeter node, dark orange] at (2, 2) {};
+    \end{tikzpicture}
+    \\
+    \E[7] &= \qquad
+    \tikzsetnextfilename{affine-coxeter-diagram-E7}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}, baseline=-0.1cm]
+        \draw [coxeter wire] (-1, 0) -- ++ (6, 0);
+        \draw [coxeter wire] (2, 0) -- ++ (0, 1);
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+        \node [coxeter node] at (4, 0) {};
+        \node [coxeter node] at (5, 0) {};
+        \node [coxeter node] at (2, 1) {};
+        \node [coxeter node, dark orange] at (-1, 0) {};
+    \end{tikzpicture}
+    \\
+    \E[8] &= \qquad
+    \tikzsetnextfilename{affine-coxeter-diagram-E8}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}, baseline=-0.1cm]
+        \draw [coxeter wire] (0, 0) -- ++ (7, 0);
+        \draw [coxeter wire] (2, 0) -- ++ (0, 1);
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+        \node [coxeter node] at (4, 0) {};
+        \node [coxeter node] at (5, 0) {};
+        \node [coxeter node] at (6, 0) {};
+        \node [coxeter node] at (2, 1) {};
+        \node [coxeter node, dark orange] at (7, 0) {};
+    \end{tikzpicture}
+    \\
+    \G[2] &= \qquad
+    \tikzsetnextfilename{affine-coxeter-diagram-G2}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}]
+        \draw [coxeter wire] (0, 0) -- ++ (2, 0);
+        \node [above] at (0.5, 0) {\(6\)};
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node, dark orange] at (2, 0) {};
+    \end{tikzpicture}
+    \\
+    \F[4] &= \qquad \tikzexternaldisable
+    \tikzsetnextfilename{affine-coxeter-diagram-F4}
+    \begin{tikzpicture}[coxeter node/.style = {fill, inner sep=3pt}, coxeter wire/.style = {thick}]
+        \draw [coxeter wire] (0, 0) -- ++ (4, 0);
+        \node [coxeter node] at (0, 0) {};
+        \node [coxeter node] at (1, 0) {};
+        \node [coxeter node] at (2, 0) {};
+        \node [coxeter node] at (3, 0) {};
+        \node [above] at (1.5, 0) {\(4\)};
+        \node [coxeter node, dark orange] at (4, 0) {};
+    \end{tikzpicture}
+\end{align}
+\endgroup
+First note that \(\affA[1]\) is \enquote{weird}, it's sort of a degenerate case in which adding the extra node as we would for \(\affA[n]\) gives us two nodes with edges between them and this \(2\)-cycle somehow explodes into an infinite loop.
+Note also that \(\affB[n]\) and \(\affC[n]\) are different Coxeter diagrams, even though \(\B[n]\) and \(\C[n]\) are the same Coxeter diagram.
