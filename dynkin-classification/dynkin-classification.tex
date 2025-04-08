@@ -1,0 +1,326 @@
+% !TeX program = lualatex
+\documentclass[fleqn, a4paper, openany]{memoir}
+
+\strictpagecheck
+
+\usepackage[math-style=upright]{unicode-math}
+\setmainfont{TeX Gyre Pagella}
+\setmathfont{Euler Math}[Scale=MatchLowercase]
+\setsansfont{Optima}
+\setmonofont{inconsolata}
+
+\usepackage{mathtools}
+
+\usepackage{csquotes}
+\usepackage{enumitem}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{external}
+\tikzexternalize[prefix=tikz-external/]
+
+\usepackage{tikz-cd}
+\AtBeginEnvironment{tikzcd}{\tikzexternaldisable}
+\AtEndEnvironment{tikzcd}{\tikzexternalenable}
+
+\usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes on the Dynkin Classification},pdfkeywords={Dynkin diagram, Coxeter, Lie Algebra, Cluster Algebra, Quiver Representation, Simple Singularity},pdfsubject={Dynkin Classification}]{hyperref}  % Should be loaded second last (cleveref last)
+\colorlet{hyperrefcolor}{blue!60!black}
+\hypersetup{colorlinks=true, linkcolor=hyperrefcolor, urlcolor=hyperrefcolor}
+\usepackage[
+capitalize,
+nameinlink,
+noabbrev
+]{cleveref} % Should be loaded last
+
+% My packages
+\usepackage{NotesBoxes}
+%\usepackage{NotesMaths2}
+
+% Title Page
+\makeatletter
+\newcommand{\@subtitle}{Mathematics}
+\newcommand{\subtitle}[1]{%
+    \renewcommand{\@subtitle}{#1}
+}
+\newcommand{\@subsubtitle}{Notes}
+\newcommand{\subsubtitle}[1]{%
+    \renewcommand{\@subsubtitle}{#1}
+}
+
+\newcommand{\titlepage}{%
+    \begin{titlingpage}
+        \begingroup%
+        \raggedleft
+        \vspace*{\baselineskip}
+        {\LARGE \theauthor}\\[0.167\textheight]
+        {\large\bfseries \@subtitle}\\[\baselineskip]
+        {\HUGE\bfseries\textcolor{gray}{\thetitle}}\\[\baselineskip]
+        {\large\thedate}\par
+        \vspace*{2\baselineskip}
+        \vfill
+        {\LARGE\scshape \@subsubtitle}\par
+        \vspace*{3\baselineskip}
+        \endgroup
+    \end{titlingpage}
+}
+\makeatother
+
+\newcommand{\innertitlepage}[1]{%
+    \maketitle  % Print the normal title
+    \begin{abstract}  % Information about the course and this document
+        \abstracttext
+    \end{abstract}
+    % Add interesting image from the course
+    \begingroup\centering
+    \vfill
+    % Test to see if an argument has been provided
+    \ifx&#1&%
+    % No argument, put a demo image
+%    \includegraphics[width=0.75\textwidth]{example-image-a}
+    \else
+    % Argument, put the argument as the image
+    \includegraphics[width=0.75\textwidth]{#1}
+    \fi
+    \vfill
+    \endgroup
+}
+
+\newcommand{\abstracttext}{These are my notes from the spring school \enquote{The Dynkin Classification}. This spring school was run from 31st March to 4th April 2025, taking place at Ruhr Universit\"at Bochum in Germany as part of the \enquote{Combinatorial Synergies} program. I am greatful for funding recieved from \enquote{DFG priority program 2458 Combinatorial Synergies} and \enquote{EPSRC AGQ CDT (EP/Y035232/1)} which made this trip possible.}
+
+% Numbering of equations etc.
+\counterwithin{equation}{section}
+\counterwithin{figure}{chapter}
+\counterwithin{table}{chapter}
+
+% Highlight colour
+%\definecolor{highlight}{HTML}{710D78}
+%\definecolor{my blue}{HTML}{2A0D77}
+%\definecolor{my red}{HTML}{770D38}
+%\definecolor{my green}{HTML}{14770D}
+%\definecolor{my yellow}{HTML}{E7BB41}
+
+% Title page info
+\title{Dynkin Classification}
+\author{Willoughby Seago}
+\date{31st March to 4th April 2025}
+\subtitle{Notes on the}
+\subsubtitle{Bochum Spring School}
+
+
+% Commands
+% Text
+\newcommand{\ADE}{\ensuremath{\symrm{A\mkern-2muD\mkern-2muE}}}
+\newcommand{\define}[1]{\textbf{#1}}
+
+% Maths
+\NewDocumentCommand{\A}{o}{\symrm{A}\IfNoValueF{#1}{_{#1}}}
+\NewDocumentCommand{\D}{o}{\symrm{D}\IfNoValueF{#1}{_{#1}}}
+\NewDocumentCommand{\E}{o}{\symrm{E}\IfNoValueF{#1}{_{#1}}}
+\NewDocumentCommand{\B}{o}{\symrm{B}\IfNoValueF{#1}{_{#1}}}
+\NewDocumentCommand{\C}{o}{\symrm{C}\IfNoValueF{#1}{_{#1}}}
+\NewDocumentCommand{\G}{O {2}}{\symrm{G}\IfNoValueF{#1}{_{#1}}}
+\NewDocumentCommand{\F}{O {4}}{\symrm{F}\IfNoValueF{#1}{_{#1}}}
+\RenewDocumentCommand{\H}{o}{\symrm{H}\IfNoValueF{#1}{_{#1}}}
+\NewDocumentCommand{\I}{o o}{\symrm{I}\IfNoValueF{#1}{_{#1}(#2)}}
+\NewDocumentCommand{\affA}{o}{\widetilde{\symrm{A}}\IfNoValueF{#1}{_{#1}}}
+\NewDocumentCommand{\affD}{o}{\widetilde{\symrm{D}}\IfNoValueF{#1}{_{#1}}}
+\NewDocumentCommand{\affE}{o}{\widetilde{\symrm{E}}\IfNoValueF{#1}{_{#1}}}
+\NewDocumentCommand{\affB}{o}{\widetilde{\symrm{B}}\IfNoValueF{#1}{_{#1}}}
+\NewDocumentCommand{\affC}{o}{\widetilde{\symrm{C}}\IfNoValueF{#1}{_{#1}}}
+\NewDocumentCommand{\affG}{O {2}}{\widetilde{\symrm{G}}\IfNoValueF{#1}{_{#1}}}
+\NewDocumentCommand{\affF}{O {4}}{\widetilde{\symrm{F}}\IfNoValueF{#1}{_{#1}}}
+
+\newcommand{\reals}{\symbb{R}}
+
+
+\begin{document}
+    \frontmatter
+    \titlepage
+    \innertitlepage{}
+    \newpage
+    \tableofcontents
+    \mainmatter
+    
+    \addtocounter{chapter}{-1}
+    \chapter{Dynkin Classification}
+    \section{On the Ubiquity of Dynkin Classifications}
+    The Dynkin classification arises in many areas of mathematics, from representation theory to algebraic geometry, and from combinatorics to string theory and spin structures, and many more.
+    Of these we will only touch on the first three.
+    
+    The structure of these notes follows that of the original spring school.
+    Each day was focused on a different topic, and each day refers to a chapter here.
+    Some of these days focused on the classification more than others, but all were about objects for which the Dynkin classification plays an important role.
+    
+    Exactly which Dynkin diagrams are allowed in a given classification (or which of the related Coxeter diagrams appears for the first topic) depends on the situation at hand, but in all cases we get at least the \(\A\), \(\D\), and \(\E\) types, leading to the so-called \ADE-classification.
+    
+    The precise reason why Dynkin diagrams, particularly the \ADE-types, appear so frequently is somewhat of a mystery.
+    Often, but not always, at least not in an obvious way, it's because there is some root system involved, which is a set of vectors in \(\reals^n\) subject to some conditions (), the structure of which may be used to generate more complicated objects.
+    % TODO: reference to definition of abstract root system
+    Each root system has a corresponding bilinear form, and it is the properties of this inner product which usually restrict which root systems appear in a given classification.
+    The Dynkin diagrams then are just a neat way of encapsulating the minimum amount of information required to define a root system.
+    This is done by first picking a special basis for the root system (a set of so-called simple roots) and then encoding the relative positions of these basis vectors in a graph.
+    The vertices of the graph correspond to elements of this basis, and the number of edges is controlled by the value of the bilinear form when evaluated at the corresponding basis vectors.
+    The direction of any directed edges is chosen such that the arrow points towards the shorter vector.
+    One may then argue that the omnipresence of the Dynkin classification is simply because many problems come down to, or can be phrased as, arranging some points in space subject to some relation between the position vectors relative angles and lengths.
+    
+    \section{Coxeter and Dynkin Diagrams}
+    Throughout the first day the following Dynkin diagrams were on the board for reference.
+    We start with our main focus, the (finite type) Dynkin diagrams.
+    We then go on to list the affine type Dynkin diagrams, which we won't use much but will occasionally have reason to refer to.
+    Finally, we list the Coxeter diagrams, which are related but distinct, and easily confused with the Dynkin diagrams.
+    The Coxeter diagrams only really appear in the first chapter.
+    
+    \subsection{Dynkin Diagrams}
+    Here are the (\define{finite type}) \define{Dynkin diagrams}.
+    The subscript in each case is the number of nodes, which is also known as the \define{rank}.
+    Dotted edges just mean a chain of nodes connected by single edges.
+    When there are multiple edges there is an arrow, which indicates the direction of all of those edges.
+    These finite-type Dynkin diagrams correspond to root systems which generate a positive definite bilinear form, giving a genuine inner product.
+    \begingroup
+    \allowdisplaybreaks
+    \begin{align}
+        \A[n] &= \qquad
+        \tikzsetnextfilename{dynkin-diagram-A}
+        \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}]
+            \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+            \draw [dynkin wire] (0, 0) -- ++ (2, 0);
+            \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+            \draw [dynkin wire, dashed] (2, 0) -- ++ (1, 0);
+            \draw [dynkin wire] (3, 0) -- (5, 0);
+            \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (4, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (5, 0) circle [radius=0.1cm];
+        \end{tikzpicture}
+        \\
+        \B[n] &= \qquad
+        \tikzsetnextfilename{dynkin-diagram-B}
+        \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}]
+            \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+            \draw [dynkin wire] (0, 0) -- ++ (2, 0);
+            \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+            \draw [dynkin wire, dashed] (2, 0) -- ++ (1, 0);
+            \draw [dynkin wire] (3, 0) -- (4, 0);
+            \draw [dynkin wire] (4, -0.05) -- ++ (1, 0);
+            \draw [dynkin wire] (4, 0.05) -- ++ (1, 0);
+            \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (4, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (5, 0) circle [radius=0.1cm];
+            \draw [-{>[width=0.3cm, length=0.15cm]}, dynkin wire] (4.55, 0) -- ++ (0.001, 0);
+        \end{tikzpicture}
+        \\
+        \C[n] &= \qquad
+        \tikzsetnextfilename{dynkin-diagram-C}
+        \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}]
+            \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+            \draw [dynkin wire] (0, 0) -- ++ (2, 0);
+            \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+            \draw [dynkin wire, dashed] (2, 0) -- ++ (1, 0);
+            \draw [dynkin wire] (3, 0) -- (4, 0);
+            \draw [dynkin wire] (4, -0.05) -- ++ (1, 0);
+            \draw [dynkin wire] (4, 0.05) -- ++ (1, 0);
+            \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (4, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (5, 0) circle [radius=0.1cm];
+            \draw [-{>[width=0.3cm, length=0.15cm]}, dynkin wire] (4.45, 0) -- ++ (-0.001, 0);
+        \end{tikzpicture}
+        \\
+        \D[n] &= \qquad
+        \tikzsetnextfilename{dynkin-diagram-D}
+        \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}, baseline=-0.1cm]
+            \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+            \draw [dynkin wire] (0, 0) -- ++ (2, 0);
+            \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+            \draw [dynkin wire, dashed] (2, 0) -- ++ (1, 0);
+            \draw [dynkin wire] (3, 0) -- (4, 0);
+            \draw [dynkin wire] (4, 0) -- ++ (60:1) coordinate (A);
+            \draw [dynkin wire] (4, 0) -- ++ (-60:1) coordinate (B);
+            \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (4, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (A) circle [radius=0.1cm];
+            \draw [dynkin node] (B) circle [radius=0.1cm];
+        \end{tikzpicture}
+        \\
+        \E[6] &= \qquad
+        \tikzsetnextfilename{dynkin-diagram-E6}
+        \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}, baseline=-0.1cm]
+            \draw [dynkin wire] (0, 0) -- ++ (4, 0);
+            \draw [dynkin wire] (2, 0) -- ++ (0, 1);
+            \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (4, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (2, 1) circle [radius=0.1cm];
+        \end{tikzpicture}
+        \\
+        \E[7] &= \qquad
+        \tikzsetnextfilename{dynkin-diagram-E7}
+        \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}, baseline=-0.1cm]
+            \draw [dynkin wire] (0, 0) -- ++ (5, 0);
+            \draw [dynkin wire] (2, 0) -- ++ (0, 1);
+            \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (4, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (5, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (2, 1) circle [radius=0.1cm];
+        \end{tikzpicture}
+        \\
+        \E[8] &= \qquad
+        \tikzsetnextfilename{dynkin-diagram-E8}
+        \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}, baseline=-0.1cm]
+            \draw [dynkin wire] (0, 0) -- ++ (6, 0);
+            \draw [dynkin wire] (2, 0) -- ++ (0, 1);
+            \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (4, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (5, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (6, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (2, 1) circle [radius=0.1cm];
+        \end{tikzpicture}
+        \\
+        \G[2] &= \qquad
+        \tikzsetnextfilename{dynkin-diagram-G2}
+        \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}]
+            \draw [dynkin wire] (0, 0) -- ++ (1, 0);
+            \draw [dynkin wire] (0, -0.05) -- ++ (1, 0);
+            \draw [dynkin wire] (0, 0.05) -- ++ (1, 0);
+            \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+            \draw [-{>[width=0.3cm, length=0.15cm]}, dynkin wire] (0.55, 0) -- ++ (0.001, 0);
+        \end{tikzpicture}
+        \\
+        \F[4] &= \qquad
+        \tikzsetnextfilename{dynkin-diagram-F4}
+        \begin{tikzpicture}[dynkin node/.style = {fill}, dynkin wire/.style = {thick}]
+            \draw [dynkin wire] (0, 0) -- ++ (1, 0);
+            \draw [dynkin wire] (1, -0.05) -- ++ (1, 0);
+            \draw [dynkin wire] (1, 0.05) -- ++ (1, 0);
+            \draw [dynkin wire] (2, 0) -- ++ (1, 0);
+            \draw [dynkin node] (0, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (1, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (2, 0) circle [radius=0.1cm];
+            \draw [dynkin node] (3, 0) circle [radius=0.1cm];
+            \draw [-{>[width=0.3cm, length=0.15cm]}, dynkin wire] (1.55, 0) -- ++ (0.001, 0);
+        \end{tikzpicture}
+    \end{align}
+    \endgroup
+    
+    \subsection{Affine Dynkin Diagrams}
+    The \define{affine Dynkin diagrams} are the next simplest example.
+    They are formed by taking the non-affine types and attaching one new node.
+    There are restrictions to how this can be done.
+    We consider only the simplest case here, the untwisted types.
+    For each outer automorphism\footnote{outer because we only consider the graphs up to conjugation} of the graph there is a distinct choice of where to place the extra node, and the untwisted type corresponds to the identity outer automorphism.
+    The untwisted types are listed below.
+    Note that the number of nodes here is the subscript plus one.
+    Both the notations \(\affA[n]\) and \(\A[n]^{(1)}\) are common (with higher superscripts labelling twisted affine Dynkin diagrams).
+    The new node is the one in colour.
+\end{document}
