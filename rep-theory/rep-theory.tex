@@ -59,6 +59,7 @@ noabbrev
 \newcommand{\Vect}[1][\field]{#1\text{-}\c@egory{Vect}}
 \newcommand{\AMod}[1][A]{#1\text{-}\c@egory{Mod}}
 \newcommand{\ModA}[1][A]{\c@egory{Mod}\text{-}#1}
+\newcommand{\Mod}[1]{#1\text{-}\c@egory{Mod}}
 \newcommand{\Ab}{\c@egory{Ab}}
 \newcommand{\Rep}{\c@egory{Rep}}
 \newcommand{\Set}{\c@egory{Set}}
@@ -116,6 +117,9 @@ noabbrev
 \newcommand{\normalsub}{\mathrel{\lhd}}
 \newcommand{\algNumbers}{\overline{\rationals}}
 \newcommand{\algIntegers}{\overline{\integers}}
+\newcommand{\Res}{\symrm{Res}}
+\newcommand{\Ind}{\symrm{Ind}}
+\newcommand{\one}{\symbb{1}}
 
 \begin{document}
     \frontmatter
@@ -2818,7 +2822,7 @@ noabbrev
     
     \begin{prp}{}{}
         \begin{itemize}
-            \item \(\algIntegers\) is a ring; and
+            \item \(\algIntegers\) is a ring\footnote{Fun Fact\textsuperscript{TM}: The first use of the word \enquote{ring} is attributed to Hilbert, who used it describe \(\algIntegers\), and in particular the way higher powers \enquote{loop back around} to be described in terms of lower powers, which can always be done for elements of \(\algIntegers\) using the polynomial they satisfy to replace higher powers with lower ones.}; and
             \item \(\algNumbers\) is a field.
         \end{itemize}
         \begin{proof}
@@ -3085,6 +3089,415 @@ noabbrev
             This is a contradiction of the simplicity, and hence a contradiction of our assumption of non-solvability.
         \end{proof}
     \end{thm}
+    
+    \chapter{Induced Representations and Frobenius Reciprocity}
+    \section{Induced Representations}
+    Let \(G\) be a finite group, and \(H\) a subgroup of \(G\).
+    Any \(G\)-module, \(M\), may be viewed as an \(H\)-module in the obvious way.
+    We just \enquote{forget} the fact that elements in \(G \setminus H\) can act on \(M\) and consider only the action of elements in \(H\).
+    We call the resulting module the \defineindex{restriction} of \(M\) to \(H\), since if \(\rho \colon G \to \generalLinear(M)\) is the representation map for \(M\) as a \(G\)-module then the corresponding representation map for \(M\) as an \(H\)-module is \(\rho|_H \colon H \to \generalLinear(V)\).
+    
+    For example, \(S_3\) acts on \(\complex^3\) by permuting basis vectors, and \(\integers_2 = \{\cycle{}, \cycle{1,2}\} \subset S_3\) acts on \(\complex^3\) by just swapping the first two basis vectors back and forth and leaving the third alone.
+    
+    More formally, given a \(G\)-module, \(M\), we have a canonical method of producing an \(H\)-module, and we can encode this as a functor
+    \begin{equation}
+        \Res^G_H \colon \Mod{G} \to \Mod{H}
+    \end{equation}
+    which sends a \(G\)-module, \(M\), to the \(H\)-module, \(\Res^G_H M\), given by forgetting how elements of \(G \setminus H\) act.
+    This functor is the identity on module homomorphisms since the underlying sets of \(M\) and \(\Res^G_HM\) are the same.
+    We call this the \defineindex{restriction functor}.
+    
+    A natural question now is can we go the other direction?
+    That is, if we have an \(H\)-module, \(M\), is there a sensible way to construct a \(G\)-module?
+    With the more formal statement above we might guess that the reverse process should be adjoint to \(\Res^G_H\).
+    The following definition gives us exactly this reverse process.
+    
+    \begin{dfn}{Induced Module}{}
+        Let \(G\) be a finite group and \(H\) a subgroup.
+        An \(H\)-module, \(M\), gives a \(G\)-module defined by
+        \begin{equation}
+            \Ind^G_H M \coloneq \field G \otimes_{\field H} M.
+        \end{equation}
+    \end{dfn}
+    
+    The action of \(G\) on \(\Ind^G_H M\) is implicit in the definition of the tensor product, explicitly, it's given on simple tensors by
+    \begin{equation}
+        g \action (g' \otimes m) = gg' \otimes m.
+    \end{equation}
+    This all works out because \(\field G\) is a \((\field G, \field H)\)-bimodule (with the right \(\field H\)-module simply being restriction of the right regular representation).
+    Thus, the tensor product of \(\field G\) and \(\field H\) is naturally a \(\field G\)-module.
+    
+    As with restriction we have a functor
+    \begin{equation}
+        \Ind^G_H \colon \Mod{H} \to \Mod{G}
+    \end{equation}
+    which sends \(M\) to \(\field G \otimes_{\field H} M\) and an \(H\)-module homomorphism, \(\varphi \colon M \to N\) is sent to a \(G\)-module homomorhpism
+    \begin{align}
+        \Ind^G_H \varphi \colon \field G \otimes_{\field H} M &\to \field G \otimes_{\field H} N\\
+        g \otimes m &\mapsto g \otimes \varphi(n).
+    \end{align}
+    
+    Note that there are several equivalent definitions of \(\Ind^G_H M\) yielding isomorphic, but formally distinct, \(G\)-modules.
+    One of these is
+    \begin{equation}
+        \Ind^G_H M \isomorphic \{f \colon G \to M \mid f(hx) = \rho(h)f(x) \forall x \in G, h \in H\}.
+    \end{equation}
+    That is, we consider all maps \(G \to M\) which intertwine the regular representation of \(G\) and the action of \(G\) on \(M\).
+    Another definition is
+    \begin{equation}
+        \Ind^G_H M \isomorphic \Hom_{\field H}(\field G, M)
+    \end{equation}
+    which is really just restating the above.
+    With these definitions the action of \(g \in G\) on \(f\) is given by
+    \begin{equation}
+        (g \action f)(x) = f(xg)
+    \end{equation}
+    for all \(x \in G\).
+    Everything we might want then pretty much follows because \(g \in G\) acts on the right of the function argument and \(h \in H\) acts on the left.
+    For example, this is a valid representation since we have
+    \begin{equation}
+        (g \action f)(hx) = f(hxg) = \rho(h)f(xg) = \rho(h)(g \action f)(x)
+    \end{equation}
+    so \(g \action f\) is again in \(\Hom_{\field H}(\field G, M)\), and
+    \begin{equation}
+        (g \action (g' \action f))(x) = (g' \action f)(xg) = f(xgg') = (gg' \action f)(x)
+    \end{equation}
+    and
+    \begin{equation}
+        (1 \action f)(x) = f(x1) = f(x)
+    \end{equation}
+    for all \(g, g', x \in G\).
+    
+    \begin{exm}{}{}
+        Let \(\field\) be the trivial representation in which \(H\) acts as the identity, so the representation map is \(\one \colon H \to \generalLinear(\field) \isomorphic \field\) with \(\one(h) = 1\).
+        Then, we have
+        \begin{equation}
+            \Ind^G_H \field = \field G \otimes_{\field H} \field.
+        \end{equation}
+        Note that the tensor product is \(\otimes_{\field H}\), not \(\otimes_{\field}\), so \(\field G \otimes_{\field H} \field\) is not isomorphic to \(\field G\).
+        
+        The module structure is completely determined by elements of the form \(g \otimes 1\).
+        In fact, since \(gh \otimes 1 = g \otimes (h \action 1) = g \otimes 1\) the action is invariant under multiplication by elements of \(H\).
+        Both \(gh\) and \(gh'\) have the same action for \(g \in G\) and \(h, h' \in H\).
+        Thus, the action of \(g \in G\) is determined only by the coset, \(gH\), into which it falls.
+        
+        The induced module, \(\Ind^G_H \field\) is isomorphic to the coset representation, \(\field G/H\), which is a \(G\)-module constructed as the free vector space on the set of cosets, \(G/H\), with the \(G\)-action given by \(g \action g'H = (gg')H\).
+    \end{exm}
+    
+    \begin{exm}{}{}
+        Let \(G\) be a finite group with subgroup \(H\).
+        Let \(\chi \colon H \to \field^{\times}\) be a homomorphism, and \(\field_\chi\) the corresponding 1-dimensional representation of \(H\).
+        That is, \(h \action \lambda = \chi(h)\lambda\) for all \(h \in H\) and \(\lambda \in \field\).
+        
+        Consider the induced module \(\Ind^G_H\field_{\chi} = \field G \otimes_{\field H} \field_{\chi}\).
+        For \(h \in H\) we have \(h \otimes 1 = 1_G \otimes (h \action 1) = 1_G \otimes \chi(h)\).
+        The action of \(g \in G\) on \(\Ind^G_H \field_{\chi}\) is given by \(g \action (g' \otimes 1) = gg' \otimes 1\).
+        
+        Let
+        \begin{equation}
+            e_\chi = \frac{1}{\abs{K}} \sum_{h \in H} \chi(h)^{-1} h \in \field H.
+        \end{equation}
+        We claim that \(\Ind^G_H\field_\chi \isomorphic \field G e_\chi\), where elements of \(\field Ge_\chi\) are \(\field\)-linear combinations of elements of the form \(g e_\chi\) and the action on \(\field Ge_\chi\) is by \(g \action g'e_\chi = (gg')e_\chi\), that is, it's just left multiplication.
+        
+        The isomorphism, \(\varphi \colon \Ind^G_H \field_{\chi} \to \field G e_\chi\), is given by \(\varphi(g \otimes 1) = ge_\chi\).
+        This is a \(G\)-module homomorphism since
+        \begin{align}
+            \varphi(g \action (g' \otimes 1)) &= \varphi(gg' \otimes 1)\\
+            &= gg'e_\chi\\
+            &= \varphi(gg' \otimes 1).
+        \end{align}
+        Note that if \(g = kh\) with \(h \in H\) then we have \(g \otimes 1 = k \otimes \chi(h)\), and so we need to check that \(\varphi\) is well defined with respect to this ambiguity.
+        In particular, if \(g = kh = k'h'\) for \(h, h' \in H\) then we need to check that \(\varphi(k \otimes \chi(h)) = \varphi(k' \otimes \chi(h'))\).
+        This is true since \(\chi(h)\) and \(\chi(h')\) are scalars, so we can pull the out and we have
+        \begin{equation}
+            \varphi(k \otimes \chi(h)) = \chi(h)\varphi(k \otimes 1) = \chi(h) ke_\chi
+        \end{equation}
+        and similarly, \(\varphi(k' \otimes \chi(h')) = \chi(h')k' e_\chi\).
+        To show that these are equal we start with the definition of \(e_\chi\):
+        \begin{align}
+            \chi(h)ke_\chi &= \chi(h)k \frac{1}{\abs{H}} \sum_{g \in H} \chi(g)^{-1}g\\
+            &= \frac{1}{\abs{H}} \sum_{g \in H} \chi(h)\chi(g)^{-1} kg.
+        \end{align}
+        We can then reindex the sum by defining \(g' \in G\) such that \(kg = k'g'\), so \(g = k^{-1}k'g'\).
+        Since \(kh = k'h'\) this gives \(h = k^{-1}k'h'\).
+        Thus,
+        \begin{align}
+            \chi(h)ke_\chi &= \frac{1}{\abs{H}} \sum_{g' \in H} \chi(k^{-1}k'h')\chi(k^{-1}k'g')^{-1} k'g'\\
+            &= \frac{1}{\abs{H}} \sum_{g' \in H} \chi(k^{-1}k'h')\chi(g'^{-1}k'^{-1}) k'g'\\
+            &= \frac{1}{\abs{H}} \sum_{g' \in H} \chi(k^{-1}k'h' g'^{-1}k'^{-1}k) k'g'\\
+            \shortintertext{using \(k^{-1}k' = hh'^{-1}\) and \(k'^{-1}k = h'h^{-1}\) this becomes}
+            \chi(h)ke_\chi &= \frac{1}{\abs{H}} \sum_{g' \in H} \chi(hh'^{-1} h' g'^{-1}h'h^{-1}) k'g'\\
+            &= \frac{1}{\abs{H}} \sum_{g' \in H} \chi(h g'^{-1}h'h^{-1}) k'g'.
+        \end{align}
+        Now, since \(\chi\) maps into \(\complex^{\times}\) and is a group homomorphism we have that \(\chi(ab) \chi(a)\chi(b) = \chi(b)\chi(a) = \chi(ba)\), and it follows that \(\chi(hg'^{-1}h'h^{-1}) = \chi(h^{-1}hg'^{-1}h') = \chi(g'^{-1}h') = \chi(h')\chi(g')^{-1}\), and thus
+        \begin{multline}
+            \chi(h)ke_\chi = \frac{1}{\abs{H}} \sum_{g' \in H} \chi(h')\chi(g')^{-1}k'g'\\
+            = \chi(h')k' \frac{1}{\abs{H}} \sum_{g' \in H} \chi(g')^{-1}g' = \chi(h')k'e_\chi.
+        \end{multline}
+        This shows that \(\varphi\) is well defined.
+        Clearly \(\varphi\) is invertible, and so we have the claimed isomorphism, \(\Ind^G_H\field_{\chi} \isomorphic \field Ge_{\chi}\).
+    \end{exm}
+    
+    The first example above actually gives yet another way of characterising the induced representation.
+    If \(G\) is a finite group and \(H\) a (not necessarily normal) subgroup then we can form the coset space, \(G/H\).
+    Taking \(\{g_1, \dotsc, g_n\}\) to be a complete set of representatives, that is each coset can be written as \(g_i H\) in exactly one way, we can take
+    \begin{equation}
+        \Ind^G_H M = \bigoplus_{i=1}^n g_iM
+    \end{equation}
+    where each \(g_i M\) is an isomorphic copy of \(M\), and we write elements of \(g_i M\) as \(g_i m\).
+    For each \(g \in G\) there is some \(h_i \in H\) and \(j(i) \in \{1, \dotsc, n\}\) such that \(gg_i = g_{j(i)}h_i\), which simply restates that \(\{g_1, \dotsc, g_n\}\) is a complete set of representatives. 
+    Then \(g \in G\) acts on this space by
+    \begin{equation}
+        g \action g_i m = g_{j(i)} \rho(h_i)m_i.
+    \end{equation}
+    So \(g\) acts by permuting the copies of \(M\), sending \(g_iM\) to \(g_{j(i)}M\), with an extra \enquote{twist} provided by the action of \(h_i\) on \(M\).
+    Another way of constructing this is to take
+    \begin{equation}
+        g_i M = \{f \in \Hom_{\field H}(\field G, M) \mid f(g) = 0 \text{ unless } g \in g_i H\}.
+    \end{equation}
+    Then the action is by
+    \begin{equation}
+        (g \action f)(x) = f(xg)
+    \end{equation}
+    again, and we just take evaluating to zero to be equivalent to not being in \(g_i M\) as defined before.
+    
+    \section{Frobenius Formula for Induced Characters}
+    Calculating the character of a restricted module is simple.
+    If we have a \(G\)-module, \(M\), with character \(\chi \colon G \to \field\) then the character of \(\Res^G_HM\) is just the restriction of the character to \(H\), \(\chi\downarrow^G_H \coloneq \chi|_H \colon H \to \field\).
+    In this section we give a method for calculating characters of induced modules, a more involved process.
+    
+    \begin{thm}{Frobenius Formula}{thm:frobenius formula}
+        Let \(G\) be a finite group with subgroup \(H\).
+        Let \(\{g_1, \dotsc, g_n\}\) be a complete set of representatives for \(G/H\).
+        Let \(M\) be an \(H\)-module with character \(\chi_M\).
+        Write \(\chi_M\uparrow^G_H\) for the character of \(\Ind^G_H M\).
+        Then
+        \begin{equation}
+            \chi_M\uparrow^G_H(g) = \sum_{i=1}^n \chi_M(g_i^{-1}gg_i)
+        \end{equation}
+        where \(\chi_M\) has been extended from \(H\) to all of \(G\) such that \(\chi_M(x) = 0\) if \(x \notin H\).
+        \begin{proof}
+            We shall work with
+            \begin{equation}
+                \Ind^G_H M = \bigoplus_{i=1}^n g_iM.
+            \end{equation}
+            Thus, we have
+            \begin{equation}
+                \chi_M\uparrow^G_H(g) = \sum_i \chi_i(g)
+            \end{equation}
+            where \(\chi_i(g) = \tr_{g_iM}\rho_i(g)\) with \(\rho_i\) defined to be the corresponding blocks in the matrix
+            \begin{equation}
+                \rho(g) = 
+                \begin{pmatrix}
+                    \rho_1(g) & & \\
+                    & \rho_2(g) & &\\
+                    & & \ddots &\\
+                    & & & \rho_n(g)
+                \end{pmatrix}
+            \end{equation}
+            extended so that \(\rho_i(g) = 0\) unless \(gg_i \in g_iH\).
+            
+            For the nonzero terms we know that \(gg_i \in g_iH\) means there is some \(h^{-1} \in H\) such that \(gg_ih^{-1} = g_i\), and thus \(g_i^{-1}gg_i = h \in H\).
+            Now define a map \(\alpha \colon g_iM \to M\) by \(\alpha(f) = f(g_i)\).
+            This is an isomorphism, and we have
+            \begin{equation}
+                \alpha(g \action f) = (g \action f)(g_i) = f(g_ig) = f(hg_i) = \rho(h)f(g_i) = h \action \alpha(f)
+            \end{equation}
+            and so \(g \action f = \alpha^{-1}(h \action \alpha(f))\).
+            This means that \(\tr_{g_iM} \rho_i(g) = \chi_M(h)\).
+            Thus, we have
+            \begin{equation}
+                \chi_M\uparrow^G_H(g) = \tr_{\Ind^G_H M} \rho(g) = \sum_{i=1}^n \tr_{g_i M} \rho_i(g_i) = \sum_{i=1}^n \chi_M(g_igg_i^{-1})
+            \end{equation}
+            as claimed.
+        \end{proof}
+    \end{thm}
+    
+    \begin{crl}{}{}
+        With notation as in \cref{thm:frobenius formula} if \(\Char \field\) and \(\abs{H}\) are coprime then we have
+        \begin{equation}
+            \chi_M\uparrow^G_H(g) = \frac{1}{\abs{H}} \sum_{\substack{x \in G\\ x^{-1}gx \in H}} \chi_M(x^-1 g x).
+        \end{equation}
+        \begin{proof}
+            We have that
+            \begin{equation}
+                \chi_M\uparrow^G_H(g) = \sum_{i=1}^n \chi_M(g_i^{-1}gg_i).
+            \end{equation}
+            Since \(\chi_M\) is a class function it is invariant under conjugation of its argument, so we can write this as
+            \begin{equation}
+                \chi_M\uparrow^G_H(g) = \sum_{i=1}^n \chi_M(h^{-1}g_i^{-1}gg_ih).
+            \end{equation}
+            for any \(h \in H\).
+            In fact, we can actually sum over all \(h \in H\), and all this does is give us \(\abs{H}\) identical terms\footnote{This is where we need \(\Char \field \nmid \abs{H}\), if this wasn't the case we may accidentally have everything vanish in this sum.}, so
+            \begin{equation}
+                \chi_M\uparrow^G_H(g) = \frac{1}{\abs{H}} \sum_{h \in H} \sum_{i=1}^n \chi_M(h^{-1}g_i^{-1}gg_ih).
+            \end{equation}
+            We can then recognise that the argument of \(\chi_M\) is \(g\) conjugated by \(x = g_i h\), which is chosen such that \(x^{-1}gx \in H\) since \(g_i^{-1}gg_i \in H\) and conjugation by \(h \in H\) doesn't take us out of \(H\).
+            Thus, we have
+            \begin{equation}
+                \chi_M\uparrow^G_H(g) = \frac{1}{\abs{H}} \sum_{\substack{x \in G\\ x^{-1}gx \in H}} \chi_M(x^{-1}gx)
+            \end{equation}
+            where all we've done is combine the two sums, over \(h \in H\) and \(i \in \{1, \dotsc, n\}\) into a single sum.
+        \end{proof}
+    \end{crl}
+    
+    \section{Frobenius Reciprocity}
+    Frobenius reciprocity is the relationship between induced and restricted modules.
+    The strongest form of this result is that \(\Res^G_H\) and \(\Ind^G_H\) are adjoint functors.
+    Before we get to that we'll give a result that holds for characters.
+    
+    \subsection{Froebnius Reciprocity of Characters}
+    \begin{thm}{Frobenius Reciprocity of Characters}{}
+        Let \(G\) be a finite group and \(H\) a subgroup.
+        Let \(M\) be a \(G\)-module and \(N\) an \(H\)-module, both over \(\complex\).
+        Write \(\innerprod{-}{-}_G\) and \(\innerprod{-}{-}_H\) for the inner product on the space of class functions of \(G\) and \(H\) respectively.
+        Write \(\chi_M\) and \(\chi_N\) for the characters of \(M\) and \(N\) respectively.
+        Write \(\chi_N\uparrow^G_H\) for the character of \(\Ind^G_HN\) and \(\chi_M\downarrow^G_H\) for the character of \(\Res^G_HM\).
+        Then
+        \begin{equation}
+            \innerprod{\chi_N\uparrow^G_H}{\chi_M}_G = \innerprod{\chi_N}{\chi_M\downarrow^G_H}_H.
+        \end{equation}
+        \begin{proof}
+            Write \(\chi = \chi_M\).
+            Then, by definition of the inner product of class functions we have
+            \begin{equation}
+                \innerprod{\chi_N\uparrow^G_H}{\chi_M}_G = \frac{1}{\abs{G}} \sum_{g \in G} \chi_W\uparrow^G_H(g) \overline{\chi(g)}.
+            \end{equation}
+            Define a function
+            \begin{equation}
+                \psi(g) = 
+                \begin{cases}
+                    \chi_N(g) & g \in H,\\
+                    0 & \text{else}.
+                \end{cases}
+            \end{equation}
+            Then, using the Frobenius formula to calculate \(\chi_N\uparrow^G_H(g)\) we have
+            \begin{align}
+                \innerprod{\chi_N\uparrow^G_H}{\chi_M}_G &= \frac{1}{\abs{G}} \sum_{g \in G} \frac{1}{\abs{H}} \sum_{\substack{x \in G\\ xgx^{-1} \in H}} \psi(x^{-1}gx) \overline{\chi(g)}\\
+                &= \frac{1}{\abs{G}} \frac{1}{\abs{H}} \sum_{g \in G} \sum_{\substack{x \in G\\ x^{-1}gx \in H}} \psi(x^{-1}gx) \chi(g^{-1})
+            \end{align}
+            where in the last step we've just rearranged some terms and used \(\overline{\chi(g)} = \chi(g^{-1})\).
+            Now we can reindex the sum by taking \(y = x^{-1}gx\), which means \(g^{-1} = xy^{-1}x^{-1}\), and the condition that \(x^{-1}gx \in H\) becomes that \(y \in H\), so we have
+            \begin{equation}
+                \innerprod{\chi_N\uparrow^G_H}{\chi_M}_G = \frac{1}{\abs{G}} \frac{1}{\abs{H}} \sum_{x \in G} \sum_{y \in H} \psi(y) \chi(xy^{-1}x^{-1}).
+            \end{equation}
+            We also have that \(\psi(y) = \chi_N(y)\), since \(y \in H\), and thus this becomes
+            \begin{equation}
+                \innerprod{\chi_N\uparrow^G_H}{\chi_M}_G = \frac{1}{\abs{G}} \frac{1}{\abs{H}} \sum_{x \in G} \sum_{y \in H} \chi_N(y) \chi(xy^{-1}x^{-1}).
+            \end{equation}
+            Since \(\chi\) is a class function \(\chi(xy^{-1}x^{-1}) = \chi(y^{-1})\), and so we get \(\abs{G}\) terms which are all equal to \(\chi(y^{-1}) = \overline{\chi(y)}\).
+            This perfectly cancels with the sum over \(x \in G\), leaving us with
+            \begin{equation}
+                \innerprod{\chi_N\uparrow^G_H}{\chi_M}_G = \frac{1}{\abs{H}} \sum_{y \in G} \chi_N(y) \overline{\chi(y)} = \innerprod{\chi_N}{\chi}_H.
+            \end{equation}
+            This proves the result once we realise that since the sum is over \(y \in H\) we can replace \(\chi = \chi_M \colon G \to \complex\) with \(\chi_M\downarrow^G_H = \chi_M|_H \colon H \to \complex\).
+        \end{proof}
+    \end{thm}
+    
+    One thing that this result tells us is that the multiplicities of induced modules and restricted modules are related.
+    In particular, we have
+    \begin{equation}
+        \dim(\Hom_G(M, \Ind^G_HN)) = \dim(\Hom_H(\Res^G_HM, N)).
+    \end{equation}
+    Thus, there exists, at the level of vector spaces, an isomorphism between these hom-spaces.
+    
+    \subsection{Frobenius Reciprocity}
+    \begin{thm}{}{}
+        Let \(G\) be a finite group with subgroup \(H\).
+        Then the functors
+        \begin{equation}
+            \Res^G_H \colon \Mod{G} \to \Mod{H}, \qand \Ind^G_H \colon \Mod{H} \to \Mod{G}
+        \end{equation}
+        are left and right adjoints.
+        That is, there is a (natural) isomorphism
+        \begin{equation}
+            \Hom_G(M, \Ind^G_H N) \isomorphic \Hom_H(\Res^G_H M, N)
+        \end{equation}
+        for any \(G\)-module, \(M\), and \(H\)-module, \(N\).
+        \begin{proof}
+            Let
+            \begin{equation}
+                E = \Hom_G(M, \Ind^G_H N), \qand E' = \Hom_H(\Res^G_H M, N).
+            \end{equation}
+            We need to define two functions
+            \begin{equation}
+                \Phi \colon E \to E', \qand \Phi' \colon E' \to E
+            \end{equation}
+            which should then be inverses.
+            
+            If \(\alpha \in E\) then \(\alpha \colon M \to \Ind^G_H N\) is a \(G\)-module homomorphism, and \(\Phi(\alpha)\) should be an \(H\)-module homomorphism, \(\Phi(\alpha) \colon \Res^G_H M \to N\).
+            That is, \(\Phi(\alpha)\) needs to take in an element of \(\Res^G_H M\), which is just an element of \(M\), and produce an element of \(N\).
+            The obvious way to do this is to simply evaluate \(\alpha\), which gives us an element of \(\Ind^G_H N \isomorphic \Hom_{\field H}(\field G, N)\), which we can then evaluate to produce an element of \(N\).
+            The only problem is what element of \(\field G\) do we evaluate this map at?
+            Fortunately since \(G\) is a group there's an obvious distinguished element, \(1_G\), at which to perform this evaluation.
+            Thus, we define \(\Phi(\alpha)\) by
+            \begin{equation}
+                \Phi(\alpha)(m) = \alpha(m)(1_G)
+            \end{equation}
+            for \(m \in \Res^G_M\) (which as a set is just \(M\)).
+            
+            If \(\beta \in E'\) then \(\beta \colon \Res^G_H \to N\) is an \(H\)-module homomorphism, and \(\Phi'(\beta)\) should be a \(G\)-module homomorphism, \(\Phi'(\beta) \colon M \to \Ind^G_H N\).
+            That is, \(\Phi'(\beta)\) needs to take in an element of \(M\) and produce an element of \(\Ind^G_HN \isomorphic \Hom_{\field H}(\field G, N)\).
+            The correct definition turns out to be
+            \begin{equation}
+                \Phi'(\beta)(m)(x) = \beta(xm)
+            \end{equation}
+            where \(m \in M\) and \(x \in \field G\) so \(xm \in M\) using the \(G\)-module structure of \(M\), which is equal to \(\Res^G_HM\) as a set, and so evaluating \(\beta\) at \(xm\) is a valid operation.
+            
+            With these definitions we need to show that the resulting functions are well-defined.
+            This comes down to the following three steps:
+            \begin{enumerate}
+                \item We need to show that \(\Phi(\alpha)\) is an \(H\)-module homomorphism.
+                That is, we need to show that \(\Phi(\alpha)(h \action m) = h \action \Phi(\alpha)(m)\) for all \(h \in H\) and \(m \in M\).
+                This is the case, as a direct calculation shows.
+                First, using the definition of \(\Phi\) we have
+                \begin{equation}
+                    \Phi(\alpha)(h \action m) = \alpha(h \action m)(1_G).
+                \end{equation}
+                Since \(\alpha\) is a \(G\)-module homomorphism we have \(\alpha(h \action m) = h \action \alpha(m)\), and so
+                \begin{equation}
+                    \Phi(\alpha)(h \action m) = (h \action \alpha(m))(1_G).
+                \end{equation}
+                Since \(\alpha(m)\) is an \(H\)-module homomorphism the action of \(h\) on \(\alpha(m)\) is to act on the right in the argument, which is just multiplication in this case:
+                \begin{equation}
+                    \Phi(\alpha)(h \action m) = \alpha(m)(1_Gh).
+                \end{equation}
+                Since \(1_Gh = h1_G\) we can write this as
+                \begin{equation}
+                    \Phi(\alpha)(h \action m) = \alpha(m)(h1_G).
+                \end{equation}
+                We can then identify that acting on the left of the argument is the definition of the action of \(G\) on the \(G\)-module homomorphism \(\alpha\)
+                \begin{equation}
+                    \Phi(\alpha)(h \action m) = h \action (\alpha (m))(1_G) = h \action (\Phi(\alpha)(m)).
+                \end{equation}
+                \item Next, we need to show that \(\Phi'(\beta)(m) \in \Ind^G_HN\).
+                That is, we need to show that \(\Phi'(\beta)(m)(hx) = h \action \Phi'(\beta)(m)(x)\).
+                This also follows from a direct calculation, we have
+                \begin{equation}
+                    \Phi'(\beta)(m)(hx) = \beta(hxm) = h \action \beta(xm) = h \action \Phi'(\beta)(m)(x)
+                \end{equation}
+                having used the fact that \(\beta\) is an \(H\)-module homomorphism.
+                \item Finally, we need to show that \(\Phi'(\beta)\) is a \(G\)-module homomorphism.
+                That is, we need to show that \(\Phi'(\beta)(g \action m) = g \action \Phi'(\beta)(m)\).
+                This follows since
+                \begin{equation}
+                    \Phi'(\beta)(g \action m)(x) = \beta(xg \action m) = \Phi'(\beta)(m)(xg) = (g \action \Phi'(\beta)(m))(x)
+                \end{equation}
+                having used the fact that \(\Phi'(\beta) \in \Ind^G_H M\) in the last step.
+            \end{enumerate}
+            
+            We now just have to show that \(\Phi\) and \(\Phi'\) are inverses, this follows from two calculations:
+            \begin{equation}
+                \Phi(\Phi'(\beta))(m) = \Phi'(\beta)(m)(1_G) = \beta(1_Gm) = \beta(m),
+            \end{equation}
+            so \(\Phi \circ \Phi' = \id_{E'}\), and
+            \begin{equation}
+                \Phi'(\Phi(\alpha))(m)(x) = \Phi(\alpha)(xm) = \alpha(xm)(1_G) = (x \action \alpha)(m)(1_G) = \alpha(m)(1_Gx) = \alpha(m)(1_G)
+            \end{equation}
+            so \(\Phi' \circ \Phi = \id_E\).
+        \end{proof}
+    \end{thm}
+    
     
     % Appdendix
 	\appendixpage
