@@ -147,8 +147,15 @@ noabbrev
     \begin{dfn}{Partition}{}
         Let \(n\) be a nonnegative integer.
         A \defineindex{partition} of \(n\) is a nonincreasing sequence of nonnegative integers, \(\lambda = (\lambda_1, \lambda_2, \lambda_3, \dotsc)\), such that \(\lambda_1 + \lambda_2 + \lambda_3 + \dotsb = n\).
-        We write \(\lambda \partition n\) to say that \(\lambda\) is a partition of \(n\).
     \end{dfn}
+    
+    \begin{ntn}{}{}
+        We write \(\lambda \partition n\) to say that \(\lambda\) is a partition of \(n\).
+        
+        We write \(\abs{\lambda}\) for \(n\).
+        
+        We write \(\ell(\lambda)\) for the number of nonzero parts, that is \(\lambda_\ell\) is the last nonzero term in the sequence \(\lambda\).
+    \end{ntn}
     
     Notice that since \(n\) is finite and \(\lambda\) is nonincreasing it must be that \(\lambda_i = 0\) for \(i\) sufficiently large, so usually we'll just consider \(\lambda\) as a finite sequence.
     For example, there are \(7\) partitions of \(5\):
@@ -357,11 +364,30 @@ noabbrev
     This is then antisymmetric in the sense that \(w \action v = \sgn(w)v\).
     
     One way of looking at this is that \(a_{(3)}\) projects \(V^{\otimes 3}\) to the subspace on which \(S_n\) acts trivially, whereas \(b_{(1,1,1)}\) projects \(V^{\otimes 3}\) onto the subspace where \(S_n\) acts by the sign representation.
+    In general, we have \(a_{(n)}V^{\otimes n} = S^nV\) and \(b_{(1,\dotsc,1)}V^{\otimes n} = \Lambda^nV\).
     
     \subsection{Specht Modules}
     \begin{dfn}{Specht Module}{}
         For \(\lambda\) a partition of \(n\) we call the module \(V_\lambda \coloneq \field S_n c_\lambda\) the \defineindex{Specht module}.
     \end{dfn}
+    
+    \begin{remark}{}{}
+        Our definition here is rather abstract.
+        A more direct definition of the Specht modules is via \define{tabloids}\index{Young!tabloid}, which are equivalence classes of Young tableau, \(\{T\}\), under the action of the row group.
+        That is, two Young tableau are equivalent if we can get from one to the other by permuting elements within a row.
+        The column group acts on these tabloids by permuting elements between different rows, note that these elements now no longer need to be in the same column, since we can always move elements freely within rows of a tableau without leaving the equivalence class.
+        Then for a tableau, \(T\), we define the formal linear combination of equivalence classes
+        \begin{equation}
+            E_T = \sum_{w \in \columnGroup_T} \sgn(w)[w \action T].
+        \end{equation}
+        Doing this for all \emph{standard} Young tableau of shape \(\lambda\), we declare the resulting \(E_T\) to be a basis for some vector space, \(V\).
+        There is an action of the symmetric group on \(V\), defined on this basis by
+        \begin{equation}
+            \sigma \action E_T = \sum_{w \in \columnGroup_T} \sgn(w)[\sigma w \action T].
+        \end{equation}
+        For \(T\) of shape \(\lambda\) it turns out that \(V\) under this action is isomorphic to \(V_\lambda\).
+        The idea is that we are able to freely move about in a row, because we've symmetrised over rows in the Specht module, and we're able to move between rows at the cost of a sign, because we've antisymmetrised over columns in a Specht module, and here we have the sign appearing in the sum over the column group.
+    \end{remark}
     
     Elements of these modules are of the form \(xc_\lambda\) for some \(x \in \field S_n\).
     The action of \(S_n\) on such an element is simply multiplication, \(w \action x c_\lambda = wxc_\lambda\).
@@ -559,7 +585,7 @@ noabbrev
         \end{proof}
     \end{lma}
     
-    \begin{crl}{}{}
+    \begin{crl}{}{crl:young projector idempotent up to scalar}
         The Young projector, \(c_\lambda\), is idempotent up to a scalar.
         \begin{proof}
             We have
@@ -588,7 +614,7 @@ noabbrev
     When ordering two words we first compare their first two letters, if they're the same we move on to the second two letters, and so on.
     At the first pair of different letters we place first whichever word has the letter appearing earlier in the dictionary.
     
-    \begin{lma}{}{}
+    \begin{lma}{}{lma:a_lambda CSn b_mu zero if lambda > mu}
         If \(\lambda > \mu\) in the lexicographic order then \(a_\lambda \complex S_n b_\mu = 0\).
         \begin{proof}
             Similarly to the previous lemma we just need to show that for any \(g \in S_n\) there is some transposition, \(\tau \in \rowGroup_\lambda\) such that \(g^{-1}\tau g \in \columnGroup_\mu\).
@@ -600,13 +626,245 @@ noabbrev
         \end{proof}
     \end{lma}
     
-    \begin{lma}{}{}
+    \begin{lma}{}{lma:idempotent e then Ae -> M iso eM}
         In any algebra, \(A\), with an idempotent, \(e\), any left \(A\)-module, \(M\), is such that \(\Hom_A(Ae, M) \isomorphic eM\).
+        \begin{proof}
+            The desired isomorphism is \(\varphi \colon eM \to \Hom_A(Ae, M)\), defined by \(\varphi(m) = f_m \colon Ae \to M\) which is the morphism defined by \(f_m(a) = a \action m\).
+            
+            First note that elements of \(eM\) are of the form \(e \action m\) for some \(m \in M\).
+            Then \(eM\) is an \(A\)-module under the action \(a \action (e \action m) = ae \action m\).
+            To see this first note that \(ae = \)
+            
+            To show that this is well-defined we need to show that \(f_m(a) = a \action m\) really is an element of \(eM\).
+            That is, we need to show it is of the form \(e \action m'\) for some \(m' \in M\).
+            To do this we use the fact that \(a \in Ae\), so \(a = a'e\) for some \(a' \in A\).
+            Thus, we have \(f_m(a) = f_m(a'e) = a'e \action m\).
+            This is the action of \(a'\) on \(e \action m\), and so 
+             
+            This is invertible, since given \(f_m\) we can recover \(m\) as \(f_m(1) = 1 \action m = m\).
+            This is an \(A\)-module homomorphism since
+            \begin{align}
+                \varphi(a \action m)(a') &= f_{a \action m}(a')\\
+                &= a' \action (a \action m)\\
+                &= a'a \action m\\
+                &= f_{m}(a'a)\\
+                &= (a \action f_m)(a')\\
+                &= (a \action \varphi(m))(a').
+            \end{align} 
+        \end{proof}
     \end{lma}
     
     \begin{thm}{}{}
         The simple \(S_n\)-modules are precisely the Specht modules.
+        \begin{proof}
+            \Cref{crl:young projector idempotent up to scalar} tells us that \(c_\lambda\) is idempotent up to a scalar, so let \(e_\lambda\) be the idempotent we get by rescaling \(c_\lambda\).
+            Note then that \(\complex S_n c_\lambda = \complex S_n e_\lambda\), since we can always absorb any scalar factor with the coefficients in \(\complex\).
+            
+            Take two partitions, \(\lambda\) and \(\mu\), and without loss of generality suppose that \(\lambda \ge \mu\) in the lexicographic order.
+            We have that
+            \begin{equation}
+                \Hom_{S_n}(V_\lambda, V_\mu) = \Hom_{S_n}(\complex S_n e_\lambda, \complex S_n e_\mu) = e_\lambda \complex S_n e_\mu
+            \end{equation}
+            by \cref{lma:idempotent e then Ae -> M iso eM} and its obvious left-analogue.
+            
+            For \(\lambda > \mu\) we have that
+            \begin{equation}
+                \dim(e_\lambda \complex S_n e_\mu) = 0
+            \end{equation}
+            For \(\lambda = \mu\) we have
+            \begin{equation}
+                \dim(e_\lambda \complex S_n e_\lambda) = 1
+            \end{equation}
+            because tells us that \(e_\lambda \complex S_n e_\lambda\) is spanned by \(c_\lambda g c_\lambda = a_\lambda b_\lambda g a_\lambda b_\lambda\), and by \cref{lma:sandwhich symmetrisers} we know that these elements are of the form \(\ell_\lambda(b_\lambda g a_\lambda) c_\lambda\).
+            We also have a flipped version of \cref{lma:sandwhich symmetrisers}, which tells us that there is some linear function, \(\ell'_\lambda\) such that \(b_\lambda x a_\lambda = \ell_\lambda'(x)b_\lambda a_\lambda\).
+            Applying this the spanning elements are all of the form
+            \begin{equation}
+                \ell_\lambda(b_\lambda g a_\lambda) c_\lambda = \ell_\lambda(\ell'_\lambda(g)b_\lambda a_\lambda) c_\lambda = \ell'_\lambda(g)\ell_\lambda(b_\lambda a_\lambda) c_\lambda.
+            \end{equation}
+            Thus, all elements of \(e_\lambda \complex S_n e_\lambda\) are just a scalar multiple of \(c_\lambda\), so this is a one-dimensional space.
+            
+            From this we can apply \cref{thm:inner prod of characters is dim of homs}, which tells us that
+            \begin{equation}
+                \innerprod{\chi_\lambda}{\chi_\mu} = \delta_{\lambda\mu}
+            \end{equation}
+            So, \cref{thm:inner prod of characters is dim of homs} tells us that \(V_\lambda \ncong V_\mu\) for \(\lambda \ne \mu\), and, \cref{crl:square of of chars 1 iff simple} tells us that \(V_\lambda\) is simple.
+            
+            To finish off the proof note that the number of simple modules is equal to the number of conjugacy classes (\cref{crl:number of conjugacy classes is number of irreps}), and the conjugacy classes of \(S_n\) are labelled by cycle type, which are themselves partitions of \(n\).
+            So, we have bijections
+            \begin{equation}
+                \{\text{Specht Modules}\} \xleftrightarrow{1:1} \{\lambda \partition n\} \xleftrightarrow{1:1} \Irr(S_n).
+            \end{equation}
+            Thus, we have exhausted the possible simple modules, so we know that all simple modules are isomorphic to some Specht module.
+        \end{proof}
     \end{thm}
+    
+    \chapter{Branching Rules}
+    We have a natural embedding of symmetric groups
+    \begin{equation}
+        \{e\} = S_1 \hookrightarrow S_2 \hookrightarrow \dotso \hookrightarrow S_{n-1} \hookrightarrow S_n \hookrightarrow \dotso.
+    \end{equation}
+    This allows us to view each symmetric group as a subgroup of any larger subgroup.
+    Specifically, \(S_{n-1}\) can be viewed as the subgroup of \(S_n\) consisting of permutations of \(\{1, \dotsc, n\}\) which leave \(n\) fixed\footnote{We can fix any \(k \in \{1, \dotsc, n\}\), the resulting subgroups are all conjugate, it's just that fixing \(n\) is the most \enquote{natural} choice.}.
+    
+    In terms of representations this means that any representation of \(S_{n-1}\) can be viewed as the restriction of some representation of \(S_n\).
+    Simply forget how any element that doesn't fix \(n\) acts.
+    It turns out that the decomposition of such an \(S_{n-1}\)-module into simple \(S_{n-1}\)-modules is particularly simple (no pun intended).
+    In a sense every \enquote{possible} simple \(S_{n-1}\)-module appears in the decomposition exactly once.
+    What we mean by possible here is that when we take the Young diagram corresponding to the \(S_{n-1}\)-module it should fit inside the Young diagram corresponding to the \(S_n\)-module.
+    We make this precise with the following definition.
+    
+    \begin{dfn}{Skew Diagram}{}
+        Let \(\lambda\) and \(\mu\) be partitions such that \(\mu_i \le \lambda_i\) for all \(i\).
+        Then we may form the \defineindex{skew diagram}, \(\lambda \setminus \mu\), by placing both diagrams on top of each other and removing any boxes in the overlap.
+    \end{dfn}
+    
+    For example, if we have
+    \begin{equation}
+        \lambda = \ydiagram{6,4,4,3,2,2,1}\,\qand \mu = \ydiagram{5,4,3,2,1}
+    \end{equation}
+    then overlapping these we have
+    \begin{equation}
+        \begin{ytableau}
+            *(highlight!80) & *(highlight!80) & *(highlight!80) & *(highlight!80) & *(highlight!80) & \mathstrut\\
+            *(highlight!80) & *(highlight!80) & *(highlight!80) & *(highlight!80)\\
+            *(highlight!80) & *(highlight!80) & *(highlight!80) & \mathstrut\\
+            *(highlight!80) & *(highlight!80) & \mathstrut\\
+            *(highlight!80) & \mathstrut\\
+            \mathstrut & \mathstrut\\
+            \mathstrut
+        \end{ytableau}
+    \end{equation}
+    so the corresponding skew diagram is
+    \begin{equation}
+        \lambda \setminus \mu = \ydiagram{5+1,4+0,3+1,2+1,1+1,2,1}\,.
+    \end{equation}
+    Notice that it's possible to have entire rows missing, as we do here.
+    This may include rows being cut off from the top or bottom of the diagram, but one should still imagine that they are there, they just have length zero.
+    
+    If we're considering representations of \(S_n\) and \(S_{n-1}\) then \(\lambda\) must have \(n\) boxes and \(\mu\) must have \(n - 1\) boxes, so \(\lambda\setminus \mu\) (when it exits) must have \(1\) box.
+    
+    
+    \begin{prp}{Branching Rules}{prp:Sn branching rules}
+        Let \(V_\lambda\) be a simple \(S_n\) module, so \(\lambda \partition n\).
+        Let\footnote{I think it's poor notation not to distinguish between \(S_n\)- and \(S_{n-1}\)-modules in a way that is immediately obvious, but \(V_\lambda\) is always an \(S_{\abs{\lambda}}\)-module, so the notation is not ambiguous.} \(V_\mu\) denote the simple \(S_{n-1}\)-modules, so \(\mu \partition n-1\).
+        Then
+        \begin{equation}
+            \Res^{S_n}_{S_{n-1}} V_\lambda = \bigoplus_{\substack{\mu \partition n-1\\ \abs{\lambda\setminus \mu} = 1}} V_\mu.
+        \end{equation}
+        In particular, the restriction is multiplicity free.
+        \begin{proof}
+            \Step{Dimension Sum}
+            An \defineindex{inner corner} of a Young diagram is a box that we can remove and still have a (non-skew) Young diagram.
+            Consider a standard Young tableau, \(T\), of shape \(\lambda\).
+            Since \(T\) is standard \(n\) must appear in the right-most position of whichever row it is in.
+            There must also be no box below the box containing \(n\).
+            This means that \(n\) is in an inner corner, and so we can remove it, to produce a Young tableau, \(T^-\), with corresponding Young diagram \(\lambda^-\).
+            Further, \(T^-\) is still a standard Young tableau, now with \(n-1\) boxes.
+            
+            In reverse this process shows that any \(n\)-box standard Young tableau may be produced by starting with an \((n-1)\)-box standard Young tableau and adding a single box labelled \(n\).
+            Thus, the number of \(n\)-box standard Young tableau of shape \(\lambda\) is precisely the sum of the number of standard Young tableau of shape \(\lambda^-\) as \(\lambda^-\) ranges over all Young diagrams we can produce by removing a single box from \(\lambda\).
+            That is,
+            \begin{equation}
+                f^\lambda = \sum_{\lambda^-} f^{\lambda^-}.
+            \end{equation}
+            Another way of phrasing that \(\lambda^-\) is \(\lambda\) with a box removed is saying that we're considering all \(\mu\) such that \(\lambda\setminus \mu\) has precisely one box, so
+            \begin{equation}
+                \label{eqn:number of standard lambda tableaux from number of standard tableaux of one box fewer}
+                f^\lambda = \sum_{\substack{\mu \partition n-1\\ \abs{\lambda\setminus \mu} = 1}}.
+            \end{equation}
+            
+            \Step{Module Sum}
+            We now want to \enquote{categorify} this result.
+            That is, we take the numerical sum,
+            \begin{equation}
+                f^\lambda = \sum_{\substack{\mu \partition n-1\\ \abs{\lambda\setminus \mu} = 1}} f^\mu,
+            \end{equation}
+            and we replace the \(f^\lambda\) with objects in some category and the sum with the coproduct.
+            We've already seen that \(f^\lambda = \dim V_\lambda\), so the correct choice of objects is the modules, \(V_\lambda\), and the coproduct is then the direct sum.
+            Making this replacement on the right we get
+            \begin{equation}
+                \oplus_{\substack{\mu \partition n-1\\ \abs{\lambda\setminus \mu} = 1}} V_\mu.
+            \end{equation}
+            We just have to show that this really does correspond to \(\Res^{S_n}_{S_{n-1}}V_\lambda\).
+            
+            To do this first let \(r_1 < \dotsb < r_k\) be the row numbers for the rows which end with an inner corner.
+            Write \(\lambda^i\) for the Young diagram produced by removing the box at the end of row \(r_i\).
+            Similarly, if \(T\) is a standard Young tableau with \(n\) placed in the inner corner of row \(r_i\) then write \(T^i\) for the standard Young tableau given by removing this box.
+            
+            We will construct a flag of vector spaces
+            \begin{equation}
+                0 = V_0 \subseteq V_1 \subseteq \dotsb \subseteq V_k = V_\lambda.
+            \end{equation}
+            It is not a coincidence that the maximum index chosen here, \(k\), corresponds to the maximum index of the \(r_i\) before.
+            We will do this in such a way that at each step we have \(V_i/V_{i+1} \isomorphic V_{\lambda^i}\) as \(S_{n-1}\)-modules.
+            Then we will have that
+            \begin{equation}
+                \Res^{S_n}_{S_{n-1}} V_\lambda = V_k \isomorphic V_{k-1} \oplus (V_k/V_{k-1}) \isomorphic V_{k-1} \oplus V_{\lambda^k}.
+            \end{equation}
+            Similarly, we'll have \(V_{k-1} \isomorphic V_{k-2} \oplus V_{\lambda^{k-1}}\), and so
+            \begin{equation}
+                \Res^{S_n}_{S_{n-1}} V_\lambda \isomorphic V_{k-2} \oplus V_{\lambda^{k-1}} \oplus V_{\lambda^k}.
+            \end{equation}
+            Continuing on, since the dimension is finite and so our flag has finite length, this process will eventually terminate, and we'll have the desired isomorphism.
+            
+            All we have to do then is construct such a flag.
+            Let \(M_\lambda\) denote the set of Young tabloids of shape \(\lambda\).
+            Define a map \(\theta_i \colon M_\lambda \to M_{\lambda^i}\) to be removing \(n\) from row \(r_i\) if its present, and zero otherwise.
+            So \(\theta_i(\{T\}) = \{T^i\}\) if \(n\) is in row \(r_i\), and \(\theta_i(\{T\}) = 0\) otherwise.
+            These are morphisms of \(S_{n-1}\)-modules, since \(S_{n-1}\) always fixes the box labelled \(n\) and thus the action of \(S_{n-1}\) commutes with removing the box labelled \(n\).
+            
+            Similarly, we can extend \(\theta_i\) to a map \(V_\lambda \to V_\lambda\) by defining \(\theta_i(E_T) = E_{T^i}\) if \(n\) is in the row \(r_i\), and \(\theta_i(E_T) = 0\) if \(n\) appears in row \(r_j\) with \(j < i\).
+            We shall not need the case where \(j > i\), so any definition will work there.
+            This is well-defined since any column group action that moves \(n\) from the current row will result in a vanishing term in the expression of \(E_T\).
+            The only permutations of the column group which don't send the tabloid to zero under \(\theta_i\) are precisely those which fix the row of \(n\), which means that this subgroup of the column group is precisely \(\columnGroup_{T^i}\).
+            
+            Note that all standard tabloids, \(E_{T^i} \in V_{\lambda^i}\) are in the image of \(\theta_i\).
+            Further, all of these \(E_T\) have their \(n\) in row \(r_i\), and thus we may define \(V_i\) to be the spae spanned by the \(E_{T^i}\).
+            Then \(\theta_i(V_i) = V_{\lambda^i}\) as required.
+            If \(T\) instead has its \(n\) above row \(r_i\) then \(\theta_i(E_T) = 0\), and thus \(V_{i-1} \subseteq \ker \theta_i\).
+            This gives us the chain
+            \begin{equation}
+                0 = V_0 \subseteq V_1 \cap \ker \theta_1 \subseteq V_1 \subseteq \dotsb \subseteq V_k \cap \ker \theta_k \subseteq V_k = V_\lambda.
+            \end{equation}
+            We also have
+            \begin{equation}
+                \dim(V_i/(V_i \cap \ker \theta_i)) = \dim (\theta_i(V_i)) = \dim V_{\lambda^i} = f^{\lambda^i}.
+            \end{equation}
+            Thus, the steps from \(V_i \cap \ker \theta_i\) to \(V_i\) give us all the \(f^{\lambda^i}\) as we add up the dimensions.
+            Thus, by we have accounted for all of \(f^\lambda = \dim V_\lambda\) by \cref{eqn:number of standard lambda tableaux from number of standard tableaux of one box fewer}.
+            Thus, the containment \(V_{i-1} \subseteq V_i \cap \ker \theta_i\) is actually an equality, and so we have
+            \begin{equation}
+                \frac{V_i}{V_{i-1}} = \frac{V_i}{V_i \cap \ker \theta_i} \isomorphic V_{\lambda^i}
+            \end{equation}
+            as claimed.
+        \end{proof}
+    \end{prp}
+    
+    \begin{crl}{}{}
+        With notation as in \cref{prp:Sn branching rules} we have
+        \begin{equation}
+            \Ind^{S_n}_{S_{n-1}} V_\mu = \bigoplus_{\substack{\lambda \partition n\\ \abs{\lambda\setminus \mu} = 1}} V_\lambda.
+        \end{equation}
+        \begin{proof}
+            By Frobenius reciprocity for an arbitrary irreducible character, \(\chi_\nu\), of \(S_{n-1}\) we have
+            \begin{equation}
+                \innerprod{\chi_\lambda\downarrow^{S_n}_{S_{n-1}}}{\chi_\nu} = \innerprod{\chi_\lambda}{\chi_\nu\uparrow^{S_n}_{S_{n-1}}}.
+            \end{equation}
+            This tells us that the multiplicity of \(V_\nu\) in \(\Res^{S_n}_{S_{n-1}}V_\lambda\) is the same as the multiplicity of \(V_\lambda\) in \(\Ind^{S_n}_{S_{n-1}}V_\nu\), which is \(1\) if removing a box from \(\lambda\) gives \(\nu\) and zero otherwise, and so the result follows.
+        \end{proof}
+    \end{crl}
+    
+    \begin{exm}{}{}
+        Consider the \(S_3\)-module \(V_{(2,1)}\).
+        In terms of Young diagrams
+        \begin{equation}
+            \lambda = (2,1) = \ydiagram{2,1}\,.
+        \end{equation}
+        We can see that
+        \begin{equation}
+            \Res^{S_3}_{S_2} V_{\ydiagram{2,1}} = V_{\ydiagram{1,1}} \oplus V_{\ydiagram{2}}.
+        \end{equation}
+    \end{exm}
     
     
     
