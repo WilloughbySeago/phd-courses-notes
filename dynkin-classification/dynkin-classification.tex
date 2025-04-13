@@ -3,21 +3,27 @@
 
 \strictpagecheck
 
+\usepackage{mathtools}
+
 \usepackage[math-style=upright]{unicode-math}
 \setmainfont{TeX Gyre Pagella}
 \setmathfont{Euler Math}[Scale=MatchLowercase]
 \setsansfont{Optima}
 \setmonofont{inconsolata}
 
-\usepackage{mathtools}
-
 \usepackage{csquotes}
 \usepackage{enumitem}
+
+\usepackage{amsthm}
+
+\usepackage{biblatex}
+\addbibresource{ref.bib}
 
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{external}
 \tikzexternalize[prefix=tikz-external/]
+\usetikzlibrary{calc}
 
 \usepackage{tikz-cd}
 \AtBeginEnvironment{tikzcd}{\tikzexternaldisable}
@@ -136,7 +142,29 @@ noabbrev
 \newcommand{\specialOrthogonalLie}{\lie{so}}
 \newcommand{\symplecticLie}{\lie{sp}}
 \newcommand{\generalLinearLie}{\lie{gl}}
+\DeclarePairedDelimiterX{\innerprod}[2]{\langle}{\rangle}{#1 , #2}
+\newcommand{\generalLinear}{\symrm{GL}}
+\newcommand{\id}{\symrm{id}}
+\newcommand{\orthogonal}{\symrm{O}}
+\newcommand{\Dih}{\symrm{Dih}}
+\newcommand{\Sym}{\symrm{Sym}}
+\newcommand{\integers}{\symbb{Z}}
+\ExplSyntaxOn
+% Create LaTeX interface command
+\NewDocumentCommand{\cycle}{ O{\,} m }{  % optional arg is separator, mandatory
+    %arg is comma separated list
+    (
+    \willoughby_cycle:nn { #1 } { #2 }
+    )
+}
 
+\clist_new:N \l_willougbhy_cycle_clist  % Create new clist variable
+\cs_new_protected:Npn \willoughby_cycle:nn #1 #2 {  % create LaTeX3 function
+    \clist_set:Nn \l_willougbhy_cycle_clist { #2 }  % set clist variable with
+    %clist #2 passed by user
+    \clist_use:Nn \l_willougbhy_cycle_clist { #1 }  % print list separated by #1
+}
+\ExplSyntaxOff
 
 \begin{document}
     \frontmatter
@@ -148,5 +176,176 @@ noabbrev
     
     \include{parts/dynkin-diagrams}
     
-    \chapter{Coxeter Groups}
+    \part{Coxeter Groups}
+    \chapter{Reflection Groups}
+    The recommended reference for this topic is \cite{Humphreys.CoxeterGroups}.
+    Throughout this part of the notes \(V\) will always be a real Euclidean space.
+    That is, \(V\) is equipped with some positive definite symmetric bilinear form, \(\innerprod{-}{-} \colon V \times V \to \reals\).
+    
+    \section{Definition}
+    \begin{dfn}{Reflection}{}
+        Fix some \(\alpha \in V\).
+        We say that \(s \in \generalLinear(V)\) is a \define{reflection} along \(\alpha \in V \setminus 0\) if \(s(\alpha) = -\alpha\) and the hyperplane orthogonal to \(\alpha\),
+        \begin{equation}
+            H_\alpha \coloneq (\reals \alpha)^{\perp} = \{\lambda \in \mid \innerprod{\alpha}{\lambda} = 0\},
+        \end{equation}
+        is fixed pointwise, so \(s(\lambda) = \lambda\) for \(\lambda \in H_\alpha\), in other words \(s\) acts as the identity on \(H_\alpha\), so \(s|_{H_\alpha} = \id_{H_\alpha}\).
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        The map defined by
+        \begin{equation}
+            s_\alpha(\lambda) = \lambda - 2\frac{\innerprod{\alpha}{\lambda}}{\innerprod{\alpha}{\alpha}} \alpha
+        \end{equation}
+        is a reflection in \(H_\alpha\).
+        \begin{proof}
+            First note that \(s_\alpha\) is clearly linear
+            Then we have
+            \begin{equation}
+                s_\alpha(\alpha) = \alpha - 2\frac{\innerprod{\alpha}{\alpha}}{\innerprod{\alpha}{\alpha}} \alpha = -\alpha
+            \end{equation}
+            and if \(\lambda \in H_\alpha\), so \(\innerprod{\alpha}{\lambda} = 0\), we simply have
+            \begin{equation}
+                s_\alpha(\lambda) = \lambda - 2\frac{\innerprod{\alpha}{\lambda}}{\innerprod{\alpha}{\lambda}} = \lambda.
+            \end{equation}
+            Finally, \(s_\alpha\) is its own inverse:
+            \begin{align}
+                s_\alpha(s_\alpha(\lambda)) &= s_\alpha\left( \lambda - 2\frac{\innerprod{\alpha}{\lambda}}{\innerprod{\alpha}{\alpha}}\alpha \right)\\
+                &= s_\alpha(\lambda) - 2\frac{\innerprod{\alpha}{\lambda}}{\innerprod{\alpha}{\alpha}}s_\alpha(\alpha)\\
+                &= \lambda - 2\frac{\innerprod{\alpha}{\lambda}}{\innerprod{\alpha}{\alpha}}\alpha + 2\frac{\innerprod{\alpha}{\lambda}}{\innerprod{\alpha}{\alpha}}\alpha\\
+                &= \lambda. \notag \qedhere
+            \end{align}
+        \end{proof}
+    \end{lma}
+    
+    Notice that by the definition of \(H_\alpha\) we can always decompose our space as \(V = H_\alpha \oplus \reals \alpha\), so the information about what happens to \(\alpha\) and anything orthogonal to it is enough to fully determine \(s_\alpha\).
+    Further, note that any nonzero scalar multiple of \(\alpha\) also determines the same reflection.
+    All reflections may be specified in this way, and we'll simply write \(s_\alpha\) for the reflection in the hyperplane orthogonal to \(\alpha\).
+    
+    \begin{lma}{}{}
+        Reflections are orthogonal transformations.
+        \begin{proof}
+            To show that \(s_\alpha \in \orthogonal(V)\) we need to show that \(\innerprod{s_\alpha(\lambda)}{s_\alpha(\mu)} = \innerprod{\lambda}{\mu}\) for all \(\lambda, \mu \in V\).
+            We can do this with the explicit formula above:
+            \begin{align}
+                \innerprod{s_\alpha(\lambda)}{s_\alpha(\mu)} &= \innerprod*{\lambda - \frac{\innerprod{\alpha}{\lambda}}{\innerprod{\alpha}{\alpha}}\alpha}{\mu - \frac{\innerprod{\alpha}{\mu}}{\innerprod{\alpha}{\alpha}}\alpha}\\
+                &= \innerprod{\lambda}{\mu} - 2\frac{\innerprod{\alpha}{\lambda}}{\innerprod{\alpha}{\alpha}}\innerprod{\alpha}{\mu} - 2\frac{\innerprod{\alpha}{\mu}}{\innerprod{\alpha}{\alpha}}\innerprod{\lambda}{\alpha} \\
+                &\qquad+ 4\frac{\innerprod{\alpha}{\lambda} \innerprod{\alpha}{\mu}}{\innerprod{\alpha}{\alpha}^2} \innerprod{\alpha}{\alpha} \notag\\
+                &= \innerprod{\lambda}{\mu}. \notag\qedhere
+            \end{align}
+        \end{proof}
+    \end{lma}
+    
+    \begin{dfn}{Reflection Group}{}
+        A \define{reflection group} is a group, \(W\), is a subgroup of \(\orthogonal(V)\) generated by reflections.
+    \end{dfn}
+    
+    We will almost entirely restrict our study to finite reflection groups, where \(W\) is a finite group.
+    In this part of the notes \(W\) is a finite reflection group unless stated otherwise.
+    
+    We will see that finite reflection groups are classified by finite type Dynkin diagrams.
+    We will write \(W(R)\) for the finite reflection group corresponding to the Dynkin type \(R\) under this correspondence.
+    
+    \section{Examples}
+    \subsection{Dihedral Groups: \texorpdfstring{\(\I[2][m]\)}{I2m}}
+    Consider the dihedral group, \(W(\I[2][m]) = \Dih_{m}\), of symmetries of the regular \(m\)-gon.
+    Note that this group has order \(2m\).
+    We will illustrate things with \(\Dih_5\), the symmetries of the regular pentagon, as seen in \cref{fig:regular pentagon reflections}.
+    With \(V = \reals^2\) we can naturally extend the symmetries of the regular \(m\)-gon (centred on the origin) to the entire plane.
+    A rotation by \(2\pi/m\) can be generated by two reflections.
+    For example, \cref{fig:regular pentagon reflections generate rotations} shows two reflections generating a rotation of \(2\pi/5\) by applying two rotations, and from this we can generate all rotations.
+    
+    \begin{figure}
+        \tikzsetnextfilename{regular-pentagon-reflections}
+        \centering
+        \begin{tikzpicture}
+            \draw [very thick, rotate=90] (0:2) -- (72:2) -- (144:2) -- (216:2) -- (288:2) -- cycle;
+            \draw [thick, dashed, gray, rotate=90] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+72] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+2*72] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+3*72] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+4*72] (36.5:-3) -- (36.5:3);
+        \end{tikzpicture}
+        \caption[Reflections of the pentagon.]{The regular pentagon. A reflection in any of the five dashed lines is a symmetry.}
+        \label{fig:regular pentagon reflections}
+    \end{figure}
+    
+    \begin{figure}
+        \tikzsetnextfilename{regular-pentagon-reflections-generate-rotations}
+        \centering
+        \begin{tikzpicture}[scale=0.7]
+            \draw [very thick, rotate=90] (0:2) -- (72:2) -- (144:2) -- (216:2) -- (288:2) -- cycle;
+            \draw [ultra thick, rotate=90, dark orange, cap=round] (144:2) -- (216:2);
+            \draw [ultra thick, rotate=90, light orange, cap=round] (216:2) -- (288:2);
+            \draw [thick, dashed, gray, rotate=90+72] (36.5:-2.5) -- (36.5:2.5);
+            \begin{scope}[xshift=6cm]
+                \draw [very thick, rotate=90] (0:2) -- (72:2) -- (144:2) -- (216:2) -- (288:2) -- cycle;
+                \draw [ultra thick, rotate=90, dark orange, cap=round] (0:2) -- (72:2);
+                \draw [ultra thick, rotate=90, light orange, cap=round] (288:2) -- (0:2);
+                \draw [thick, dashed, gray, rotate=90+3*72] (36.5:-2.5) -- (36.5:2.5);
+            \end{scope}
+            \begin{scope}[xshift=12cm]
+                \draw [very thick, rotate=90] (0:2) -- (72:2) -- (144:2) -- (216:2) -- (288:2) -- cycle;
+                \draw [ultra thick, rotate=90, dark orange, cap=round] (72:2) -- (144:2);
+                \draw [ultra thick, rotate=90, light orange, cap=round] (144:2) -- (216:2);
+            \end{scope}
+        \end{tikzpicture}
+        \caption[Reflections generate rotations.]{Successive reflections generate a rotation by \(2\pi/5\). The coloured edges are just there to help visualise the reflections occurring.}
+        \label{fig:regular pentagon reflections generate rotations}
+    \end{figure}
+    
+    \subsection{Platonic Solids: \texorpdfstring{\(\A[3]\)}{A3}, \texorpdfstring{\(\B[3]\)}{B3}, \texorpdfstring{\(\H[3]\)}{H3}}
+    The platonic solids, the simplex, cube, octahedron, dodecahedron, and icosahedron, are the strictest generalisation of regular shapes to three dimensions.
+    Like the regular \(m\)-gons the symmetry groups of the platonic solids are all reflection groups upon extending the action from the polyhedron to all of \(\reals^3\).
+    
+    The 3-simplex, also known as the tetrahedron, has symmetry group \(W(\A[3]) = \Sym_4\), which simply acts by permuting the faces.
+    
+    The cube and its dual, the octahedron, have \(\Sym_4 \times \integers_2\).
+    The \(\integers_2\) corresponds to a reflection in some chosen plane through three non-adjacent vertices, inverting the cube.
+    The action of \(\Sym_4\) is to permute the diagonals, which are the lines that are invariant under the different choices of inversion above.
+    
+    However, it turns out that if we want to generalise in the future it is actually better to think of the symmetries of the cube as being \(W(\B[3]) = \Sym_3 \ltimes \integers_2^3\).
+    Here \(\Sym_3\) acts on \(\reals^3\) by permuting the standard basis, and each copy of \(\integers_2\) acts as a reflection in one of the coordinate planes.
+    Note that in this description the cube is thought of as \([-1, 1]^3\), centred on the origin.
+    
+    The dodecahedron has symmetry group \(W(\H[3])\), of order \(120\).
+    It's a bit complicated to specify how it acts here, and it also doesn't generalise so we won't go into details.
+    
+    \subsection{Simplices and Permutations: \texorpdfstring{\(\A[n]\)}{An}}
+    The \(n\)-simplex is the convex hull of the \(n\)-basis vectors of \(\reals^{n+1}\).
+    This is perhaps a confusing definition, but hopefully the pictures of the \(1\)-, and \(2\)-simplices in \cref{fig:simplices} help.
+    The \(1\)-simplex is simply a line segment, the \(2\)-segment is an equilateral triangle, and the \(3\)-simplex is the regular tetrahedron.
+    The symmetries of the \(n\)-simplex are simply given by permuting \(n\)-cells (faces of the tetrahedron, edges of the triangle, the two end points of the line), and there are always \(n + 1\) \(n\)-cells.
+    The symmetry group of the \(n\)-simplex is thus \(W(\A[n]) = \Sym_{n+1}\).
+    
+    \begin{figure}
+        \centering
+        \tikzsetnextfilename{simplices}
+        \begin{tikzpicture}
+            \draw [thick, ->] (0, 0) -- (2, 0);
+            \draw [thick, ->] (0, 0) -- (0, 2);
+            \draw [light orange] (1, 0) -- (0, 1);
+            \fill [dark orange] (1, 0) circle [radius=0.1cm];
+            \fill [dark orange] (0, 1) circle [radius=0.1cm];
+            
+            \begin{scope}[xshift=5cm]
+                \draw [thick, ->] (0, 0, 0) -- (2, 0, 0);
+                \draw [thick, ->] (0, 0, 0) -- (0, 2, 0);
+                \draw [thick, ->] (0, 0, 0) -- (0, 0, 2);
+                \draw [thick, dark orange, fill=light orange, opacity=0.5] (1, 0, 0) -- (0, 1, 0) -- (0, 0, 1) -- cycle;
+                \fill [dark orange] (1, 0, 0) circle [radius=0.1cm];
+                \fill [dark orange] (0, 1, 0) circle [radius=0.1cm];
+                \fill [dark orange] (0, 0, 1) circle [radius=0.1cm];
+            \end{scope}
+        \end{tikzpicture}
+        \caption{Simplices: The \(1\)-simplex is just an interval and the \(2\)-simplex is a triangle.}
+        \label{fig:simplices}
+    \end{figure}
+    
+    Recall that \(\Sym_{n+1}\) is generated by transpositions of neighbouring elements, \(\cycle{i,i+1}\) for \(1 \le i \le n\).
+    When realised as a reflection group the transposition \(\cycle{i,i+1}\) corresponds to the reflection \(s_{e_i - e_{i+1}}\).
+    
+    \subsection{Signed Permutations: \texorpdfstring{\(\B[n]\)}{Bn}}
+    The \(n\)-cube is \([-1, 1]^n \subset \reals^n\).
+    The symmetry group of the \(n\)-cube is the group of \emph{signed} permutations of \(n\)-letters.
 \end{document}
