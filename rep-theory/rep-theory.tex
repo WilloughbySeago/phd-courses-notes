@@ -115,6 +115,7 @@ noabbrev
 \DeclarePairedDelimiterX{\innerprod}[2]{\langle}{\rangle}{#1, #2}
 \DeclareMathOperator{\frobeniusSchur}{FS}
 \DeclareMathOperator{\standardYoungTableaux}{SYT}
+\DeclareMathOperator{\semistandardYoungTableaux}{SSYT}
 \newcommand{\normalsub}{\mathrel{\lhd}}
 \newcommand{\algNumbers}{\overline{\rationals}}
 \newcommand{\algIntegers}{\overline{\integers}}
@@ -124,6 +125,8 @@ noabbrev
 \newcommand{\rowGroup}{R}
 \newcommand{\columnGroup}{C}
 \newcommand{\intterobang}{\mathchoice{!\mkern-6.1mu?}{!\mkern-6.2mu?}{!\mkern-6.8mu?}{!\mkern-6.8mu?}}
+\DeclareMathOperator{\proj}{proj}
+\newcommand{\ch}{\symrm{ch}}
 
 \includeonly{parts/algebra-reps, parts/group-reps}
 
@@ -699,6 +702,7 @@ noabbrev
     \end{thm}
     
     \chapter{Branching Rules}
+    \section{Branching Rules}
     We have a natural embedding of symmetric groups
     \begin{equation}
         \{e\} = S_1 \hookrightarrow S_2 \hookrightarrow \dotso \hookrightarrow S_{n-1} \hookrightarrow S_n \hookrightarrow \dotso.
@@ -855,21 +859,765 @@ noabbrev
     \end{crl}
     
     \begin{exm}{}{}
-        Consider the \(S_3\)-module \(V_{(2,1)}\).
-        In terms of Young diagrams
-        \begin{equation}
-            \lambda = (2,1) = \ydiagram{2,1}\,.
-        \end{equation}
-        We can see that
+        \ytableausetup{boxsize=0.5em}
+        Consider the \(S_3\)-module \(V_{\ydiagram{2,1}}\)
+        The branching rule tells us that
         \begin{equation}
             \Res^{S_3}_{S_2} V_{\ydiagram{2,1}} = V_{\ydiagram{1,1}} \oplus V_{\ydiagram{2}}.
         \end{equation}
+        Similarly, for the \(S_2\)-module \(V_{\ydiagram{2}}\) the branching rules tell us that
+        \begin{equation}
+            \Ind^{S_3}_{S_2} V_{\ydiagram{2}} = V_{\ydiagram{3}} \oplus V_{\ydiagram{2,1}}.
+        \end{equation}
     \end{exm}
     
+    \section{Gelfand--Zetlin Basis}
+    Repeatedly applying the decomposition provided by the branching rules we can repeatedly restrict an \(S_n\)-module to an \(S_{n-1}\)-module, which we can restrict to an \(S_{n-2}\)-module, and so on, until we've restricted all the way down to an \(S_0\)-module, which is just a vector space.
     
+    At each step in the process we sum over all Young diagrams which can be obtained by removing just a single box.
+    Reversing this, a fixed Young diagram, \(\lambda\), can be thought of as being built up from single boxes.
+    If we number the boxes in the order we add them, making sure that at each step we have a valid Young diagram, then we will end up with a Young tableau of shape \(\lambda\) labelled with the numbers \(1\) through \(n\).
+    Further, each row will be increasing, we cannot add to the end of a row before we have built up the start of the row, and so will each column for the same reason.
+    Thus, the tableau we're left with will be standard.
     
+    This gives us a nice interpretation of standard Young tableau as paths in the \define{Young lattice}\index{Young!lattice}.
+    This lattice has all Young diagrams as elements, and we declare \(\lambda < \mu\) if \(\mu_i \le \lambda_i\) for all \(i\).
+    That is, \(\lambda < \mu\) if the Young diagram of \(\mu\) fits entirely within the Young diagram of \(\lambda\).
+    Pictorially, this gives us \cref{fig:young lattice}.
+    Then a standard tableaux of shape \(\lambda\) corresponds to a path in this lattice from the diagram of \(\lambda\) to the empty partition\footnote{The empty partition, \(\emptyset\), is the unique partition of \(0\), that is \((0, 0, \dotsc)\).}, \(\emptyset\), only travelling downwards.
     
+    \begin{figure}
+        \tikzsetnextfilename{young-lattice}
+        \begin{tikzpicture}[yscale=2]
+            \node (A) {\(\emptyset\)};
+            \node (B) at (0, 1) {\ydiagram{1}};
+            \node (C1) at (-1, 2) {\ydiagram{2}};
+            \node (C2) at (1, 2) {\ydiagram{1,1}};
+            \node (D1) at (-2, 3) {\ydiagram{3}};
+            \node (D2) at (0, 3) {\ydiagram{2,1}};
+            \node (D3) at (2, 3)  {\ydiagram{1,1,1}};
+            \node (E1) at (-3, 4) {\ydiagram{4}};
+            \node (E2) at (-1.5, 4) {\ydiagram{3,1}};
+            \node (E3) at (0, 4) {\ydiagram{2,2}};
+            \node (E4) at (1.5, 4) {\ydiagram{2,1,1}};
+            \node (E5) at (3, 4) {\ydiagram{1,1,1,1}};
+            \node (F1) at (-4, 5.5) {\ydiagram{5}};
+            \node (F2) at (-2.1, 5.5) {\ydiagram{4,1}};
+            \node (F3) at (-0.5, 5.5) {\ydiagram{3,2}};
+            \node (F4) at (0.8, 5.5) {\ydiagram{3,1,1}};
+            \node (F5) at (2, 5.5) {\ydiagram{2,2,1}};
+            \node (F6) at (3, 5.5) {\ydiagram{2,1,1,1}};
+            \node (F7) at (3.8, 5.5) {\ydiagram{1,1,1,1,1}};
+            
+            \draw (A) -- (B);
+            \draw (B) -- (C1);
+            \draw (B) -- (C2);
+            \draw (C1) -- (D1);
+            \draw (C1) -- (D2);
+            \draw (C2) -- (D2);
+            \draw (C2) -- (D3);
+            \draw (D1) -- (E1);
+            \draw (D1) -- (E2);
+            \draw (D2) -- (E2);
+            \draw (D2) -- (E3);
+            \draw (D2) -- (E4);
+            \draw (D3) -- (E4);
+            \draw (D3) -- (E5);
+            \draw (E1) -- (F1);
+            \draw (E1) -- (F2);
+            \draw (E2) -- (F2);
+            \draw (E2) -- (F3);
+            \draw (E2) -- (F4);
+            \draw (E3) -- (F3);
+            \draw (E3) -- (F5);
+            \draw (E4) -- (F4);
+            \draw (E4) -- (F5);
+            \draw (E4) -- (F6);
+            \draw (E5) -- (F6);
+            \draw (E5) -- (F7);
+        \end{tikzpicture}
+        \caption[Young lattice]{The Young lattice.}
+        \label{fig:young lattice}
+    \end{figure}
     
+    For example, two of the four standard tableaux of shape \((3, 2)\) correspond to the paths drawn in \cref{fig:young lattice paths}.
+    
+    \begin{figure}
+        \tikzsetnextfilename{young-lattice-paths}
+        \begin{tikzpicture}[yscale=2]
+            \node (A) {\(\emptyset\)};
+            \node (B) at (0, 1) {\ydiagram{1}};
+            \node (C1) at (-1, 2) {\ydiagram{2}};
+            \node (C2) at (1, 2) {\ydiagram{1,1}};
+            \node (D1) at (-2, 3) {\ydiagram{3}};
+            \node (D2) at (0, 3) {\ydiagram{2,1}};
+            \node (D3) at (2, 3)  {\ydiagram{1,1,1}};
+            \node (E1) at (-3, 4) {\ydiagram{4}};
+            \node (E2) at (-1.5, 4) {\ydiagram{3,1}};
+            \node (E3) at (0, 4) {\ydiagram{2,2}};
+            \node (E4) at (1.5, 4) {\ydiagram{2,1,1}};
+            \node (E5) at (3, 4) {\ydiagram{1,1,1,1}};
+            \node (F1) at (-4, 5.5) {\ydiagram{5}};
+            \node (F2) at (-2.1, 5.5) {\ydiagram{4,1}};
+            \node (F3) at (-0.5, 5.5) {\ydiagram{3,2}};
+            \node (F4) at (0.8, 5.5) {\ydiagram{3,1,1}};
+            \node (F5) at (2, 5.5) {\ydiagram{2,2,1}};
+            \node (F6) at (3, 5.5) {\ydiagram{2,1,1,1}};
+            \node (F7) at (3.8, 5.5) {\ydiagram{1,1,1,1,1}};
+            
+            \draw (A) -- (B);
+            \draw (B) -- (C1);
+            \draw (B) -- (C2);
+            \draw (C1) -- (D1);
+            \draw (C1) -- (D2);
+            \draw (C2) -- (D2);
+            \draw (C2) -- (D3);
+            \draw (D1) -- (E1);
+            \draw (D1) -- (E2);
+            \draw (D2) -- (E2);
+            \draw (D2) -- (E3);
+            \draw (D2) -- (E4);
+            \draw (D3) -- (E4);
+            \draw (D3) -- (E5);
+            \draw (E1) -- (F1);
+            \draw (E1) -- (F2);
+            \draw (E2) -- (F2);
+            \draw (E2) -- (F3);
+            \draw (E2) -- (F4);
+            \draw (E3) -- (F3);
+            \draw (E3) -- (F5);
+            \draw (E4) -- (F4);
+            \draw (E4) -- (F5);
+            \draw (E4) -- (F6);
+            \draw (E5) -- (F6);
+            \draw (E5) -- (F7);
+            \draw [red!50, line width=1mm] (F3) -- (E2);
+            \draw [red!50, line width=1mm] (E2) -- (D1);
+            \draw [red!50, line width=1mm] (D1) -- (C1);
+            \draw [red!50, line width=1mm] (C1) -- (B);
+            \draw [red!50, line width=1mm] (B) -- (A);
+            \draw [blue!50, line width=1mm] (F3) -- (E3);
+            \draw [blue!50, line width=1mm] (E3) -- (D2);
+            \draw [blue!50, line width=1mm] (D2) -- (C1);
+            \draw [blue!50, line width=1mm, dashed] (C1) -- (B);
+            \draw [blue!50, line width=1mm, dashed] (B) -- (A);
+            \ytableausetup{boxsize=1.5em}
+            \begin{scope}[color=red!50]
+                \node at (-3, 1) {\ytableaushort{123,45}};
+            \end{scope}
+            \begin{scope}[color=blue!50]
+                \node at (3, 1) {\ytableaushort{124,35}};
+            \end{scope}
+        \end{tikzpicture}
+        \caption{Paths in a Young lattice and the corresponding standard tableaux.}
+        \label{fig:young lattice paths}
+    \end{figure}
+    
+    This shows that in the repeated-restriction process above we get all standard tableau of shape \(\lambda\) appearing in the decomposition of the \(S_n\)-module restricted to an \(S_0\)-module.
+    That is, we have as modules
+    \begin{equation}
+        \Res^{S_n}_{S_0} V_\lambda = \bigoplus_{T \in \standardYoungTableaux(\lambda)} V_T
+    \end{equation}
+    where \(V_T\) are 1-dimensional vector spaces.
+    Note that as vector spaces \(\Res^{S_n}_{S_0} V_\lambda = V_\lambda\), which gives us the following result.
+    
+    \begin{dfn}{Gelfand--Zetlin Basis}{}
+        The process detailed above defines, up to normalisation, a basis of \(V_\lambda\), known as the \defineindex{Gelfand--Zetlin basis}.
+        Specifically, we let \(V_T = \field v_T\) then \(\{v_T \mid T \in \standardYoungTableaux(\lambda)\}\) is a basis of \(V_\lambda\).
+    \end{dfn}
+    
+    Suppose that \(\Char \field \nmid n!\), so that \(\field S_n\) is semisimple.
+    Then we have the decomposition
+    \begin{equation}
+        \field S_n \isomorphic \bigoplus_{\lambda \partition n} \End(V_\lambda) \isomorphic \bigoplus_{\lambda \partition n} \Mat_{\dim V_\lambda}(\complex).
+    \end{equation}
+    We can thus specify a subalgebra of \(\field S_n\)
+    
+    \begin{dfn}{Gelfand--Zetlin Subalgebra}{}
+        The \defineindex{Gelfand--Zetlin subalgebra}, \(A_n \subseteq \field S_n\), is the subalgebra consisting of elements whose action is diagonal in all irreducible representations.
+    \end{dfn}
+    
+    That is, the Gelfand--Zetlin subalgebra consists of all elements of \(\field S_n\) which correspond to a direct sum of diagonal matrices in the above decomposition.
+    
+    \begin{lma}{}{}
+        The Gelfand--Zetlin subalgebra is a maximal commutative subalgebra of \(\field S_n\).
+        Further, the Gelfand--Zetlin subalgebra is semisimple.
+    \end{lma}
+    
+    The Gelfand--Zetlin basis element, \(v_T\), corresponds to the one-dimensional irreducible \(A_n\)-module, \(V_T = \field v_T\).
+    
+    \section{Jucys--Murphy Elements}
+    \begin{dfn}{Jucys--Murphy Elements}{}
+        The \(j\)th \defineindex{Jucys--Murphy element} of \(\field S_n\) is
+        \begin{equation}
+            L_j \coloneq \sum_{i=1}^j \cycle{i,j}.
+        \end{equation}
+        Note that \(L_1 = 0\) is the empty sum.
+    \end{dfn}
+    
+    Note that
+    \begin{equation}
+        L_n = \cycle{1,n} + \cycle{2,n} + \dotsb + \cycle{n-1,n}
+    \end{equation}
+    commutes with all of \(\field S_{n-1}\), since elements of \(\field S_{n-1}\) fix \(n\) and so if \(w \in S_{n-1}\) then \(L_n w\) is just \(L_n\) with the order of the terms in the sum rearranged.
+    
+    This means that the Jucys--Murphy elements generate a commutative subalgebra of \(\field S_n\).
+    
+    \begin{lma}{}{}
+        The Gelfand--Zetlin subalgebra, \(A_n\), is generated by either
+        \begin{itemize}
+            \item \(Z_0, \dotsc, Z_n \subseteq \field S_n\) for \(Z_i = Z(\field S_n)\); or
+            \item \(L_1, \dotsc, L_n\).
+        \end{itemize}
+    \end{lma}
+    
+    \section{Young's Seminormal Form}
+    For \(\lambda\) a partition of \(n\) fix some vector \(v_{T_0} \in V_\lambda\) where \(T_0\) is the canonical tableau of shape \(\lambda\).
+    Let \(T\) be some standard tableau of shape \(\lambda\).
+    Define \(w_T \in S_n\) by \(T = w_T \action T_0\), where \(S_n\) acts on \(T\) by permuting the boxes according to their numbering.
+    Then we may define \(v_T = \pi_T(w_T \action v_{T_0}) \in V_\lambda = V_T\) where
+    \begin{equation}
+        \pi_T \colon \bigoplus_{S \in \standardYoungTableaux(\lambda)} \twoheadrightarrow V_T
+    \end{equation}
+    is projection onto the corresponding term of the direct sum.
+    
+    \begin{thm}{}{}
+        The simple transpositions, \(s_i = \cycle{i,i+1}\), act on \(V_\lambda\) in such a way that
+        \begin{equation}
+            s_i \action v_T = 
+            \begin{cases}
+                v_{s_i \action T} & \text{if } s_i \action T \text{ is a standard tableau};\\
+                0 & \text{else}.
+            \end{cases}
+        \end{equation}
+        Define \(c_T(k) = j - i\) when \(T(i, j) = k\).
+        Then
+        \begin{equation}
+            s_i \action v_T = \frac{1}{c_T(i + 1) - c_T(i)} v_T + \left( 1 + \frac{1}{c_T(i + 1) - c_T(i)} \right) v_{s_i \action T}
+        \end{equation}
+        and
+        \begin{equation}
+            L_j \action v_T = c_T(j) v_T.
+        \end{equation}
+    \end{thm}
+    
+    \chapter{Symmetric Functions}
+    \section{Kostka Numbers}
+    Recall that for a partition, \(\lambda \partition n\), the row group of \(\lambda\) is \(S_\lambda \isomorphic S_{\lambda_1} \times \dotsb \times S_{\lambda_\ell}\) where \(S_{\lambda_1}\) acts on \(\{1, \dotsc, \lambda_1\}\), \(S_{\lambda_2}\) acts on \(\{\lambda_1 + 1, \dotsc, \lambda_1 + \lambda_2\}\), and so on.
+    Consider the trivial representation of \(S_\lambda\), \(\complex\).
+    We can define an \(S_n\)-module by inducing this up:
+    \begin{equation}
+        M_\lambda \coloneq \Ind^{S_n}_{S_\lambda} \complex.
+    \end{equation}
+    
+    \begin{lma}{}{}
+        With notation as above we have \(M_\lambda \isomorphic \complex S_n a_\lambda\).
+    \end{lma}
+    
+    Recall that if \(e\) is an idempotent of the algebra \(A\) then
+    \begin{equation}
+        \Hom_A(Ae, M) \isomorphic eM
+    \end{equation}
+    for any left \(A\)-module, \(M\).
+    We then have
+    \begin{equation}
+        \Hom_{S_n}(M_\lambda, V_\mu) = \Hom_{S_n}(\complex S_n a_\lambda, V_\mu) \isomorphic a_\lambda V_\mu = a_\lambda \complex S_n b_\mu a_\mu.
+    \end{equation}
+    We also have that
+    \begin{equation}
+        \dim(a_\lambda \complex S_n b_\mu a_\mu) = 
+        \begin{cases}
+            1 & \lambda = \mu,\\
+            0 & \mu < \lambda.
+        \end{cases}
+    \end{equation}
+    
+    \begin{dfn}{Weight}{}
+        Let \(\lambda\) be a partition of \(n\).
+        Let \(\mu\) be a sequence of nonnegative integers, \(\mu = (\mu_1, \mu_2, \dotsc)\) such that \(\sum_i \mu_i = n\) (so a partition minus the requirement that the \(\mu_i\) be weakly decreasing).
+        We call such a \(\mu\) a \defineindex{composition} of \(n\).
+        We say that a semi-standard Young tableau of shape \(\lambda\) has weight \(\mu\) if \(i \in \{1, \dotsc, n\}\) appears in the labelling of boxes \(\mu_i\) times.
+    \end{dfn}
+    
+    \begin{dfn}{Kostka Numbers}{}
+        Let \(\lambda\) be a partition of \(n\) and \(\mu\) a composition of \(n\).
+        The \define{Kostka numbers}\index{Kostka number}, \(K_{\lambda\mu}\), are the number of semistandard tableaux of shape \(\lambda\) and weight \(\mu\).
+    \end{dfn}
+    
+    Writing \(\semistandardYoungTableaux(\lambda, \mu)\) for the set of semistandard Young tableaux of shape \(\lambda\) and weight \(\mu\) we have that
+    \begin{equation}
+        K_{\lambda\mu} = \abs{\semistandardYoungTableaux}(\lambda, \mu).
+    \end{equation}
+    
+    \begin{exm}{}{}
+        Suppose \(\lambda = (3, 2)\) and \(\mu = (1, 1, 2, 1)\).
+        Then \(K_{\lambda\mu}\) is the number of semistandard tableaux of shape \((3, 2)\) filled with one \(1\), one \(2\), two \(3\)s, and one \(3\).
+        It's not hard to check that the only options are
+        \ytableausetup{boxsize=1em}
+        \begin{equation}
+            \ytableaushort{123,34}\,,\quad \ytableaushort{124,33}\,,\qand \ytableaushort{133,24}\,.
+        \end{equation}
+        Thus, \(K_{(3,2)(1,1,2,1)} = 3\).
+        
+        Any partition, \(\lambda\), is also a composition.
+        In general, we have \(K_{\lambda\lambda} = 1\), since the only way to fill a Young diagram of shape \(\lambda\) with \(\lambda_1\) \(1\)s, \(\lambda_2\) \(2\)s, and so on in such a way that the result is semistandard is to have the first row filled with \(1\)s, the second row filled with \(2\)s, and so on.
+        
+        If \(\mu = (1, 1, \dotsc, 1)\) with \(n\) \(1\)s then every number from \(1\) to \(n\) appears exactly once, and being semistandard is the same as being standard.
+        Thus,
+        \begin{equation}
+            K_{\lambda(1, 1, \dotsc, 1)} = f^\lambda = \abs{\standardYoungTableaux(\lambda)} = \dim V_\lambda = \frac{n!}{\lambda \intterobang}.
+        \end{equation}
+    \end{exm}
+    
+    \begin{prp}{}{}
+        With notation as above we have that
+        \begin{equation}
+            M_\lambda = V_\lambda \oplus \vphantom{\bigoplus}\smash{\bigoplus_{\mu > \lambda}} K_{\mu\lambda} V_\mu.
+        \end{equation}
+    \end{prp}
+    
+    \section{Frobenius Character Formula for \texorpdfstring{\(S_n\)}{Sn}}
+    Consider the ring of polynomials in \(n\)-commuting indeterminates, \(\complex[x_1, \dotsc, x_n]\).
+    There is a natural action of the symmetric group, \(S_n\), on this ring, specifically
+    \begin{equation}
+        (w \action f)(x_1, \dotsc, x_n) = f(x_{w^{-1}(1)}, \dotsc, x_{w^{-1}(n)}).
+    \end{equation}
+    Note that the action is defined in terms of \(w^{-1}\) simply because this is what gives us a left action.
+    
+    Some polynomials in \(\complex[x_1, \dotsc, x_n]\) are left invariant under this action.
+    That is, if we permute the variables the polynomial doesn't change.
+    The following are some examples of this in three variables:
+    \begin{equation}
+        \label{eqn:example symmetric polynomials}
+        xyz, \quad xy + xz + yz, \quad x + y + z, \quad x^2y + x^2z + y^2x + y^2z + z^2x + z^2y.
+    \end{equation}
+    
+    \begin{ntn}{Fixed Points}{}
+        Let \(X\) be a set with some specified action of a group, \(G\).
+        Write \(X^G\) for the set of fixed points of \(X\) under this action.
+        That is,
+        \begin{equation}
+            X^G = \{x \in X \mid g \action x = x \forall g \in G\}.
+        \end{equation}
+    \end{ntn}
+    
+    We will now study \(\Lambda_n \coloneq \complex[x_1, \dotsc, x_n]^{S_n}\), and the generalisation of this to infinitely many variables.
+    We call elements of \(\Lambda_n\) \define{symmetric polynomials}\index{symmetric polynomial} in \(n\) variables.
+    First, notice that the product of two such polynomials is once again symmetric, as is their sum.
+    Thus, \(\Lambda_n\) is a ring.
+    Further, if any complex multiple of a symmetric function is again symmetric, and thus \(\Lambda_n\) is a \(\complex\)-algebra.
+    
+    \begin{dfn}{Power Sums}{}
+        Let \(r \in \integers_{\ge 0}\), and define the \defineindex{power sum}, \(p_r \in \complex[x_1, \dotsc, x_n]\) by
+        \begin{equation}
+            p_r(x_1, \dotsc, x_n) \coloneq \sum_{i=1}^n x_i^r.
+        \end{equation}
+    \end{dfn}
+    
+    First note that \(p_r\) is a symmetric polynomial.
+    Permuting the variables just rearranges the order of the \(x_i^r\) in the sum, which doesn't change the polynomial.
+    
+    It turns out that the power sums generate all of \(\Lambda_n\).
+    
+    \begin{prp}{}{}
+        We have
+        \begin{equation}
+            \complex[x_1, \dotsc, x_n]^{S_n} \isomorphic \complex[p_1, \dotsc, p_n].
+        \end{equation}
+    \end{prp}
+    
+    Note that we are not considering \(\complex[p_1, \dotsc, p_n]\) to be a polynomial ring.
+    Instead it is simply all polynomials in the \(p_r\) subject to the relations that follow from the definition of the \(p_r\) in terms of the \(x_i\).
+    
+    Consider the examples of \cref{eqn:example symmetric polynomials}.
+    These are \(p_3\), \(p_2\), \(p_1\), and \(p_2p_1 - p_3\) respectively.
+    
+    \begin{ntn}{}{}
+        Let \(\lambda\) be a partition of \(n\), and suppose \(N \ge \ell(\lambda)\) (which you'll recall is the number of nonzero terms in \(\lambda\)).
+        Then we write
+        \begin{equation}
+            x^\lambda = x_1^{\lambda_1} x_2^{\lambda_2} \dotsm x_N^{\lambda_N}.
+        \end{equation}
+        Note that \(\lambda_i\) may be zero for some of these exponents.
+        We also write
+        \begin{equation}
+            p_{\lambda} = p_{\lambda_1} p_{\lambda_2} \dotsm p_{\lambda_{\ell(\lambda)}}.
+        \end{equation}
+        Note that this is the same as if we carry on all the way to \(x_N\), since \(p_0 = 1\).
+        
+        We also define the sum of partitions in the obvious way, so \((\lambda + \rho)_i = \lambda_i + \rho_i\).
+        
+        The antisymmetric polynomial
+        \begin{equation}
+            \Delta(x) = \prod_{1 \le i < j \le N} (x_i - x_j)
+        \end{equation} 
+        is called the \defineindex{van der Monde determinant}.
+    \end{ntn}
+    
+    \begin{prp}{}{}
+        Let \(\lambda\) be a partition of \(n\).
+        For \(N \ge \ell(\lambda)\) we have the following relationship between characters and symmetric polynomials in \(N\) variables:
+        \begin{itemize}
+            \item \(\chi_{M_\lambda}(\mu)\) is the coefficient of \(x^\lambda\) in \(p_\mu\); and
+            \item \(\chi_{V_\lambda}(\mu)\) is the coefficient of \(x^{\lambda + \rho}\) in \(\Delta(x)p_\mu\).
+        \end{itemize}
+        Note that \(\chi_{X}(\mu)\) means the character of any element of the conjugacy class labelled by cycle-type \(\mu\) in the representation \(X\).
+    \end{prp}
+    
+    \section{The Ring of Symmetric Functions}
+    The previous result suggests that there is a close relationship between the representation theory of \(S_n\) and symmetric polynomials.
+    One thing that gets in the way when we try to utilise this connection is that we always have to have \enquote{enough} variables.
+    In the previous result this meant we had \(N \ge \ell(\lambda)\).
+    However, most things we can say about symmetric functions are fairly independent of the number of variables.
+    The way we get around this is to consider an infinite number of variables.
+    This takes a bit of care to set up properly, but then we can go back to thinking of the resulting elements as being symmetric polynomials in sufficiently many variables after we've put in the work upfront.
+    
+    \subsection{Construction}
+    For this section we work with polynomials over \(\integers\).
+    This can then be extended to \(\complex\) by extension of scalars later.
+    
+    Notice that
+    \begin{equation}
+        \Lambda_N = \integers[x_1, \dotsc, x_N]^{S_N}
+    \end{equation}
+    is a graded ring, specifically,
+    \begin{equation}
+        \Lambda_N = \bigoplus_{d \ge 0} \Lambda_N^d
+    \end{equation}
+    where \(\Lambda_N^d\) is the \(\integers\)-submodule of \(\Lambda_N\) consisting of homogeneous symmetric polynomials of degree \(d\).
+    
+    Let \(\lambda = (\lambda_1 \ge \dotsb \ge \lambda_N \ge 0)\) be a partition of length at most \(N\) with \(\abs{\lambda} = d\).
+    We define the \defineindex{monomial symmetric polynomial} corresponding to \(\lambda\) to be
+    \begin{equation}
+        m_\lambda(x_1, \dotsc, x_N) = \sum_{\alpha} x^\alpha
+    \end{equation}
+    where the sum is over all \(\alpha\) which are given by permuting the first \(N\) terms of \(\lambda\).
+    For example, if \(\lambda = (3,2)\) and \(N = 3\) then the permutations of the first three terms of \(\lambda\) are
+    \begin{equation}
+        (3, 2, 0), \quad (3, 0, 2),\quad (2, 3, 0), \quad (2, 0, 3), \quad (0, 3, 2), \qand (0, 2, 3).
+    \end{equation}
+    Thus, we have
+    \begin{align}
+        &m_{(3,2)}(x_1, x_2, x_3)\\
+        &= x_1^3 x_2^2 x_3^0 + x_1^3 x_2^0 x_3^2 + x_1^2 x_2^3 x_3^0 + x_1^2 x_2^0 x_3^3 + x_1^0 x_2^3 x_3^2 + x_1^0 x_2^2 x_3^3 \notag\\
+        &= x_1^3 x_2^2 + x_1^3 x_3^2 + x_1^2 x_2^3 + x_1^2 x_3^3 + x_2^3 x_3^2 + x_2^2 x_3^3. \notag
+    \end{align}
+    Note that \(m_{(r)} = p_r\).
+    This definition makes sense so long as \(N \ge \ell(\lambda)\), so if we want to consider all degree \(d\) polynomials then we should take \(N \ge d\), which we'll assume from now on.
+    Under these considerations the \(m_\lambda\) form a basis for \(\Lambda_N^d\).
+    
+    For \(N' \ge N\) there is a surjection
+    \begin{equation}
+        \rho_{N',N}^d \colon \Lambda_{N'}^d \twoheadrightarrow \Lambda_N^d
+    \end{equation}
+    defined by setting \(x_{N+1} = \dotsb = x_{N'} = 0\).
+    The action of this map on the monomial symmetric polynomials is
+    \begin{equation}
+        \rho_{N',N}^d(m_\lambda(x_1, \dotsc, x_{N'})) = 
+        \begin{cases}
+            m_\lambda(x_1, \dotsc, x_N) & \ell(\lambda) \le N;\\
+            0 & \text{otherwise}.
+        \end{cases}
+    \end{equation}
+    Further, note that the map \(\rho_{N',N}^d\) is bijective for \(N' \ge N \ge d\).
+    
+    We then have a sequence of bijections
+    \begin{equation}
+        \Lambda_1^d \twoheadleftarrow \Lambda_2^d \twoheadrightarrow \Lambda_3^d \twoheadrightarrow \dotsb.
+    \end{equation}
+    This is an inverse system, by which we mean that \(\rho^d_{i,k} = \rho^d_{i,j} \circ \rho^d_{j,k}\) for all \(i, j, k \in \integers_{>0}\).
+    Define the ring of homogeneous functions of degree \(d\) to be the inverse limit
+    \begin{equation}
+        \Lambda^d = \varprojlim_N \Lambda_N^d.
+    \end{equation}
+    That is, elements of \(\Lambda^d\) are sequences, \((f_N)_{N \in \integers_{> 0}}\), where each \(f_N\) is a homogeneous degree \(d\) polynomial in \(N\) variables.
+    These sequences are (by definition of the inverse limit) such that
+    \begin{equation}
+        f_{N+1}(x_1, \dotsc, x_N, 0) = f_N(x_1, \dotsc, x_N).
+    \end{equation}
+    
+    The projections, sending such a sequence to its \(N\)th term,
+    \begin{align}
+        \proj^d_N \colon \Lambda^d &\twoheadrightarrow \Lambda^d_N,\\
+        f = (f_N)_{N \in \integers_{>0}} &\mapsto f_N,
+    \end{align}
+    are isomorphisms for \(N \ge d\).
+    This means that \(\Lambda^d\) is a free \(\integers\)-module with basis \(\{m_\lambda \mid \lambda \partition d\}\).
+    
+    We define the \defineindex{ring of symmetric functions} to be the graded ring
+    \begin{equation}
+        \Lambda = \bigoplus_{d \ge 0} \Lambda^d.
+    \end{equation}
+    
+    \begin{remark}{}{}
+        Note that \emph{technically} elements of \(\Lambda\) are not polynomials, they are infinite sequences of polynomials.
+        However, we can pretty much treat them as polynomials most of the time, just take some polynomial sufficiently far along in the sequence that there are enough variables to do whatever it is we're trying to do.
+        To make this distinction we call elements of \(\Lambda\) \enquote{symmetric functions} instead of \enquote{symmetric polynomials}, but we pretty much think of them as polynomials.
+        
+        Let \(f_N\) and \(f_{N+1}\) be symmetric polynomials in \(N\) and \(N + 1\) variables respectively such that
+        \begin{equation}
+            f_N(x_1, \dotsc, x_N) = f_{N+1}(x_1, \dotsc, x_N, 0).
+        \end{equation}
+        If it's possible to make definitions of a family of polynomials in this way such that at each step adding a new variable and setting it to zero doesn't change anything then it makes sense to consider \((f_N)_{N \in \integers_{>0}}\) as an element of \(\Lambda\).
+        We call this the projective limit of \(f\) (where \(f\) is some label referring to this whole family of polynomials, which we really want to think of as all being the same symmetric function).
+    \end{remark}
+    
+    \begin{remark}{}{}
+        There are several constructions of \(\Lambda\).
+        The one we've given makes it an inverse limit in the category of graded rings.
+        There is an alternative construction which makes it a direct limit in the category of rings of the direct system
+        \begin{equation}
+            \Lambda_1^d \hookrightarrow \Lambda_2^d \hookrightarrow \Lambda_3^d \hookrightarrow
+        \end{equation}
+        where the inclusions are defined in terms of another basis of polynomials, called the elementary symmetric polynomials, \(e_r\), and the maps defined by \(e_r(x_1, \dotsc, x_n) \mapsto e_r(x_1, \dotsc, x_n, x_{n+1})\).
+        
+        As categorical duals an inverse limit is some subset of the product, and the direct limit is some the disjoint union modulo some equivalence relation.
+        There are benefits to both constructions.
+        Elements of inverse limits are slightly easier to work with, because we don't have to keep track of the equivalence relation and worry if things are well-defined.
+        Conversely, with the direct limit definition we can directly (no pun intended) identify (equivalence classes) of elements with elements of some object in the direct system.
+        
+        Once we place a grading on the ring of symmetric functions as defined in terms of a direct limit it is isomorphic to the ring of symmetric functions as defined in terms of an inverse limit.
+        
+        Since we won't have much reason to worry about the exact structure of elements of this ring we won't worry any more about exactly how it's defined.
+    \end{remark}
+    
+    Let \(\Lambda\) be the ring of symmetric functions with integer coefficients.
+    Then for any ring, \(R\), we can define \(\Lambda_R = \Lambda \otimes_{\integers} R\), to be the ring of symmetric functions with coefficients in \(R\).
+    In particular, \(\Lambda_{\complex}\) is the ring of symmetric functions with coefficients in \(\complex\).
+    
+    \begin{prp}{}{}
+        We have that
+        \begin{equation}
+            \Lambda_{\complex} \isomorphic \complex[p_1, p_2, \dotsc]
+        \end{equation}
+        where the \(p_r\) are the projective limits of the power sums.
+    \end{prp}
+    
+    \section{Schur Functions}
+    \begin{dfn}{Schur Polynomial}{}
+        Let \(\lambda\) be a partition of length \(N\).
+        We define the corresponding \define{Schur polynomial}\index{Schur!polynomial} to be
+        \begin{equation}
+            s_\lambda(x) \coloneq \frac{\det(x_i^{\lambda_j + N - j})_{1 \le i, j \le N}}{\det(x_i^{N-j})_{1\le i,j\le N}}.
+        \end{equation}
+    \end{dfn}
+    
+    Schur polynomials are stable, in the sense that if \(s_\lambda\) is the Schur polynomial in \(N\) variables, and \(\hat{s}_\lambda\) is the Schur polynomial in \(N + 1\) variables then
+    \begin{equation}
+        s_\lambda(x_1, \dotsc, x_N) = \hat{s}_\lambda(x_1, \dotsc, x_N, 0).
+    \end{equation}
+    In practice both of these are denoted \(s_\lambda\) with the number of variables distinguishing them.
+    Since \(s_\lambda\) is unchanged by adding more variables the setting them to zero we can consider the projective limit of the Schur polynomials.
+    
+    \begin{dfn}{Schur Function}{}
+        Let \(\lambda\) be a partition.
+        The corresponding \defineindex{Schur function} is the projective limit of the Schur polynomials \(s_\lambda\) as we increase the number of variables.
+    \end{dfn}
+    
+    \begin{thm}{}{}
+        The Schur functions form a \(\integers\)-basis, \(\{s_\lambda \mid \lambda \partition n, n \in \integers_{\ge 0}\}\), of \(\Lambda\).
+    \end{thm}
+    
+    By a \(\integers\)-basis we mean that any symmetric function with integer coefficients can be expressed as a linear combination of Schur functions with integer coefficients.
+    In other words, the \(s_\lambda\) form a basis of \(\Lambda = \Lambda_{\integers}\).
+    This is in contrast to the \(p_\lambda\) which form only a \(\rationals\)-basis of \(\Lambda_{\rationals}\).
+    
+    With these constructions we can restate the Frobenius formula as
+    \begin{equation}
+        p_\mu = \sum_\lambda \chi_{V_\lambda}(\mu) s_\lambda.
+    \end{equation}
+    
+    \section{Macdonald's Characteristic Map}
+    For \(w \in S_n\) we denote by \(\mu(w) = (\mu_1 \ge \mu_2 \ge \dotsb \ge \mu_n \ge 0)\) the ordered cycle length of \(w\).
+    So, for example, in \(S_5\) if \(w = \cycle{1,2,3}\cycle{4,5}\) then \(\mu(w) = (3, 2)\).
+    We can then define a map
+    \begin{align}
+        \psi \colon S_n &\to \Lambda\\
+        w &\mapsto p_{\mu(w)} = p_{\mu_1} \dotsm p_{\mu_n}.
+    \end{align}
+    Since this map is defined only by the cycle type of \(w\) we have that \(\psi(w) = \psi(w')\) whenever \(w\) and \(w'\) are conjugate.
+    
+    We have the obvious embedding \(S_m \times S_n \hookrightarrow S_{m + n}\), in which \(w \times w' \mapsto u\) defined by
+    \begin{equation}
+        u(i) =
+        \begin{cases}
+            w(i) & i \in \{1, \dotsc, m\};\\
+            w'(i) & i \in \{m + 1, \dotsc, m + n\}.
+        \end{cases}
+    \end{equation}
+    Then we have
+    \begin{equation}
+        \psi(w \times w') = \psi(w) \psi(w').
+    \end{equation}
+    Recall that \(\classFunctions_n = \classFunctions_n(S_n)\) is the space of class functions, \(S_n \to \complex\), and that this is spanned by the irreducible characters \(\{\chi_\lambda \mid \lambda \partition n\}\).
+    
+    We may then consider the (vector space) direct sum
+    \begin{equation}
+        \classFunctions = \bigoplus_{n \ge 0} \classFunctions_n
+    \end{equation}
+    where \(\classFunctions_0 = \complex\).
+    This graded vector space can be made into a graded ring by defining multiplication of homogeneous basis elements:
+    \begin{equation}
+        \chi_\lambda * \chi_\mu \coloneq (\chi_\lambda \times \chi_\mu) \uparrow^{S_{m+n}}_{S_m \times S_n}.
+    \end{equation}
+    In words, we define the product of irreducible characters to be the induced character of the representation arising from the obvious embedding \(S_m \times S_n \hookrightarrow S_{m + n}\).
+    
+    Any \(f, g \in \classFunctions\) may be expanded as a sum of \(f_n, g_n \in \classFunctions_n\):
+    \begin{equation}
+        f = \sum_{n \ge 0} f_n, \qand g = \sum_{n \ge 0} g_n.
+    \end{equation}
+    Recall that we've defined an inner product, \(\innerprod{-}{-}_{S_n} \colon \classFunctions_n \times \classFunctions_n \to \complex\).
+    We can extend this to an inner product, \(\innerprod{-}{-} \colon \classFunctions \times \classFunctions \to \complex\), by defining
+    \begin{equation}
+        \innerprod{f}{g} = \sum_n \innerprod{f_n}{g_n}_{S_n}.
+    \end{equation}
+    This is the obvious extension given by declaring that the different homogeneous subspaces are orthogonal.
+    
+    \begin{dfn}{Macdonald's Characteristic Map}{}
+        \defineindex{Macdonald's characteristic map} is the map \(\ch \colon \classFunctions \to \Lambda_{\complex}\) defined on homogenous \(f \in \classFunctions_n\) by
+        \begin{equation}
+            \ch(f) = \innerprod{f}{\psi}_{S_n} = \frac{1}{n!} \sum_{w \in S_n} f(w)\psi(w).
+        \end{equation}
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        With the notation as above
+        \begin{equation}
+            \ch(f) = \sum_{\lambda \partition n} \frac{f_\mu}{z_\mu} p_\mu
+        \end{equation}
+        where \(f_\mu\) is the value of \(f\) on any element of the conjugacy class of cycle type \(\mu\), and \(z_\mu\) is the size of the conjugacy class of cycle type \(\mu\).
+    \end{lma}
+    
+    \begin{dfn}{Hall Inner Product}{}
+        The \defineindex{Hall inner product} on \(\Lambda\) is defined by
+        \begin{equation}
+            \innerprod{p_\lambda}{p_\mu} = \delta_{\lambda\mu} z_\mu
+        \end{equation}
+        with \(z_\mu\) the size of the conjugacy class of cycle type \(\mu\).
+    \end{dfn}
+    
+    \begin{thm}{}{}
+        The ring \(\classFunctions\) is isomorphic to \(\Lambda\) with the isomorphism given by \(\ch(\chi_\lambda) = s_\lambda\).
+        Further, this is an isometry with respect to the two inner products we've just defined.
+        That is, \(\innerprod{\ch(f)}{\ch(g)} = \innerprod{f}{g}_{S_n}\) for homogeneous \(f, g \in \classFunctions_n\).
+        \begin{proof}
+            To show that this is a ring homomorphism we have the following
+            \begin{align}
+                \ch(f * g) &= \innerprod{\Ind^{S_{m+n}}_{S_m \times S_n} f \otimes g}{\psi}_{S_{m+n}}\\
+                &= \innerprod{f \otimes g}{\Res^{S_{m+n}}_{S_m \times S_n} \psi}_{S_{m\times n}}\\
+                &= \innerprod{f}{\psi}_{S_m} \innerprod{g}{\psi}_{S_n}\\
+                &= \ch(f) \ch(g).
+            \end{align}
+            The Hall inner product is defined exactly such that this map is an isometry.
+            Finally, since the \(\chi_\lambda\) are a basis of \(\classFunctions_n\) and the \(s_\lambda\) are a basis of \(\Lambda^n\) for \(\lambda \partition n\) then \(\ch\) is an isomorphism.
+        \end{proof}
+    \end{thm}
+    
+    \begin{thm}{}{}
+        Consider the following maps:
+        \begin{itemize}
+            \item \(\ch \colon \classFunctions \to \Lambda_{\complex}\);
+            \item \(\classFunctions \to Z = \bigoplus_{n \ge 0} Z(\complex S_n)\) given by \(\chi_\lambda \mapsto c_\lambda\);
+            \item the Frobenius map \(F \colon Z \to \Lambda_{\complex}\) given by \(F(c_\lambda) = p_\mu/z_\mu\).
+        \end{itemize}
+        These are isomorphisms, and the following diagram of these algebra isomorphisms commutes:
+        \begin{equation}
+            \begin{tikzcd}
+                \classFunctions \arrow[r] \arrow[dr] & Z \arrow[d]\\
+                & \Lambda_{\complex}\mathrlap{.}
+            \end{tikzcd}
+        \end{equation}
+    \end{thm}
+    
+    \begin{crl}{}{}
+        If \(\lambda\) is a partition of \(n\) then
+        \begin{equation}
+            s_\lambda = \sum_{\mu \partition n} \frac{\chi_\lambda(\mu)}{z_\mu} p_\mu.
+        \end{equation}
+    \end{crl}
+    
+    \begin{remark}{}{}
+        The above diagram can be further extended via the boson--fermion correspondence to
+        \begin{equation}
+            \begin{tikzcd}
+                \classFunctions \arrow[r] \arrow[dr] \arrow[d] & Z \arrow[d]\\
+                \bigwedge^{\infty/2} V \arrow[r] & \Lambda_{\complex}
+            \end{tikzcd}
+        \end{equation}
+        where \(V = \bigoplus_{n \in \integers} \complex v_n\) and \(\bigwedge^{\infty/2}V\) is defined to consist of all semi-infinite wedge products of the form
+        \begin{equation}
+            v_{i_1} \wedge v_{i_2} \wedge v_{i_3} \wedge \dotsb.
+        \end{equation}
+        The isomorphism \(\bigwedge^{\infty/2}V \isomorphic \Lambda_{\complex}\) is called the boson-fermion correspondence.
+        The details of this map are beyond the scope of this remark.
+    \end{remark}
+    
+    \section{More Symmetric Functions}
+    We have already seen three families of symmetric functions, \(p_\lambda\), \(m_\lambda\), and \(s_\lambda\).
+    Of these we've seen that \(s_\lambda\) are the images of irreducible characters under Macdonald's characteristic map.
+    The \(m_\lambda\) are the images of the characters \(\chi_{M_\lambda}\) under Macdonald's characteristic map.
+    A corollary of this is that
+    \begin{equation}
+        m_\lambda = \sum_{\mu \partition n} K_{\mu\lambda} s_\mu.
+    \end{equation}
+    Note that this means that the expansion of \(m_\lambda\) in terms of Schur functions has only nonnegative coefficients, a property known as \define{Schur positivity}\index{Schur!positivity}.
+    
+    Characters of other representations likewise give us families of symmetric polynomials.
+    In particular the \define{complete symmetric functions}\index{complete symmetric function},
+    \begin{equation}
+        h_n = \sum_{i_1 \le \dotsb \le i_n} x_{i_1} \dotsm x_{i_n},
+    \end{equation}
+    are the images of the trivial character, \(\chi_{(n)}\), under this map.
+    Note that this means that \(h_n = s_{(n)}\).
+    Similarly, the \define{elementary symmetric functions}\index{elementary symmetric function},
+    \begin{equation}
+        e_n = \sum_{i_1 < \dotsb < i_n} x_{i_1} \dotsm x_{i_n},
+    \end{equation}
+    are the images of the sign character, \(\chi_{(1, \dotsc, 1)}\), under the Macdonald characteristic map.
+    Note that this means that \(e_n = s_{(1, \dotsc, 1)}\).
+    
+    We can use various relationships in the representation theory of the symmetric group to derive results about the symmetric polynomials.
+    For example, the decomposition of \(M_\lambda\) as
+    \begin{equation}
+        V_\lambda \oplus \vphantom{\bigoplus}\smash{\bigoplus_{\mu > \lambda}} K_{\mu\lambda} V_\mu
+    \end{equation}
+    factors through Macdonald's characteristic map to tell us that
+    \begin{equation}
+        h_\lambda = s_\lambda + \sum_{\mu > \lambda} K_{\mu\lambda}s_\mu.
+    \end{equation}
+    Recalling that \(M_\lambda\) is defined by inducing the trivial representation of the row group, \(S_\lambda\), we can also induce the sign representation of \(S_\lambda\) to get a similar decomposition which gives us
+    \begin{equation}
+        e_{\lambda'} = s_{\lambda} + \sum_{\mu < \lambda} K_{\mu' \lambda'} s_\mu.
+    \end{equation}
+    
+    The \define{Pieri rules}\index{Pieri rule} arise when we consider what happens if we induce the representation \(\complex \otimes V_\lambda\) or \(\complex_{-} \otimes V_\lambda\) (where \(\complex_{-}\) is the sign representation) of \(S_m \times S_n\) up to \(S_{m+n}\).
+    The first gives
+    \begin{equation}
+        h_m s_\mu = \sum_{\substack{\lambda \partition n\\ \lambda \setminus \mu \text{ horiz. strip}}} s_\lambda
+    \end{equation}
+    and the second gives
+    \begin{equation}
+        e_m s_\mu =  \sum_{\substack{\lambda \partition n\\ \lambda \setminus \mu \text{ vert. strip}}} s_\lambda.
+    \end{equation}
+    Note that \(\lambda \setminus \mu\) is a \defineindex{horizontal strip} if it has at most one box in each column, and a \defineindex{vertical strip} if it has at most one box in each row.
+    
+    \section{Littlewood--Richardson Rule}
+    \begin{dfn}{Littlewood--Richardson Coefficient}{}
+        Given a tableau we can form a word by concatenating the reversed rows from top to bottom.
+        We say that the result of doing this is a \defineindex{lattice word} if any prefix has at least as many \(1\)s as it does \(2\)s, at least as many \(2\)s as it does \(3\)s and so on.
+        When the word of a tableau is a lattice word we call it a \define{Littlewood--Richardson tableau}\index{Littlewood--Richardson!tableau}.
+        
+        The \define{Littlewood--Richardson coefficient}\index{Littlewood--Richardson!coefficient}, \(c_{\lambda\mu}^\nu\), is defined to be the number of of shape \(\nu \setminus \lambda\) and weight \(\mu\).
+    \end{dfn}
+    
+    \begin{thm}{Littlewood--Richardson Rule}{}
+        \index{Littlewood--Richardson!rule}
+        Let \(\lambda\) and \(\mu\) be partitions.
+        Then
+        \begin{equation}
+            s_\lambda s_\mu = \sum_{\nu} c^\nu_{\lambda\mu} s_\nu.
+        \end{equation}
+    \end{thm}
     
     % Appdendix
 	\appendixpage
