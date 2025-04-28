@@ -1,0 +1,1557 @@
+\part{Group Representations}
+\chapter{Representation Theory of Finite Groups}
+Throughout this chapter \(G\) will be a finite group.
+
+In this chapter we will look at representations of finite groups.
+We have already developed much of the required theory because group representations, \(\rho \colon G \to \generalLinear(V)\), are in one-to-one correspondence with \(\field G\)-modules.
+Note that we write \(G\)-module and \(\Hom_{G}(V, W)\) for \(\field G\)-module and \(\Hom_{\field G}(V, W)\).
+
+\section{Maschke's Theorem}
+\begin{thm}{Maschke}{}
+    Let \(\Char \field\) be coprime to \(\abs{G}\).
+    Then
+    \begin{enumerate}
+        \item \(\field G\) is semisimple;
+        \item \(\field G \isomorphic \bigoplus_i \End V_i\) with the isomorphism given on the basis by \(g \mapsto \bigoplus_i \rho_i(g)\) where \(\rho_i \colon G \to \generalLinear(V_i)\) are the irreducible representations of \(G\).
+    \end{enumerate}
+    \begin{proof}
+        We know that semisimplicity of \(\field G\) implies that \(\field G\) decomposes as in the second point (\cref{prp:equivalent definitions of semisimple algebra}), so we need only show that \(\field G\) is semisimple.
+        
+        To prove that \(\field G\) is semisimple it is sufficient to prove that given a \(G\)-module, \(V\), and a \(G\)-submodule \(W \subseteq V\) there is some \(G\)-submodule, \(W'\) such that \(V = W \oplus W'\).
+        This will show that any finite-dimensional \(\field G\)-module is semisimple, and hence that \(\field G\) is semisimple by \cref{prp:equivalent definitions of semisimple algebra}.
+        
+        Given a \(G\)-module, \(V\), and a \(G\)-submodule, \(W\), we always have \emph{as vector spaces} some \(\overbar{W} \subseteq V\) such that \(V = W \oplus \overbar{W}\).
+        We will construct from \(\overbar{W}\) a \(G\)-submodule \(W'\) such that \(V = W \oplus W'\).
+        
+        Let \(p \colon V \twoheadrightarrow W\) be projection onto the subspace \(W\).
+        That is, \(p|_W = \id_W\) and \(p|_{\overbar{W}} = 0\).
+        We may define
+        \begin{equation}
+            P = \frac{1}{\abs{G}} \sum_{g \in G} \rho(g) p \rho(g)^{-1}
+        \end{equation}
+        where \(\rho \colon G \to \generalLinear(V)\) is our representation map.
+        Now consider \(W' = \ker P\).
+        We claim that \(W'\) is a submodule and \(V = W \oplus W'\).
+        
+        To verify these we need to show that \(G \action W' \subseteq W'\) and that \(P\) is projection onto \(W\).
+        Suppose that \(w \in W'\), that is \(Pw = 0\).
+        Then for \(h \in G\) we have
+        \begin{align}
+            P(h \action w) &= P\rho(h)w\\
+            &= \frac{1}{\abs{G}} \sum_{g \in G} \rho(g) p \rho(g)^{-1}\rho(h)w\\
+            &= \frac{1}{\abs{G}} \sum_{g \in G} \rho(g) p \rho(g^{-1}h) w\\
+            &= \frac{1}{\abs{G}} \sum_{g' \in G} \rho(hg') p \rho(g'^{-1}) w\\
+            &= \rho(h) \frac{1}{\abs{G}} \sum_{g' \in G} \rho(g') p \rho(g'^{-1}) w\\
+            &= \rho(h) P w\\
+            &= 0
+        \end{align}
+        where we've reparametrised the sum using \(g'^{-1} = g^{-1}h\), so \(g' = h^{-1} g\) and \(g = hg'\).
+        This is a common trick when dealing with sums over group elements like this one.
+        We have successfully shown that \(h \action w \in \ker P\) if \(w \in \ker P\), and thus \(h \action w \in W'\).
+        
+        We can now verify that \(P\) is a projection onto \(W\).
+        For this we have to show that \(P|_W = \id_W\), and \(P(V) \subseteq W\), which combined imply that \(P^2 = P\).
+        For the first if \(w \in W\) consider
+        \begin{equation}
+            Pw = \frac{1}{\abs{G}} \sum_{g \in G} \rho(g) p \rho(g)^{-1}w.
+        \end{equation}
+        Since \(W\) is a submodule we know that \(\rho(g)^{-1}w \in W\), then since \(p\) is a projection onto \(W\) we know that \(p\rho(g)^{-1}w = \rho(g)^{-1}w\), and thus \(\rho(g)p\rho(g)^{-1}w = \rho(g)\rho(g)^{-1}w = w\).
+        So, the sum reduces to
+        \begin{equation}
+            Pw = \frac{1}{\abs{G}} \sum_{g \in G} w = \frac{\abs{G}}{\abs{G}} w = w.
+        \end{equation}
+        Thus, \(P|_W = \id_W\) as claimed.
+        Now we can show that \(P(V) \subseteq W\).
+        For \(v \in V\) consider
+        \begin{equation}
+            Pv = \frac{1}{\abs{G}} \sum_{g \in G} \rho(g) p \rho(g)^{-1}v.
+        \end{equation}
+        By definition \(V\) is closed under the action of \(g\), so \(\rho(g)^{-1}v \in V\), then by definition \(p \rho(g)^{-1} v \in W\), and since \(W\) is a submodule \(\rho(g)p\rho(g)^{-1} v \in W\) for all \(g \in G\).
+        Submodules are closed under taking linear combinations, so \(Pv \in W\).
+        Thus, \(P\) is a projection onto \(W\), and so we have the decomposition of vector spaces \(V = W \oplus W'\), and we've already shown that \(W'\) is actually a submodule, so this is a decomposition of \(G\)-modules.
+    \end{proof}
+\end{thm}
+
+\begin{crl}{}{}
+    We have
+    \begin{equation}
+        \field G \isomorphic \bigoplus_i (\dim V_i) V_i
+    \end{equation}
+    and
+    \begin{equation}
+        \abs{G} = \sum_i (\dim V_i)^2.
+    \end{equation}
+    \begin{proof}
+        This is simply Maschke's theorem applied to the regular representation, which is just \(G\) acting on itself by multiplication, where we've used \(\abs{G} = \dim \field G\).
+    \end{proof}
+\end{crl}
+
+The converse of Maschke's theorem holds also.
+
+\begin{prp}{}{}
+    If \(\field G\) is semisimple then \(\Char \field\) and \(\abs{G}\) are coprime.
+    \begin{proof}
+        By Maschke's theorem we can write
+        \begin{equation}
+            \field G \isomorphic \bigoplus_{i=1}^r \End V_i
+        \end{equation}
+        where the \(V_i\) are simple \(G\)-modules and \(V_1 = \field\) is the trivial representation.
+        Then we have
+        \begin{equation}
+            \field G \isomorphic \field \oplus \bigoplus_{i=2}^r \End V_i \isomorphic \field \oplus \bigoplus_{i=2}^r d_i V_i
+        \end{equation}
+        with \(d_i = \dim V_i\).
+        Schur's lemma then tells us that every homomorphism of \(G\)-modules \(\field \to \field G\) is a scalar multiple of some fixed homomorphism \(\Lambda \colon \field \to \field G\), and every \(G\)-module homomorphism \(\field G \to \field\) is a scalar multiple of some fixed homomorphism \(\varepsilon \colon \field G \to \field\).
+        More symbolically, the hom-spaces \(\Hom_{\field G}(\field, \field G)\) and \(\Hom_{\field G}(\field G, \field)\) are one-dimensional with bases \(\Lambda\) and \(\varepsilon\) respectively, so are simply \(\field \Lambda\) and \(\field \varepsilon\).
+        We are free to choose these maps to be such that \(\varepsilon(g) = 1\) for all \(g \in G\), and \(\Lambda(1) = \sum_{g \in G} g\).
+        Then we have
+        \begin{equation}
+            \varepsilon(\Lambda(1)) = \varepsilon\left( {\textstyle \sum_{g \in G}} g \right) = \sum_{g \in G} \varepsilon(g) = \sum_{g \in G} 1 = \abs{G}.
+        \end{equation}
+        Now, if \(\abs{G} = kp\) where \(p = \Char \field\) then \(\abs{G} = 0\) in \(\field G\) and so this sum says that \(\varepsilon \circ \Lambda(1) = 0\), which means that \(\Lambda\) has no left-inverse since \(a \varepsilon \circ \Lambda(1) = 0\) for all \(a \in \field\), which rules out all maps \(\field G \to \field\) (since all are of the form \(a\varepsilon\) for some \(a \in \field\)) as inverses for \(\Lambda\), since these would have to give \(a \varepsilon \circ \Lambda(1) = 1\).
+    \end{proof}
+\end{prp}
+
+\begin{exm}{}{}
+    Consider \(G = \integers/p\integers\), and \(\field\) a field of characteristic \(p\).
+    Clearly, \(\Char \field = p\) and \(\abs{G} = p\) are not coprime.
+    
+    A consequence of this is that every simple \(\integers/p\integers\)-module over \(\field\) is trivial.
+    This follows because in a finite group of order \(p\) we have that \(x^p = 1\), so \(x^p - 1\) acts as zero, but over a field of characteristic \(p\) we have that \(x^p - 1 = (x - 1)^p\), and thus \((x - 1)^p\) acts as zero, so \(x - 1\) acts as \(0\) (as \(0\) is the only element of the group which doesn't act as \(1\) when raised to the power of \(p\)), so \(x\) must act as \(1\).
+\end{exm}
+
+\section{Group Characters}
+\begin{dfn}{Group Character}{}
+    Let \(G\) be a group and \(\rho \colon G \to \generalLinear(V)\) a representation on a finite dimensional space, \(V\).
+    Then the \defineindex{character} of \(V\) is the map
+    \begin{align}
+        \chi_V \colon G &\to \field\\
+        & g \mapsto \chi_V(g) = \tr_V(\rho(g)).
+    \end{align}
+\end{dfn}
+Of course, if \(\tilde{\chi}_V \colon \field G \to \field\) is the character of the corresponding representation of the group algebra \(\field G\) then \(\chi_V = \tilde{\chi}_V|_G\), viewing \(G\) as a subset of \(\field G\) in the canonical way (i.e., restricting to the canonical basis).
+
+\begin{dfn}{Class Function}{}
+    Let \(G\) be a group.
+    A \defineindex{class function} of \(G\) is a map \(f \colon G \to \field\) such that \(f(g) = f(hgh^{-1})\) for all \(g, h \in G\).
+    We write
+    \begin{equation}
+        \classFunctions(G) = \{f \colon G \to \field \mid f(g) = f(hgh^{-1}) \forall g, h \in G\}
+    \end{equation}
+    for the set of all class functions.
+\end{dfn}
+
+That is, class functions are functions which are invariant under conjugation of their argument.
+Another way of putting this, which explains the name, is that class functions are exactly those functions which are constant on each conjugacy class.
+Because of this we can identify
+\begin{equation}
+    \classFunctions(G) \isomorphic_{\Set} \Func(\conjugacyClasses(G), \field)
+\end{equation}
+where \(\conjugacyClasses(G)\) is the set of all conjugacy classes and
+\begin{equation}
+    \Func(A, B) = \{f \colon A \to B\} = \Set(A, B).
+\end{equation}
+
+Actually, under pointwise addition and scalar multiplication \(\classFunctions(G)\) is a vector space.
+Further, under mild conditions the irreducible characters provide a basis for this space.
+
+\begin{thm}{}{}
+    If \(\Char \field\) and \(\abs{G}\) are coprime then the irreducible characters, \(\chi_{V_i}\), of \(G\) form a basis for \(\classFunctions(G)\).
+    \begin{proof}
+        From Maschke's theorem we know that \(A = \field G\) is semisimple.
+        We have proven that the irreducible algebra characters \(\widetilde{\chi}_{V_i}\) form a basis for \((A/\bracket{A}{A})^*\).
+        We then have
+        \begin{align}
+            (A/\bracket{A}{A})^* &= \{f \in \Hom_{\field}(\field G, \field) \mid gh - hg \in \ker f \forall g, h \in G\} \notag\\
+            &= \{f \in \Hom_{\field}(\field G, \field) \mid f(gh) - f(hg) = 0 \forall g, h \in G\} \notag\\
+            &= \{f \in \Hom_{\field}(\field G, \field) \mid f(gh) = f(hg) \forall g, h \in G\} \notag\\
+            &\isomorphic_{\Vect} \{f \in \Func(G, \field) \mid f(gh) = f(hg) \forall g, h \in G\} \notag\\
+            &= \classFunctions(G). \notag
+        \end{align}
+    \end{proof}
+\end{thm}
+
+\begin{crl}{}{crl:number of conjugacy classes is number of irreps}
+    The number of irreducible representations of \(G\) is equal to the number of conjugacy classes:
+    \begin{equation}
+        \abs{\Irr(G)} = \abs{\conjugacyClasses(G)}.
+    \end{equation}
+\end{crl}
+
+\begin{exm}{}{}
+    This example makes use of ideas from the representation theory of the symmetric group, something we'll cover in more detail in \cref{chap:reps of Sn}
+    Consider the symmetric group, \(G = S_n\).
+    Using cycle notation if we write every element as a product of disjoint cycles then two elements are in the same conjugacy class if and only if they have the same cycle type.
+    
+    More concretely, take \(S_4\), then the cycle type of \(\cycle{1,2,3,4}\) is \((4)\), the cycle type of \(\cycle{1,2}\cycle{3,4}\) is \((2, 2)\), the cycle type of \(\cycle{1,2,3}\) is \((3, 1)\) (note that \(\cycle{1,2,3} = \cycle{1,2,3}\cycle{4}\), and we have to include all elements of \(\{1, 2, 3, 4\}\)).
+    So, for example, \(\cycle{1,2,3}\) and \(\cycle{2,3,4}\) are conjugate, and so are \(\cycle{1,2}\cycle{3,4}\) and \(\cycle{1,3}\cycle{2,4}\).
+    
+    We can identify conjugacy classes with cycle types, and we can identify cycle types with partitions of \(n\).
+    A \defineindex{partition} of \(n\) being a tuple \(\lambda = (\lambda_1, \lambda_2, \dotsc, \lambda_k)\) such that \(\lambda_1 \ge \lambda_2 \ge \dotsb \ge \lambda_k \ge 0\) \(\lambda_1 + \lambda_2 + \dotsb + \lambda_k = n\).
+    We write \(\lambda \partition n\) to denote that \(\lambda\) is a partition of \(n\).
+    
+    A common, and useful notation, for partitions is that of \define{Young diagrams}\index{Young diagram}.
+    Here we take a partition, \(\lambda\), and write a row of \(\lambda_i\) boxes in the \(i\)th row (rows counted from the top down).
+    For example, \(\cycle{1,2}\cycle{3,4}\) has cycle type \(\lambda = (2, 2)\), and the corresponding Young diagram is
+    \begin{equation}
+        \lambda = \ydiagram{2,2}\,.
+    \end{equation}
+    Similarly, \(\cycle{1,2,3}\) has cycle type \(\mu = (3, 1)\), and the corresponding Young diagram is
+    \begin{equation}
+        \mu = \ydiagram{3,1}\,.
+    \end{equation}
+    
+    So, we have a bijection between
+    \begin{itemize}
+        \item conjugacy classes of \(S_n\);
+        \item partitions of \(n\);
+        \item Young diagrams with \(n\) boxes.
+    \end{itemize}
+    
+    It will turn out that Young diagrams, and the related Young tableaux, come up a lot when we start counting things related to the symmetric group.
+    
+    Later, we will explicitly define the irreducible representation, \(V_\lambda\), of \(S_n\) corresponding to a partition \(\lambda \partition n\).
+    % TODO: reference to definition of specht module
+\end{exm}
+
+Note that if \(\Char \field\) divides \(\abs{G}\) then \(\field G\) is not generally semisimple and we typically have \(\abs{\conjugacyClasses(G)} \ge \abs{\Irr(G)}\).
+
+\begin{crl}{}{}
+    For a field of characteristic \(0\) two \(G\)-modules, \(V\) and \(W\), are isomorphic if and only if \(\chi_V = \chi_W\).
+    \begin{proof}
+        Under these conditions \(\field G\) is semisimple, and thus we can decompose both representations as
+        \begin{equation}
+            V = \bigoplus_i n_i V_i, \qqand W = \bigoplus_i m_i V_i
+        \end{equation}
+        where \(V_i\) are irreducible representations and \(n_i, m_i \in \integers_{\ge 0}\).
+        Then we have
+        \begin{align}
+            \chi_V(g) &= \tr_V(\rho_V(g))\\
+            &= \tr_{\bigoplus_i n_i V_i}(n_i\rho_{V_i}(g))\\
+            &= \sum_{i} n_i \tr_{V_i}(\rho_{V_i}(g))\\
+            &= \sum_i n_i \chi_{V_i}(g)
+        \end{align}
+        and similarly
+        \begin{equation}
+            \chi_W(g) = \sum_i m_i \chi_{V_i}(g).
+        \end{equation}
+        Since the characters are a basis we have equality between these only if \(n_i = m_i\), and thus both representations have the same decomposition, so are isomorphic.
+    \end{proof}
+\end{crl}
+
+There is an isomorphism of vector spaces \(\field G \isomorphic_{\Vect} \Func(G, \field)\) on the basis by identifying \(g\) with \(\delta_g\) for \(g \in G\) where
+\begin{equation}
+    \delta_g(h) = \delta_{g,h} = 
+    \begin{cases}
+        1 & g = h\\
+        0 & g \ne h
+    \end{cases}
+\end{equation}
+is the \defineindex{Kronecker delta}.
+
+We can define the \defineindex{convolution} product, \(*\), on \(\Func(G, \field)\) by
+\begin{equation}
+    (\psi * \varphi)(g) = \sum_{h \in G} \psi(h) \varphi(h^{-1}g).
+\end{equation}
+This product makes \(\Func(G, \field)\) an algebra, and extends the above isomorphism to an isomorphism of algebras, \(\field G \isomorphic_{\Alg} \Func(G, \field)\), since
+\begin{align}
+    (\delta_g * \delta_h)(k) &= \sum_{\ell \in G} \delta_g(\ell) \delta_h(\ell^{-1}k)\\
+    &= \sum_{\ell \in G} \delta_{g,\ell} \delta_{h,\ell^{-1}k}
+\end{align}
+and terms in this sum vanish except for when \(g = \ell\) and \(h = \ell^{-1}k\), which means that \(h = g^{-1}k\), or \(k = gh\).
+So we only get a nonzero output if \(k = gh\), which means that this convolution is exactly \(\delta_{gh}\), which is of course the same as taking the product of \(g\) and \(h\) in \(\field G\) then mapping to \(\Func(G, \field)\).
+
+\begin{prp}{}{}
+    Let
+    \begin{equation}
+        \vv{c} = \sum_{g \in c} g
+    \end{equation}
+    where \(c \in \conjugacyClasses(G)\) is some conjugacy class.
+    Then \(Z(\field G) = \langle \vv{c} \mid C \in \conjugacyClasses(G) \rangle\) and \(Z(\field G) \isomorphic \classFunctions(G)\).
+    \begin{proof}
+        We first show that for each conjugacy class, \(c\), \(\vv{c}\) is in \(Z(\field G)\).
+        To do so we show that \(\vv{c}\) commutes with all elements of \(G\), so taking \(g \in G\) we have
+        \begin{align}
+            \vv{c}g &= \sum_{h \in C} hg\\
+            &= \sum_{h \in C} ghg^{-1}g\\
+            &= \sum_{h \in C} gh\\
+            &= g \sum_{h \in C} h\\
+            &= g\vv{c}. 
+        \end{align}
+        Here we've used the fact that conjugation by \(g\) is a permutation on \(c\), and thus changing \(h\) to \(ghg^{-1}\) in the sum doesn't change the sum, it just permutes the terms.
+        
+        The result follows from \cref{lma:invariant subspace spanned by orbit sums} applied to the special case where \(X = G\) with the action given by conjugation, in which case the invariant subspace is exactly the centre of \(\field G\).
+    \end{proof}
+\end{prp}
+
+\begin{lma}{}{lma:invariant subspace spanned by orbit sums}
+    Let \(G\) be a finite group acting on a finite set, \(X\).
+    The invariant subspace of the free vector space \(\field X\) is spanned by elements of the form \(\vv{o} = \sum_{x \in o} x\) where \(o\) ranges over all orbits of the group action.
+    \begin{proof}
+        Consider \(\vv{o}\) for some orbit, \(o\), we have
+        \begin{equation}
+            g \action \vv{o} = \sum_{x \in o} g \action o = \vv{o}.
+        \end{equation}
+        This follows since acting with \(g\) is just a permutation of the orbit, \(o\), and thus the sum is unchanged, it's just a permutation of the terms in the sum.
+        
+        Conversely, suppose that \(v = \sum_{x \in X} v_x x\) is invariant under the action of \(G\).
+        Then we have
+        \begin{equation}
+            g \action v = \sum_{x \in X} v_x (g \action x)
+        \end{equation}
+        and by invariance we demand that this is equal to
+        \begin{equation}
+            v = \sum_{x \in X} v_x x = \sum_{g^{-1}\action x \in X} v_{g^{-1} \action x} x,
+        \end{equation}
+        so we can conclude that \(v_x = v_{g^{-1} \action x}\) for all \(g \in G\), and thus \(v_x = v_y\) whenever \(x\) and \(y\) lie in the same orbit.
+        Hence, \(v\) is a linear combination of the elements \(\vv{o}\), and so the \(\vv{o}\) are a basis of the invariant subspace of \(\field X\).
+    \end{proof}
+\end{lma}
+
+\begin{exm}{Finite Abelian Group}{}
+    Let \(G\) be a finite abelian group.
+    Since \(G\) is abelian every element of \(G\) is in its own conjugacy class, so
+    \begin{equation}
+        \abs{\Irr(G)} = \abs{\conjugacyClasses(G)} = \abs{G}.
+    \end{equation}
+    By the structure theorem we know that
+    \begin{equation}
+        G \isomorphic \integers_{n_1} \times \dotsb \times \integers_{n_k}
+    \end{equation}
+    for some \(n_i \in \integers_{\ge 0}\).
+    Since \(G\) is abelian Schur's lemma tells us that all representations are one dimensional.
+    Further, these irreducible representations form a group under pointwise multiplication:
+    \begin{equation}
+        (\rho_1 \cdot \rho_2)(g) = \rho_1(g)\rho_2(g).
+    \end{equation}
+    The identity, \(\varepsilon\), is the trivial representation, \(\varepsilon(g) = 1\).
+    The inverse of \(\rho\) is the representation \(g \mapsto 1/\rho(g)\).
+    
+    Each irreducible representation is a map \(\rho \colon G \to \field^{\times} \isomorphic \generalLinear(\field)\).
+    Thus, in this case the representations coincide with the characters.
+    
+    We call the group \(G^{\vee} \coloneqq (\Irr(G), \cdot)\) the \defineindex{character group} or \defineindex{dual group} of \(G\).
+    
+    Consider now \(G = \integers_n\) and \(\field = \complex\).
+    Then we have the irreducible representation
+    \begin{align}
+        \rho \colon \integers_n &\to \complex\\
+        m &\mapsto \e^{2\pi im/n}
+    \end{align}
+    and \(\integers_n^{\vee} = \{\rho^k \mid k = 1, \dotsc, n\}\), which clearly gives an isomorphism \(\integers_n^{\vee} \isomorphic \integers_n\).
+    
+    In fact, for any finite abelian group we have \(G^{\vee} \isomorphic G\), but not uniquely.
+    However, we do have a canonical isomorphism \(G \isomorphic (G^{\vee})^{\vee}\) given by \(g \mapsto (\chi \mapsto \chi(g))\).
+\end{exm}
+
+\section{Dual Representations}
+\begin{dfn}{Dual Representation}{}
+    Let \(\rho \colon G \to \generalLinear(V)\) be a representation of a finite group on a finite dimensional vector space.
+    Then the dual space, \(V^*\), gives rise to a representation, \(\rho^* \colon G \to \generalLinear(V^*)\), with the on \(f \in V^*\) given by
+    \begin{equation}
+        (g \action f)(v) = (\rho^*(g)f)(v) = f(\rho(g^{-1})v)
+    \end{equation}
+    for all \(v \in V\).
+\end{dfn}
+
+For \(\field = \complex\) we can further simply this by identifying that \(\rho^*(g) = \overline{\rho(g^{-1})}^{\trans}\).
+That is, \(g\) acts on \(V^*\) by the Hermitian conjugate of the action of \(g^{-1}\) on \(V\).
+
+\begin{lma}{}{}
+    We have \(\chi_{V^*}(g) = \chi_{V}(g^{-1})\).
+    \begin{proof}
+        This follows from a direct calculation:
+        \begin{align}
+            \chi_{V^*}(g) &= \tr_{V^*}(\rho^*(g))\\
+            &= \tr_{V}(\rho(g^{-1}))\\
+            &= \chi_V(g^{-1}). \notag\qedhere
+        \end{align}
+    \end{proof}
+\end{lma}
+
+Note that \(\chi_V(g) = \sum_{i} \lambda_i\) where \(\lambda_i\) are the eigenvalues of \(\rho(g)\).
+We also know that for a finite group we have \(\rho(g)^{\abs{G}} = \rho(g^{\abs{G}}) = \rho(e) = I\), and thus the eigenvalues of \(\rho(g)\) must be roots of unity.
+For \(\field = \complex\) we have \(\chi_{V^*}(g) = \sum_{i} \lambda_i^{-1} = \overline{\chi_V(g)}\), and thus \(V \isomorphic V^*\) as \(G\)-modules if and only if \(\chi_V(g) \in \reals\) for all \(g \in G\).
+
+\section{Tensor Products of Representations}
+\begin{dfn}{}{}
+    Let \(\rho_V \colon G \to \generalLinear(V)\) and \(\rho_W \colon G \to \generalLinear(W)\) be representations of \(G\).
+    Then there is a representation
+    \begin{equation}
+        \rho_V \otimes \rho_W \colon G \to \generalLinear(V) \otimes \generalLinear(W) \isomorphic \generalLinear(V \otimes W)
+    \end{equation}
+    given by
+    \begin{equation}
+        (\rho_V \otimes \rho_W)(g) = \rho_V(g) \otimes \rho_W(g).
+    \end{equation}
+\end{dfn}
+
+Note that the character of a tensor product of representations is given by
+\begin{equation}
+    \chi_{V \otimes W}(g) = \chi_V(g) \chi_W(g).
+\end{equation}
+
+\begin{exm}{Schur--Weyl Duality}{}
+    Consider the group \(G = \generalLinear(V)\).
+    Then \(V^{\otimes n}\) carries a left \(G\)-module structure given on simple tensors by
+    \begin{equation}
+        g \action (v_{i_1} \otimes \dotsb \otimes v_{i_n}) = (g \action v_{i_1} \otimes \dotsb \otimes g \action v_{i_n})
+    \end{equation}
+    where \(g \action v_{i_k}\) is the obvious action of \(g \in \generalLinear(V)\) on \(v_{i_k} \in V\).
+    
+    The space \(V^{\otimes n}\) also naturally carries a right \(S_n\)-module action, given on simply tensors by
+    \begin{equation}
+        (v_{i_1} \otimes \dotsb \otimes v_{i_n}) \action w = v_{i_{w(1)}} \otimes \dotsb \otimes v_{i_{w(n)}}.
+    \end{equation}
+    That is, \(w \in S_n\) just permutes the terms in the tensor product.
+    
+    These two actions are compatible, in a sense they \enquote{commute}, since it doesn't matter if we act with \(g \in \generalLinear(V)\) on \(v_{i_k}\) then rearrange the order of the factors, or if we rearrange the order of the factors then act with \(g\).
+    
+    The result is that \(V^{\otimes n}\) is a \((\generalLinear(V), S_n)\)-bimodule.
+\end{exm}
+
+\section{Orthogonality of Characters}
+For this section we will work over \(\field = \complex\).
+
+\begin{lma}{}{}
+    Let \(G\) be a finite group.
+    Then we may define a bilinear form
+    \begin{equation}
+        \innerprod{-}{-} \colon \classFunctions(G) \times \classFunctions(G) \to \complex
+    \end{equation}
+    by
+    \begin{equation}
+        \innerprod{\psi}{\varphi} \coloneqq \frac{1}{\abs{G}} \sum_{g \in G} \psi(g) \overline{\varphi(g)}.
+    \end{equation}
+    This gives a well-defined Hermitian inner product on \(\classFunctions(G)\).
+    \begin{proof}
+        Linearity in the first argument and conjugate linearity in the second follow because we defined the inner product as a sum over \(\psi\) and \(\overline{\varphi}\).
+        Conjugate symmetry is clear from the definition.
+        This is positive definite, for \(\psi \ne 0\) we have
+        \begin{equation}
+            \innerprod{\psi}{\psi} = \frac{1}{\abs{G}} \sum_{g \in G} \psi(g)\overline{\psi(g)} = \frac{1}{\abs{G}} \sum_{g \in G} \abs{\psi(g)}^2
+        \end{equation}
+        which is clearly a sum of non-negative terms and so is positive, since at least one term must be nonzero as \(\psi \ne 0\).
+    \end{proof}
+\end{lma}
+
+\begin{thm}{}{thm:inner prod of characters is dim of homs}
+    Let \(V\) and \(W\) be \(G\)-modules, then
+    \begin{equation}
+        \innerprod{\chi_V}{\chi_W} = \dim(\Hom_G(V, W)).
+    \end{equation}
+    In particular, if \(V\) and \(W\) are irreducible then
+    \begin{equation}
+        \innerprod{\chi_V}{\chi_W} =
+        \begin{cases}
+            1 & V \isomorphic W,\\
+            0 & \text{otherwise}.
+        \end{cases}
+    \end{equation}
+    \begin{proof}
+        By definition we have
+        \begin{align}
+            \innerprod{\chi_V}{\chi_W} &= \frac{1}{\abs{G}} \sum_{g \in G} \chi_V(g) \overline{\chi_W(g)}\\
+            &= \frac{1}{\abs{G}} \sum_{g \in G} \chi_V(g) \chi_{W^*}(g)\\
+            &= \frac{1}{\abs{G}} \sum_{g \in G} \chi_{V \otimes W^*}(g)\\
+            &= \frac{1}{\abs{G}} \sum_{g \in G} \tr_{V \otimes W^*}(\rho(g))\\
+            &= \tr_{V \otimes W^*}\bigg( \frac{1}{\abs{G}} \sum_{g \in G} \rho(g) \bigg).
+        \end{align}
+        Now, we can identify that
+        \begin{equation}
+            P = \frac{1}{\abs{G}} \sum_{g \in G} g \in Z(\complex G).
+        \end{equation}
+        Thus, what we have above is \(\tr_{V \otimes W^*}(\rho(P))\).
+        
+        If \(X \in \Irr(G)\) then
+        \begin{equation}
+            P|_X =
+            \begin{cases}
+                \id_X & X \isomorphic \complex,\\
+                0 & \text{otherwise}.
+            \end{cases}
+        \end{equation}
+        Thus, for any representation, \(X\), \(P|_X\) is projection onto \(X^G\), the subspace fixed by the action of \(G\).
+        Hence,
+        \begin{align}
+            \tr_{V \otimes W^*}(\rho(P)) &= \dim(\Hom_G(\complex, V \otimes W^*))\\
+            &= \dim(V \otimes W^*)^G\\
+            &= \dim \Hom_G(V, W)
+        \end{align}
+        having used the fact that \(V \otimes W^* \isomorphic \Hom_{\complex}(V, W)\) and \(\Hom_{\complex}(V, W)^G \isomorphic \Hom_G(V, W)\).
+    \end{proof}
+\end{thm}
+
+\begin{crl}{}{crl:square of of chars 1 iff simple}
+    A \(G\)-module, \(V\), is simple if and only if \(\innerprod{\chi_V}{\chi_V} = 1\).
+\end{crl}
+
+\begin{thm}{}{thm:second orthogonality relation}
+    Let \(g, h \in G\), then
+    \begin{equation}
+        \sum_{X \in \Irr(G)} \chi_X(g) \overline{\chi_X(h)} = 
+        \begin{cases}
+            \abs{Z_g} & g \text{ conjugate to }h,\\
+            0 & \text{otherwise},
+        \end{cases}
+    \end{equation}
+    where \(Z_g = \{h \in G \mid gh = hg\}\) is the centraliser of \(g\) in \(G\).
+    \begin{proof}
+        We start with the following calculation:
+        \begin{align}
+            \sum_{X \in \Irr(G)} \chi_X(g) \overline{\chi_X(h)} &= \sum_{X \in \Irr(G)} \chi_X(g) \chi_{X^*}(h)\\
+            &= \sum_{X \in \Irr(G)} \tr_X(\rho_X(g)) \tr_{X^*}(\rho_{X^*}(h))\\
+            &= \tr_{\bigoplus_{X \in \Irr(G)} X \otimes X^*} (\rho_X(g) \otimes \rho_{X^*}(h))\\
+            &= \tr_{\bigoplus_{X \in \Irr(G)} X \otimes X^*} (\rho_X(g) \otimes \rho_X(h^{-1}))\\
+            &= \tr_{\bigoplus_{X \in \Irr(G)} \End X} (x \mapsto \rho(g)x\rho(h^{-1}))\\
+            &= \tr_{\complex G} (y \mapsto gyh^{-1}).
+        \end{align}
+        Here we've used the fact that \(X \otimes X^* \isomorphic \End X\), with the isomorphism given by \(A \otimes B \mapsto (x \mapsto AxB^*)\).
+        We've then used the fact that
+        \begin{equation}
+            \complex G \isomorphic \bigoplus_{X \in \Irr(G)} \End X,
+        \end{equation}
+        since \(\complex G\) is semisimple.
+        
+        We now consider cases, the first being when \(g\) and \(h\) are not conjugate.
+        Suppose that \(g_i\) generate \(G\).
+        Then \(gg_ih^{-1} \ne g_i\).
+        Thus, the map \(y \mapsto gyh^{-1}\), viewed as a matrix, has no on-diagonal elements, and so has vanishing trace.
+        
+        If instead \(g\) and \(h\) are conjugate then using the fact that characters are class functions and applying the same logic as above we have
+        \begin{align}
+            \sum_{X \in \Irr(G)} \chi_X(g) \overline{\chi_X(h)} &= \sum_{X \in \Irr(G)} \chi_X(g) \overline{\chi_X(g)}\\
+            &= \tr_{\complex G}(y \mapsto gyg^{-1}).
+        \end{align}
+        Further, viewing \(y \mapsto gyg^{-1}\) as a matrix we can see that the \((y, y)\) component on the diagonal is \(1\) precisely if \(yg = gy\), and \(0\) otherwise.
+        That is, there are precisely as many \(1\)s on the diagonal as elements of \(Z_g\), and so \(\tr_{\complex G}(y \mapsto gyg^{-1}) = \abs{Z_g}\).
+    \end{proof}
+\end{thm}
+
+\subsection{Unitary Representations}
+\begin{dfn}{Unitary Representation}{}
+    Let \(G\) be a group and consider a complex vector space, \(V\), equipped with an inner product, \(\innerprod{-}{-}\).
+    We say that the representation \(\rho \colon G \to \generalLinear(V)\) is \define{unitary}\index{unitary representation} if \(\rho(g)\) is a unitary operator, that is, if
+    \begin{equation}
+        \innerprod{\rho(g)v}{\rho(g)w} = \innerprod{v}{w}
+    \end{equation}
+    for all \(g \in G\) and \(v, w \in V\).
+    
+    Alternatively, a \define{unitary representation} of \(G\) is a homomorphism \(\rho \colon G \to \unitary(V) \subseteq \generalLinear(V)\) where
+    \begin{equation}
+        \unitary(V) = \{\varphi \in \generalLinear(V) \mid \innerprod{\varphi(v)}{\varphi(u)} = \innerprod{v}{u}\}
+    \end{equation}
+    is the \defineindex{unitary group}.
+\end{dfn}
+
+Unitary representations are particularly important in quantum mechanics.
+The idea is that \(V\) is a state space, that is \(V\) is the space of possible wave functions, \(\psi\) (or \(\ket{\psi}\)).
+As is standard we restrict to normalised wavefunctions
+To each quantity we may want to measure we associate some element of \(V^*\), which we write as \(\bra{\varphi}\) if the corresponding element of \(V\) is \(\ket{\varphi}\) (note that there is a canonical isomorphism \(V \isomorphic V^*\) because we have the inner product (Riesz representation theorem)).
+Then the probability of being measured to be in the state \(\ket{\varphi}\) when in the state \(\ket{\psi}\) is \(\braket{\varphi}{\psi} = \innerprod{\varphi}{\psi}\).
+
+A unitary representation, \(\rho \colon G \to \unitary(V)\), is then interpreted as a symmetry of our system, since the probabilities that we measure are unaffected by this action.
+
+Consider a complex vector space, \(V\).
+Note that \(V \otimes V\) inherits the inner product \(\innerprod{u_1 \otimes v_1}{u_2 \otimes v_2}_{V \otimes V} = \innerprod{u_1}{v_1}_V \innerprod{u_2}{v_2}_V\).
+Without further knowledge of \(V\) there are two unitary representations of \(S_2\) on \(V \otimes V\), they are \(u \otimes v \mapsto v \otimes u\) and \(u \otimes v \mapsto -v \otimes u\).
+
+The physical interpretation of this is that if \(V\) is the state space of a single particle then \(V \otimes V\) is the state space of two identical particles.
+The two options for \(S_2\) actions then correspond to the two fundamental types of particles.
+If \(u \otimes v \mapsto v \otimes u\) we call the particles \define{bosons}\index{boson}, and if \(u \otimes v \mapsto -v \otimes u\) we call the particles \define{fermions}\index{fermion}.
+
+It turns out that if we're given a finite dimensional complex representation, \(\rho \colon G \to \generalLinear(V)\), of a \emph{finite} group we can always construct a new inner product on \(V\) such that this is a unitary representation.
+
+\begin{thm}{}{}
+    Let \(G\) be a finite group and \(V\) a complex finite-dimensional inner product space with inner product \(\innerprod{-}{-}\).
+    Let \(\rho \colon G \to \generalLinear(V)\) be a representation of \(G\).
+    Then there exists an inner product, \((-,-)\), on \(V\) with respect to which \(\rho\) gives a unitary representation.
+    \begin{proof}
+        We define an inner product on \(V\) by
+        \begin{equation}
+            (u, v) = \sum_{g \in G} \innerprod{\rho(g)u}{\rho(g)v}.
+        \end{equation}
+        That this is linear follows from the fact that the action of \(G\) is linear and \(\innerprod{-}{-}\) is linear.
+        The fact that this is positive definite follows because each term in the sum is nonnegative, and for \(u \ne v\) we must have \(\rho(g)u \ne \rho(g)v\) since \(\rho(g)\) is invertible, and thus \(\innerprod{\rho(g)u}{\rho(g)v} \ne 0\) for \(u \ne v\).
+        
+        That this new inner product is invariant under the action of \(G\) follows from a simple calculation:
+        \begin{align}
+            (\rho(g)u, \rho(g)v) &= \sum_{h \in G} \innerprod{\rho(h)\rho(g)u}{\rho(h)\rho(g)v}\\
+            &= \sum_{h \in G} \innerprod{\rho(hg)u}{\rho(hg)v}\\
+            &= \sum_{k \in G} \innerprod{\rho(k)u}{\rho(k)v}\\
+            &= (u, v),
+        \end{align}
+        where we've reindexed the sum with \(k = hg\).
+    \end{proof}
+\end{thm}
+
+Another nice property of unitary representations is that since they respect the inner product we get all of the structure of vector spaces that comes with it, including the splitting of short exact sequences, which is just a fancy way of saying that given a vector space, \(V\), with subspace \(W \subseteq V\) we always have the orthogonal complement, \(W' = \{w' \in V \mid \innerprod{w}{w'} = 0 \forall w \in W\}\), which is such that \(V \isomorphic W \oplus W'\).
+
+\begin{thm}{}{}
+    Any finite dimensional unitary representation of any group is completely reducible.
+    \begin{proof}
+        Let \(V\) be a finite dimensional unitary representation of a group, \(G\).
+        If \(V\) is irreducible we are done.
+        Else, let \(W \subseteq V\) be a subrepresentation.
+        Then \(W' = \{w' \in V \mid \innerprod{w}{w'} = 0\}\) is a subrepresentation also since if \(w' \in W'\) then \(\rho(g)w' \in W'\) because for any \(w \in W'\) we have \(\innerprod{w}{\rho(g)w'} = \innerprod{\rho(g)\tilde{w}}{\rho(g)w'} = \innerprod{\tilde{w}}{w'} = 0\) where \(\tilde{w} = \rho(g)^{-1}w\) is an element of \(W\) because \(W\) is closed under the action of \(g^{-1}\).
+        Thus, \(W\) and \(W'\) are subrepresentations, and as vector spaces we know that \(V \isomorphic W \oplus W'\).
+        
+        If either of \(W\) or \(W'\) is not irreducible we may iterate this process.
+        Eventually this process will terminate as at each iteration the dimensions of the new spaces are lower than the dimension of the original space, and we started with a finite dimensional space.
+    \end{proof}
+\end{thm}
+
+\chapter{Applications of Characters}
+\section{Computing Tensor Products}
+Suppose we have simple \(G\)-modules, \(V\) and \(W\).
+Then the tensor product \(V \otimes W\) is again a \(G\)-module with the action \(g \action (v \otimes w) = (g \action v) \otimes (g \action w)\).
+Assuming that \(\field G\) is semisimple (so \(\Char \field\) and \(\abs{G}\) are coprime) we can decompose \(V \otimes W\) as a direct sum of simple \(G\)-modules:
+\begin{equation}
+    V \otimes W = \bigoplus_{U \in \Irr(G)} N^U_{VW} U.
+\end{equation}
+Here the coefficients, \(N^U_{VW}\), are just the multiplicities of \(U\) in this decomposition.
+These are nonnegative integer values.
+
+We can compute the coefficients, \(N^U_{VW}\), using characters.
+First, note that the character of \(V \otimes W\) is \(\chi_{V \otimes W} = \chi_V \chi_W\) and using the above decomposition we have
+\begin{equation}
+    \chi_{V \otimes W} = \sum_{U \in \Irr(G)} N^U_{VW} \chi_U.
+\end{equation}
+Taking inner products on both sides and using the orthogonality of irreducible characters we have
+\begin{align}
+    \innerprod{\chi_{V \otimes W}}{\chi_U} &= \innerprod*{\sum_{U' \in \Irr(G)} N^{U'}_{VW}\chi_{U'}}{\chi_U}\\
+    &= \sum_{U' \in \Irr(G)} N^{U'}_{VW} \innerprod{\chi_{U'}}{\chi_U}\\
+    &= \sum_{U' \in \Irr(G)} N^{U'}_{VW} \delta_{U'U}\\
+    &= N^U_{VW}.
+\end{align}
+Here \(\delta_{U'U} = 0\) if \(U' \ncong U\) and \(\delta_{U'U} = 1\) if \(U' \isomorphic U\) as \(G\)-modules.
+So, by computing characters we can completely determine the decomposition of \(V \otimes W\) into irreducibles, and since this decomposition is unique (up to order and isomorphism) we have completely determined \(V \otimes W\).
+
+\section{Frobenius--Schur Indicator}
+\subsection{Bilinear Forms and Dual Spaces}
+Suppose \(V\) is a finite dimensional vector space over \(\field\).
+Then we know that \(V \isomorphic V^*\), but there is no canonical choice of isomorphism.
+If we fix some isomorphism \(\delta \colon V \to V^*\) then we can define a nondegenerate bilinear form \(\innerprod{-}{-}_\delta \colon V \times V \to \field\) by
+\begin{equation}
+    \innerprod{u}{v}_\delta = \delta(u)(v). 
+\end{equation}
+Conversely, if we have a nondegenerate bilinear form \(\innerprod{-}{-} \colon V \times V \to \field\) then we may define an isomorphism \(\varphi \colon V \to V^*\) by \(u \mapsto \varphi_u\) where \(\varphi_u(v) = \innerprod{u}{v}\).
+
+However, this doesn't \emph{quite} determine a \emph{unique} isomorphism, because we made the arbitrary choice to define \(\varphi_u(v)\) to be \(\innerprod{u}{v}\), rather than \(\innerprod{v}{u}\).
+To fix this we can just assume that \(\innerprod{-}{-}\) is not just a bilinear form, but either a symmetric or antisymmetric bilinear form.
+Then \(\varphi\) is uniquely determined for symmetry, or determined up to a sign for antisymmetry.
+We can always construct a symmetric bilinear form by symmetrising, if \((-,-)\) has no specific symmetry then \(\innerprod{u}{v} = [(u, v) \pm (v, u)]/2\) is symmetric for \(+\) and antisymmetric for \(-\).
+
+This analysis also carries over from the theory of vector spaces to a \(G\)-module, \(M\).
+The dual, \(M^*\), is a \(G\)-module with the action defined by \(g \action f(v) = f(g^{-1} \action v)\).
+The only subtlety being that to get a left action we use \(g^{-1}\) in the action.
+The only change we need to make is that the nondegenerate (anti)symmetric bilinear form needs to be invariant under the action of \(G\).
+That is, we should have \(\innerprod{g \action u}{g \action v} = \innerprod{u}{v}\) for all \(u, v \in M\).
+For example, if \(M\) is equipped with an inner product then \(G\) should act unitarily on \(M\).
+Thus, if \(\innerprod{-}{-}\) is a symmetric \(G\)-invariant bilinear form on \(M\) then we may define an isomorphism \(\varphi \colon M \to M^*\) by \(u \mapsto \varphi_u\) where \(\varphi_u(v) = \innerprod{u}{v}\).
+This is an isomorphism of vector spaces, and it's an isomorphism of \(G\)-modules because
+\begin{equation}
+    \varphi(g \action u)(v) = \varphi_{g \action u}(v) = \innerprod{g \action u}{v}
+\end{equation}
+and
+\begin{equation}
+    (g \action \varphi(u))(v) = (g \action \varphi_u)(v) = \varphi_u(g^{-1} \action v) = \innerprod{u}{g^{-1} \action v}.
+\end{equation}
+These are equal, to see this simply act on the arguments of the first with \(g^{-1}\), which doesn't change anything as \(\innerprod{-}{-}\) is \(G\)-invariant, and we get
+\begin{equation}
+    \innerprod{g \action u}{v} = \innerprod{g^{-1} \action (g \action u)}{g^{-1} \action v} = \innerprod{g^{-1}g \action u}{g^{-1} \action v} = \innerprod{u}{g^{-1} \action v}.
+\end{equation}
+
+The question then becomes when does a given \(G\)-module, \(M\), admit such a nondegenerate (anti)symmetric invariant bilinear form?
+There are three possibilities, which we classify as follows.
+
+\begin{dfn}{}{}
+    Let \(G\) be a finite group and \(M\) a \(G\)-module.
+    We say that \(M\) is of
+    \begin{enumerate}
+        \item[(\(-1\))] \defineindex{complex type} if \(M^* \ncong M\) as \(G\)-modules;
+        \item[(\(0\))] \defineindex{real type} if \(M\) admits a nondegenerate symmetric invariant bilinear form;
+        \item[(\(1\))] \defineindex{quaternionic type} if \(M\) admits a nondegenerate antisymmetric invariant bilinear form.
+    \end{enumerate}
+\end{dfn}
+
+This naming convention comes from considering \(\End_{\reals G}M\), for a simple \(G\)-module, \(M\), over \(\reals\).
+This is the space of linear maps \(M \to M\) which commute with the action of \emph{real} linear combinations of group elements.
+It turns out that \(\End_{\reals G}M\) is isomorphic to one of \(\reals\), \(\complex\), or \(\quaternions\), precisely when \(M\) is of real, complex, or quaternionic type.
+
+If instead we consider \(M\) to be a simple \(G\)-module over \(\Mat_{2 \times 2}(\complex)\) then \(\End_{\complex G}M\) is isomorphic to one of \(\complex\), \(\complex \times \complex\), or \(\complex\) when \(M\) is of real, complex, or quaternionic type.
+Note that these endomorphism rings over \(\complex\) are the result of applying the extension of scalars functor, \({-} \otimes_{\reals} \complex\), to the endomorphism rings over \(\reals\).
+
+\subsection{The Frobenius--Schur Indicator}
+\begin{dfn}{Frobenius--Schur Indicator}{}
+    Let \(G\) be a finite group and \(M\) a simple \(G\)-module.
+    The \defineindex{Frobenius--Schur indicator} is defined to be
+    \begin{equation}
+        \frobeniusSchur(M) \coloneq \frac{1}{\abs{G}} \sum_{g \in G} \chi_M(g^2)
+    \end{equation}
+    where \(\chi_M\) is the character of \(M\).
+\end{dfn}
+
+\begin{thm}{Frobenius--Schur}{thm:frobenius schur}
+    Let \(G\) be a finite group.
+    Then the number of involutions in \(G\), that is, the number of elements of order at most \(2\), is precisely
+    \begin{equation}
+        \sum_{M \in \Irr(G)} \dim(M) \frobeniusSchur(M).
+    \end{equation}
+    \begin{proof}
+        Consider some representation, \(M\), and some \(A \in \End_{\complex G}M\).
+        Let \(\lambda_1, \dotsc, \lambda_n\) be the eigenvaluees of \(A\).
+        We consider \(S^2M\) and \(\Lambda^2M\).
+        These spaces are both formed as quotients of \(M \otimes M\) by the ideal generated by \(v \otimes w \pm w \otimes v\).
+        Since \(A\) acts on \(M \otimes M\) as \(A \otimes A\) and this action factors through the quotient \(A \otimes A\) acts on both of these spaces.
+        We have that
+        \begin{equation}
+            \tr_{S^2 M}(A \otimes A) = \sum_{1 \le i \le j \le n} \lambda_i \lambda_j.
+        \end{equation}
+        This holds for diagonal matrices when \(\otimes\) is the Kronecker product, which is defined by \(A \otimes B = (a_{ij}B)\) and so for a diagonal matrix the diagonal is just all products \(\lambda_i \lambda_j\).
+        Since the trace is invariant under a basis change this result must also hold for diagonalisable matrices.
+        Finally, it holds for all matrices by continuity because the diagonalisable matrices are dense in all matrices.
+        Similarly, we have
+        \begin{equation}
+            \tr_{\Lambda^2 M}(A \otimes A) = \sum_{1 \le i < j \le n} \lambda_i \lambda_j,
+        \end{equation}
+        which again, clearly holds for diagonal matrices with the antisymmetrised Kronecker product, since there \(\lambda_i^2 = 0\).
+        Thus, we have
+        \begin{equation}
+            \tr_{S^2M} (A \otimes A) - \tr_{\Lambda^2 M}(A \otimes A) = \sum_{1 \le i \le n} \lambda_i^2 = \tr_{M} A^2.
+        \end{equation}
+        
+        Thus, for \(g \in G\), we can take \(A\) to be the corresponding action of \(g\) and we get
+        \begin{equation}
+            \chi_M(g^2) = \chi_{S^2M}(g) - \chi_{\Lambda^2M}(g).
+        \end{equation}
+        Note that \(g\) is \emph{not} squared on the right because by definition of \(S^2M\) and \(\Lambda^2M\) \(g\) acts as \(g \otimes g\) does on \(M \otimes M\), so the squaring is automatic in the definition of the action.
+        
+        Then summing this result over \(G\) and dividing by \(\abs{G}\) we get
+        \begin{equation}
+            \frac{1}{\abs{G}} \sum_{g \in G} \chi_M(g^2) = \frac{1}{\abs{G}} \sum_{g \in G} \chi_{S^2M}(g) - \frac{1}{\abs{G}} \sum_{g \in G} \chi_{\Lambda^2 M}(g).
+        \end{equation}
+        The left hand side is exactly \(\frobeniusSchur(M)\).
+        We have the following vector space decomposition into symmetric and antisymmetric parts:
+        \begin{equation}
+            M \otimes M \isomorphic S^2M \oplus \Lambda^2M.
+        \end{equation}
+        In the finite-dimensional case we also have
+        \begin{equation}
+            M \otimes M \isomorphic M \otimes M^* \isomorphic \End_{\complex} M.
+        \end{equation}
+        Thus, we have
+        \begin{equation}
+            S^2M \oplus \Lambda^2M \isomorphic \End_{\complex} M
+        \end{equation}
+        as vector spaces.
+        Denote by \(X^G\) the fixed points of the action of \(G\) on \(X\), that is, \(X^G = \{x \in X \mid g \action x = x\}\).
+        This clearly distributes over direct sums, and we have
+        \begin{equation}
+            (S^2M)^G \oplus (\Lambda^2M)^G \isomorphic (\End_{\complex} M)^G = \End_{\complex G} M
+        \end{equation}
+        where we have identified in the last equality that an endomorphism is fixed under the action of \(G\) precisely if it commutes with the action of \(G\).
+        Taking dimensions we have
+        \begin{equation}
+            \dim(S^2M)^G + \dim (\Lambda^2 M)^G = \dim (\End_{\complex G}M).
+        \end{equation}
+        Since \(M\) is simple we know that any \(G\)-module endomorphism of \(M\) is just scalar multiplication, and thus \(\dim(\End_{\complex G} M) \le 1\).
+        Since dimensions are integers this leaves us with just two options on the right, either both dimensions are \(0\), or one is \(0\) and the other is \(1\).
+        Thus, 
+        \begin{equation}
+            \dim(S^2M)^G - \dim(\Lambda^2M)^G \in \{-1, 0, 1\}.
+        \end{equation}
+        Note that the above quantity is the correct way to generalise the Frobenius--Schur indicator to fields other than \(\complex\).
+        
+        Let \(I\) be the number of involutions of \(G\).
+        Then
+        \begin{equation}
+            I = \sum_{g \in G} [g^2 = 1]
+        \end{equation}
+        where \([\varphi]\) is the Iverson bracket, \([\varphi] = 1\) if \(\varphi\) is true, and \([\varphi] = 0\) if \(\varphi\) is false.
+        The second orthogonality relation (\cref{thm:second orthogonality relation}) tells us that
+        \begin{equation}
+            [g^2 = 1] = \frac{1}{\abs{G}} \sum_{M \in \Irr(G)} \chi_M(g^2) \overline{\chi_M(1)},
+        \end{equation}
+        since this result should vanish if \(g^2\) is not conjugate to \(1\) and should be \(\abs{Z_g}\) otherwise.
+        Then we note that \(g^2\) is conjugate to the identity if and only if \(g^2\) \emph{is} the identity.
+        Further, \(\abs{Z_g} = \abs{G}\) if \(g^2 = 1\).
+        Thus, we have that
+        \begin{equation}
+            I = \frac{1}{\abs{G}}\sum_{g \in G} \sum_{M \in \Irr(G)} \chi_M(g^2) \overline{\chi_M(1)}.
+        \end{equation}
+        Since \(\chi_M(1) = \dim M\) this simplifies to
+        \begin{equation}
+            I = \frac{1}{\abs{G}} \sum_{g \in G} \sum_{M \in \Irr(G)} \dim(M) \chi_V(g^2) = \sum_{M \in \Irr(G)} \dim(M) \frobeniusSchur(M).
+        \end{equation}
+    \end{proof}
+\end{thm}
+
+The proof of the following result is some fairly involved linear algebra, but essentially comes down to the universal property of the tensor/symmetric/exterior product giving a correspondence between bilinear forms and linear maps, and the bilinear forms inherit the (anti)symmetry of the symmetric/exterior product.
+
+\begin{prp}{}{}
+    Let \(G\) be a finite group, and \(M\) a simple \(G\)-module.
+    Then \(\frobeniusSchur(M)\) is \(-1\) if \(M\) is of complex type, \(0\) if \(M\) is of real type, and \(1\) if \(M\) is of quaternionic type.
+\end{prp}
+
+\begin{exm}{}{exm:number of involutions in Sn}
+    This example assumes some knowledge about the basics of representations of \(S_n\), a topic we will cover in \cref{chap:reps of Sn}, so maybe come back later if you're not familiar with these ideas.
+    
+    It is a fact that \(\frobeniusSchur(M) = 1\) for any simple \(S_n\)-module, that is, all \(S_n\)-modules are of real type.
+    Simple \(S_n\)-modules are indexed by standard tableaux of shape \(\lambda\) with \(\lambda\) a partition of \(n\).
+    Thus, the number of involutions in \(S_n\) is precisely
+    \begin{equation}
+        \sum_{\lambda \partition n} \abs{\standardYoungTableaux(\lambda)}
+    \end{equation}
+    where \(\standardYoungTableaux(\lambda)\) is the set of standard Young tableau of shape \(\lambda\).
+\end{exm}
+
+\section{Burnside's Theorem}
+\subsection{Statement of Theorem}
+The next example of an application of character theory is Burnside's theorem, a result in number theory.
+While Burnside's theorem is relatively easy to state its proof requires some number theory.
+The result is famous for being one of the first results in group theory which was first proven through representation theory.
+
+Before we state the theorem recall the following definition from group theory.
+\begin{dfn}{Solvable Group}{}
+    A group, \(G\), is \define{solvable}\index{solvable!group} if there exists a series of nested normal subgroups
+    \begin{equation}
+        \{1\} = G_1 \normalsub G_2 \normalsub \dotsb \normalsub G_n = G
+    \end{equation}
+    such that \(G_{i+1}/G_i\) is abelian.
+\end{dfn}
+
+\begin{thm*}{Burnside's Theorem}{}
+    Any group, \(G\), of order \(p^aq^b\) with \(p\) and \(q\) primes and \(a, b \in \integers_{\ge 0}\) is solvable.
+\end{thm*}
+
+\subsection{Algebraic Integers}
+\begin{dfn}{Algebraic Integers}{}
+    A complex number, \(z \in \complex\), is an
+    \begin{itemize}
+        \item \define{algebraic number}\index{algebraic!number} if it is a root of some polynomial in \(\rationals[x]\);
+        \item \define{algebraic integer}\index{algebraic!integer} if it  is a root of some \emph{monic}\footnote{Recall that a polynomial is \defineindex{monic} if the coefficient of the highest degree term is \(1\).} polynomial in \(\integers[x]\).
+    \end{itemize}
+    We write \(\algNumbers\) and \(\algIntegers\) for the sets of algebraic numbers and integers respectively.
+\end{dfn}
+
+\begin{exm}{}{}
+    \begin{itemize}
+        \item \(\integers \subseteq \algIntegers\): \(n \in \integers\) is a root of \(x - n\).
+        \item \(\rationals \cap \algIntegers = \integers\): Suppose \(a/b\) is rational and reduced, then any rational polynomial with \(a/b\) as a root has a factor of \(x - a/b\), to get an integer polynomial we have to scale this to \(bx - a\).
+        Thus, any integer polynomial with \(a/b\) as a root has a factor of \(b x - a\), which means it cannot be monic, since any monic polynomial factors as \((x - \alpha_1) \dotsm (x - \alpha_m)\) for some roots \(\alpha_i \in \complex\).
+        Thus, \(a/b\) is an algebraic integer only if \(b = 1\), in which case \(a/b = a\) is an integer.
+    \end{itemize}
+\end{exm}
+
+\begin{lma}{}{}
+    \(z \in \complex\) is an algebraic number (integer) if and only if it is an eigenvalue of some \(n \times n\) matrix over \(\rationals\) (\(\integers\)).
+    \begin{proof}
+        If \(z\) is an algebraic number (integer) then it is a root of the monic polynomial
+        \begin{equation}
+            p(x) = x^n + a_{n-1}x^{n-1} + \dotsb + a_1x + a_0
+        \end{equation}
+        where \(a_i \in \rationals\) (\(a_i \in \integers\)).
+        Note that we are always free to rescale a rational polynomial to be monic.
+        Let
+        \begin{equation}
+            A = 
+            \begin{pmatrix}
+                0 & 0 & \dots & 0 & -a_0\\
+                1 & 0 & \dots & 0 & -a_1\\
+                0 & 1 & \dots & 0 &  -a_2\\
+                \vdots & \vdots & \ddots & \vdots & \vdots\\
+                0 & 0 & \dots & 1 & -a_{n-1}
+            \end{pmatrix}
+            .
+        \end{equation}
+        Then the characteristic polynomial of \(A\) is
+        \begin{equation}
+            -\det(A - x I) = p(x),
+        \end{equation}
+        and thus \(z\) is an eigenvalue of \(A\).
+        
+        Conversely, suppose that \(z\) is an eigenvalue of some \(n \times n\) rational (integer) matrix, \(A\).
+        Then \(z\) is a root of the characteristic polynomial of \(A\).
+        The characteristic polynomial of a matrix over \(\rationals\) (\(\integers\)) is always monic over \(\rationals\) (\(\integers\)), and thus \(z\) is an algebraic number (integer).
+    \end{proof}
+\end{lma}
+
+\begin{prp}{}{}
+    \begin{itemize}
+        \item \(\algIntegers\) is a ring\footnote{Fun Fact\textsuperscript{TM}: The first use of the word \enquote{ring} is attributed to Hilbert, who used it describe \(\algIntegers\), and in particular the way higher powers \enquote{loop back around} to be described in terms of lower powers, which can always be done for elements of \(\algIntegers\) using the polynomial they satisfy to replace higher powers with lower ones.}; and
+        \item \(\algNumbers\) is a field.
+    \end{itemize}
+    \begin{proof}
+        \Step{\(\algNumbers\) and \(\algIntegers\) are Rings}
+        We will prove that \(\algNumbers\) is a ring, the proof for \(\algIntegers\) is analogous.
+        Take \(\alpha, \beta \in \algNumbers\), then there are matrices \(A \in \Mat_m(\rationals)\) and \(B \in \Mat_n(\rationals)\) such that \(\alpha\) and \(\beta\) are eigenvalues of \(A\) and \(B\) respectively.
+        Let \(v \in \complex^m\) and \(w \in \complex^n\) be the corresponding eigenvectors.
+        Consider \(A \otimes \id_{\complex^n} \pm \id_{\complex^{m}} \otimes B\).
+        A calculation shows that \(v \otimes w\) is an eigenvector of this matrix with eigenvalue \(\alpha \pm \beta\):
+        \begin{align}
+            (A \otimes \id_{\complex^n} &\pm \id_{\complex^{m}} \otimes B)(v \otimes w)\\
+            &= (A \otimes \id_{\complex^n})(v \otimes w) \pm (\id_{\complex^m} \otimes B)(v \otimes w)\\
+            &= Av \otimes w \pm v \otimes Bw\\
+            &= \alpha v \otimes w \pm v \otimes \beta w\\
+            &= (\alpha \pm \beta) (v \otimes w).
+        \end{align}
+        Thus, \(\alpha \pm \beta\) is an eigenvalue of some \((m + n) \times (m + n)\) matrix over \(\rationals\), and hence \(\alpha \pm \beta \in \algNumbers\).
+        
+        Similarly, \(\alpha\beta\) is an eigenvalue of \(A \otimes B\) with eigenvector \(v \otimes w\):
+        \begin{equation}
+            (A \otimes B)(v \otimes w) = Av \otimes Bw = \alpha v \otimes \beta w = (\alpha\beta)(v \otimes w).
+        \end{equation}
+        Thus, \(\alpha\beta\) is an eigenvalue of some \(mn \times mn\) matrix over \(\rationals\), and so \(\alpha\beta \in \algNumbers\).
+        
+        These results, along with the inherited distributivity law from \(\complex\), prove that \(\algNumbers\) is a ring.
+        
+        \Step{\(\algNumbers\) is a Field}
+        Suppose that \(\alpha \in \algNumbers \setminus \{0\}\).
+        Then there exits some matrix, \(A \in \Mat_{m \times m}(\rationals)\) such that \(\alpha\) is a root of \(p(x) = \det(A - xI)\).
+        We can multiply this whole equation by \(\alpha^m\) and it follows from properties of determinants that \(\alpha^m p(x) = \det(\alpha A - \alpha x I)\).
+        Then, \(\alpha^m p(1/\alpha) = \det(\alpha A - I)\), which vanishes when \(\alpha A\) has eigenvalue \(1\), and since \(\alpha A\) has the same eigenvalues as \(A\) but multiplied by \(\alpha\) this shows that some eigenvalue, \(\beta\), is such that \(\alpha \beta = 1\), in other words, \(\beta = 1/\alpha\), so \(1/\alpha \in \algNumbers\).
+        Thus, \(\algNumbers\) contains multiplicative inverses of nonzero elements, and so is a field  (it is clearly commutative and has no zero divisors as it is a subring of \(\complex\)).
+    \end{proof}
+\end{prp}
+
+\subsection{Towards a Proof of Burnside's Theorem}
+Many quantities that arise in representation theory are naturally algebraic integers.
+We will use this to restrict the possible values that certain quantities can take, which will be important in our proof of Burnside's theorem.
+
+\begin{lma}{}{}
+    Let \(G\) be a finite group and \(M\) a finite-dimensional \(G\)-module.
+    Then \(\chi_M(g)\) is an algebraic integer for every \(g \in G\).
+    \begin{proof}
+        Since \(G\) is finite each \(g \in G\) has finite order, \(n\), and thus the eigenvalues of \(\rho_M(g)\) are \(n\)th roots of unity, and so in \(\algIntegers\) as they satisfy the monic polynomial \(x^n - \alpha - 1 = 0\).
+        The trace is the sum of the eigenvalues, and \(\algIntegers\) is a ring, so is closed under addition, and thus \(\chi_M(g) \in \algIntegers\).
+    \end{proof}
+\end{lma}
+
+\begin{prp}{}{prp:sums over conjugacy classes act as an algebraic number}
+    Let \(G\) be a finite group and consider the set of conjugacy classes, \(\conjugacyClasses(G) = \{[g_1], \dotsc, [g_n]\}\), with chosen representatives.
+    Define
+    \begin{equation}
+        c_i = \sum_{g \in [g_i]} \in \complex G,
+    \end{equation}
+    then for any simple \(G\)-module, \(M\), we have \(c_i|_M = \lambda_i \id_M\) where
+    \begin{equation}
+        \lambda_i = \abs{[g_i]} \frac{\chi_M(g_i)}{\chi_M(1)}
+    \end{equation}
+    are algebraic integers.
+    \begin{proof}
+        First note that the \(c_i\) are central in \(\complex G\) since
+        \begin{align}
+            c_i g = \sum_{g' \in [g_i]} g'g = \sum_{g'' \in [g_i]} gg'' = g \sum_{g'' \in [g_i]} g'' = g c_i
+        \end{align}
+        where we've reindexed the sum with \(g'' = g^-1 g'g\), which doesn't change the value as we're still summing over the whole conjugacy class, just in a different order.
+        
+        Thus, by Schur's lemma we know that the \(c_i\) act as a scalar on any simple \(G\)-module.
+        Call this scalar \(\lambda_i\).
+        Consider the group ring, \(\integers G\).
+        This is finitely generated (since \(G\) is a finite generating set).
+        Thus, each \(c_i\) must satisfy some monic integer polynomial equation, and this carries through to the scalars, \(\lambda_i\), which shows they are algebraic integers.
+        Viewing \(c_i\) as an operator on \(M\) we know that \(c_i = \lambda_i \id_M\), and we can take the trace of this to get
+        \begin{equation}
+            \tr_M c_i = \tr_M (\lambda_i \id_M) = \lambda_i \dim M = \lambda_i \chi_M(1).
+        \end{equation}
+        We also have
+        \begin{equation}
+            \tr_M c_i = \sum_{g \in [g_i]} \tr_M \rho_M(g) = \sum_{g \in [g_i]} \chi_M(g) = \abs{[g_i]} \chi_M(g_i)
+        \end{equation}
+        since the character is constant on conjugacy classes.
+        Equating these we get the desired result.
+    \end{proof}
+\end{prp}
+
+\begin{thm}{Frobenius Divisibility}{}
+    Let \(G\) be a finite group and \(M\) a simple \(G\)-module over \(\complex\).
+    Then \(\dim M\) divides \(\abs{G}\).
+    \begin{proof}
+        With notation as in the statement of \cref{prp:sums over conjugacy classes act as an algebraic number} we claim that
+        \begin{equation}
+            \sum_i \lambda_i \overline{\chi_M(g_i)} \in \algIntegers
+        \end{equation}
+        where the sum is over all conjugacy classes.
+        Since \(\algIntegers\) is a ring and \cref{prp:sums over conjugacy classes act as an algebraic number} shows that the \(\lambda_i\) are algebraic integers it is sufficient to show that \(\overline{\chi_M(g_i)}\) are algebraic integers.
+        Since \(G\) is finite we know that \(\rho_M(g_i)^{\abs{G}} = \id_M\), and hence \(\chi_M(g_i)\) must be sums of roots of unity, which are algebraic integers, so \(\chi_M(g_i)\) are algebraic integers, and hence \(\overline{\chi_M(g_i)}\) are algebraic integers, as they are roots of the conjugate polynomial.
+        
+        From \cref{prp:sums over conjugacy classes act as an algebraic number} we also have
+        \begin{align}
+            \sum_i \lambda_i \overline{\chi_M(g_i)} &= \sum_i \abs{[g_i]} \frac{\chi_M(g_i) \overline{\chi_M(g_i)}}{\chi_M(1)}\\
+            &= \sum_{g \in G} \frac{\chi_M(g) \overline{\chi_M(g)}}{\dim M}\\
+            &= \frac{\abs{G}}{\dim M} \innerprod{\chi_M}{\chi_M}\\
+            &= \frac{\abs{G}}{\dim M}.
+        \end{align}
+        This shows that this quantity is rational, as clearly \(\abs{G}\) and \(\dim M\) are integers.
+        Since the left-hand-side is in \(\algIntegers\) and the right-hand-side is in \(\rationals\) they must actually be in \(\algIntegers \cap \rationals = \integers\), and thus \(\dim M\) divides \(\abs{G}\).
+    \end{proof}
+\end{thm}
+
+\begin{lma}{}{lma:sum of roots of unity over n alg int implies all roots same or zero}
+    If \(\xi_1, \dotsc, \xi_n\) are roots of unity such that \(a \coloneq (\xi_1 + \dotsb + \xi_n)/n\) is an algebraic integer then either \(\xi_1 = \dotsb = \xi_n\) or \(\xi_1 + \dotsb + \xi_n = 0\).
+    \begin{proof}
+        If the \(\xi_i\) are not all equal then it follows from the geometry of roots of unity that \(\abs{a} < 1\).
+        Suppose that \(p(x)\) is the minimal polynomial with \(a\) as a root, then any other root, \(a'\), of this polynomial must also be a root of unity, and as such \(\abs{a'} \le 1\) also.
+        The product of all roots of \(p\) is an integer, and since they all have absolute value at most 1, and \(\abs{a} < 1\) it follows that this integer has absolute value less than \(1\), and so must be \(0\).
+        Thus, \(a = 0\), and since \(1/n \ne 0\) we achieve the desired result.
+    \end{proof}
+\end{lma}
+
+\begin{thm}{}{thm:gcd conjugacy class order and dimension 1 then acts as scalar}
+    Let \(G\) be a finite group and \(M\) a simple \(G\)-module.
+    Let \(C \in \conjugacyClasses(G)\) be a conjugacy class such that \(\gcd(\abs{C}, \dim M) = 1\).
+    Then either \(\chi_M(g) = 0\) or \(\rho_M(g) = \varepsilon\id_M\) for some \(\varepsilon \in \complex\) for all \(g \in C\).
+    \begin{proof}
+        Since \(\gcd(\abs{C}, \dim M) = 1\) there exist integers \(a\) and \(b\) such that
+        \begin{equation}
+            a \abs{C} + b \dim M = 1.
+        \end{equation}
+        Multiplying by \(\chi_M(g)/\dim M\) we get
+        \begin{equation}
+            \frac{\abs{C}\chi_M(g)}{\dim M} + b \chi_M(g) = \frac{\chi_M(g)}{\dim M} = \frac{\varepsilon_1 + \dotsb + \varepsilon_n}{n}
+        \end{equation}
+        where \(\varepsilon_i\) are the eigenvalues of \(\rho_M(g)\) and \(n\) is the dimension of \(M\).
+        Then the left-hand-side is an algebraic integer, since \(a\) is an integer, \(\abs{C}\chi_M(g)/\dim M\) is an algebraic integer by \cref{prp:sums over conjugacy classes act as an algebraic number}, \(b\) is an integer, and \(\chi_M(g)\) is an algebraic integer as it is a sum of the eigenvalues of \(\rho_M(g)\) which are roots of unity as \(g\) has finite order as \(G\) is finite.
+        Thus, \((\varepsilon_1 + \dotsb + \varepsilon_n)/n\) is an algebraic integer by \cref{lma:sum of roots of unity over n alg int implies all roots same or zero}, so it is either \(0\) or \(\varepsilon_1 = \dotsb = \varepsilon_n = \varepsilon\), in which case \(\rho_M(g) = \varepsilon \id_M\).
+    \end{proof}
+\end{thm}
+
+\begin{thm}{}{thm:nontrivial normal subgroup for conjugacy classes of prime power}
+    Let \(G\) be a finite group and \(C \in \conjugacyClasses(G)\) a conjugacy class such that \(\abs{C} = p^k\) for \(p\) some prime and \(k \in \integers_{> 0}\).
+    Then \(G\) has a proper nontrivial normal subgroup.
+    \begin{proof}
+        We may always split the set of simple \(G\)-modules as
+        \begin{equation}
+            \Irr G = \{\complex\} \sqcup D \sqcup N
+        \end{equation}
+        where \(\complex\) is the trivial representation, and \(D\) and \(N\) are the sets of \enquote{divisible} and \enquote{not divisible} dimension irreducible representations.
+        That is,
+        \begin{equation}
+            D = \{M \in \Irr G \, \mid \, p \mid \dim M\}, \qqand N = \{M \in \Irr G \, \mid \, p \nmid \dim M\}.
+        \end{equation}
+        
+        We claim that there exists some \(M \in N\) such that \(\chi_M(g) \ne 0\).
+        To see this first note that if \(M \in D\) then \(p\) divides \(\dim M\), so \((\dim M)/p\) is an integer, and hence an algebraic integer.
+        Thus,
+        \begin{equation}
+            \label{eqn:expression for a in proof of theorem leading up to burnside}
+            a = \sum_{M \in D} \frac{1}{p} (\dim M) \chi_M(g)
+        \end{equation}
+        is an algebraic integer.
+        Taking some \(g \in C\) we know that \(g \ne 1\) since \(\abs{C} = p^k \ne 1\) and the identity is always in a conjugacy class on its own.
+        Thus, by the second orthogonality relation we know that \cref{thm:second orthogonality relation}
+        \begin{equation}
+            \sum_{M \in \Irr (G)} \overline{\chi_M(e)} \chi_M(g) = 0
+        \end{equation}
+        and of course the character of the identity is just the dimension, so this is nothing but
+        \begin{equation}
+            \sum_{M \in \Irr(G)} (\dim M) \chi_M(g) = 0.
+        \end{equation}
+        We can rewrite this sum in terms of the decomposition of \(\Irr(G)\) as
+        \begin{align}
+            0 &= \chi_{\complex}(g) + \sum_{M \in D} (\dim M) \chi_M(g) + \sum_{M \in N} (\dim M) \chi_M(g)\\
+            &= 1 + p a + \sum_{M \in N} (\dim M) \chi_M(g).
+        \end{align}
+        Here we've used the fact that the character of the trivial representation is identically \(1\), as well as \cref{eqn:expression for a in proof of theorem leading up to burnside} to identify \(a\).
+        Since \(pa \ne -1\), as \(p\) is a prime and \(a\) an integer, we know that
+        \begin{equation}
+            \sum_{M \in N} (\dim M)\chi_M(g) \ne 0
+        \end{equation}
+        and thus there must be some \(M \in N\) such that \(\chi_M(g) \ne 0\).
+        
+        Now fix \(M \in N\) to be such that \(\chi_M(g) \ne 0\) for \(g \in C\).
+        Since \(p \nmid \dim M\) we know that \(\abs{C} = p^k\) doesn't divide \(M\), and since \(p\) is prime \(\dim M\) doesn't divide \(\abs{C}\) either.
+        Thus, \(\gcd(\abs{C}, \dim M) = 1\), and since \(\chi_M(g) \ne 0\) we know that \(\rho_M(g) = \varepsilon \id_M\) for some \(\varepsilon\) for all \(g \in C\) by \cref{thm:gcd conjugacy class order and dimension 1 then acts as scalar}.
+        
+        Now define the subgroup
+        \begin{equation}
+            H = \langle gh^{-1} \mid g, h \in C \rangle.
+        \end{equation}
+        This is not equal to \(\{1\}\) as \(\abs{C} > 1\) so there exist distinct \(g\) and \(h\) in \(C\) and \(gh^{-1} \ne 1\) as inverses are unique.
+        By construction, \(H\) is normal since conjugation simply permutes the, since for all \(k \in G\) we have
+        \begin{equation}
+            kgh^{-1}k^{-1} = kgk^{-1}kh^{-1}k^{-1} = \hat{g}\hat{h}^{-1}
+        \end{equation}
+        for some \(\hat{g}, \hat{h} \in C\) by definition of a conjugacy class.
+        
+        Further, \(H\) acts trivially on \(M\).
+        To see this take \(g, h \in C\), and then we know that \(\rho_M(g) = \varepsilon_g \id_M\) and \(\rho_M(h) = \varepsilon_h \id_M\) for some scalars \(\varepsilon_g, \varepsilon_h \in \complex\).
+        Thus, \(\chi_M(g) = \varepsilon_g \dim M\) and \(\chi_M(h) = \varepsilon_h \dim M\), but characters are constant on conjugacy classes, so it must be that \(\varepsilon_g = \varepsilon_h\).
+        Thus, \(H\) simply acts by some scalar multiple, \(\varepsilon = \varepsilon_1 = \varepsilon_h\), and we're free to choose \(\varepsilon = 1\), as we know that \(H\) does not act as zero.
+        
+        Finally, it must be that \(H \subsetneq G\), since if \(G = H\) then \(G\) acts trivially on \(M\), but by definition \(M\) is not the trivial representation.
+    \end{proof}
+\end{thm}
+
+\subsection{Proof of Burnside's Theorem}
+Finally, we're ready to put all of these technical results together to prove Burnside's theorem.
+We'll do this in two cases.
+The first is to prove that if the order of \(G\) has a unique prime factor then \(G\) is solvable, then the main result can be prove assuming two distinct prime factors.
+
+\begin{prp}{}{prp:p-groups are solvable}
+    Let \(G\) be a group of order \(p^a\) for some prime, \(p\), and \(a \in \integers_{\ge 0}\).
+    Then \(G\) is solvable.
+    \begin{proof}
+        First note that if \(a = 0\) then \(G\) is trivial and is trivially solvable.
+        We then induct on \(a\).
+        Suppose that the statement is true for all \(a < n\) for some integer \(n\).
+        Now take \(\abs{G} = p^n\).
+        
+        The class equation is a result from group theory which tells us that
+        \begin{equation}
+            \abs{G} = \abs{Z(G)} + \sum_i [G : Z_{g_i}]
+        \end{equation}
+        where the sum is over conjugacy classes.
+        The order of any conjugacy class of \(G\) must divide \(\abs{G}\), and so it follows that all conjugacy classes have size \(p^{k_i}\) for some \(k_i \in \integers_{\ge 0}\).
+        Then we have that \(\abs{G} = p^n = \abs{Z(G)} + \sum_i p^{k_i}\).
+        Thus, \(p\) must divide \(\abs{Z(G)}\), and so \(Z(G)\) is nontrivial.
+        
+        If \(G\) is abelian then \(G\) is solvable.
+        If \(G\) is not abelian then \(Z(G)\) is an abelian subgroup, which is solvable, meaning there exist normal subgroups
+        \begin{equation}
+            \{1\} \normalsub Z_1 \normalsub Z_2 \normalsub \dotsb \normalsub Z_n = Z(G).
+        \end{equation}
+        Quotients of successive terms are abelian as every group in this chain is abelian.
+        Then \(Z(G)\) is normal in \(G\) since everything in \(G\) commutes with everything in \(Z(G)\).
+        Further, \(G/Z(G)\) is abelian.
+        Thus, we have a chain of normal subgroups,
+        \begin{equation}
+            \{1\} \normalsub Z_1 \normalsub Z_2 \normalsub \dotsb \normalsub Z_n = Z(G) \normalsub G
+        \end{equation}
+        such that quotients of successive subgroups are abelian.
+        This proves \(G\) is solvable.
+    \end{proof}
+\end{prp}
+
+\begin{thm}{Burnside's Theorem}{}
+    Any group, \(G\), of order \(p^aq^b\) with \(p\) and \(q\) primes and \(a, b \in \integers_{\ge 0}\) is solvable.
+    \begin{proof}
+        First, since the trivial group is solvable and \cref{prp:p-groups are solvable} shows that all \(p\)-groups (that is, groups of order \(p^a\)) are solvable we may assume that \(p\) and \(q\) are distinct with \(a, b \ne 0\).
+        Finally, if \(G\) is abelian it is solvable, so we may assume that \(G\) is nonabelian, and in particular that \(Z(G) \subsetneq G\).
+        
+        The proof is by contradiction, so assume \(G\) has order \(p^aq^b\) and isn't solvable.
+        Further, suppose that \(G\) is the smallest such \(G\).
+        Then \(G\) must be simple, else one of its normal subgroups would have this property.
+        
+        We then know from \cref{thm:nontrivial normal subgroup for conjugacy classes of prime power} that \(G\) cannot have a conjugacy class, \(C \in \conjugacyClasses(G)\), of order \(p^k\) or \(q^k\) for \(k \ge 1\).
+        Thus, all conjugacy classes are either singletons or have order divisible by \(pq\).
+        However, we also know that
+        \begin{equation}
+            p^a q^b = \abs{G} = \sum_{C \in \conjugacyClasses(G)} \abs{C} = 1 + \sum_{C \in \conjugacyClasses(g) \setminus \{1\}} \abs{C}
+        \end{equation}
+        and the only way this can hold is if there is some \(C \in \conjugacyClasses(G)\) with \(\abs{C} = 1\), as if all conjugacy classes other than \(\{1\}\) have order divisible by \(pq\) then \(1\) plus this sum cannot be divisible by \(pq\).
+        Thus, whatever element is in this \(C\) with \(\abs{C} = 1\) must be central.
+        Hence, \(G\) has nontrivial centre, and thus has a normal subgroup, the centre of \(G\).
+        This is a contradiction of the simplicity, and hence a contradiction of our assumption of non-solvability.
+    \end{proof}
+\end{thm}
+
+\chapter[Induced Reps and Frobenius Reciprocity]{Induced Representations and Frobenius Reciprocity}
+\section{Induced Representations}
+Let \(G\) be a finite group, and \(H\) a subgroup of \(G\).
+Any \(G\)-module, \(M\), may be viewed as an \(H\)-module in the obvious way.
+We just \enquote{forget} the fact that elements in \(G \setminus H\) can act on \(M\) and consider only the action of elements in \(H\).
+We call the resulting module the \defineindex{restriction} of \(M\) to \(H\), since if \(\rho \colon G \to \generalLinear(M)\) is the representation map for \(M\) as a \(G\)-module then the corresponding representation map for \(M\) as an \(H\)-module is \(\rho|_H \colon H \to \generalLinear(V)\).
+
+For example, \(S_3\) acts on \(\complex^3\) by permuting basis vectors, and \(\integers_2 = \{\cycle{}, \cycle{1,2}\} \subset S_3\) acts on \(\complex^3\) by just swapping the first two basis vectors back and forth and leaving the third alone.
+
+More formally, given a \(G\)-module, \(M\), we have a canonical method of producing an \(H\)-module, and we can encode this as a functor
+\begin{equation}
+    \Res^G_H \colon \Mod{G} \to \Mod{H}
+\end{equation}
+which sends a \(G\)-module, \(M\), to the \(H\)-module, \(\Res^G_H M\), given by forgetting how elements of \(G \setminus H\) act.
+This functor is the identity on module homomorphisms since the underlying sets of \(M\) and \(\Res^G_HM\) are the same.
+We call this the \defineindex{restriction functor}.
+
+A natural question now is can we go the other direction?
+That is, if we have an \(H\)-module, \(M\), is there a sensible way to construct a \(G\)-module?
+With the more formal statement above we might guess that the reverse process should be adjoint to \(\Res^G_H\).
+The following definition gives us exactly this reverse process.
+
+\begin{dfn}{Induced Module}{}
+    Let \(G\) be a finite group and \(H\) a subgroup.
+    An \(H\)-module, \(M\), gives a \(G\)-module defined by
+    \begin{equation}
+        \Ind^G_H M \coloneq \field G \otimes_{\field H} M.
+    \end{equation}
+\end{dfn}
+
+The action of \(G\) on \(\Ind^G_H M\) is implicit in the definition of the tensor product, explicitly, it's given on simple tensors by
+\begin{equation}
+    g \action (g' \otimes m) = gg' \otimes m.
+\end{equation}
+This all works out because \(\field G\) is a \((\field G, \field H)\)-bimodule (with the right \(\field H\)-module simply being restriction of the right regular representation).
+Thus, the tensor product of \(\field G\) and \(\field H\) is naturally a \(\field G\)-module.
+
+As with restriction we have a functor
+\begin{equation}
+    \Ind^G_H \colon \Mod{H} \to \Mod{G}
+\end{equation}
+which sends \(M\) to \(\field G \otimes_{\field H} M\) and an \(H\)-module homomorphism, \(\varphi \colon M \to N\) is sent to a \(G\)-module homomorhpism
+\begin{align}
+    \Ind^G_H \varphi \colon \field G \otimes_{\field H} M &\to \field G \otimes_{\field H} N\\
+    g \otimes m &\mapsto g \otimes \varphi(n).
+\end{align}
+
+Note that there are several equivalent definitions of \(\Ind^G_H M\) yielding isomorphic, but formally distinct, \(G\)-modules.
+One of these is
+\begin{equation}
+    \Ind^G_H M \isomorphic \{f \colon G \to M \mid f(hx) = \rho(h)f(x) \forall x \in G, h \in H\}.
+\end{equation}
+That is, we consider all maps \(G \to M\) which intertwine the regular representation of \(G\) and the action of \(G\) on \(M\).
+Another definition is
+\begin{equation}
+    \Ind^G_H M \isomorphic \Hom_{\field H}(\field G, M)
+\end{equation}
+which is really just restating the above.
+With these definitions the action of \(g \in G\) on \(f\) is given by
+\begin{equation}
+    (g \action f)(x) = f(xg)
+\end{equation}
+for all \(x \in G\).
+Everything we might want then pretty much follows because \(g \in G\) acts on the right of the function argument and \(h \in H\) acts on the left.
+For example, this is a valid representation since we have
+\begin{equation}
+    (g \action f)(hx) = f(hxg) = \rho(h)f(xg) = \rho(h)(g \action f)(x)
+\end{equation}
+so \(g \action f\) is again in \(\Hom_{\field H}(\field G, M)\), and
+\begin{equation}
+    (g \action (g' \action f))(x) = (g' \action f)(xg) = f(xgg') = (gg' \action f)(x)
+\end{equation}
+and
+\begin{equation}
+    (1 \action f)(x) = f(x1) = f(x)
+\end{equation}
+for all \(g, g', x \in G\).
+
+\begin{exm}{}{}
+    Let \(\field\) be the trivial representation in which \(H\) acts as the identity, so the representation map is \(\one \colon H \to \generalLinear(\field) \isomorphic \field\) with \(\one(h) = 1\).
+    Then, we have
+    \begin{equation}
+        \Ind^G_H \field = \field G \otimes_{\field H} \field.
+    \end{equation}
+    Note that the tensor product is \(\otimes_{\field H}\), not \(\otimes_{\field}\), so \(\field G \otimes_{\field H} \field\) is not isomorphic to \(\field G\).
+    
+    The module structure is completely determined by elements of the form \(g \otimes 1\).
+    In fact, since \(gh \otimes 1 = g \otimes (h \action 1) = g \otimes 1\) the action is invariant under multiplication by elements of \(H\).
+    Both \(gh\) and \(gh'\) have the same action for \(g \in G\) and \(h, h' \in H\).
+    Thus, the action of \(g \in G\) is determined only by the coset, \(gH\), into which it falls.
+    
+    The induced module, \(\Ind^G_H \field\) is isomorphic to the coset representation, \(\field G/H\), which is a \(G\)-module constructed as the free vector space on the set of cosets, \(G/H\), with the \(G\)-action given by \(g \action g'H = (gg')H\).
+\end{exm}
+
+\begin{exm}{}{exm:one-dimensional reps from homomorhpism}
+    Let \(G\) be a finite group with subgroup \(H\).
+    Let \(\chi \colon H \to \field^{\times}\) be a homomorphism, and \(\field_\chi\) the corresponding 1-dimensional representation of \(H\).
+    That is, \(h \action \lambda = \chi(h)\lambda\) for all \(h \in H\) and \(\lambda \in \field\).
+    
+    Consider the induced module \(\Ind^G_H\field_{\chi} = \field G \otimes_{\field H} \field_{\chi}\).
+    For \(h \in H\) we have \(h \otimes 1 = 1_G \otimes (h \action 1) = 1_G \otimes \chi(h)\).
+    The action of \(g \in G\) on \(\Ind^G_H \field_{\chi}\) is given by \(g \action (g' \otimes 1) = gg' \otimes 1\).
+    
+    Let
+    \begin{equation}
+        e_\chi = \frac{1}{\abs{K}} \sum_{h \in H} \chi(h)^{-1} h \in \field H.
+    \end{equation}
+    We claim that \(\Ind^G_H\field_\chi \isomorphic \field G e_\chi\), where elements of \(\field Ge_\chi\) are \(\field\)-linear combinations of elements of the form \(g e_\chi\) and the action on \(\field Ge_\chi\) is by \(g \action g'e_\chi = (gg')e_\chi\), that is, it's just left multiplication.
+    
+    The isomorphism, \(\varphi \colon \Ind^G_H \field_{\chi} \to \field G e_\chi\), is given by \(\varphi(g \otimes 1) = ge_\chi\).
+    This is a \(G\)-module homomorphism since
+    \begin{align}
+        \varphi(g \action (g' \otimes 1)) &= \varphi(gg' \otimes 1)\\
+        &= gg'e_\chi\\
+        &= \varphi(gg' \otimes 1).
+    \end{align}
+    Note that if \(g = kh\) with \(h \in H\) then we have \(g \otimes 1 = k \otimes \chi(h)\), and so we need to check that \(\varphi\) is well defined with respect to this ambiguity.
+    In particular, if \(g = kh = k'h'\) for \(h, h' \in H\) then we need to check that \(\varphi(k \otimes \chi(h)) = \varphi(k' \otimes \chi(h'))\).
+    This is true since \(\chi(h)\) and \(\chi(h')\) are scalars, so we can pull the out and we have
+    \begin{equation}
+        \varphi(k \otimes \chi(h)) = \chi(h)\varphi(k \otimes 1) = \chi(h) ke_\chi
+    \end{equation}
+    and similarly, \(\varphi(k' \otimes \chi(h')) = \chi(h')k' e_\chi\).
+    To show that these are equal we start with the definition of \(e_\chi\):
+    \begin{align}
+        \chi(h)ke_\chi &= \chi(h)k \frac{1}{\abs{H}} \sum_{g \in H} \chi(g)^{-1}g\\
+        &= \frac{1}{\abs{H}} \sum_{g \in H} \chi(h)\chi(g)^{-1} kg.
+    \end{align}
+    We can then reindex the sum by defining \(g' \in G\) such that \(kg = k'g'\), so \(g = k^{-1}k'g'\).
+    Since \(kh = k'h'\) this gives \(h = k^{-1}k'h'\).
+    Thus,
+    \begin{align}
+        \chi(h)ke_\chi &= \frac{1}{\abs{H}} \sum_{g' \in H} \chi(k^{-1}k'h')\chi(k^{-1}k'g')^{-1} k'g'\\
+        &= \frac{1}{\abs{H}} \sum_{g' \in H} \chi(k^{-1}k'h')\chi(g'^{-1}k'^{-1}) k'g'\\
+        &= \frac{1}{\abs{H}} \sum_{g' \in H} \chi(k^{-1}k'h' g'^{-1}k'^{-1}k) k'g'\\
+        \shortintertext{using \(k^{-1}k' = hh'^{-1}\) and \(k'^{-1}k = h'h^{-1}\) this becomes}
+        \chi(h)ke_\chi &= \frac{1}{\abs{H}} \sum_{g' \in H} \chi(hh'^{-1} h' g'^{-1}h'h^{-1}) k'g'\\
+        &= \frac{1}{\abs{H}} \sum_{g' \in H} \chi(h g'^{-1}h'h^{-1}) k'g'.
+    \end{align}
+    Now, since \(\chi\) maps into \(\complex^{\times}\) and is a group homomorphism we have that \(\chi(ab) \chi(a)\chi(b) = \chi(b)\chi(a) = \chi(ba)\), and it follows that \(\chi(hg'^{-1}h'h^{-1}) = \chi(h^{-1}hg'^{-1}h') = \chi(g'^{-1}h') = \chi(h')\chi(g')^{-1}\), and thus
+    \begin{multline}
+        \chi(h)ke_\chi = \frac{1}{\abs{H}} \sum_{g' \in H} \chi(h')\chi(g')^{-1}k'g'\\
+        = \chi(h')k' \frac{1}{\abs{H}} \sum_{g' \in H} \chi(g')^{-1}g' = \chi(h')k'e_\chi.
+    \end{multline}
+    This shows that \(\varphi\) is well defined.
+    Clearly \(\varphi\) is invertible, and so we have the claimed isomorphism, \(\Ind^G_H\field_{\chi} \isomorphic \field Ge_{\chi}\).
+\end{exm}
+
+The first example above actually gives yet another way of characterising the induced representation.
+If \(G\) is a finite group and \(H\) a (not necessarily normal) subgroup then we can form the coset space, \(G/H\).
+Taking \(\{g_1, \dotsc, g_n\}\) to be a complete set of representatives, that is each coset can be written as \(g_i H\) in exactly one way, we can take
+\begin{equation}
+    \Ind^G_H M = \bigoplus_{i=1}^n g_iM
+\end{equation}
+where each \(g_i M\) is an isomorphic copy of \(M\), and we write elements of \(g_i M\) as \(g_i m\).
+For each \(g \in G\) there is some \(h_i \in H\) and \(j(i) \in \{1, \dotsc, n\}\) such that \(gg_i = g_{j(i)}h_i\), which simply restates that \(\{g_1, \dotsc, g_n\}\) is a complete set of representatives. 
+Then \(g \in G\) acts on this space by
+\begin{equation}
+    g \action g_i m = g_{j(i)} \rho(h_i)m_i.
+\end{equation}
+So \(g\) acts by permuting the copies of \(M\), sending \(g_iM\) to \(g_{j(i)}M\), with an extra \enquote{twist} provided by the action of \(h_i\) on \(M\).
+Another way of constructing this is to take
+\begin{equation}
+    g_i M = \{f \in \Hom_{\field H}(\field G, M) \mid f(g) = 0 \text{ unless } g \in g_i H\}.
+\end{equation}
+Then the action is by
+\begin{equation}
+    (g \action f)(x) = f(xg)
+\end{equation}
+again, and we just take evaluating to zero to be equivalent to not being in \(g_i M\) as defined before.
+
+\section{Frobenius Formula for Induced Characters}
+Calculating the character of a restricted module is simple.
+If we have a \(G\)-module, \(M\), with character \(\chi \colon G \to \field\) then the character of \(\Res^G_HM\) is just the restriction of the character to \(H\), \(\chi\downarrow^G_H \coloneq \chi|_H \colon H \to \field\).
+In this section we give a method for calculating characters of induced modules, a more involved process.
+
+\begin{thm}{Frobenius Formula}{thm:frobenius formula}
+    Let \(G\) be a finite group with subgroup \(H\).
+    Let \(\{g_1, \dotsc, g_n\}\) be a complete set of representatives for \(G/H\).
+    Let \(M\) be an \(H\)-module with character \(\chi_M\).
+    Write \(\chi_M\uparrow^G_H\) for the character of \(\Ind^G_H M\).
+    Then
+    \begin{equation}
+        \chi_M\uparrow^G_H(g) = \sum_{i=1}^n \chi_M(g_i^{-1}gg_i)
+    \end{equation}
+    where \(\chi_M\) has been extended from \(H\) to all of \(G\) such that \(\chi_M(x) = 0\) if \(x \notin H\).
+    \begin{proof}
+        We shall work with
+        \begin{equation}
+            \Ind^G_H M = \bigoplus_{i=1}^n g_iM.
+        \end{equation}
+        Thus, we have
+        \begin{equation}
+            \chi_M\uparrow^G_H(g) = \sum_i \chi_i(g)
+        \end{equation}
+        where \(\chi_i(g) = \tr_{g_iM}\rho_i(g)\) with \(\rho_i\) defined to be the corresponding blocks in the matrix
+        \begin{equation}
+            \rho(g) = 
+            \begin{pmatrix}
+                \rho_1(g) & & \\
+                & \rho_2(g) & &\\
+                & & \ddots &\\
+                & & & \rho_n(g)
+            \end{pmatrix}
+        \end{equation}
+        extended so that \(\rho_i(g) = 0\) unless \(gg_i \in g_iH\).
+        
+        For the nonzero terms we know that \(gg_i \in g_iH\) means there is some \(h^{-1} \in H\) such that \(gg_ih^{-1} = g_i\), and thus \(g_i^{-1}gg_i = h \in H\).
+        Now define a map \(\alpha \colon g_iM \to M\) by \(\alpha(f) = f(g_i)\).
+        This is an isomorphism, and we have
+        \begin{equation}
+            \alpha(g \action f) = (g \action f)(g_i) = f(g_ig) = f(hg_i) = \rho(h)f(g_i) = h \action \alpha(f)
+        \end{equation}
+        and so \(g \action f = \alpha^{-1}(h \action \alpha(f))\).
+        This means that \(\tr_{g_iM} \rho_i(g) = \chi_M(h)\).
+        Thus, we have
+        \begin{equation}
+            \chi_M\uparrow^G_H(g) = \tr_{\Ind^G_H M} \rho(g) = \sum_{i=1}^n \tr_{g_i M} \rho_i(g_i) = \sum_{i=1}^n \chi_M(g_igg_i^{-1})
+        \end{equation}
+        as claimed.
+    \end{proof}
+\end{thm}
+
+\begin{crl}{}{}
+    With notation as in \cref{thm:frobenius formula} if \(\Char \field\) and \(\abs{H}\) are coprime then we have
+    \begin{equation}
+        \chi_M\uparrow^G_H(g) = \frac{1}{\abs{H}} \sum_{\substack{x \in G\\ x^{-1}gx \in H}} \chi_M(x^{-1} g x).
+    \end{equation}
+    \begin{proof}
+        We have that
+        \begin{equation}
+            \chi_M\uparrow^G_H(g) = \sum_{i=1}^n \chi_M(g_i^{-1}gg_i).
+        \end{equation}
+        Since \(\chi_M\) is a class function it is invariant under conjugation of its argument, so we can write this as
+        \begin{equation}
+            \chi_M\uparrow^G_H(g) = \sum_{i=1}^n \chi_M(h^{-1}g_i^{-1}gg_ih).
+        \end{equation}
+        for any \(h \in H\).
+        In fact, we can actually sum over all \(h \in H\), and all this does is give us \(\abs{H}\) identical terms\footnote{This is where we need \(\Char \field \nmid \abs{H}\), if this wasn't the case we may accidentally have everything vanish in this sum.}, so
+        \begin{equation}
+            \chi_M\uparrow^G_H(g) = \frac{1}{\abs{H}} \sum_{h \in H} \sum_{i=1}^n \chi_M(h^{-1}g_i^{-1}gg_ih).
+        \end{equation}
+        We can then recognise that the argument of \(\chi_M\) is \(g\) conjugated by \(x = g_i h\), which is chosen such that \(x^{-1}gx \in H\) since \(g_i^{-1}gg_i \in H\) and conjugation by \(h \in H\) doesn't take us out of \(H\).
+        Thus, we have
+        \begin{equation}
+            \chi_M\uparrow^G_H(g) = \frac{1}{\abs{H}} \sum_{\substack{x \in G\\ x^{-1}gx \in H}} \chi_M(x^{-1}gx)
+        \end{equation}
+        where all we've done is combine the two sums, over \(h \in H\) and \(i \in \{1, \dotsc, n\}\) into a single sum.
+    \end{proof}
+\end{crl}
+
+\section{Frobenius Reciprocity}
+Frobenius reciprocity is the relationship between induced and restricted modules.
+The strongest form of this result is that \(\Res^G_H\) and \(\Ind^G_H\) are adjoint functors.
+Before we get to that we'll give a result that holds for characters.
+
+\subsection{Froebnius Reciprocity of Characters}
+\begin{thm}{Frobenius Reciprocity of Characters}{thm:frobenius reciprocity of characters}
+    Let \(G\) be a finite group and \(H\) a subgroup.
+    Let \(M\) be a \(G\)-module and \(N\) an \(H\)-module, both over \(\complex\).
+    Write \(\innerprod{-}{-}_G\) and \(\innerprod{-}{-}_H\) for the inner product on the space of class functions of \(G\) and \(H\) respectively.
+    Write \(\chi_M\) and \(\chi_N\) for the characters of \(M\) and \(N\) respectively.
+    Write \(\chi_N\uparrow^G_H\) for the character of \(\Ind^G_HN\) and \(\chi_M\downarrow^G_H\) for the character of \(\Res^G_HM\).
+    Then
+    \begin{equation}
+        \innerprod{\chi_N\uparrow^G_H}{\chi_M}_G = \innerprod{\chi_N}{\chi_M\downarrow^G_H}_H.
+    \end{equation}
+    \begin{proof}
+        Write \(\chi = \chi_M\).
+        Then, by definition of the inner product of class functions we have
+        \begin{equation}
+            \innerprod{\chi_N\uparrow^G_H}{\chi_M}_G = \frac{1}{\abs{G}} \sum_{g \in G} \chi_W\uparrow^G_H(g) \overline{\chi(g)}.
+        \end{equation}
+        Define a function
+        \begin{equation}
+            \psi(g) = 
+            \begin{cases}
+                \chi_N(g) & g \in H,\\
+                0 & \text{else}.
+            \end{cases}
+        \end{equation}
+        Then, using the Frobenius formula to calculate \(\chi_N\uparrow^G_H(g)\) we have
+        \begin{align}
+            \innerprod{\chi_N\uparrow^G_H}{\chi_M}_G &= \frac{1}{\abs{G}} \sum_{g \in G} \frac{1}{\abs{H}} \sum_{\substack{x \in G\\ xgx^{-1} \in H}} \psi(x^{-1}gx) \overline{\chi(g)}\\
+            &= \frac{1}{\abs{G}} \frac{1}{\abs{H}} \sum_{g \in G} \sum_{\substack{x \in G\\ x^{-1}gx \in H}} \psi(x^{-1}gx) \chi(g^{-1})
+        \end{align}
+        where in the last step we've just rearranged some terms and used \(\overline{\chi(g)} = \chi(g^{-1})\).
+        Now we can reindex the sum by taking \(y = x^{-1}gx\), which means \(g^{-1} = xy^{-1}x^{-1}\), and the condition that \(x^{-1}gx \in H\) becomes that \(y \in H\), so we have
+        \begin{equation}
+            \innerprod{\chi_N\uparrow^G_H}{\chi_M}_G = \frac{1}{\abs{G}} \frac{1}{\abs{H}} \sum_{x \in G} \sum_{y \in H} \psi(y) \chi(xy^{-1}x^{-1}).
+        \end{equation}
+        We also have that \(\psi(y) = \chi_N(y)\), since \(y \in H\), and thus this becomes
+        \begin{equation}
+            \innerprod{\chi_N\uparrow^G_H}{\chi_M}_G = \frac{1}{\abs{G}} \frac{1}{\abs{H}} \sum_{x \in G} \sum_{y \in H} \chi_N(y) \chi(xy^{-1}x^{-1}).
+        \end{equation}
+        Since \(\chi\) is a class function \(\chi(xy^{-1}x^{-1}) = \chi(y^{-1})\), and so we get \(\abs{G}\) terms which are all equal to \(\chi(y^{-1}) = \overline{\chi(y)}\).
+        This perfectly cancels with the sum over \(x \in G\), leaving us with
+        \begin{equation}
+            \innerprod{\chi_N\uparrow^G_H}{\chi_M}_G = \frac{1}{\abs{H}} \sum_{y \in G} \chi_N(y) \overline{\chi(y)} = \innerprod{\chi_N}{\chi}_H.
+        \end{equation}
+        This proves the result once we realise that since the sum is over \(y \in H\) we can replace \(\chi = \chi_M \colon G \to \complex\) with \(\chi_M\downarrow^G_H = \chi_M|_H \colon H \to \complex\).
+    \end{proof}
+\end{thm}
+
+One thing that this result tells us is that the multiplicities of induced modules and restricted modules are related.
+In particular, we have
+\begin{equation}
+    \dim(\Hom_G(M, \Ind^G_HN)) = \dim(\Hom_H(\Res^G_HM, N)).
+\end{equation}
+Thus, there exists, at the level of vector spaces, an isomorphism between these hom-spaces.
+
+\subsection{Frobenius Reciprocity}
+\begin{thm}{}{}
+    Let \(G\) be a finite group with subgroup \(H\).
+    Then the functors
+    \begin{equation}
+        \Res^G_H \colon \Mod{G} \to \Mod{H}, \qand \Ind^G_H \colon \Mod{H} \to \Mod{G}
+    \end{equation}
+    are left and right adjoints.
+    That is, there is a (natural) isomorphism
+    \begin{equation}
+        \Hom_G(M, \Ind^G_H N) \isomorphic \Hom_H(\Res^G_H M, N)
+    \end{equation}
+    for any \(G\)-module, \(M\), and \(H\)-module, \(N\).
+    \begin{proof}
+        Let
+        \begin{equation}
+            E = \Hom_G(M, \Ind^G_H N), \qand E' = \Hom_H(\Res^G_H M, N).
+        \end{equation}
+        We need to define two functions
+        \begin{equation}
+            \Phi \colon E \to E', \qand \Phi' \colon E' \to E
+        \end{equation}
+        which should then be inverses.
+        
+        If \(\alpha \in E\) then \(\alpha \colon M \to \Ind^G_H N\) is a \(G\)-module homomorphism, and \(\Phi(\alpha)\) should be an \(H\)-module homomorphism, \(\Phi(\alpha) \colon \Res^G_H M \to N\).
+        That is, \(\Phi(\alpha)\) needs to take in an element of \(\Res^G_H M\), which is just an element of \(M\), and produce an element of \(N\).
+        The obvious way to do this is to simply evaluate \(\alpha\), which gives us an element of \(\Ind^G_H N \isomorphic \Hom_{\field H}(\field G, N)\), which we can then evaluate to produce an element of \(N\).
+        The only problem is what element of \(\field G\) do we evaluate this map at?
+        Fortunately since \(G\) is a group there's an obvious distinguished element, \(1_G\), at which to perform this evaluation.
+        Thus, we define \(\Phi(\alpha)\) by
+        \begin{equation}
+            \Phi(\alpha)(m) = \alpha(m)(1_G)
+        \end{equation}
+        for \(m \in \Res^G_M\) (which as a set is just \(M\)).
+        
+        If \(\beta \in E'\) then \(\beta \colon \Res^G_H \to N\) is an \(H\)-module homomorphism, and \(\Phi'(\beta)\) should be a \(G\)-module homomorphism, \(\Phi'(\beta) \colon M \to \Ind^G_H N\).
+        That is, \(\Phi'(\beta)\) needs to take in an element of \(M\) and produce an element of \(\Ind^G_HN \isomorphic \Hom_{\field H}(\field G, N)\).
+        The correct definition turns out to be
+        \begin{equation}
+            \Phi'(\beta)(m)(x) = \beta(xm)
+        \end{equation}
+        where \(m \in M\) and \(x \in \field G\) so \(xm \in M\) using the \(G\)-module structure of \(M\), which is equal to \(\Res^G_HM\) as a set, and so evaluating \(\beta\) at \(xm\) is a valid operation.
+        
+        With these definitions we need to show that the resulting functions are well-defined.
+        This comes down to the following three steps:
+        \begin{enumerate}
+            \item We need to show that \(\Phi(\alpha)\) is an \(H\)-module homomorphism.
+            That is, we need to show that \(\Phi(\alpha)(h \action m) = h \action \Phi(\alpha)(m)\) for all \(h \in H\) and \(m \in M\).
+            This is the case, as a direct calculation shows.
+            First, using the definition of \(\Phi\) we have
+            \begin{equation}
+                \Phi(\alpha)(h \action m) = \alpha(h \action m)(1_G).
+            \end{equation}
+            Since \(\alpha\) is a \(G\)-module homomorphism we have \(\alpha(h \action m) = h \action \alpha(m)\), and so
+            \begin{equation}
+                \Phi(\alpha)(h \action m) = (h \action \alpha(m))(1_G).
+            \end{equation}
+            Since \(\alpha(m)\) is an \(H\)-module homomorphism the action of \(h\) on \(\alpha(m)\) is to act on the right in the argument, which is just multiplication in this case:
+            \begin{equation}
+                \Phi(\alpha)(h \action m) = \alpha(m)(1_Gh).
+            \end{equation}
+            Since \(1_Gh = h1_G\) we can write this as
+            \begin{equation}
+                \Phi(\alpha)(h \action m) = \alpha(m)(h1_G).
+            \end{equation}
+            We can then identify that acting on the left of the argument is the definition of the action of \(G\) on the \(G\)-module homomorphism \(\alpha\)
+            \begin{equation}
+                \Phi(\alpha)(h \action m) = h \action (\alpha (m))(1_G) = h \action (\Phi(\alpha)(m)).
+            \end{equation}
+            \item Next, we need to show that \(\Phi'(\beta)(m) \in \Ind^G_HN\).
+            That is, we need to show that \(\Phi'(\beta)(m)(hx) = h \action \Phi'(\beta)(m)(x)\).
+            This also follows from a direct calculation, we have
+            \begin{equation}
+                \Phi'(\beta)(m)(hx) = \beta(hxm) = h \action \beta(xm) = h \action \Phi'(\beta)(m)(x)
+            \end{equation}
+            having used the fact that \(\beta\) is an \(H\)-module homomorphism.
+            \item Finally, we need to show that \(\Phi'(\beta)\) is a \(G\)-module homomorphism.
+            That is, we need to show that \(\Phi'(\beta)(g \action m) = g \action \Phi'(\beta)(m)\).
+            This follows since
+            \begin{equation}
+                \Phi'(\beta)(g \action m)(x) = \beta(xg \action m) = \Phi'(\beta)(m)(xg) = (g \action \Phi'(\beta)(m))(x)
+            \end{equation}
+            having used the fact that \(\Phi'(\beta) \in \Ind^G_H M\) in the last step.
+        \end{enumerate}
+        
+        We now just have to show that \(\Phi\) and \(\Phi'\) are inverses, this follows from two calculations:
+        \begin{equation}
+            \Phi(\Phi'(\beta))(m) = \Phi'(\beta)(m)(1_G) = \beta(1_Gm) = \beta(m),
+        \end{equation}
+        so \(\Phi \circ \Phi' = \id_{E'}\), and
+        \begin{multline}
+            \Phi'(\Phi(\alpha))(m)(x) = \Phi(\alpha)(xm) = \alpha(xm)(1_G)\\
+            = (x \action \alpha)(m)(1_G) = \alpha(m)(1_Gx) = \alpha(m)(1_G)
+        \end{multline}
+        so \(\Phi' \circ \Phi = \id_E\).
+    \end{proof}
+\end{thm}

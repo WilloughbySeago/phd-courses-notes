@@ -1,0 +1,1815 @@
+\chapter{Introduction}
+We fix some standard notation here:
+\begin{itemize}
+    \item \(\field\) will denote an algebraically closed field, except for when we explicitly mention that the field needn't be algebraically closed.
+    \item \(A\) will denote an associative unital algebra.
+    \item Letters like \(V\), \(U\), and \(W\) will denote vector spaces over \(\field\).
+    \item Letters like \(M\) and \(N\) will denote modules.
+\end{itemize}
+
+\part{Algebra Representations}
+\chapter{Initial Definitions}
+\section{Algebra}
+\begin{dfn}{Algebra}{}
+    An \defineindex{algebra} is a \(\field\)-vector space, \(A\), equipped with a bilinear map,
+    \begin{align}
+        m \colon A \times A &\to A\\
+        (a, b) &\mapsto m(a, b) = ab.
+    \end{align}
+    
+    If this map satisfies the condition that
+    \begin{equation}
+        m(a, m(b, c)) = m(m(a, b), c), \text{ or equivalently } a(bc) = (ab)c,
+    \end{equation}
+    for all \(a, b, c \in A\) then we call \(A\) an \defineindex{associative algebra}.
+    
+    If \(A\) posses a distinguished element, \(1 \in A\), such that \(m(1, a) = a = m(a, 1)\), or equivalently \(1a = a = a1\) for all \(a \in A\) then we say that \(A\) is a \defineindex{unital algebra}.
+    
+    If \(m(a, b) = m(b, a)\), or equivalently \(ab = ba\), for all \(a, b \in A\) then we say that \(A\) is a \defineindex{commutative algebra}.
+\end{dfn}
+
+Whenever we say, otherwise unqualified, \enquote{algebra} we will mean associative unital algebra unless we specify otherwise.
+We will not assume commutativity of a general algebra.
+
+The condition of associativity can be written as a commutative diagram,
+\begin{equation}
+    \begin{tikzcd}
+        A \times A \times A \arrow[r, "m \times \id_A"] \arrow[d, "\id_A \times m"'] & A \times A \arrow[d, "m"]\\
+        A \times A \arrow[r, "m"'] & A\mathrlap{,}
+    \end{tikzcd}
+\end{equation}
+
+\begin{remark}{}{}
+    This diagram goes part of the way to the more abstract definition that \enquote{an associative unital (commutative) algebra is a (commutative) monoid in the category of vector spaces}.
+    This definition is nice because it is both very general and dualises to the notion of a coalgebra.
+    See the \textit{Hopf Algebra} notes for more details.
+\end{remark}
+
+\begin{exm}{}{}
+    \begin{itemize}
+        \item \(A = \field\) is an algebra with the product given by the product in the field;
+        \item \(A = \field[x_1, \dotsc, x_n]\), the ring of polynomials in the variables \(x_i\) with coefficients in \(\field\), is an algebra under the addition and multiplication of polynomials.
+        \item \(A = \field \langle x_1, \dotsc, x_n \rangle\), the free algebra on \(x_i\), may be considered as the algebra of polynomials in non-commuting variables, \(x_i\).
+        \item \(A = \End V\) for \(V\) a \(\field\)-vector space is an algebra with multiplication given by composition of morphisms.
+    \end{itemize}
+\end{exm}
+
+\begin{dfn}{Group Algebra}{}
+    Let \(G\) be a group.
+    The \defineindex{group algebra} or \defineindex{group ring} \(\field G = \field[G]\) is defined to be the set of finite formal linear combinations
+    \begin{equation}
+        \sum_{g \in G} c_g g
+    \end{equation}    
+    where \(c_g \in \field\) is nonzero for only finitely many values \(g\).
+    Addition is defined by
+    \begin{equation}
+        \sum_{g \in G} c_g g + \sum_{g \in G} d_g g = \sum_{g \in G} (c_g + d_g) g.
+    \end{equation}
+    Multiplication is defined by requiring that it distributes over addition and that the product of two terms in the above sums is given by
+    \begin{equation}
+        (c_g g) (d_h h) = (c_g d_h) (gh)
+    \end{equation}
+    where multiplication on the left is in \(\field G\), the multiplication \(c_g d_h\) is in \(\field\), and the multiplication \(gh\) is in \(G\).
+    
+    If we do the same construction replacing \(\field\) with a ring, \(R\), then we get the group ring, \(RG\), which is not an algebra but instead an \(R\)-module.
+\end{dfn}
+
+\begin{dfn}{Algebra Homomorphism}{}
+    Let \(A\) and \(B\) be \(\field\)-algebras.
+    An \defineindex{algebra homomorphism} is a linear map \(f \colon A \to B\) such that \(f(ab) = f(a)f(b)\) for all \(a, b \in A\).
+    
+    If \(A\) and \(B\) are unital, with units \(1_A\) and \(1_B\) respectively, then we further require that \(f(1_A) = 1_B\).
+    
+    We denote by \(\Hom(A, B)\) or \(\Hom_{\field}(A, B)\) the set of all algebra homomorhpisms \(A \to B\).
+\end{dfn}
+
+If \(m_A\) and \(m_B\) denote the multiplication maps of \(A\) and \(B\) respectively then we may think of a homomorphism, \(f\), as a linear map which \enquote{commutes} with the multiplication map, that is \(f \circ m_A = m_B \circ f\).
+
+Alternatively, an algebra, \(A\) is both an abelian group under addition, and a monoid under multiplication, and an algebra homomorhpism is both a group and monoid homomorphism with respect to these structures.
+
+\section{Representations and Modules}
+\label{sec:representaitons and modules}
+There are two competing terminologies in the field, with slightly different notation and emphasis depending on which we use.
+We'll use the more modern notion of modules most of the time, but will occasionally and interchangeably use the notion of representations as well.
+
+\begin{dfn}{Representation}{}
+    Let \(V\) be a \(\field\)-vector space and \(A\) a \(\field\)-algebra.
+    Any \(\rho \in \Hom(A, \End V)\) is called a \defineindex{representation} of \(A\).
+    That is, a representation of \(A\) is an algebra homomorphism \(\rho \colon A \to \End V\).
+\end{dfn}
+
+\begin{dfn}{Module}{}
+    Let \(A\) be a \(\field\)-algebra.
+    A \define{left \(\symbf{A}\)-module}\index{left A-module@left \(A\)-module}, \(M\), is an abelian group, with the binary operation denoted \(+\), equipped with a \defineindex{left action}
+    \begin{align}
+        \action \colon A \times M &\to M\\
+        (a, m) &\mapsto a \action m
+    \end{align}
+    such that for all \(a, b \in A\) and \(m, n \in M\) we have\footnote{Note that M1 and M2 simply say that this is a group action on the set \(M\), and M3 and M4 two impose that this group action is compatible with both the group operation and addition in the algebra.}
+    \begin{itemize}
+        \item[M1] \((ab)\action m = a\action (b\action m)\) (note that \((ab)\) is the product in \(A\));
+        \item[M2] \(1 \action m = m\).
+        \item[M3] \(a\action(m + n) = a\action m + a\action n\);
+        \item[M4] \((a + b)\action m = a\action m + b\action m\);
+    \end{itemize}
+    
+    One can similarly define a \define{right \(\symbf{A}\)-module}\index{right A-module@right \(A\)-module}, \(M\), as an abelian group with a \defineindex{right action}
+    \begin{align}
+        \action \colon M \times A &\to M\\
+        (m, a) &\mapsto m \action a
+    \end{align}
+    such that for all \(a, b \in A\) and \(m, n \in M\) we have
+    \begin{itemize}
+        \item[M1] \((m + n) \action a = m \action a + n \action a\);
+        \item[M2] \(m \action (a + b) = m \action a + m \action b\);
+        \item[M3] \(m \action (ab) = (m \action a) \action b\);
+        \item[M4] \(m \action 1 = m\).
+    \end{itemize}
+    
+    A \define{two-sided \(\symbf{A}\)-module}\index{two-sided A-module@two-sided \(A\)-module}\index{\(A\)-module}\index{module} is then an abelian group, \(M\), which is simultaneously a left and right \(A\)-module satisfying
+    \begin{equation}
+        a \action (m \action b) = (a \action m) \action b
+    \end{equation}
+    for all \(a, b \in A\) and \(m \in M\).
+\end{dfn}
+
+When it doesn't risk confusion we will write \(a \action m\) as \(am\) and \(m \action a\) as \(ma\).
+
+Note that a module is a generalisation of the notion of a vector space.
+In fact, if \(A = \field\) then a module is exactly a vector space.
+
+More compactly, one can define a right \(A\)-module as a left \(A^{\op}\)-module, where \(A^{\op}\) is the \defineindex{opposite algebra} of \(A\), defined to be the same underlying vector space with multiplication \(*\) defined by \(a * b = ba\), where \(ba\) is the multiplication in \(A\).
+Because of this we will almost never have reason to work with right modules, we can always turn them into a left module over the opposite algebra instead.
+
+Note that if \(A\) is commutative every left \(A\)-module is a right \(A\)-module and vice versa, and also a two-sided module.
+
+Without further clarification the term \enquote{module} will mean
+\begin{itemize}
+    \item a left module if \(A\) is not necessarily commutative;
+    \item a two sided module if \(A\) is commutative.
+\end{itemize}
+
+A representation of \(A\) and an \(A\)-module carry exactly the same information.
+Given a representation, \(\rho \colon A \to \End V\) we may define a group action on \(V\) by \(a \action v = \rho(a)v\).
+Composition in \(\End V\) is exactly repeated application of this action: \([\rho(a)\rho(b)]v = \rho(a)[\rho(b)v]\) (M1).
+The unit of \(\End V\) is the identity morphism, \(\id_V\), and \(1 \in A\) must map to \(\id_V\), so \(\rho(1)v = \id_V v = v\) (M2).
+Linearity of \(\rho(a)\) means that \(\rho(a)(v + w) = \rho(a)v + \rho(v)w\) (M3).
+Linearity of \(\rho\) means that \(\rho(a + b)v = \rho(a)v + \rho(b)v\) (M4).
+
+Conversely, given an \(A\)-module, \(M\), we can define scalar multiplication by \(\lambda \in \field\) on \(M\) by \(\lambda m = (\lambda 1) m\) where \(\lambda 1\) is scalar multiplication in \(A\).
+This makes \(M\) a vector space, and we may define a morphism \(\rho \colon A \to \End M\) by defining \(\rho(a)\) by \(\rho(a) = a \action m\), which uniquely determines \(\rho(a)\), say by considering the action on some fixed basis of \(M\).
+
+Further, these two constructions are inverse, given a module if we construct the corresponding representation then construct the corresponding module from that we get back the original module, and vice versa.
+This means that the notion of a representation and a module really are the same, and we don't need to distinguish between them.
+We will use whichever terminology and notation is better suited to the problem, which is usually the module terminology and notation.
+
+\begin{prp}{}{}
+    Let \(V\) be a \(\field\)-vector space, \(G\) a group, and \(\rho \colon G \to GL(V)\) a group homomorphism.
+    We may define a \(\field G\)-module by extending this map linearly, defining
+    \begin{equation}
+        \left( \sum_{g \in G} c_g g \right) \action v = \sum_{g \in G} c_g \rho(g)v.
+    \end{equation}
+    Conversely, given a left \(\field G\)-module on \(V\) we may define a group homomorphism \(\rho \colon G \to \generalLinear(V)\) by defining \(\rho(g)\) to be the linear operation \(v \mapsto g \action v\).
+    \begin{proof}
+        This is just a special case of the equivalence of representations and modules discussed above.
+    \end{proof}
+\end{prp}
+
+Note that a \defineindex{group representation} is defined to be a group homomorphism \(\rho \colon G \to \generalLinear(V)\).
+The above result shows that a group representation of \(G\) is exactly the same as an algebra representation of \(\field G\), so we can just study algebras.
+
+\begin{dfn}{Regular Representation}{}
+    Let \(V = A\) be an algebra and define \(\rho \colon A \to \End A\) by \(\rho(a)b = ab\).
+    This is called the \defineindex{left regular representation}.
+    Similarly, the \defineindex{right regular representation} is given by defining \(\rho(a)b = ba\).
+\end{dfn}
+
+\section{Direct Sums}
+The goal of much of representation theory is to classify possible representations.
+To do this we usually decompose representations into smaller parts that can be more easily classified.
+This decomposition is done by the direct sum.
+
+\begin{dfn}{Direct Sum}{}
+    Let \(M\) and \(N\) be \(A\)-modules.
+    The \defineindex{direct sum}, \(M \oplus N\), is the \(A\)-module given by the direct sum of the underlying abelian groups equipped with the action
+    \begin{equation}
+        a(m \oplus n) = am \oplus an
+    \end{equation}
+    for all \(a \in A\), \(m \in M\) and \(n \in N\).
+\end{dfn}
+
+The required properties follow immediately from the definition:
+\begin{itemize}
+    \item[M1] \((ab)(m \oplus n) = (ab)m \oplus (ab)n = a(bm) \oplus a(bn) = a(bm \oplus bn) = a(b(m \oplus n))\);
+    \item[M2] \(1(m \oplus n) = 1m \oplus 1n = m \oplus n\);
+    \item[M3] \(a((m \oplus n) + (m' \oplus n')) = a((m + m') \oplus (n + n')) = a(m + m') \oplus a(n + n') = (am + am') \oplus (an + an') = (am \oplus an) + (am' \oplus an') = a(m \oplus n) + a(m' \oplus n')\);
+    \item[M4] \((a + b)(m \oplus n) = (a + b)m \oplus (a + b)n = (am + bm) \oplus (an + bn) = (am \oplus an) + (bm \oplus bn) = a(m \oplus n) + b(m \oplus n)\).
+\end{itemize}
+
+\begin{dfn}{Submodule}{}
+    Let \(M\) be a left \(A\)-module.
+    An abelian subgroup \(N \trianglelefteq M\) is a \define{\(\symbf{A}\)-submodule}\index{submodule} if \(AN \subseteq N\).
+    In this case we say that \(N\) is \defineindex{invariant} under the action of \(A\).
+\end{dfn}
+
+Note that by \(AN\) we mean
+\begin{equation}
+    AN = \{an \mid a \in A , n \in N\}.
+\end{equation}
+So \(AN \subseteq N\) means that \(an \in N\) for all \(a \in A\) and \(n \in N\).
+Thus, invariance means that no element of \(N\) leaves \(N\) under the action of \(A\).
+
+\begin{dfn}{Trivial Submodule}{}
+    Every \(A\)-module, \(M\), admits two submodules, \(M\) itself and the zero module, \(0\), which contains only \(0\).
+    We call these \define{trivial submodules}\index{trivial submodule}.
+\end{dfn}
+
+Note that some texts call only \(0\) the trivial submodule, and make the distinction of a submodule vs a \emph{proper} submodule, the distinction being that \(M\) is not a proper submodule of \(M\).
+Then when we say \enquote{nontrivial submodule} these texts will say \enquote{nontrivial proper submodule}.
+
+\begin{dfn}{Simple Submodule}{}
+    Let \(M\) be an \(A\)-module.
+    We say that \(M\) is \defineindex{simple} or \defineindex{irreducible} if it contains no nontrivial submodules.
+\end{dfn}
+
+Typically \enquote{simple} is used for modules and \enquote{irreducible} is used more for representations, although irreducible is used for both.
+
+\begin{dfn}{Semisimple}{}
+    Let \(M\) be an \(A\)-module.
+    Then \(M\) is \defineindex{semisimple} or \defineindex{completely reducible} if it can be written as a direct sum of finitely many simple modules.
+\end{dfn}
+
+That is, \(M\) is semisimple if 
+\begin{equation}
+    M = \bigoplus_{i=1}^n N_i = N_1 \oplus \dotsb \oplus N_n
+\end{equation}
+where each \(N_i\) is simple.
+Note that we define the empty sum to be the zero module, so the zero module is considered semisimple (and also simple, since it contains only itself as a submodule).
+
+Again, \enquote{semisimple} is typically used only for modules, and \enquote{completely reducible} is used primarily for representations.
+
+\begin{dfn}{Indecomposable}{}
+    Let \(M\) be an \(A\)-module.
+    Then \(M\) is \defineindex{indecomposable} if \(M\) cannot be written as a direct sum of nontrivial modules.
+\end{dfn}
+
+The nontrivial requirement here just rules out decompositions of the form\footnote{Note that with our definition of the direct sum this really only holds up to isomorphism, since \(M\) has elements \(m\) whereas \(M \oplus 0\) has elements \((m, 0)\). However, we're yet to define morphisms between modules, and once we do we'll see that \(\oplus\) is the product in the category of modules, and as such is only defined up to isomorphism, so we may as well momentarily take the isomorphism that makes this equality true.} \(M = M \oplus 0\).
+
+Note that every simple (irreducible) module is indecomposable, since if it had a decomposition \(M = N_1 \oplus N_2\) with \(N_i\) nontrivial then their is a canonical copy of each \(N_i\) as a submodule of \(M\).
+The converse does not hold in general, not all indecomposable modules are irreducible.
+It is possible that \(M\) contains a submodule, \(N\), but that there is no submodule \(N'\) such that \(M = N \oplus N'\).
+Contrast this to finite dimensional vector spaces where we can take \(N'\) to be the orthogonal complement (with respect to some inner product) of \(N\) and this direct sum holds.
+We can still form the orthogonal complement of a submodule, but it will not, in general, be a submodule.
+There are, however, many special cases, such as finite dimensional complex representations of (group algebras) finite groups, where the orthogonal complement can be defined in such a way that it is a submodule, and in this case indecomposable and irreducible coincide.
+
+One of the main goals of representation theory is to classify all indecomposable modules of a given algebra.
+This then gives us an understanding of \emph{all} modules over that algebra, since any nonsimple or decomposable module may be realised as a direct sum of these classified indecomposable modules.
+
+\section{Module Homomorphisms}
+\begin{dfn}{Module Homomorphism}{}
+    Let \(M\) and \(N\) be \(A\)-modules.
+    An \define{\(\symbf{A}\)-module homomorphism}\index{module homomorphism} or \defineindex{intertwiner} is a homomorphism of the underlying abelian groups \(\varphi \colon M \to N\) which \enquote{commutes} with the action of \(A\), by which we mean
+    \begin{equation}
+        \varphi(a \action m) = a \action \varphi(m)
+    \end{equation}
+    for all \(a \in A\) and \(m \in M\).
+    
+    An invertible \(A\)-module homomorphism is called an \defineindex{isomorphism} of \(A\)-modules.
+    
+    Homomorphisms of right \(A\)-modules may be defined similarly.
+\end{dfn}
+
+\begin{ntn}{}{}
+    We write \(\Hom_A(M, N)\) for the set of \(A\)-module homomorphisms \(M \to N\).
+    Note that \(\Hom_A(M, N) \subseteq \Hom_{\Ab}(M, N)\) where \(\Hom_{\Ab}(M, N)\) is the set of all homomorphisms \(M \to N\) of the underlying abelian groups.
+\end{ntn}
+
+Note that in \(\varphi(a \action m)\) \(a\) is acting on an element of \(M\), and in \(a \action \varphi(m)\) \(a\) is acting on an element of \(N\), so these are in general different actions.
+Writing \(a \action {}\) for the map \(x \mapsto a \action x\) we can express the condition of commuting action as the commutativity of the diagram
+\begin{equation}
+    \begin{tikzcd}
+        M \arrow[r, "\varphi"] \arrow[d, "a \action {}"'] & N \arrow[d, "a \action {}"]\\
+        M \arrow[r, "\varphi"'] & N
+    \end{tikzcd}
+\end{equation}
+for all \(a \in A\).
+
+\begin{lma}{}{}
+    Isomorphisms of \(A\)-modules are exactly bijective morphisms of \(A\)-modules.
+    \begin{proof}
+        Let \(\varphi \colon M \to N\) be a bijective morphism of \(A\)-modules.
+        Then the (set-theoretic) inverse, \(\varphi^{-1} \colon N \to M\), exists.
+        We claim that this is a morphism of \(A\)-modules.
+        This follows by taking \(n \in N\) to be the image of \(m \in M\) under \(\varphi\), giving
+        \begin{equation}
+            \varphi^{-1}(a \action n) = \varphi^{-1}(a \action \varphi(m)) = \varphi^{-1}(\varphi(a \action m)) = a \action m = a \action \varphi^{-1}(m).
+        \end{equation}
+        
+        Conversely, if \(\varphi \colon M \to N\) is an isomorphism of \(A\)-modules it must necessarily be that \(\varphi^{-1}\) is the (set-theoretic) inverse of the underlying function of \(\varphi\), and so \(\varphi\) must be bijective.
+    \end{proof}
+\end{lma}
+
+If we instead talk of representations \((V, \rho)\) and \((W, \sigma)\) then a homomorphism of representations, \(\varphi \colon V \to W\), must satisfy \(\varphi(\rho(a)v) = \sigma(a)\varphi(v)\).
+Further, by linearity of \(\rho\) and \(\sigma\) and the fact that \(\rho(1) = \id_V\) and \(\sigma(1) = \id_W\) we have that for \(\lambda \in \field\)
+\begin{equation}
+    \varphi(\lambda m) = \varphi(\rho(1)\lambda m) = \varphi(\rho(\lambda 1) m) = \sigma(\lambda 1)\varphi(m) = \lambda \sigma(1) \varphi(m) = \lambda \varphi(m).
+\end{equation}
+This shows that \(\varphi\) must be a linear map \(\varphi \colon V \to W\).
+In fact, we can \emph{define} a homomorphism of representations to be a linear map \(\varphi \colon M \to N\) satisfying \(\varphi(\rho(a)m) = \sigma(a)\varphi(m)\).
+We will also write \(\Hom_A(V, W)\) for the set of representation morphisms \(V \to W\).
+Note then that \(\Hom_A(V, W) \subseteq \Hom_{\Vect[\field]}(V, W)\) where \(\Hom_{\Vect[\field]}(V, W)\) is the set of linear maps \(V \to W\) of the underlying vector spaces.
+Using the notation \(\Hom_A\) for both modules and representations is justified by the following remark.
+
+\begin{remark}{}{}
+    There is a category, \(\AMod\) (\(\ModA\)), with left (right) \(A\)-modules as objects and \(A\)-module homomorphisms as morphisms.
+    Similarly, there is a category \(\Rep(A)\) of representations of \(A\) with objects being representations \((V, \rho)\) and morphisms being homomorphisms of representations.
+    
+    In \cref{sec:representaitons and modules} we showed that we have a mapping \(F \colon \AMod \to \Rep(A)\) constructing a representation from a module, and a mapping \(G \colon \Rep(A) \to \AMod\) constructing a module from a representation.
+    In the discussion above we extend this mapping to define a representation homomorphism from a module homomorphism.
+    We can also ignore the requirement of linearity with respect to scalar multiplication in the definition of a representation homomorphism to recover a module homomorphism.
+    Further, applying either of these constructions to the appropriate identity map just gives the identity, and both constructions preserve composition.
+    These operations on homomorphisms are also inverses of each other.
+    Thus, \(F\) and \(G\) are functors and we have \(FG = \id_{\Rep(A)}\) and \(GF = \id_{\AMod}\).
+    Thus, \(\AMod\) and \(\Rep(A)\) are isomorphic as categories, justifying the fact that we will soon cease to distinguish between them.
+\end{remark}
+
+\begin{lma}{}{}
+    The category \(\AMod\) defined above is indeed a category.
+    \begin{proof}
+        First note that \(\id_M \colon M \to M\) is an \(A\)-module homomorphism for any \(A\)-module, \(M\), since we have
+        \begin{equation}
+            \id_M(a \action m) = a \action m = a \action \id_M(m).
+        \end{equation}
+        Now note that if \(\varphi \colon M \to N\) and \(\psi \colon N \to P\) are module homomorphisms then \(\psi \circ \varphi \colon M \to P\) is a module homomorphism since
+        \begin{equation*}
+            (\psi \circ \varphi)(a \action m) = \psi(\varphi(a \action m)) = \psi(a \action \varphi(m)) = a \action \psi(\varphi(m)) = a \action (\psi \circ \varphi)(m)
+        \end{equation*}
+        for all \(a \in A\) and \(m \in M\).
+        Finally, composition is just composition of the underlying functions, which is associative.
+    \end{proof}
+\end{lma}
+
+\section{Schur's Lemma}
+We can now give one of the first results of representation theory.
+It places a restriction on the types of morphisms we can have between modules when one or more of the modules is simple.
+We give the result as a proposition and a corollary, although for historical reasons it's called a lemma.
+The proposition is more general, and the corollary is a special case.
+Both are known as Schur's lemma, with context determining if we use the more general result or the special case.
+
+Before we can prove this result however we need a couple of results about kernels and images of module morphisms.
+
+\begin{lma}{}{}
+    Let \(\varphi \colon M \to N\) be a morphism of modules.
+    Then \(\ker \varphi\) is a submodule of \(M\) and \(\im \varphi\) is a submodule of \(N\).
+    \begin{proof}
+        \Step{\(\ker \varphi\)}
+        We know that \(\ker \varphi\) is a subgroup of \(M\), so we only need to show that it is invariant under the action of \(A\).
+        Take \(m \in \ker \varphi\), that is \(m \in M\) is such that \(\varphi(m) = 0\), and \(a \in A\).
+        Then
+        \begin{equation}
+            \varphi(a \action m) = a \action \varphi(m) = a \action 0.
+        \end{equation}
+        For arbitrary \(m' \in M\) we have
+        \begin{equation}
+            a \action 0 = a \action (m' - m') = (a \action m') - (a \action m') = 0
+        \end{equation}
+        so \(a \action 0 = 0\) for any \(a \in A\), and thus \(\varphi(a \action m) = a \action 0 = 0\), so \(a \action m \in \ker \varphi\).
+        
+        \Step{\(\im \varphi\)}
+        We know that \(\im \varphi\) is a subgroup of \(M\), so we only need to show that it is invariant under the action of \(A\).
+        Take \(n \in \im \varphi\) and \(a \in A\).
+        There exists some \(m \in M\) such that \(n = \varphi(m)\).
+        Then
+        \begin{equation}
+            a \action n = a \action \varphi(m) = \varphi(a \action m)
+        \end{equation}
+        and \(a \action m \in M\) so \(a \action n \in \im \varphi\).
+    \end{proof}
+\end{lma}
+
+\begin{prp}{Schur's Lemma}{prp:schurs lemma}
+    Let \(\field\) be any (not necessarily algebraically closed) field, and let \(A\) be an algebra over \(\field\).
+    Let \(M\) and \(N\) be \(A\)-modules and let \(\varphi \colon M \to N\) be a morphism of \(A\)-modules.
+    Then
+    \begin{enumerate}
+        \item if \(M\) is simple either \(\varphi = 0\) or \(\varphi\) is injective;
+        \item if \(N\) is simple either \(\varphi = 0\) or \(\varphi\) is surjective.
+    \end{enumerate}
+    Combined if \(M\) and \(N\) are simple then either \(\varphi = 0\) or \(\varphi\) is an isomorphism.
+    \begin{proof}
+        \Step{\(M\) Simple}
+        Let \(M\) be simple, so its only submodules are \(0\) and \(M\).
+        We know that \(\ker \varphi\) is a submodule of \(M\), so there are two cases to consider:
+        \begin{itemize}
+            \item If \(\ker \varphi = M\) then every element of \(M\) maps to \(0\), so \(\varphi = 0\).
+            \item If \(\ker \varphi = 0\) then \(\varphi\) is injective\footnote{We know that for group homomorphisms if the kernel is trivial then the map is injective, and injectivity is a set-theoretic property, so it still holds when we add the extra structure of the \(A\)-action}.
+        \end{itemize}
+        
+        \Step{\(N\) Simple}
+        Let \(N\) be simple, so its only submodules are \(0\) and \(N\).
+        We know that \(\im \varphi\) is a submodule of \(N\), so there are two cases to consider:
+        \begin{itemize}
+            \item If \(\im \varphi = 0\) then every element of \(M\) maps to \(0\), so \(\varphi = 0\).
+            \item If \(\im \varphi = N\) then \(\varphi\) is surjective.
+        \end{itemize}
+    \end{proof}
+\end{prp}
+
+\begin{crl}{Schur's Lemma}{crl:schurs lemma}
+    Let \(\field\) be an algebraically closed field, and let \(A\) be an algebra over \(\field\).
+    Let \(V\) be a finite dimensional representation of \(A\).
+    Then any representation homomorphism \(\varphi \colon V \to V\) is a multiple of the identity.
+    That is, \(\varphi = \lambda \id_V\) for \(\lambda \in \field\).
+    Note that \(\lambda = 0\) subsumes the trivial case.
+    \begin{proof}
+        Let \(\lambda \in \field\) be an eigenvalue of \(\varphi\) with corresponding eigenvector \(v \in V\).
+        Note that eigenvalues exist because
+        \begin{enumerate}[label={\alph*)}]
+            \item \(V\) is finite dimensional so the determinant may be defined as a polynomial in the entries of some matrix representing \(\varphi\) in a fixed basis; and
+            \item \(\field\) is algebraically closed, so this polynomial has roots.
+        \end{enumerate}
+        Then by definition \(\varphi(v) = \lambda v\) which we can rearrange to \((\varphi - \lambda \id_V) v = 0\).
+        Thus, \(v \in \ker(\varphi - \lambda \id_V)\), and since eigenvectors are, by definition, nonzero this means that \(\ker(\varphi - \lambda \id_V) \ne 0\), so \(\varphi - \lambda \id_V\) is not injective, so by Schur's lemma (\cref{prp:schurs lemma}) we must have that \(\varphi - \lambda \id_V = 0\).
+        Thus, \(\varphi = \lambda \id_V\).
+    \end{proof}
+\end{crl}
+
+\begin{crl}{}{crl:commutative algebra irreps are one dimensiona}
+    Let \(A\) be a commutative algebra over an algebraically closed field, \(\field\).
+    Then all nontrivial finite dimensional irreducible representations of \(A\) are one dimensional.
+    \begin{proof}
+        Let \(V\) be a finite dimensional irreducible representation of \(A\).
+        For \(a \in A\) define a map \(\varphi_a \colon V \to V\) by \(v \mapsto \varphi_a(v) = a \action v\).
+        This is an intertwiner: take \(b \in A\) and \(v \in V\), then we have
+        \begin{equation}
+            \varphi_a(b \action v) = a \action (b \action v) = (ab) \action v = (ba) \action v = b \action (a \action v) = b \action \varphi_a(v).
+        \end{equation}
+        Note that this is only true because \(ab = ba\).
+        
+        By Schur's lemma (\cref{crl:schurs lemma}) there exists some \(\lambda_a \in \field\) such that \(\varphi_a = \lambda_a \id_V\).
+        Then \(a \action v = \varphi_a(v) = \lambda_a v\), so every \(a \in A\) acts as scalar multiplication.
+        This means that any subspace is invariant, since every subspace is, by definition, invariant under scalar multiplication.
+        Thus, the only way that a representation can have no nontrivial invariant subspaces if if it only has trivial subspaces, which is only true if it is one dimensional (zero dimensional being ruled out by the assumption that the representation is nontrivial).
+    \end{proof}
+\end{crl}
+
+\begin{exm}{}{}
+    Consider \(A = \field[x]\), which is a commutative algebra.
+    We can determine all irreducible representations of \(A\).
+    
+    A representation, \(\rho \colon \field[x] \to \End V\), is fully determined by the value of \(\rho(x)\), since given an arbitrary polynomial, \(f(x) = \sum_{i=1}^{n} a_i x^i\), its action on \(v \in V\) is determined through linearity by
+    \begin{equation}
+        f(x) \action v = \rho(f(x)) v = \rho\left( \sum_{i=1}^{n} a_i x^i \right) v = \sum_{i=1}^n a_i \rho(x)^i v.
+    \end{equation}
+    
+    Further, by \cref{crl:commutative algebra irreps are one dimensiona} we know that any irreducible representation of \(\field[x]\) is one dimensional, so it must be that \(\rho(v) = \lambda v\) for some \(\lambda \in \field\).
+    
+    Let \(V_\lambda\) denote the one-dimensional representation in 
+    which \(x\) acts as scalar multiplication by \(\lambda\).
+    We claim that \(V_\lambda \isomorphic V_{\mu}\) if and only if \(\lambda = \mu\).
+    Suppose that \(\varphi \colon V_\lambda \to V_\mu\) is an isomorphism.
+    Then \(\varphi(x \action v) = \varphi(\lambda v) = \lambda \varphi(v)\) and \(\varphi(x \action v) = x \action \varphi(v) = \mu \varphi(v)\).
+    Thus, \(\lambda = \mu\).
+    
+    So, we have classified all irreducible representations of \(\field[x]\), they are precisely the one dimensional vector spaces, \(V_\lambda\) for \(\lambda \in \field\) in which \(\rho(x) = \lambda \id_{V_\lambda}\).
+    
+    This result generalises to polynomials in an arbitrary number of variables, \(\field[x_1, \dotsc, x_n]\).
+    Then a representation is fully determined by the values of \(\rho(x_1)\) through \(\rho(x_n)\).
+    Thus an irreducible representation is a one dimensional vector space, \(V_{\lambda_1, \dotsc, \lambda_n}\) in which \(\rho(x_i) = \lambda_i \id_{V_{\lambda_1, \dotsc, \lambda_n}}\).
+    
+    Go back to the case of \(A = \field[x]\).
+    For a nontrivial (\(\lambda \ne 0\)) finite dimensional irreducible representation, \(V_\lambda\), instead of starting with the action of \(x\) we can perform a change of variables and work with \(y = x/\lambda\).
+    Then we get the representation \(V_1\).
+    This means that all finite dimensional irreducible representations of \(\field[x]\) are essentially the same, up to rescaling.
+    This also means that they're pretty boring.
+    
+    Indecomposable representations of \(\field[x]\) are more interesting on the other hand.
+    Let \(V\) be a finite dimensional representation.
+    We can fix a basis and look at matrices.
+    Suppose \(B \in \End V\), then since we work over an algebraically closed field we know that the Jordan normal form of \(B\) exists after a basis change, allowing us to write the matrix of \(B\) as
+    \begin{equation}
+        B = 
+        \begin{pmatrix}
+            J_{\lambda_1, n_1} \\
+            & J_{\lambda_2, n_2} \\
+            & & \ddots \\
+            & & & J_{\lambda_k, n_k}
+        \end{pmatrix}
+    \end{equation}
+    where \(J_{\lambda_i, n_i}\) is the \(n_i \times n_i\) Jordan block matrix
+    \begin{equation}
+        J_{\lambda_i, n_i} = 
+        \begin{pmatrix}
+            \lambda_i & 1 \\
+            & \lambda_i & 1\\
+            & & \ddots & \ddots\\
+            & & & \lambda_i & 1\\
+            & & & & \lambda_i
+        \end{pmatrix}
+        .
+    \end{equation}
+    This block diagonal decomposition of \(B\) gives us a corresponding direct sum decomposition of \(V\).
+    Each Jordan block cannot be diagonalised (with the exception of the \(1 \times 1\) Jordan blocks which are trivially diagonal).
+    Thus we cannot further decompose \(B\) and so we cannot further decompose \(V\).
+    The result is that
+    \begin{equation}
+        V = \bigoplus_{i=1}^{k} V_{\lambda_i, n_i}
+    \end{equation}
+    where \(V_{\lambda_i, n_i} = \field^{n_i}\) is an \(n_i\)-dimensional vector space upon which the action of \(B\) is given by \(J_{\lambda_i, n_i}\).
+    Then taking \(B = \varphi(x)\) defines a representation of \(\field[x]\) on \(V\), and specifically we have the subrepresentations \(V_{\lambda_i, n_i}\) in which \(x\) acts as the Jordan block \(J_{\lambda_i, n_i}\).
+\end{exm}
+
+\section{Ideals and Quotients}
+\begin{dfn}{Ideals}{}
+    Let \(A\) be an algebra.
+    A subspace, \(I \subseteq A\), such that \(AI \subseteq I\) is called a \defineindex{left ideal}.
+    Similarly if \(IA \subseteq I\) then we call \(I\) a \defineindex{right ideal}.
+    A \defineindex{two-sided ideal} is simultaneously a left and right ideal.
+\end{dfn}
+
+Note that by \(AI\) we mean \(AI = \{a i \mid a \in A, i \in I\}\), so the condition that \(I\) is a left ideal is that \(ai \in I\) for all \(a \in A\) and \(i \in I\).
+
+\begin{exm}{}{}
+    \begin{itemize}
+        \item Any algebra, \(A\), always has \(0\) and \(A\) as ideals.
+        If these are the only ideals then we call \(A\) \defineindex{simple}.
+        \item Any left (right) ideal is a submodule of the left (right) regular representation.
+        This is simply identifying that \(A\) is an \(A\)-module with the action being left (right) multiplication and as such the notion of an ideal coincides with that of a submodule.
+        Note that the notion of a simple module coincides with the notion of a simple algebra under this identification.
+        \item If \(f \colon A \to B\) is an algebra morphism then \(\ker f\) is a two-sided ideal.
+        We know that \(\ker f\) is a subspace of \(A\), so just note that if \(a \in \ker f\) then \(f(a) = 0\) and we have
+        \begin{equation}
+            f(ba) = f(b)f(a) = f(b)0 = 0
+        \end{equation}
+        and
+        \begin{equation}
+            f(ab) = f(a)f(b) = 0f(a) = 0
+        \end{equation}
+        so \(ab\) and \(ba\) are in \(\ker f\).
+    \end{itemize}
+\end{exm}
+
+We will say \enquote{ideal} when we mean either a left ideal.
+Note that in the commutative case all left ideals are right ideals and hence two-sided ideals, so we don't need to distinguish the three cases.
+
+\begin{ntn}{}{}
+    Let \(A\) be an algebra and \(S \subseteq A\) a subset of \(A\).
+    Denote by \(\langle S \rangle\) the two-sided ideal generated by \(S\).
+    That is,
+    \begin{equation}
+        \langle S \rangle = \Span\{asb \mid s \in S, \text{ and } a, b \in A\}.
+    \end{equation}
+\end{ntn}
+
+For example, consider \(\field[x]\).
+Then \(\langle x \rangle\) consists of all polynomials that can be factorised as \(xf(x)\) where \(f(x)\) is an arbitrary polynomial, so \(f(x) = \sum_{i=0}^n a_i x^i\).
+Thus, \(x f(x) = \sum_{i=0} a_i x^{i + 1}\), so \(\langle x \rangle\) consists of all polynomials with zero constant term.
+More generally, \(\rangle x - a \rangle\) for \(a \in \field\) consists of all polynomials which factorise as \((x - a)f(x)\) for an arbitrary polynomial \(f(x)\), and thus this is the ideal consisting of all polynomials with \(a\) as a root.
+
+The point of defining ideals is really in order to define quotients.
+In this way ideals are to algebras as normal subgroups are to groups.
+
+\begin{dfn}{Quotient}{}
+    Let \(A\) be an algebra and \(I \subseteq A\) an ideal.
+    We define the \define{quotient}\index{quotient!algebra} to be the algebra \(A/I\) whose elements are equivalence classes
+    \begin{equation}
+        [a] = a + I \coloneq \{a' \in A \mid a - a' \in I\}.
+    \end{equation}
+    Addition and scalar multiplication are defined by
+    \begin{equation}
+        [a] + [b] = (a + I) + (b + I) = [a + b] = a + b + I
+    \end{equation}
+    and
+    \begin{equation}
+        \lambda[a] = [\lambda a]
+    \end{equation}
+    for \(a, b \in A\) and \(\lambda \in \field\).
+\end{dfn}
+
+\begin{lma}{}{}
+    The quotient of an algebra by an ideal is again an algebra.
+    \begin{proof}
+        Let \(A\) be an algebra and \(I \subseteq A\) an ideal.
+        Note that the quotient of a vector space by any subspace is again a vector space, so we need only define a multiplication operation on this vector space.
+        We do so by defining
+        \begin{equation}
+            [a][b] = (a + I)(b + I) \coloneq [ab] = ab + I.
+        \end{equation}
+        We need to show that this is well-defined and satisfies the properties of multiplication in an algebra.
+        
+        \Step{Well-Defined}
+        Let \(a, a' \in A\) be representatives of the same equivalence class, \([a] = [a']\).
+        Then by definition \(a - a' \in I\).
+        For \(b \in A\) we then have
+        \begin{equation}
+            [a][b] = [ab] = [a'b + (a - a')b] = [a'b] = [a'][b].
+        \end{equation}
+        Here we've used the fact that \(a - a' \in I\) and \(I\) is an ideal so \((a - a')b \in I\), and we can add any element of \(I\) inside an equivalence class without leaving the equivalence class.
+        Similarly, one can show that \([a][b] = [a][b']\) whenever \([b] = [b']\).
+        Thus, this product is well-defined.
+        
+        \Step{Algebra}
+        Linearity in the first argument follows from a direct calculation using the properties of quotient spaces:
+        \begin{multline}
+            [(a + \lambda a')b] = [a b + \lambda a' b] = [ab] + \lambda [a' b]\\
+            = [a][b] + \lambda [a'][b]= ([a] + \lambda[a'])[b] = [a + \lambda a'][b]
+        \end{multline}
+        for \(a, a', b \in A\) and \(\lambda \in \field\).
+        Linearity in the second argument follows similarly.
+        Associativity follows from
+        \begin{equation}
+            [a]([b][c]) = [a][bc] = [a(bc)] = [(ab)c] = [ab][c] = ([a][b])[c].
+        \end{equation}
+        Unitality follows from
+        \begin{equation}
+            [1][a] = [1a] = [a], \qqand [a][1] = [a1] = [a].
+        \end{equation}
+    \end{proof}
+\end{lma}
+
+\subsection{Generators and Relations}
+One of the most common ways to define an algebra is as a quotient of another algebra by some ideal given in terms of generators.
+The most common starting place is the free algebra, \(\field\langle x_1, \dotsc, x_m \rangle\).
+We can then take \(f_1, \dotsc, f_n \in \field\langle x_1, \dotsc, x_m\rangle\), and form an ideal, \(\langle f_1, \dotsc, f_n \rangle\).
+Then we may form the algebra
+\begin{equation}
+    A = \field\langle x_1, \dotsc, x_m \rangle / \langle f_1, \dotsc, f_n \rangle.
+\end{equation}
+Intuitively, elements of this are non-commutative polynomials in the \(x_i\) subject to the constraint that anywhere that we can manipulate the polynomial to be written with \(f_i\) we can set that \(f_i\) equal to zero.
+
+For example, let \(f_{i,j} = x_i x_j - x_j x_i\) for \(i, j = 1, \dotsc, m\).
+Consider the algebra \(A = \field \langle x_1, \dotsc, x_m \rangle / \langle f_{i,j} \rangle\) consists of non-commutative polynomials in \(x_i\) subject to the condition that \(x_i x_j - x_j x_i = 0\), which is to say \(x_i x_j = x_j x_i\), which is exactly the condition that the \(x_i\) \emph{do} commute with each other.
+
+Another example is \(A = \field \langle x_1, \dotsc, x_n \rangle / \langle x_i^2 - e, x_ix_{i+1}x_i - x_{i+1}x_ix_{i+1} \rangle\).
+This sets \(x_i^2 = e\) and \(x_ix_{i+1}x_i = x_{i+1}x_ix_{i+1}\) (called the \defineindex{braid relation}).
+These are exactly the relations defining the symmetric group, \(S_n\), when we interpret \(x_i\) as the transposition \(\cycle{i,i+1}\).
+We're also taking linear combinations of these \(x_i\), so \(A = \field S_n\).
+
+\subsection{Quotient Modules}
+\begin{dfn}{Quotient Module}{}
+    Let \(M\) be an \(A\)-module and \(N\) a submodule of \(M\).
+    We define the \define{quotient module}\index{quotient!module}, \(M/N\), to be the module consisting of equivalence classes
+    \begin{equation}
+        [m] = m + N \coloneq \{m' \in M \mid m - m' \in M\}.
+    \end{equation}
+    Addition in this module is defined by
+    \begin{equation}
+        [m] + [m'] = [m + m']
+    \end{equation}
+    for \(m, m' \in M\) and the action of \(A\) is given by
+    \begin{equation}
+        a \action [m] = [a \action m]
+    \end{equation}
+    for \(a \in A\) and \(m \in M\).
+\end{dfn}
+
+\begin{lma}{}{}
+    The quotient of a module by a submodule is again a module.
+    \begin{proof}
+        Let \(M\) be an \(A\)-module with \(N \subseteq M\) a submodule.
+        Then \(N\) is a subgroup of an abelian group, and so is automatically a normal subgroup.
+        Then we know that \(M/N\) is an abelian group also.
+        
+        Suppose that \([m] = [m']\), that is \(m\) and \(m'\) are representatives of the same equivalence class.
+        Then \(m' - m \in N\).
+        We then have
+        \begin{multline}
+            a \action [m] = a \action [m' + (m - m')] = [a \action (m' + (m - m'))]\\
+            = [a \action m' + a \action (m - m')] = [a \action m'] = a \action [m'].
+        \end{multline}
+        Here we've used the fact that \(m' - m \in N\) and \(N\) is a submodule so \(a \action (m' - m) \in N\) as well.
+        So, the action of \(a \in A\) on \([m] = [m']\) is well-defined.
+        
+        It remains to show that the action of \(A\) on \(M/N\) makes it an \(A\)-module:
+        \begin{itemize}
+            \item[M1] \((ab) \action [m] = [(ab) \action m] = [a \action (b \action m)] = a \action [b \action m] = a \action (b \action [m])\);
+            \item[M2] \(1 \action [m] = [1 \action m] = [m]\);
+            \item[M3] \(a \action ([m] + [n]) = a \action [m + n] = [a \action (m + n)] = [a \action m + a \action n] = [a \action m] + [a \action n] = a \action [m] + a \action [n]\);
+            \item[M4] \((a + b) \action [m] = [(a + b) \action m] = [a \action m + b \action m] = [a \action m] + [b \action m] = a \action [m] + b \action [m]\)
+        \end{itemize}
+        for all \(a, b \in A\) and \(m, n \in M\).
+    \end{proof}
+\end{lma}
+
+\begin{remark}{}{}
+    Consider the left regular representation of \(A\).
+    As we have mentioned ideals of \(A\) are precisely submodules of the regular representation.
+    It follows that \(A/I\) is a left \(A\)-module precisely when \(I\) is a left ideal.
+\end{remark}
+
+\chapter{Tensor Products}
+\section{Tensor Product of Modules}
+We first define the tensor product of \(R\)-modules (\(R\) a ring). 
+This definition can also be applied to \(A\)-modules (\(A\) an algebra) without modification.
+
+\begin{dfn}{Tensor Product}{}
+    Let \(R\) be a ring, \(M\) a right \(R\)-module, and \(N\) a left \(R\)-module.
+    Then the \define{tensor product}\index{tensor product!of R-modules@of \(R\)-modules}, \(M \otimes_R N\), is the abelian group \begin{equation}
+        \frac{F(\{m \otimes n \mid m \in M, n \in N\})}{I}
+    \end{equation}
+    where \(F(X)\) denotes the free abelian group on the set \(X\) and \(I\) is the normal subgroup generated from all elements of the form
+    \begin{itemize}
+        \item \((m + m') \otimes n - m \otimes n - m' \otimes n\);
+        \item \(m \otimes (n + n') - m \otimes n - m \otimes n'\);
+        \item \((m \action r) \otimes n - m \otimes (r \action n)\)
+    \end{itemize}
+    with \(m, m' \in M\), \(n, n' \in N\) and \(r \in R\).
+\end{dfn}
+
+\begin{wrn}
+    The tensor product does not, in general, have the structure of an \(R\)-module.
+    It is just an abelian group.
+    In a sense the \(R\)-actions of \(M\) and \(N\) are \enquote{used up} in the construction and don't \enquote{survive} to produce a sensible notion of an \(R\)-action on \(M \otimes_R N\).
+\end{wrn}
+
+\begin{ntn}{}{}
+    When \(R\) is clear from context we will write \(M \otimes N\) instead of \(M \otimes_R N\).
+    Conversely, if needed we'll write \(m \otimes_R n\) for elements of \(M \otimes_R N\) if there are multiple ways to define the tensor product.
+\end{ntn}
+
+Intuitively, \(M \otimes_R N\) consists of sums of elements which we write as\footnote{We should write \([m \otimes n]\) or something similar, since what we actually have is the equivalence class of \(m \otimes n\) in \(F(\{m \otimes n\})/I\).} \(m \otimes n\) with \(m \in M\) and \(n \in N\).
+So, one element of \(M \otimes_R N\) might be
+\begin{equation}
+    m_1 \otimes n_1 + m_2 \otimes n_2 + m_3 \otimes n_3
+\end{equation}
+with \(m_i \in M\) and \(n_i \in N\).
+Note that there are no factors of \(R\) here, this is purely an operation in the free group.
+The quotient imposes that in \(M \otimes_R N\) we have the relations
+\begin{align}
+    (m + m') \otimes n &= m \otimes n + m' \otimes n;\\
+    m \otimes (n + n') &= m \otimes n + m \otimes n';\\
+    (m \action r) \otimes n &= m \otimes (r \action n).
+\end{align}
+
+As we mentioned the tensor product of a right and left \(R\)-module is not, in general, an \(R\)-module in any consistent way.
+In order for the tensor product to be a module we need to have some extra module structure present in one of the two modules which then remains after the tensor product is formed.
+Of course, this extra structure must be compatible with the existing structure, and it turns out that the following is exactly the right definition for this purpose.
+
+\begin{dfn}{Bimodule}{}
+    Left \(A\) and \(B\) be associative unital \(\field\)-algebras.
+    An \define{\(\symbf{(A, B)}\)-bimodule}\index{bimodule} is an abelian group, \(M\), which is both a left \(A\)-module and a right \(B\) module in such a way that
+    \begin{equation}
+        (a \action m) \action b = a \action (m \action b)
+    \end{equation}
+    for all \(a \in A\), \(b \in B\), and \(m \in M\).
+\end{dfn}
+
+\begin{exm}{}{}
+    Let \(V\) be a \(\field\)-vector space and a left \(A\)-module.
+    Then \(V\) is an \((A, \field)\)-bimodule where \(a \action v\) is just the action of \(A\) on \(V\) as an \(A\)-module and \(v \action \lambda = \lambda v\) is just scalar multiplication by elements of \(\field\).
+    That this is a bimodule follows because
+    \begin{equation}
+        a \action (v \action \lambda) = a \action (\lambda v) = \lambda (a \action v) = (a \action v) \action \lambda
+    \end{equation}
+    having used the fact that the action of \(a\) on \(v\) is \(\field\)-linear.
+    
+    In fact, we can define a bimodule first (just combining the definitions of a left and right module), then a left \(A\)-module is an \((A, \field)\)-bimodule, and a right \(A\)-module is a \((\field, A)\)-bimodule.
+\end{exm}
+
+\begin{lma}{}{}
+    Let \(M\) be an \((A, B)\)-bimodule, and \(N\) a left \(B\)-module.
+    Then \(M \otimes_B N\) is a left \(A\)-module with \(a \action (m \otimes n) \coloneqq (a \action m) \otimes n\).
+    \begin{proof}
+        First note that as an \((A, B)\)-bimodule \(M\) is, in particular, a right \(B\)-module.
+        Thus, the tensor product \(M \otimes_B N\) is defined as the quotient of a free abelian group by an ideal, and so is again an abelian group.
+        It remains only to show that this abelian group equipped with the action of \(A\) on the first factor is an \(A\)-module.
+        
+        To do so take an arbitrary element of \(M \otimes_B N\), which is of the form \(\sum_{i \in I} m_i \otimes n_i\) where \(I\) is some finite indexing set, \(m_i \in M\) and \(n_i \in N\).
+        We are free to define the action of \(A\) on this element to be
+        \begin{equation}
+            a \action \left( {\textstyle \sum_{i \in I}} m_i \otimes n_i \right) \coloneqq {\textstyle \sum_{i \in I}} (a \action m_i) \otimes n_i.
+        \end{equation}
+        Then when \(I\) is a singleton this reduces to \(a \action (m \otimes n) = (a \action m) \otimes n\) as required.
+        
+        We can now prove that this makes \(M \otimes_B N\) a left \(A\)-module:
+        \begin{itemize}
+            \item[M1] \((ab) \action \sum_{i} m_i \otimes n_i = \sum_{i} ((ab) \action m_i) \otimes n_i = \sum_{i} (a \action (b \action m_i)) \otimes n_i = a \action \sum_i (b \action m_i) \otimes n_i = a \action \left( b \action \sum_i m_i \otimes n_i \right)\);
+            \item[M2] \(1 \action \sum_i m_i \otimes n_i = \sum_i (1 \action m_i) \otimes n_i = \sum_i m_i \action n_i\);
+            \item[M3] \(a \action \left( \sum_{i \in I} m_i \otimes n_i + \sum_{j \in J} m_j \otimes n_j \right) = a \action \left( \sum_{i \in I \sqcup J} m_i \otimes n_i \right) = \sum_{i \in I \sqcup J} (a \action m_i) \otimes n_i = \sum_{i \in I} (a \action m_i) \otimes n_i + \sum_{j \in J} (a \action m_j) \otimes n_j\);
+            \item[M4] \((a + b) \action \sum_i m_i \otimes n_i = \sum_i ((a + b) \action m_i) \otimes n_i = \sum_i (a \action m_i + b \action m_i) \otimes n_i = \sum_i (a \action m_i) \otimes n_i + (b \action m_i) \otimes n_i = a \action \sum_i m_i \otimes n_i + b \action \sum_i m_i \otimes n_i\). 
+        \end{itemize}
+    \end{proof}
+\end{lma}
+
+Similarly, if \(M\) is a right \(A\)-module and \(N\) is an \((A, B)\)-bimodule then \(M \otimes_A N\) is a right \(B\)-module with the action given by \((m \otimes n) \action b = m \otimes (n \action b)\).
+
+\begin{exm}{}{}
+    Any \(\field\)-vector space, \(V\), is a \((\field, \field)\)-bimodule, defining \(\lambda \action v = \lambda v = v \action \lambda\) for \(\lambda \in \field\) and \(v \in V\).
+    If \(U\) is some other vector space then we can form the \(\field\)-module \(V \otimes_{\field} U\), which is of course just the usual tensor product of vector spaces.
+    
+    In fact, this works for any commutative algebra, \(A\), we can take any \(A\)-module as an \((A, A)\)-bimodule, so if \(M\) and \(N\) are \(A\)-modules then \(M \otimes_A N\) is an \(A\)-module.
+\end{exm}
+
+\subsection{Universal Property}
+The tensor product may also be defined via a universal property.
+
+\begin{lma}{}{}
+    Let \(M\) be an right \(A\)-module, and let \(N\) be a left \(A\)-module.
+    Then for any abelian group, \(G\), and any group homomorphism \(f \colon M \times N \to G\) satisfying ... there is a unique group homomorhpism \(\overbar{f} \colon M \otimes_A N \to G\) such that \(\overbar{f}(m \otimes n) = f(m, n)\) for all \(m \in M\) and \(n \in N\).
+    That is, the diagram
+    \begin{equation}
+        \begin{tikzcd}
+            M \times N \arrow[r, "{-}\otimes{-}"] \arrow[dr, "f"'] & M \otimes_A N \arrow[d, "\exists ! \overbar{f}"]\\
+            & G
+        \end{tikzcd}
+    \end{equation}
+    commutes.
+    \begin{proof}
+        To make this diagram commutes we can define \(\overbar{f}(m \otimes n) = f(m, n)\).
+        The fact that \(\overbar{f}\) is a group homomorhpism means that this uniquely defines the value of \(\overbar{f}\) on any element of \(M \otimes_A N\) by
+        \begin{equation}
+            \overbar{f}\left( {\textstyle \sum_i} m_i \otimes n_i \right) = {\textstyle\sum_i} f(m_i, n_i). \qedhere
+        \end{equation}
+    \end{proof}
+\end{lma}
+
+Note that \(\Hom_A(M, N)\) inherits the module structure of \(N\) via pointwise operations.
+Let \(M\) be an \((A, B)\)-bimodule, \(N\) a \((B, C)\)-bimodule, and \(P\) an \((A, C)\)-bimodule for three algebras, \(A\), \(B\), and \(C\).
+Then we can form the tensor product \(M \otimes_B N\), which is an \(A\)-module, and we can consider the hom-set \(\Hom_A(M \otimes_B N, P)\), of left \(A\)-module homomorphisms, this is itself an \(A\)-module, and in fact is an \((A, A)\)-bimodule.
+We can also form the hom-set \(\Hom_C(N, P)\) of right \(C\)-module homomorhpisms, which is an left \(A\)-module under pointwise action using the \(A\)-module structure of \(P\).
+Then we can take the hom-set \(\Hom_B(M, \Hom_C(N, P))\), which is an \(A\)-module under pointwise the action.
+Then it turns out that we actually have an isomorphism
+\begin{equation}
+    \Hom_A(M \otimes_B N, P) \xrightarrow{\isomorphic} \Hom_B(M, \Hom_C(N, P))
+\end{equation}
+given by sending \(f\) to \(g\) defined by \(g(m)(n) = f(m \otimes n)\).
+This isomorphism is natural in all objects, and thus this is an adjunction.
+
+\section{Tensor Algebra}
+\begin{dfn}{Tensor Algebra}{}
+    Let \(V\) be a vector space over \(\field\).
+    Then the \defineindex{tensor algebra}, \(TV\), is defined to be
+    \begin{equation}
+        \bigoplus_{n=0}^{\infty} V^{\otimes n} = \field \oplus V \oplus (V \otimes V) \oplus (V \otimes V \otimes V) \oplus \dotsb.
+    \end{equation}
+    Multiplication is defined by \(ab = a \otimes b \in V^{\otimes(n = m)}\) for \(a \in V^{\otimes n}\) and \(b \in V^{\otimes m}\), and extended linearly.
+\end{dfn}
+
+\begin{lma}{}{}
+    Let \(V\) be an \(n\)-dimensional vector space over \(\field\).
+    Then \(TV\) is isomorphic to \(\field\langle x_1, \dotsc, x_n \rangle\), the free algebra on \(n\) indeterminates.
+    \begin{proof}
+        Pick a basis for \(V\).
+        Identify this basis with the \(x_i\).
+        Elements of \(TV\) are linear combinations of tensor products of these basis elements, so we can identify them with polynomials in non-commuting variables.
+        For example, given the basis \(\{e_i\}\) for \(V\) we have that \(e_1 \otimes e_2 \otimes e_1\) maps to \(x_1x_2x_1\), and \(e_1 \otimes e_2 + e_1 \otimes e_3 \otimes e_2\) maps to \(x_1x_2 + x_1x_3x_2\).
+    \end{proof}
+\end{lma}
+
+The nice thing about the tensor algebra is that it gives us a basis free way to work with the free algebra, that is a way that is independent of the choice of generators.
+As it is there is no commutativity imposed on the product in \(TV\), we can impose some commutativity condition by taking quotients.
+
+\begin{dfn}{Quotients of the Tensor Algebra}{}
+    Let \(V\) be a vector space over \(\field\).
+    We define following quotients:
+    \begin{itemize}
+        \item \(SV \coloneqq TV/\langle v \otimes w - w \otimes v \rangle\), the \defineindex{symmetric algebra}; and
+        \item \(\Lambda V \coloneqq TV/\langle v \otimes w + w \otimes v \rangle\), the \defineindex{exterior algebra}.
+    \end{itemize}
+    If \(\lie{g} = V\) is a Lie algebra then we may define the quotient \(\universalEnveloping(\lie{g}) \coloneqq TV/\langle v \otimes w - w \otimes v - \bracket{v}{w} \rangle\), the \defineindex{universal enveloping algebra}.
+\end{dfn}
+
+The idea is that for \(SV\) we impose that\footnote{identifying elements with their equivalence class} \(v \otimes w = w \otimes v\), which makes \(SV\) isomorphic to \(\field[x_1, \dotsc, x_n]\) for \(n = \dim V\).
+For \(\Lambda V\) we impose that \(v \otimes w = -w\otimes v\) (usually the product here is written as \(v \wedge w\)).
+Finally, for \(\universalEnveloping(\lie{g})\) we impose that the bracket, \(\bracket{v}{w}\) is exactly the commutator \(v \otimes w - w \otimes v\).
+This last case is nice because it allows us to treat the abstract bracket as if it were a commutator.
+
+Note that the tensor algebra, as well as the quotients \(SV\) and \(\Lambda V\), are graded algebras, meaning that they have decompositions as direct sums:
+\begin{equation}
+    SV = \bigoplus_{n = 0}^{\infty} S^nV, \qqand \Lambda V = \bigoplus_{n = 0}^{\infty} \Lambda^n V.
+\end{equation}
+Here \(S^nV\) (\(\Lambda^nV\)) is the \(n\)th (anti)symmetric tensor power of \(V\), that is, it's \(V^{\otimes n}\) modulo the relation that factors (anti)commute.
+Note that \(S^nV\) is isomorphic to the subalgebra of \(\field[x_1, \dotsc, x_n]\) consisting of homogeneous polynomials of degree \(n\).
+
+\chapter{Jacobson's Density Theorem}
+\section{Semisimple Representations}
+Recall that a module is semisimple if it is a direct sum of simple modules, and a simple module is one with no nontrivial submodules.
+
+\begin{exm}{}{}
+    Let \(V\) be an \(n\)-dimensional simple \(A\)-module.
+    Then \(\End V\) is an \(A\)-module as well, with \(A\) acting by left matrix multiplication (after fixing some basis so that elements of \(\End V\) can be identified with matrices and then identifying elements of \(A\) acting on \(\End V\) with the corresponding linear operator on \(V\)).
+    With this construction \(\End V\) is semisimple, in particular
+    \begin{equation}
+        \End V \isomorphic \underbrace{V \oplus \dotsb \oplus V}_{n \text{ terms}} \eqcolon nV.
+    \end{equation}
+    This isomorphism is given by fixing some basis, \(\{v_1, \dotsc, v_n\} \subseteq V\), and then defining a linear map \(\End V \to nV\) by \(\varphi \mapsto (\varphi(v_1), \dotsc, \varphi(v_n))\).
+    Viewing \(v_i\) as column matrices \(\varphi(v_i)\) is simply the \(i\)th column of the matrix corresponding to \(\varphi\) in this basis.
+\end{exm}
+
+In this example \(\End V\) ends up being a direct sum of a single simple module.
+In the general semisimple case any simple module can appear in the decomposition.
+If we restrict ourselves to finite dimensions then we can get a pretty good handle on which simple modules appear in such a decomposition.
+In particular, any finite-dimensional semisimple module, \(V\), may be decomposed as
+\begin{equation}
+    V = \bigoplus_{i \in I} m_i V_i
+\end{equation}
+with \(m_i \in \integers_{\ge 0}\) and \(V_i\) running over all finite dimensional simple modules.
+We call \(m_i\) the \defineindex{multiplicity} of \(V_i\) in \(V\).
+Note that since this decomposition is unique up to the order of the terms.
+
+\begin{lma}{}{}
+    Let \(V\) be a finite dimensional semisimple \(A\)-module, with decomposition
+    \begin{equation}
+        V = \bigoplus_{i \in I} m_i V_i
+    \end{equation}
+    with \(m_i \in \integers_{\ge 0}\) and \(V_i\) simple.
+    Then the multiplicity, \(m_i\), is given by
+    \begin{equation}
+        m_i = \dim( \Hom_A(V_i, V) ).
+    \end{equation}
+    \begin{proof}
+        We make use of the fact that\footnote{\(\Hom(V_i, -)\) is right adjoint (to \(-\otimes_AV_i\)) and as such preserves colimits}
+        \begin{equation}
+            \Hom_A(V_i, V' \oplus V'') \isomorphic \Hom_A(V_i, V') \oplus \Hom_A(V_i, V'').
+        \end{equation}
+        This extends to all finite direct sums.
+        
+        Note that \(\Hom_A(V_i, V)\) is an \((A, \field)\)-bimodule with the left action \((a \action \varphi)(v) = \varphi(a \action v)\) and right action \((\varphi \action \lambda)(v) = \lambda \varphi(v)\).
+        Further, \(V_i\) is a right \(\field\)-module with the action \(v \action \lambda = \lambda v = (\lambda 1_A) \action v\).
+        Thus, \(\Hom_A(V_i, V) \otimes_{\field} V_i\) is a left \(A\)-module.
+        
+        We can define a map
+        \begin{equation}
+            \label{eqn:map between + hom Vi V x Vi and V}
+            \begin{aligned}
+                \psi \colon \bigoplus_{i \in I} \Hom_A(V_i, V) \otimes_{\field} V_i &\to V\\
+                \bigoplus_{i \in I} \varphi_i \otimes v_i &\mapsto \sum_i \varphi_i(v_i).
+            \end{aligned}
+        \end{equation}
+        This is an \(A\)-module isomorphism:
+        \begin{align}
+            \psi\left( a \action {\textstyle \bigoplus_{i \in I}} \varphi_i \otimes v_i \right) &= \psi\left( {\textstyle \bigoplus_{i\in I}} \varphi_i \otimes (a \action v_i) \right)\\
+            &= {\textstyle \sum_{i \in I}} \varphi_i(a \action v_i)\\
+            &= {\textstyle \sum_{i \in I}} a \action \varphi_i(v_i)\\
+            &= a \action {\textstyle \sum_{i \in I}} \varphi_i(v_i)\\
+            &= a \action \psi\left( {\textstyle \bigoplus_{i \in I}} \varphi_i \otimes v_i \right).
+        \end{align}
+        Linearity is clear from the definition.
+        It remains only to show that this map is invertible.
+        By linearity it is sufficient to show that the map
+        \begin{align}
+            \Hom(V_i, V) \otimes V_i &\to V\\
+            \varphi_i \otimes v_i &\mapsto \varphi_i(v_i)
+        \end{align}
+        is an isomorphism.
+        Since \(V_i\) is simple Schur's lemma tells us that this map is either zero or surjective.
+        It is clearly not zero, since we can simply choose some vector \(v_i\) and some nonzero map \(\varphi_i\) on which \(\varphi_i(v_i) \ne 0\).
+        Thus, this map is surjective.
+        A surjective linear map between finite dimensional modules is an isomorphism.
+        Hence, the map in \cref{eqn:map between + hom Vi V x Vi and V} is an isomorphism.
+        
+        We then have
+        \begin{align}
+            \dim V &= \dim\left( {\textstyle \bigoplus_{i \in I}} \Hom_A(V_i, V) \right)\\
+            &= {\textstyle \sum_{i \in I}} \dim(\Hom_A(V_i, V)) \dim(V_i)
+        \end{align}
+        and
+        \begin{align}
+            \dim V &= \dim\left( {\textstyle \bigoplus_{i \in I}} m_i V_i \right)\\
+            &= {\textstyle \sum_{i \in I}} m_i \dim (V_i).
+        \end{align}
+        Since these are finite sums and this must hold for arbitrary semisimple modules \(V\), including the case where \(V = V_i\) is actually simple, we must have that
+        \begin{equation*}
+            m_i = \dim(\Hom_A(V_i)). \qedhere
+        \end{equation*}
+    \end{proof}
+\end{lma}
+
+The decomposition into simple submodules also puts restrictions on the non-simple submodules that we can have.
+First, every submodules of a semisimple module must itself be semisimple, meaning it has its own decomposition into simple modules.
+Further, the simple modules that can appear in the decomposition of the submodule are only the ones that appear in the decomposition of the module.
+Finally, the multiplicity with which these simple modules appear in the submodule must be at most the multiplicity with which they appear in the original module.
+That is, the only way to form a submodule of a semisimple module is to take some subset of the simple modules that appear in the decomposition and take their direct sum.
+
+\begin{prp}{}{prp:submodules of semisimple modules}
+    Let \(V\) be a semisimple finite-dimensional \(A\)-module with decomposition
+    \begin{equation}
+        V = \bigoplus_{i=1}^m n_i V_i
+    \end{equation}
+    with the \(V_i\) pairwise-nonisomorhpic simple \(A\)-modules.
+    Let \(W \subseteq V\) be a submodule.
+    Then
+    \begin{equation}
+        W = \sum_{i=1}^m r_i V_i
+    \end{equation}
+    with \(0 \le r_i \le n_i\) for all \(i\), and the inclusion \(\varphi \colon W \hookrightarrow V\) decomposes as
+    \begin{equation}
+        \varphi = \bigoplus_{i=1}^m \varphi_i
+    \end{equation}
+    where \(\varphi_i \colon r_i V_i \to n_i V_i\) are maps given by \(\varphi_i(v_1, \dotsc, v_{r_i}) = (v_1, \dotsc, v_{r_i}) \action X_i\) where \(X_i \in \matrices[r_i]{n_i}{\field}\) acts on the row vector by right matrix multiplication and has rank \(r_i\).
+    \begin{proof}
+        The proof is by induction on \(n = \sum_{i=1}^m n_i\).
+        For the base case we just have that \(V\) is simple, and so its only submodules are the zero module (the empty direct sum) or \(V\) itself, in which case the statement clearly holds.
+        
+        Now suppose that this is the case when \(\sum_{i} n_i = n - 1\).
+        Fix some submodule, \(W \subseteq V\).
+        If \(W = 0\) then we're done, so suppose \(W \ne 0\).
+        Fix some simple submodule, \(P \subseteq W\).
+        Such a \(P\) exists as a consequence of \cref{lma:every finite dimensional module has a simple submodule}.
+        By Schur's lemma \(P\) must be isomorphic to \(V_i\) for some \(i\), and the inclusion \(\varphi|_P \colon P \to V\) factors through \(n_i V_i\) by
+        \begin{equation}
+            P \xrightarrow{\isomorphic} V_i \hookrightarrow n_i V_i \hookrightarrow V.
+        \end{equation}
+        Identifying \(P\) with \(V_i\) this map is given by
+        \begin{equation}
+            v \mapsto (v q_1, \dotsc, v q_{n_i})
+        \end{equation}
+        with \(q_i \in \field\) not all zero.
+        
+        The group \(G_i = \generalLinear_{n_i}(\field)\) acts on \(n_i V_i\) by right matrix multiplication.
+        We can also act trivially on \(n_j V_j\) for \(j \ne i\).
+        Then \(G_i\) acts on \(V\).
+        This gives an action of \(G_i\) on the set of submodules of \(V\), and this action preserves the property that we're trying to establish, that under the action of \(g_i \in G_i\) the matrix \(X_i\) goes to \(X_i g_i\) while the matrices \(X_j\) (\(j \ne i\)) are left unchanged.
+        Taking \(g_i \in G_i\) such that \((1_1, \dotsc, q_{n_i})g_i = (1, 0, \dotsc, 0)\), which is always possible as \(g_i\) is invertible, we have that \(Wg_i\) contains the first summand, \(V_i\), of \(n_i V_i\).
+        Thus, \(Wg_i \isomorphic V_i \oplus W'\) where 
+        \begin{equation}
+            W' \subseteq n_1 V_1 \oplus \dotsb \oplus (n_i - 1)V_i \oplus \dotsb \oplus n_m V_m
+        \end{equation}
+        is the kernel of the projection of \(Wg_i\) onto the first summand \(V_i\).
+        The inductive hypothesis then holds for this subspace, and so it has a decomposition
+        \begin{equation}
+            W' \isomorphic \bigoplus_{j=1}^m r_j' V_i
+        \end{equation}
+        with \(0 \le r_i' \le n_i - 1\) and \(0 \le r_j \le n_j\) for \(j \ne i\), and so taking
+        \begin{equation}
+            W \isomorphic V_i \oplus W \isomorphic \bigoplus_{j=1}^m r_jV_i
+        \end{equation}
+        with \(r_i = r_i' + 1\) and \(r_j = r_j'\) we get the desired result.
+    \end{proof}
+\end{prp}
+
+\begin{lma}{}{lma:every finite dimensional module has a simple submodule}
+    Any nonzero finite dimensional \(A\)-module contains a simple submodule.
+    \begin{proof}
+        The proof is by induction on dimension.
+        Let \(V\) be a finite dimensional nonzero \(A\)-module.
+        We start with \(\dim V = 1\).
+        Then \(V\) is itself simple, and we are done.
+        Suppose then that all \(A\)-modules of dimension at most \(k\) contain a simple submodule.
+        Consider the case when \(\dim V = k + 1\).
+        If \(V\) is simple we are done.
+        If \(V\) is not simple then it contains a proper submodule, \(W\).
+        Since \(W\) is a \emph{proper} submodule it has dimension less than \(k + 1\), and thus the induction hypothesis holds.
+        Thus, \(W\) has a simple submodule, which is then also a simple submodule of \(V\).
+        Then, by induction, the statement holds for all finite dimensional \(A\)-modules.
+    \end{proof}
+\end{lma}
+
+\begin{remark}{}{}
+    We assumed that \(\field\) was algebraically closed in the use of Schur's lemma above.
+    However, this is not required for a modified result to hold.
+    If we replace \(\matrices[r_i]{n_i}{\field}\) with \(\matrices[r_i]{n_i}{D_i}\) where \(D_i = \End_A (V_i)\) then the result holds for any field \(\field\).
+    The \(D_i\) are division algebras (algebras in which division by any nonzero element is defined).
+    When \(\field\) \emph{is} algebraically closed Schur's lemma applies and tells us that the maps \(V_i \to V_i\) are just scalar multiplication, allowing us to identify \(D_i\) with \(\field\) to get the result as stated above.
+\end{remark}
+
+\begin{crl}{}{crl:linearly independent set reaches all of V under action of A}
+    Let \(V\) be a finite dimensional simple \(A\)-module.
+    Given two subsets \(\{x_1, \dotsc, x_n\}, \{y_1, \dotsc, y_n\} \subseteq V\) with the first being linearly independent there exists some \(a \in A\) such that \(a \action x_i = y_i\).
+    \begin{proof}
+        The proof is by contradiction, so suppose that this is not the case.
+        Then \(W = \{(a \action x_1, \dotsc, a \action x_n) \mid a \in A\}\) must be a proper submodule of \(nV\), that is there is some element of \(V\) we can pick for one of the \(y_i\) such that we cannot reach \((y_1, \dotsc, y_n)\) by the action of \(a\).
+        Then since \(V\) is simple we know that \(W = rV\) for some \(r < n\), a strict inequality since we have a \emph{proper} submodule.
+        By \cref{prp:submodules of semisimple modules} we know that there is some \(X \in \matrices[r]{n}(\field)\) and some \(u_1, \dotsc, u_r \in V\) such that
+        \begin{equation}
+            (u_1, \dotsc, u_r) \action X = (x_1, \dotsc, x_n).
+        \end{equation}
+        To achieve this result we've just considered the \(a = 1\) case to get \((x_1, \dotsc, x_n) \in W = rV\).
+        Since \(r < n\) we know that there is some \((z_1, \dotsc, z_n) \in \field^n \setminus \{0\}\) such that \(X \action (z_1, \dotsc, z_n)^{\trans} = 0\), because \(X\) only has rank \(r\).
+        Thus, we can consider
+        \begin{align}
+            0 &= (u_1, \dotsc, u_r) \action X \action (z_1, \dotsc, z_n)^{\trans}\\
+            &= (x_1, \dotsc, x_n) \cdot (z_1, \dotsc, z_n)^{\trans}\\
+            &= \sum_{i=1}^n z_i x_i.
+        \end{align}
+        Since the \(x_i\) are linearly independent this means that \(z_i = 0\), a contradiction. 
+    \end{proof}
+\end{crl}
+
+\section{Density Theorem}
+We're now ready to start working towards a result known as the density theorem.
+This result says that a certain class of algebras are basically just direct sums of matrix algebras.
+We have to prove some technical results first though.
+
+\begin{thm}{}{thm:representation maps are surjections}
+    Let \(V\) be a finite dimensional \(A\)-module.
+    \begin{enumerate}
+        \item If \(V\) is simple then the associated algebra morphism \(r \colon A \to \End V\) is surjective.
+        \item If \(V = \oplus_{i=1}^m V_i\) with the \(V_i\) pairwise nonisomorphic finite dimensional simple \(A\)-modules then
+        \begin{equation}
+            r = \bigoplus_{i=1}^m r_i \colon A \to \bigoplus_{i=1}^m \End V_i
+        \end{equation}
+        is surjective.
+    \end{enumerate}
+    \begin{proof}
+        \begin{enumerate}
+            \item Fix some basis, \(\{v_1, \dotsc, v_n\} \subseteq V\), and let \(w_i = \varphi(v_i)\) for some \(\varphi \in \End V\).
+            Then by \cref{crl:linearly independent set reaches all of V under action of A} there exists some \(a \in A\) such that \(a \action v_i = w_i\), and thus \(r(a) = \varphi\), so \(r\) is surjective.
+            \item Let \(B_i\) be the image of \(A\) in \(\End V_i\).
+            Notice that \(\End V_i \isomorphic d_i V_i\) where \(d_i = \dim V_i\).
+            Let \(B\) be the image of \(A\) in \(\bigoplus_i \End V_i\).
+            Then \(B \isomorphic \bigoplus_i B_i \isomorphic \bigoplus_i d_i V_i\), and the first part tells us that \(B_i = \End V_i\) by surjectivity of each representation map, and thus \(B \isomorphic \bigoplus \End V_i\), so \(r\) is surjective.
+        \end{enumerate}
+    \end{proof}
+\end{thm}
+
+The next result considers what happens when we have an algebra that is a direct sum of matrix algebras.
+Before the proof however we need the following definition.
+
+\begin{dfn}{Dual Module}{}
+    Let \(V\) be a left \(A\)-module.
+    Then the \defineindex{dual module} is \(V^* = \Hom_{\field}(V, \field)\) with the action defined by \((f \action a)(v) = f(a \action v)\) for all \(f \in V^*\), \(a \in A\), and \(v \in V\).
+\end{dfn}
+
+\begin{thm}{}{thm:reps of matrix algebras}
+    Let \(\field\) be a field which is not necessarily algebraically closed.
+    Let \(A\) be the \(\field\)-algebra given by
+    \begin{equation}
+        A = \bigoplus_{i=1}^r \matrices{d_i}{\field}
+    \end{equation}
+    for some \(d_i \in \naturals\).
+    Then
+    \begin{enumerate}
+        \item the simple \(A\)-modules are \(\field^{d_i}\) with \((X_1, \dotsc, X_r)\) acting by matrix multiplication by \(X_i\); and
+        \item any finite dimensional \(A\)-module is semisimple.
+    \end{enumerate}
+    \begin{proof}
+        \begin{enumerate}
+            \item Let \(v, w \in \field^{d_i}\) be such that \(v \ne 0\).
+            Then there exists some linear map sending \(v\) to \(w\), and hence some matrix \(X \in \matrices{d_i}{\field}\) such that \(Xv = w\).
+            Thus, \(V_i = \field^{d_i}\) must be simple since any nonzero subspace containing \(v\) and not \(w\) cannot be a submodule.
+            \item Let \(W\) be a finite dimensional left \(A\)-module.
+            Consider its dual, \(W^*\), which we can think of as a left \(A^{\op}\)-module.
+            The algebra \(A^{\op}\) is given by
+            \begin{equation}
+                A^{\op} = \bigoplus_{i} \matrices{d_i}{\field}^{\trans} \isomorphic \bigoplus_i \matrices{d_i}{\field}
+            \end{equation}
+            and we identify \(a \in A\) with \(a^{\trans} \in A^{\op}\) where \((X_1, \dotsc, X_r)^{\trans} = (X_1^{\trans}, \dotsc, X_r^{\trans})\).
+            Really nothing is going on here since we're considering square matrices so taking the transpose changes individual elements but doesn't change the set of all matrices under consideration.
+            
+            What this lets us do is interpret \(W^*\) as an \(A\)-module with \(a \action f = f \action a^{\trans}\).
+            We can fix a basis \(\{f_1, \dotsc, f_n\} \subseteq W^*\), and then define a surjection
+            \begin{align}
+                \varphi \colon nA &\twoheadrightarrow W^*\\
+                a_1 \oplus \dotsb \oplus a_n &\mapsto a_1 \action f_1 + \dotsb + a_n \action f_n.
+            \end{align}
+            This is a surjection by \cref{thm:representation maps are surjections}.
+            We can consider the dual map, \(\varphi^* \colon W \hookrightarrow (nA)^* \isomorphic nA\), which will be an injection.
+            Further, \(W \isomorphic \im \varphi^* \subseteq nA\) is a submodule of the semisimple module \(nA\) (where \(a \action (b_1 \oplus \dotsb \oplus b_n) = ab_1 \oplus \dotsb \oplus ab_n\)) and we can apply \cref{prp:submodules of semisimple modules} to conclude that \(W\) is semisimple.
+        \end{enumerate}
+    \end{proof}
+\end{thm}
+
+What we have just shown is that matrix algebras, and their direct sums, have particularly nice properties.
+We understand their simple modules well, they're just \(\field^{d}\) with \(d\) appearing as the number of rows of some matrix, and all finite dimensional modules are semisimple, so all are just some direct sum \(\bigoplus_i \field^{d_i}\).
+The logical next question is when is a given algebra, \(A\), isomorphic to some direct sum of matrix algebras?
+It turns out that there's a simple subspace we can consider that vanishes only when \(A\) is a direct sum of matrix algebras.
+
+\begin{dfn}{Radical}{}
+    Let \(A\) be an algebra.
+    We call
+    \begin{equation}
+        \Rad A = \{a \in A \mid a \text{ acts as zero on any simple } A \text{-module}\} \subseteq A
+    \end{equation}
+    the \defineindex{radical} of \(A\).
+\end{dfn}
+
+\begin{dfn}{Nilpotent Ideal}{}
+    Let \(A\) be an algebra.
+    We call \(a \in A\) a \define{nilpotent element}\index{nilpotent!element} if there exists some \(k \in \naturals\) such that \(a^k = 0\).
+    A \define{nilpotent ideal}\index{nilpotent!ideal} is an ideal in which all elements are nilpotent.
+\end{dfn}
+
+\begin{prp}{}{}
+    \begin{enumerate}
+        \item \(\Rad A\) is a two-sided ideal.
+        \item If \(A\) is finite dimensional then any nilpotent two-sided ideal is contained in \(\Rad A\).
+        \item \(\Rad A\) is the largest two-sided nilpotent ideal.
+    \end{enumerate}
+    \begin{proof}
+        \begin{enumerate}
+            \item We first show that \(\Rad A\) is a subspace.
+            Let \(V\) be a simple \(A\)-module.
+            Then if \(a, b \in \Rad A\) we have 
+            \begin{equation}
+                (a + b) \action v = a \action v + b \action v = 0 + 0 = 0
+            \end{equation}
+            for all \(v \in V\), and thus \(\Rad A\) is closed under addition.
+            If \(\lambda \in \field\) we also have
+            \begin{equation}
+                (\lambda a) \action v = \lambda(a \action v) = \lambda 0 = 0,
+            \end{equation}
+            and so \(\Rad A\) is closed under scalar multiplication.
+            Thus, \(\Rad A\) is a subspace of \(A\).
+            
+            Let \(a \in \Rad A\) and \(b \in A\).
+            Then we know that if \(V\) is a simple \(A\)-module \(a \action v = 0\) for all \(v \in V\).
+            We therefore have
+            \begin{equation}
+                (ab) \action v = a \action (b \action v) = 0, \qand (ba) \action v = b \action (a \action v) = b \action 0 = 0
+            \end{equation}
+            since \(b \action v \in V\) so \(a\) acts on it by zero, and \(b\) acts linearly so it sends \(0\) to \(0\).
+            Thus, \(ab, ba \in \Rad A\), so \(\Rad A\) is a two-sided ideal.
+            \item Let \(V\) be a simple \(A\)-module and \(I\) a nilpotent ideal.
+            Fix some nonzero \(v \in V\).
+            Then \(I \action v \subseteq V\) is a submodule.
+            By simplicity of \(V\) there are two possibilities
+            \begin{itemize}
+                \item \(I \action v = V\), and since \(v \in V\) there must be some \(x \in I\) such that \(x \action v = v\), but then we cannot have that \(x^k = 0\) for any \(k \in \naturals\) as we must have \(x^k \action v = v\), so we can't have \(I \action v = V\) if \(I\) is nilpotent;
+                \item \(I \action v = 0\), in which case every element of \(I\) acts as zero on any element of \(V\), and so \(I \subseteq \Rad A\).
+            \end{itemize}
+            \item Let 
+            \begin{equation}
+                0 = A_0 \subseteq A_1 \subseteq A_1 \subseteq \dotsb \subseteq A_n = A
+            \end{equation}
+            be a filtration of the regular representation of \(A\) such that \(A_{i+1}/A_i\) is simple.
+            Such a filtration exists by \cref{lma:filtrations exist}.
+            
+        \end{enumerate}Let \(x \in \Rad A\), then \(x\) acts on the simple \(A\)-module \(A_{i+1}/A_i\) by zero, and so \(x\) must map any element of \(A_{i+1}\) to some element of \(A_i\), since that will then be sent to zero in the quotient.
+        Thus \(x^n\) acts as zero on all of \(A_n = A\), and so \(\Rad A\) is nilpotent.
+        By the previous part we also know that \(\Rad A\) contains any nilpotent two-sided ideal, and so \(\Rad A\) is the largest two-sided nilpotent ideal (ordered by inclusion).
+    \end{proof}
+\end{prp}
+
+\begin{dfn}{Filtration}{}
+    Let \(V\) be an \(A\)-module.
+    A finite \defineindex{filtration} of \(V\) is a sequence of submodules
+    \begin{equation}
+        0 = V_0 \subseteq V_1 \subseteq \dotsb \subseteq V_n = V.
+    \end{equation}
+\end{dfn}
+
+\begin{lma}{}{lma:filtrations exist}
+    Let \(V\) be a finite dimensional \(A\)-module.
+    Then there is a filtration
+    \begin{equation}
+        0 = V_0 \subseteq V_1 \subseteq \dotsb \subseteq V_n = V
+    \end{equation}
+    for which \(V_{i+1}/V_i\) is a simple \(A\)-module for all \(i\).
+    \begin{proof}
+        We induct on \(\dim V\).
+        If \(\dim V = 0\) then we have the filtration \(0 = V_0 = V\) and we are done.
+        Suppose the result holds for all dimensions less than \(\dim V\).
+        If \(V\) is simple then we have the filtration \(0 = V_0 \subseteq V_1 = V\) and \(V/0 \isomorphic V\) is simple, so we're done.
+        Suppose then that \(V\) is not simple, and pick some nontrivial submodule \(V_1 \subsetneq V\).
+        Take the module \(U = V/V_1\).
+        Since \(V_1 \ne 0\) we know that \(\dim (V / V_1) < \dim V\), and so by the induction hypothesis there is a filtration
+        \begin{equation}
+            0 = U_0 \subseteq U_1 \subseteq \dotsb \subseteq U_{n-1} = U
+        \end{equation}
+        such that \(U_{i+1}/U_i\) is simple.
+        Let \(\pi \colon V \twoheadrightarrow V/V_1\) be the canonical projection.
+        For \(i \ge 2\) define \(V_i = \pi^{-1}(U_i)\) to be the preimage of \(U_i\) under this projection.
+        Then we have the filtration
+        \begin{equation}
+            0 = V_0 \subseteq V_1 \subseteq \dotsb \subseteq V_n = V.
+        \end{equation}
+        
+        Note that here we've used the fact that the preimage under a module morphism of a submodule of the codomain is a submodule of the domain, which can be seen as follows: take \(v \in V_i\) and we have some \(u \in U_i\) such that \(\pi(v) = u\), then
+        \begin{equation}
+            a \action u = a \action \pi(v) = \pi(a \action v) \in U_i
+        \end{equation}
+        which shows that \(a \action v \in V_i\) also, so \(V_i\) is closed under the action of \(A\), and the preimage of a subspace is again a subspace.
+        
+        All we have to do now is show that the given filtration has the desired property.
+        To see that this is indeed the case consider \(V_{i+1}/V_i = \pi^{-1}(U_{i+1})/\pi^{-1}(U_i) \isomorphic \pi^{-1}(U_{i+1}/U_i)\) which shows that \(V_{i+1}/V_i\) is the preimage of a simple module, and must therefore be simple itself, if it wasn't then the image of any nontrivial submodule of \(V_{i+1}/V_i\) would provide a nontrivial submodule of \(U_{i+1}/U_i\).
+    \end{proof}
+\end{lma}
+
+The following result gives us a handle on the number of simple \(A\)-modules in the finite dimensional case.
+It also shows that given any algebra we can always quotient by the radical to get something isomorphic to a direct sum of endomorphism spaces, which is isomorphic to a direct sum of matrix algebras.
+In this way the radical consists of the elements which obstruct our attempt to understand \(A\) as being formed from matrix algebras.
+
+\begin{ntn}{}{}
+    We write \(\Irr(A)\) for the set of isomorphism classes of simple \(A\)-modules.
+    We further assume that each isomorphism class has some canonical choice of representative, which we'll call \(V_i\), so we can take \(\Irr(A) = \{V_i\}\).
+    We assume that sums over the index \(i\) in \(V_i\) run over all simple \(A\)-modules.
+\end{ntn}
+
+\begin{thm}{}{thm:dimension of A geq dim squared of irreps}
+    Any finite dimensional algebra, \(A\), has only finitely many simple \(A\)-modules, \(V_i\), (up to isomorphism) and
+    \begin{equation}
+        \sum_i (\dim V_i)^2 \le \dim A.
+    \end{equation}
+    Further,
+    \begin{equation}
+        A / \Rad A \isomorphic \bigoplus_i \End V_i.
+    \end{equation}
+    \begin{proof}
+        Let \(V\) be a simple \(A\)-module and take some \(v \in V\) with \(v \ne 0\).
+        Then \(A \action v \ne 0\) since \(1 \in A\) so \(v \in A \action v\).
+        Thus, by simplicity we must have that \(A \action v = V\).
+        Further, \(V\) is finite dimensional since \(A\) is finite dimensional, and if we could construct infinitely many linearly independent elements by acting on \(v\) with elements of \(A\) those infinitely many elements of \(A\) would be linearly independent in \(A\), a contradiction.
+        
+        Now let \(\{V_i\} = \Irr(A)\) be the set of simple \(A\)-modules.
+        Then by \cref{thm:representation maps are surjections} we have a surjection
+        \begin{equation}
+            \bigoplus_i \rho_i \colon A \twoheadrightarrow \End V_i.
+        \end{equation}
+        Thus, we have
+        \begin{align}
+            \dim \left( {\textstyle\bigoplus_{i}} \End V_i\right) &= {\textstyle\sum_i} \dim( \End V_i)\\
+            &= {\textstyle\sum_i} (\dim V_i)^2
+        \end{align}
+        where we've used the fact that the dimension of a direct sum is the sum of the dimensions, and \(\End V\) has dimension \((\dim V)^2\), which can be seen by fixing a basis for \(V\) and considering elements of \(\End V\) as \((\dim V) \times (\dim V)\) matrices.
+        Finally, since the above map is a surjection the dimension is bounded by \(\dim A\), and thus we have
+        \begin{equation}
+            \sum_i (\dim V_i)^2 \le \dim A
+        \end{equation}
+        as claimed.
+        
+        We have that
+        \begin{equation}
+            \ker\left( {\textstyle \bigoplus_i} \, \rho_i \right) = \Rad A
+        \end{equation}
+        since by definition elements of this kernel are sent to the zero map when when they act on each simple module, \(V_i\), and this is exactly the definition of said elements being in \(\Rad A\).
+        Thus, by the first isomorphism theorem we have that
+        \begin{equation*}
+            A/\ker\left( {\textstyle \bigoplus_i} \, \rho_i \right) = A/\Rad A \isomorphic \bigoplus_i \End V_i. \qedhere
+        \end{equation*}
+    \end{proof}
+\end{thm}
+
+We now give a definition of a semisimple algebra.
+Note that several equivalent definitions are in use, and some of these are covered in \cref{prp:equivalent definitions of semisimple algebra}.
+
+\begin{dfn}{Semisimple Algebra}{}
+    A finite dimensional algebra, \(A\), is \define{semisimple}\index{semisimple!algebra} if \(\Rad A = 0\).
+\end{dfn}
+
+\begin{prp}{}{prp:equivalent definitions of semisimple algebra}
+    Let \(A\) be a finite dimensional algebra, then the following are equivalent:
+    \begin{enumerate}[label=(\textsc{\roman*})]
+        \item \(A\) is semisimple, that is \(\Rad A = 0\);
+        \item \(\dim A = \sum_i (\dim V_i)^2\) where \(V_i\) runs over all simple \(A\)-modules;
+        \item \(A \isomorphic \bigoplus_i \matrices{d_i}{\field}\) for some \(d_i \in \naturals\);
+        \item Any finite dimensional \(A\)-module is semisimple.
+        In particular, the regular representation is semisimple.
+    \end{enumerate}
+    \begin{proof}
+        \Step{(i) \(\implies\) (ii)}
+        We have that
+        \begin{equation}
+            A/\Rad A \isomorphic \bigoplus_i \End V_i
+        \end{equation}
+        and taking dimensions we have
+        \begin{equation}
+            \dim(A/\Rad A) = \sum_i (\dim V_i)^2.
+        \end{equation}
+        If \(A\) is semisimple then \(\Rad A = 0\) and this reduces to the equality
+        \begin{equation}
+            \dim A = \sum_i (\dim V_i)^2.
+        \end{equation}
+        
+        \Step{(i) \(\implies\) (iii)}
+        By \cref{thm:dimension of A geq dim squared of irreps} we know that
+        \begin{equation}
+            A/\Rad A \isomorphic \bigoplus_i \End V_i
+        \end{equation}
+        and if \(A\) is semisimple then \(\Rad A = 0\) so this reduces to
+        \begin{equation}
+            A \isomorphic \bigoplus_i \End V_i.
+        \end{equation}
+        Fixing some basis for \(V_i\) we may identify elements of \(\End V_i\) with matrices in \(\matrices{d_i}{\field}\) where \(d_i = \dim V_i\).
+        Thus, we have
+        \begin{equation}
+            A \isomorphic \bigoplus_i \matrices{d_i}{\field}.
+        \end{equation}
+        
+        \Step{(iii) \(\implies\) (iv)}
+        By the second part of \cref{thm:reps of matrix algebras} we have that any finite dimensional \(A\)-module is semisimple.
+        
+        \Step{(iv) \(\implies\) (i)}
+        Consider the regular representation of \(A\) which decomposes as
+        \begin{equation}
+            A \isomorphic \bigoplus_i n_i V_i
+        \end{equation}
+        with \(V_i\) simple and \(n_i \in \integers_{\ge 0}\).
+        Take some \(x \in \Rad A\), then by definition \(x\) acts as zero on each \(V_i\) submodule, and so acts as zero on all of \(A\), in particular \(x \action 1 = 0\).
+        In the regular representation the action of \(x\) is just multiplication, so \(x \action 1 = x1 = x\), thus we must have \(x = 0\), and hence \(\Rad A = 0\).
+    \end{proof}
+\end{prp}
+
+One question that we may ask is how many simple \(A\)-modules are there (up to isomorphism)?
+Of course, if we can find the decomposition \(A \isomorphic \bigoplus_i \End V_i\) then we have answered the question, but we can often answer the question much faster with the following result definition and result.
+
+\begin{dfn}{Centre}{}
+    Let \(A\) be an algebra.
+    The \defineindex{centre} of \(A\), denoted \(Z(A)\), is the subalgebra
+    \begin{equation}
+        Z(A) \coloneqq \{a \in A \mid ab = ba \forall b \in A\}.
+    \end{equation}
+\end{dfn}
+
+That is, the centre is the subspace consisting of all elements of \(A\) that commute with all other elements of \(A\).
+This is clearly a subspace since if \(a, a' \in Z(A)\) then \((a + \lambda a')b = ab + \lambda a'b = ba + \lambda ba' = b(a + \lambda a')\) for all \(b \in A\) and \(\lambda \in \field\).
+This is in fact a subalgebra since if \(a, a' \in Z(A)\) then \(aa'b = aba' = aa'b\) so \(aa' \in Z(A)\).
+
+\begin{lma}{}{}
+    Let \(A\) be a finite dimensional semisimple algebra.
+    Then
+    \begin{equation}
+        \abs{\Irr(A)} = \dim Z(A).
+    \end{equation}
+    \begin{proof}
+        First note that if \(A_1\) and \(A_2\) are algebras then
+        \begin{equation}
+            Z(A_1 \oplus A_2) = Z(A_1) \oplus Z(A_2),
+        \end{equation}
+        since if \((a_1, a_2) \in Z(A_1 \oplus A_2)\) then we have
+        \begin{equation}
+            (a_1, a_2)(b_1, b_2) = (b_1, b_2)(a_1, a_2)
+        \end{equation}
+        for all \(b_1, b_2 \in A_1 \oplus A_2\), and evaluating the left hand side gives \((a_1b_1, a_2b_2)\) and the right hand side gives \((b_1a_1, b_2a_2)\), so this equality holds if and only if \(a_ib_i = b_ia_i\) for all \(b_i \in A_i\), in other words, if \(a_i \in Z(A_i)\) and thus if and only if \((a_1, a_2) \in Z(A_1) \oplus Z(A_2)\).
+        
+        Since \(A\) is semisimple we know that \(\Rad A = 0\), and thus
+        \begin{equation}
+            A/\Rad A = A/0 \isomorphic A \isomorphic \bigoplus_i \End V_i
+        \end{equation}
+        by \cref{thm:dimension of A geq dim squared of irreps}.
+        Thus, we have
+        \begin{equation}
+            Z(A) = \bigoplus_i Z(\End(V_i)).
+        \end{equation}
+        Further, since \(V_i\) is a simple module we know by Schur's lemma (\cref{prp:schurs lemma}) that if an element commutes with all other elements then said element is just scalar multiplication, and further any multiplication by a scalar gives such a map, so
+        \begin{equation}
+            Z(\End V_i) \isomorphic \field.
+        \end{equation}
+        
+        Combining these two results we have
+        \begin{equation}
+            Z(A) \isomorphic \bigoplus_i \field = \abs{\Irr A} \field
+        \end{equation}
+        and so
+        \begin{equation}
+            \dim Z(A) = \abs{\Irr A}
+        \end{equation}
+        where we've used the fact that the sum is indexed by simple \(A\)-modules, so has exactly as many terms as there are simple \(A\)-modules, and of course, \(\dim \field = 1\).
+    \end{proof}
+\end{lma}
+
+Note that if \(A\) is not semisimple then this result no longer holds, since \(A/\Rad A \ncong A\).
+However, given a simple \(A\)-module, \(V\), we know that all elements of \(\Rad A\) act on \(V\) by zero, and thus there is a corresponding \((A/\Rad A)\)-module \(V'\), which has the same underlying space, but now elements of \(A/\Rad A\) act by \([a] \action v = a \action v\) for any representative \(a\) of this equivalence class.
+This gives a well-defined action precisely because elements of \(\Rad A\) act by zero, so if \(a'\) is some other representative then \(a - a' \in \Rad A\) and thus \(0 = (a - a') \action v = a \action v - a' \action v\) and thus \(a \action v = a' \action v\) as required.
+
+In fact, more generally if \(I\) is an ideal of \(A\) and \(V\) is an \(A\)-module on which all elements of \(I\) act as zero then \(A/I\) acts on \(V\) by \([a] \action v = a \action v\).
+This can be quite useful when we define algebras via a quotient, first construct an \(A\)-module, \(V\), then show that the ideal \(I \subseteq A\) acts as zero on \(V\), then we automatically get an \((A/I)\)-module structure for \(V\).
+
+\chapter{Character Theory}
+In this chapter we study character theory.
+The general idea being that for finite dimensional representations we can identify elements of \(A\) with linear maps \(V \to V\) which we can identify with matrices.
+We can then take the trace of these matrices, which is a nice thing to do because the trace is basis independent, despite the identification of elements and matrices requiring us to pick a basis.
+We can then learn a surprising amount just looking at these traces, which we call characters.
+
+\section{Definitions}
+\begin{dfn}{Character}{}
+    Let \(A\) be an algebra and \(V\) a finite dimensional \(A\)-module with the corresponding algebra homomorphism \(\rho \colon A \to \End V\).
+    Then the \defineindex{character} of \(V\) is the map
+    \begin{align}
+        \chi_V \colon A &\to \field\\
+        a &\mapsto \chi_V(a) = \tr_V \rho(a)
+    \end{align}
+\end{dfn}
+
+Note that we write \(\tr_V\) to denote the trace of matrices corresponding to elements of \(\End V\) after fixing some basis.
+We do this because later we'll want to take characters over different modules, and it's helpful to be able to distinguish which space the matrices we're taking the trace of act on.
+When there's no chance of confusion we'll drop the subscript \(V\).
+
+\begin{dfn}{}{}
+    Let \(A\) be an algebra with subalgebras \(B, C \subseteq A\).
+    Then we denote by \(\bracket{B}{C}\) the subspace
+    \begin{equation}
+        \bracket{B}{C} = \Span \{\bracket{b}{c} \mid b \in B \text{ and } c \in C\}
+    \end{equation}
+    where \(\bracket{b}{c} = bc - cb\).
+\end{dfn}
+
+Note that for any \(A\)-module, \(V\), with corresponding character \(\chi_V\), we have \(\bracket{A}{A} \subseteq \ker \chi_V\), since
+\begin{align}
+    \chi_V(\bracket{a}{b}) &= \tr(\rho(\bracket{a}{b}))\\
+    &= \tr(\rho(a)\rho(b) - \rho(b)\rho(a))\\
+    &= \tr(\rho(a)\rho(b)) - \tr(\rho(b)\rho(a))\\
+    &= \tr(\rho(a)\rho(b)) - \tr(\rho(a)\rho(b))\\
+    &= 0,
+\end{align}
+having used the cyclic property of the trace.
+Thus \(\bracket{a}{b} \in \ker \chi_V\) for all \(a, b \in A\), and since the kernel is a subspace any linear combination of commutators will also vanish under \(\chi_V\), showing that \(\bracket{A}{A} \subseteq \ker \chi_V\).
+
+This tells us that the character also gives a well-defined map
+\begin{equation}
+    \tilde{\chi}_V \colon A / \bracket{A}{A} \to \field
+\end{equation}
+defined by
+\begin{equation}
+    \tilde{\chi}_V([a]) = \chi_V(a) = \tr_V(\rho(a)).
+\end{equation}
+In fact, it will prove more useful to define the character to be such a map.
+This allows us to view the character as an element of the dual space
+\begin{equation}
+    \tilde{\chi}_V \in (A/\bracket{A}{A})^* = \hom_{\field}(A/\bracket{A}{A}, \field).
+\end{equation}
+We will do this, and do not distinguish between \(\chi_V\) and \(\tilde{\chi}_V\) in the notation.
+
+This is a useful thing to do because now the characters live in a vector space, and that lets us do linear-algebra-things to them, like look for a basis of this space.
+
+\begin{thm}{}{}
+    Let \(A\) be a finite dimensional algebra.
+    The characters of distinct finite-dimensional simple \(A\)-modules are linearly independent in \((A/\bracket{A}{A})^*\).
+    Further, if \(A\) is finite dimensional and semisimple then the characters of simple \(A\)-modules provide a basis for \((A/\bracket{A}{A})^*\).
+    \begin{proof}
+        \Step{Linear Independence}
+        Let that \(A\) be a finite dimensional (not necessarily semisimple) algebra.
+        Then there is a finite number, \(n\), of simple \(A\)-modules, \(V_i\) for \(i = 1, \dotsc, n\), with corresponding algebra homomorphisms \(\rho_i \colon A \to \End V_i\).
+        Then by the density theorem we have a surjection
+        \begin{equation}
+            \rho_1 \oplus \dotsb \oplus \rho_n \colon A \twoheadrightarrow \End V_1 \oplus \dotsb \oplus \End V_n.
+        \end{equation}
+        Suppose that
+        \begin{equation}
+            \sum_i \lambda_i \chi_{V_i} = 0
+        \end{equation}
+        with \(\lambda_i \in \field\).
+        If \(a \in A\) we must therefore have
+        \begin{equation}
+            \sum_i \lambda_i \chi_{V_i}(a) = 0.
+        \end{equation}
+        Now take some arbitrary \(M \in \End V_1 \oplus \dotsb \oplus \End V_n\), which we view as a matrix by fixing some basis, which fixes a basis for each \(V_i\).
+        We can then identify that \(M = M_1 \oplus \dotsb \oplus M_n\), where each \(M_i \in \End V_i\) is viewed as a matrix through the corresponding fixed basis.
+        We can then consider the sum
+        \begin{equation}
+            \sum_i \lambda_i \tr_{V_i} M_i
+        \end{equation}
+        where the \(\lambda_i\) are the same coefficients as before.
+        By surjectivity of \(\rho_1 \oplus \dotsb \oplus \rho_n\) we know that there is some \(a \in A\) such that \(M = (\rho_1 \oplus \dotsb \oplus \rho_n)(a)\), and thus \(M_i = \rho_i(a)\).
+        This then gives that the sum above is
+        \begin{equation}
+            \sum_i \lambda_i \tr_{V_i}(\rho_i(a)) = \sum_i \lambda_i \chi_{V_i}(a) = 0.
+        \end{equation}
+        Now, we are free to choose \(M\), and hence \(M_i\), such that \(\tr_{V_i} M_i\) takes on any value in \(\field\), which means that the only way this equation can hold for an arbitrary choice of \(M\) is if \(\lambda_i = 0\) for all \(i = 1, \dotsc, n\).
+        Thus, the \(\chi_{V_i}\) are linearly independent.
+        
+        \Step{Basis}
+        Now suppose that \(A\) is a finite dimensional semisimple algebra.
+        We have shown that the characters, \(\chi_{V_i}\), corresponding to simple \(A\)-modules, are linearly independent elements of \((A/\bracket{A}{A})^*\).
+        We now show that they are also a spanning set of \((A / \bracket{A}{A})^*\).
+        
+        Since \(A\) is semisimple we have that
+        \begin{equation}
+            A \isomorphic \bigoplus_{i=1}^n \matrices{d_i}{\field}
+        \end{equation}
+        where \(d_i = \dim V_i\).
+        We have the following well known fact about derived subalgebras of Lie algebras (\cref{lma:derived subalgebra of gln}):
+        \begin{equation}
+            \bracket{\matrices{d}{\field}}{\matrices{d}{\field}} = \bracket{\generalLinearLie_{d_i}(\field)}{\generalLinearLie_{d_i}(\field)} = (\generalLinearLie_{d_i}(\field))' = \specialLinearLie_d(\field).
+        \end{equation}
+        The Lie algebra \(\specialLinearLie_d(\field)\) consists precisely of the \(d \times d\) matrices over \(\field\) with zero trace.
+        Further, for algebra \(B\) and \(C\), we have
+        \begin{equation}
+            \bracket{B \oplus C}{B \oplus C} = \bracket{B}{B} \oplus \bracket{C}{C}, 
+        \end{equation}
+        which follows immediately by linearity.
+        Thus, we have
+        \begin{equation}
+            \bracket{A}{A} \isomorphic \bigoplus_{i=1}^n \specialLinearLie_{d_i}(\field).
+        \end{equation}
+        It then follows that
+        \begin{align}
+            A / \bracket{A}{A} &\isomorphic \left( \bigoplus_{i=1}^n \matrices{d_i}{\field} \right) / \left( \bigoplus_{i=1}^n \specialLinearLie_{d_i}(\field) \right)\\
+            &= \left( \bigoplus_{i=1}^n \generalLinearLie_{d_i}(\field) \right) / \left( \bigoplus_{i=1}^n \specialLinearLie_{d_i}(\field) \right)\\
+            &\isomorphic \bigoplus_{i=1}^n \generalLinearLie_{d_i}(\field)/\specialLinearLie_{d_i}(\field)\\
+            &\isomorphic \bigoplus_{i=1}^n \field\\
+            &= \field^n.  
+        \end{align}
+        This shows that we have \(n\)-linearly independent elements, \(\chi_{V_i}\), and \(\dim(A/\bracket{A}{A}) = n\), so these linearly independent elements are actually a basis.
+    \end{proof}
+\end{thm}
+
+\begin{lma}{}{lma:derived subalgebra of gln}
+    The derived subalgebra of \(\generalLinearLie_n(\field)\) is \(\specialLinearLie_n(\field)\).
+    \begin{proof}
+        First note that \(\generalLinearLie_n(\field) = \matrices{n}{\field}\) is the (Lie algebra) of \(n \times n\) matrices with entries in \(\field\).
+        The elementary matrices, \(E_{ij}\), form a basis of \(\generalLinearLie_n(\field)\).
+        Note that \(E_{ij}\), for \(i, j = 1, \dotsc, n\), are matrices which are zero everywhere except in row \(i\) and column \(j\), where they have a \(1\).
+        So, it is sufficient to show that the commutator of any two elementary matrices is in \(\specialLinearLie_n(\field)\), and then any linear span of such commutators will be in \(\specialLinearLie_n(\field)\).
+        To do this first note that
+        \begin{equation}
+            E_{ij}E_{kl} = \delta_{jk} E_{il}.
+        \end{equation}
+        Then we have
+        \begin{align}
+            \bracket{E_{ij}}{E_{kl}} &= E_{ij}E_{kl} - E_{kl}E_{ij}\\
+            &= \delta_{jk}E_{il} - \delta_{li}E_{kj}.
+        \end{align}
+        Now we consider cases:
+        \begin{enumerate}
+            \item if \(i \ne l\) and \(j \ne k\) we get \(0\);
+            \item if \(l \ne i\) and \(j = k\) we get \(E_{il}\);
+            \item if \(l = i\) and \(j \ne k\) we get \(-E_{kj}\);
+            \item if \(i = l\) and \(j = k\) we get \(E_{ii} - E_{jj}\).
+        \end{enumerate}
+        We see that in each case the matrix we get is traceless, specifically in the last case if \(i \ne j\) then the diagonal contains a \(1\) and a \(-1\), and if \(i = j\) then we have zero, and the second and third case have zero on the diagonal since \(i \ne l\) and \(k \ne j\) in these two cases.
+        Thus, each matrix we get from \(\bracket{E_{ij}}{E_{kl}}\) is an element of \(\specialLinearLie_n(\field)\).
+    \end{proof}
+\end{lma}
+
+\begin{lma}{}{}
+    Characters are invariant under isomorphism.
+    \begin{proof}
+        Let \(V\) and \(W\) be isomorphic finite dimensional \(A\)-modules.
+        Then \(V\) and \(W\) are related by an isomorphism, \(V \to W\), but fixing bases for both we can view this isomorphism as a basis change, and the character is independent of basis choice.
+    \end{proof}
+\end{lma}
+
+\begin{lma}{}{lma:character and quotient}
+    Let \(V\) be a finite dimensional \(A\)-module, and let \(W \subseteq V\) be a submodule.
+    Then
+    \begin{equation}
+        \chi_V = \chi_W + \chi_{V/W}.
+    \end{equation}
+    \begin{proof}
+        Fix a basis for \(W\) and extend this to a basis of \(V\).
+        This can be done since \(V = W \oplus V/W\) as vector spaces.
+        Then any linear map \(\varphi \colon V \to V\) such that \(\varphi(W) \subseteq W\) decomposes into a linear map \(W \to W\) and a linear map \(V/W \to V/W\).
+        Since \(W\) is a submodule \(\rho(a)\) is exactly such a linear map for all \(a \in A\), and thus
+        \begin{equation}
+            \tr_V \rho(a) = \tr_W \rho(a) + \tr_{V/W} \rho(a),
+        \end{equation}
+        and so
+        \begin{equation*}
+            \chi_V = \chi_W + \chi_{V/W}. \qedhere
+        \end{equation*}
+    \end{proof}
+\end{lma}
+
+\section{Jordan--H\"older and Krull--Schmidt Theorems}
+We can now prove two standard results about filtrations using character theory.
+
+\begin{thm}{Jordan--H\"older}{}
+    Let \(V\) be a finite dimensional \(A\)-module with filtrations
+    \begin{equation}
+        0 = V_0 \subseteq V_1 \subseteq \dotsb \subseteq V_n = V
+    \end{equation}
+    and
+    \begin{equation}
+        0 = V_0' \subseteq V_1' \subseteq \dotsb \subseteq V_m' = V
+    \end{equation}
+    such that \(W_i = V_i/V_{i-1}\) and \(W'_{i} = V_i'/V'_{i-1}\) are simple.
+    Then
+    \begin{enumerate}
+        \item \(n = m\); and
+        \item There exists some \(\sigma \in S_n\) such that \(W_i \isomorphic W'_{\sigma(i)}\), that is, the two series give rise to the same simple \(A\)-modules (up to isomorphism), but possibly in different orders.
+    \end{enumerate}
+    \begin{proof}
+        ~
+        \begin{wrn}
+            This proof holds only in characteristic 0.
+            The result does hold in general though, and can be proven in positive characteristic by induction on the dimension of \(V\).
+            The problem in characteristic \(p\) is that the coefficients only end up being determined \(\bmod p\).
+        \end{wrn}
+        
+        Consider the character \(\chi_V\).
+        Using the first series and \cref{lma:character and quotient} we know that
+        \begin{equation}
+            \chi_V = \bigoplus_{i=1}^n \chi_{W_i},
+        \end{equation}
+        and using the second series we know that
+        \begin{equation}
+            \chi_V = \bigoplus_{i=1}^m \chi_{W'_i}.
+        \end{equation}
+        Since the characters of the simple \(A\)-modules form a basis of \((A/\bracket{A}{A})^*\) any decomposition such as the above must be unique, and thus we have \(n = m\) and there is some permutation, \(\sigma \in S_n\) such that \(\chi_{W_i} = \chi_{W'_{\sigma(i)}}\), and thus \(W_i \isomorphic W'_{\sigma(i)}\).
+    \end{proof}
+\end{thm}
+
+\begin{dfn}{Jordan--H\"older Series}{}
+    Given a finite dimensional \(A\)-module, \(V\), admitting a filtration
+    \begin{equation}
+        0 = V_0 \subseteq V_1 \subseteq \dotsb \subseteq V_n = V
+    \end{equation}
+    such that \(V_i/V_{i-1}\) are simple we call \(n\) the \defineindex{length} of \(V\), and the set of simple modules \(\{V_i/V_{i-1}\}\) is called the \defineindex{Jordan--H\"older series} of \(V\).
+\end{dfn}
+
+Note that by the Jordan--H\"older theorem the length and Jordan--H\"older series are well-defined, being independent of the choice of filtration, so long as the quotient of successive modules is simple.
+
+The following result holds for finite length modules.
+Note that finite length is a strictly weaker condition than finite dimension, since finite dimension guarantees the existence of 
+
+\begin{thm}{Krull--Schmidt}{}
+    Every finite length \(A\)-module, \(V\), is a direct sum of indecomposable modules.
+    Further, this decomposition is unique up to isomorphism and permutation of the summands.
+    \begin{proof}
+        \Step{Existence}
+        Let \(V\) be a finite length \(A\)-module.
+        We may suppose that \(V = V_1 \oplus V_2\) with \(V_i\) \(A\)-modules, and without loss of generality we assume that \(V_1\) cannot be written as a sum of indecomposables.
+        Then we must be able to decompose \(V_1\) again.
+        Continuing on we see that this gives rise to an infinite length filtration, contradicting the assumption that \(V\) has finite length.
+        
+        \Step{Uniqueness}
+        We make use of \cref{lma:endomorphisms of fin dim indecomposable are iso or nilpotent}.
+        Using this result take two decompositions into indecomposables
+        \begin{equation}
+            V = V_1 \oplus \dotsb \oplus V_m = V_1' \oplus \dotsb \oplus V_m'.
+        \end{equation}
+        We will prove that \(V_k \isomorphic V'_k\) for some \(k\).
+        Let
+        \begin{equation}
+            i_k \colon V_k \hookrightarrow V, \qqand i'_k \colon V'_k \hookrightarrow V
+        \end{equation}
+        be the natural inclusions, and
+        \begin{equation}
+            p_k \colon V \twoheadrightarrow V_k, \qand p'_k \colon V \twoheadrightarrow V'_k
+        \end{equation}
+        be the natural projections.
+        Then we have the map
+        \begin{equation}
+            \theta_k \colon p_1 \circ i'_k \circ p'_k \circ i_1 \colon V_1 \to V_1,
+        \end{equation}
+        which is a composite of module morphisms, so is itself a module morphism.
+        We also have that \(\sum_k \theta_k = \id_V\), since summing over all \(k\) the image of \(i'_k \circ p'_k\) in the middle runs over all of \(V\),
+        We know that \(\id_V\) is not nilpotent, so by the contrapositive of \cref{lma:endomorphisms of fin dim indecomposable are iso or nilpotent} we know that at least one of the \(\theta_k\)s must be an isomorphism.
+        Without loss of generality we assume that \(\theta_1\) is an isomorphism.
+        Then we have that
+        \begin{equation}
+            V_1 = \im(p'_1 \circ i_1) \oplus \ker(p_1 \circ i'_1),
+        \end{equation}
+        but \(V_1\) is indecomposable, so \(p'_1 \circ i_1 \colon V_1 \to V_1'\) must be an isomorphism.
+        We may then consider \(V_2 \oplus \dotsb V_m \isomorphic V'_2 \oplus \dotsb V_m\), and by the same logic we may take \(V_2 \isomorphic V'_2\).
+        Repeating this eventually terminates after \(m\) applications.
+    \end{proof}
+\end{thm}
+
+
+
+\begin{lma}{}{lma:endomorphisms of fin dim indecomposable are iso or nilpotent}
+    Let \(W\) be a finite dimensional indecomposable \(A\)-module.
+    Then
+    \begin{enumerate}
+        \item any module morphism \(\theta \colon W \to W\) is either an isomorphism or nilpotent;
+        \item if \(\theta_i \colon W \to W\) for \(i = 1, \dotsc, n\) is a set of nilpotent module morphisms then \(\theta = \sum_i \theta_i\) is also a nilpotent module morphism.
+    \end{enumerate}
+    \begin{proof}
+        We work over an algebraically closed field, thus \(W\) splits into a sum of generalised eigenspaces.
+        These are submodules of \(W\).
+        Thus, \(\theta\) can have only one eigenvalue, call it \(\lambda\).
+        If \(\lambda = 0\) then \(\theta\) is nilpotent, and if \(\lambda \ne 0\) then \(\theta\) is an isomorphism.
+        
+        We prove that the sum of nilpotents is nilpotent by induction on \(n\).
+        For the base case, \(n = 1\), we clearly have that \(\theta = \theta_1\) is nilpotent.
+        Suppose then that the hypothesis holds up to \(n\) summands, and that at \(n\) summands \(\theta\) is not nilpotent.
+        Then \(\theta\) must be an isomorphism, and thus its inverse exists, and we have \(\id_W = \theta \theta^{-1} = \theta^{-1} \sum_{i=1}^n \theta_i = \sum_{i=1}^n \theta^{-1}\theta_i\).
+        Since the morphisms \(\theta^{-1}\theta_i\) are not isomorphisms they are nilpotent, and thus \(\id_W - \theta^{-1}\theta_n = \theta^{-1}\theta_1 + \dotsb + \theta^{-1}\theta_{n-1}\) is an isomorphism, but it's also a sum of \(n - 1\) nilpotents, so it should be nilpotent, a contradiction.
+        Thus by induction any such sum of nilpotents is itself nilpotent.
+    \end{proof}
+\end{lma}
+
+\section{Tensor Products}
+Let \(A\) and \(B\) be \(\field\)-algebras.
+Then \(A \otimes_{\field} B\) is also a \(\field\)-algebra when equipped with the product
+\begin{equation}
+    (a \otimes b)(a' \otimes b') = aa' \otimes bb'
+\end{equation}
+for \(a, a' \in A\) and \(b, b' \in B\).
+
+\begin{thm}{}{}
+    Let \(A\) and \(B\) be \(\field\)-algebras.
+    Let \(V\) be a simple finite dimensional \(A\)-module, and \(W\) a simple finite dimensional \(B\)-module.
+    Then \(V \otimes_{\field} W\) is a simple \((A \otimes_{\field} B)\)-module.
+    Further, any finite dimensional simple \((A \otimes_{\field} B)\)-module is of this form with \(V\) and \(W\) unique.
+    \begin{proof}
+        By the density theorem we have surjections \(A \twoheadrightarrow \End V\) and \(B \twoheadrightarrow \End W\).
+        Thus, we have a surjection
+        \begin{equation}
+            A \otimes B \twoheadrightarrow \End V \otimes \End W \isomorphic \End(V \otimes W).
+        \end{equation}
+        Thus, \(V \otimes W\) must be simple, as any submodules would only arise as submodules of \(V\) and \(W\).
+        
+        Now suppose that \(U\) is a simple \((A \otimes B)\)-module, and let \(A'\) and \(B'\) denote the images of \(A\) and \(B\) in \(\End U\).
+        Then \(A'\) and \(B'\) are finite dimensional, and we can assume without loss of generality that \(A\) and \(B\) are also finite dimensional.
+        By \cref{clm:rad of tensor product} we have that
+        \begin{equation}
+            \Rad(A \otimes B) = \Rad(A) \otimes B + A \otimes \Rad(B)
+        \end{equation}
+        and thus, we have
+        \begin{equation}
+            (A \otimes B)/\Rad(A \otimes B) = A/\Rad(A) \otimes B/\Rad(B).
+        \end{equation}
+        Since all of the algebras in question are matrix algebras the assertion follows.
+    \end{proof}
+\end{thm}
+
+\begin{clm}{}{clm:rad of tensor product}
+    For \(\field\)-algebras \(A\) and \(B\) we have
+    \begin{equation}
+        \Rad(A \otimes B) = \Rad(A) \otimes B + A \otimes \Rad(B).
+    \end{equation}
+    \begin{proof}
+        Consider the simple module \(V \otimes W\), where \(V\) is a simple \(A\)-module and \(W\) is a simple \(B\)-module.
+        We know that if \(a \otimes b \in \Rad(A \otimes B)\) then \(a \otimes b\) acts as zero on \(V \otimes W\).
+        We also know that if \(v \otimes w \in V \otimes W\) then \(a \otimes b\) acts as
+        \begin{equation}
+            (a \otimes b) \action (v \otimes w) = (a \action v) \otimes (b \action w).
+        \end{equation}
+        If this is to vanish then it must be that either \(a \action v = 0\) or \(b \action w = 0\).
+        Thus, \(a \in \Rad A\) or \(b \in \Rad B\), and so \(a \otimes b \in \Rad A \otimes B + A \otimes \Rad B\).
+        Conversely, clearly any element of this set acts trivially on \(V \otimes W\), and thus we have containment the other way.
+    \end{proof}
+\end{clm}
