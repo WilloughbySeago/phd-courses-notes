@@ -127,6 +127,7 @@ noabbrev
 \newcommand{\intterobang}{\mathchoice{!\mkern-6.1mu?}{!\mkern-6.2mu?}{!\mkern-6.8mu?}{!\mkern-6.8mu?}}
 \DeclareMathOperator{\proj}{proj}
 \newcommand{\ch}{\symrm{ch}}
+\newcommand{\Gr}{\symrm{Gr}}
 
 \includeonly{parts/algebra-reps, parts/group-reps}
 
@@ -1618,6 +1619,101 @@ noabbrev
             s_\lambda s_\mu = \sum_{\nu} c^\nu_{\lambda\mu} s_\nu.
         \end{equation}
     \end{thm}
+    
+    The Littlewood--Richardson rule is a famously tricky result to prove, requiring some careful combinatorics.
+    There are several related statements to the rule above.
+    
+    One result which follows immediately is that if we have the simple \(S_{\abs{\lambda}}\) and \(S_{\abs{\mu}}\) modules \(V_\lambda\) and \(V_\mu\) then we that, as \(S_{\abs{\nu}}\)-modules, where \(\abs{\nu} = \abs{\lambda} + \abs{\mu}\), we have
+    \begin{equation}
+        \Ind^{S_{\abs{\nu}}}_{S_{\abs{\lambda}} \times S_{\abs{\mu}}} (V_\lambda \otimes V_\mu) = \bigoplus_{\nu} c^\nu_{\lambda\mu} V_\nu.
+    \end{equation}
+    
+    Another result, which is related to this one via Schur--Weyl duality, is that simple \(\specialLinear_n(\complex)\)-modules can be labelled by partitions, call such a module \(E_\lambda\), and then we have
+    \begin{equation}
+        E_\lambda \otimes E_\mu = \bigoplus_{\nu} c^\nu_{\lambda\mu}E_\nu.
+    \end{equation}
+    
+    In fact, it turns out that the Schur functions can be realised as the characters of these irreducible representations, and as such this is really a more general version of the Littlewood--Richardson rule as stated above, it's a sort of categorification of the rule.
+    
+    \section{Application: Intersection Cohomology of Grassmannians}
+    Recall that the Grassmannian, \(\Gr_k(\complex^n)\), is defined to be the set of \(k\)-dimensional subspaces of \(\complex^n\).
+    An element of \(\Gr_k(\complex^n)\) can be represented as a \(k \times n\) matrix, specifically, it's the row space of this matrix.
+    This doesn't give a unique representation of our subspace, but we can fix a unique representation by placing the matrix into reduced row echelon form, which doesn't change the row space.
+    There are then \(k\) columns which are \(0\) apart from a single \(1\) (the pivot).
+    The entries in the other \(n - k\) columns determine exactly which \(k\)-dimensional subspace we're considering.
+    These \(k(n-k)\) entries can then be interpreted as coordinates, which makes \(\Gr_k(\complex^n)\) into a \(k(n - k)\)-dimensional complex manifold.
+    
+    For example, consider \(\Gr_4(\complex^8)\), one particular subspace of this has pivots in columns \(2\), \(3\), \(5\), and \(8\), so it looks like
+    \begin{equation}
+        \begin{pmatrix}
+            * & 1 & 0 & * & 0 & * & * & 0\\
+            * & 0 & 1 & * & 0 & * & * & 0\\
+            * & 0 & 0 & * & 1 & * & * & 0\\
+            * & 0 & 0 & * & 0 & * & * & 1
+        \end{pmatrix}
+        .
+    \end{equation}
+    The \(*\)s represent values that we are free to vary.
+    The above is the standard reduced row echelon form, but it will be more useful for us to use a slightly different convention, in which the left-most pivot appears lowest, so we would instead have
+    \begin{equation}
+        \begin{pmatrix}
+            * & 0 & 0 & * & 0 & * & * & 1\\
+            * & 0 & 0 & * & 0 & * & * & 0\\
+            * & 0 & 1 & * & 0 & * & * & 0\\
+            * & 1 & 0 & * & 0 & * & * & 0
+        \end{pmatrix}
+        .
+    \end{equation}
+    
+    We can turn such a matrix into a Young diagram as follows.
+    Take \(i_1\) to be the left-most nonzero column, \(i_2\) to be the left-most nonzero column linearly independent from \(i_1\), and so on.
+    Then we can use row operations to write the matrix so that there are pivots in columns \(i_j\), each column before \(i_1\) is just \(0\) (this is already the case) and each column between \(i_j\) and \(i_{j+1}\) starts with \(k - j\) zeros.
+    For example, with the (second) matrix form above, where the pivots appear in rows \(2\), \(3\), \(5\), and \(8\) we can basically set the first \(k - j\) \(*\)s to be \(0\) up to column \(i_j\):
+    \begin{equation}
+        \begin{pmatrix}
+            0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+            0 & 0 & 0 & 0 & 0 & * & * & 0\\
+            0 & 0 & 1 & * & 0 & * & * & 0\\
+            0 & 1 & 0 & * & 0 & * & * & 0
+        \end{pmatrix}
+        .
+    \end{equation}
+    Finally, delete the rows with the pivots, and we are left with
+    \begin{equation}
+        \begin{pmatrix}
+            0 & 0 & 0 & 0\\
+            0 & 0 & * & *\\
+            0 & * & * & *\\
+            0 & * & * & *
+        \end{pmatrix}
+        .
+    \end{equation}
+    Interpreting the \(0\)s as boxes in our Young diagram gives
+    \begin{equation}
+        \ydiagram{4,2,1,1}\,.
+    \end{equation}
+    
+    % https://surim.stanford.edu/sites/g/files/sbiybj26191/files/media/file/2017-tu_0.pdf
+    % page 4, section 3.1 cell decomposition
+    
+    Given a space, \(X\), with a cohomology theory we can define the cohomology ring to be
+    \begin{equation}
+        H^{\bullet}(X) = \bigoplus_m H^m(X).
+    \end{equation}
+    The product in this ring is given by the cup product, the details of which are beyond the scope of this course.
+    
+    Consider the Grassmannian, \(\Gr(k; \complex^n)\), which is the set of \(k\)-dimensional subspaces of \(\complex^n\).
+    The intersection cohomology, \(H^*(\Gr(k; \complex^n))\), has the presentation
+    \begin{equation}
+        H^{\bullet}(\Gr(k; \complex^n)) \isomorphic \Lambda / I_{k,n}
+    \end{equation}
+    where \(I_{k,n}\) is the ideal generated by Schur functions \(s_\lambda\) where the Young diagram of \(\lambda\) has at most \(k\) rows and \(n - k\) columns, so it fits in a \(k \times (n - k)\) bounding box.
+    The isomorphism is given by mapping a Schubert class to a Schur function, \(\sigma_\lambda \mapsto s_\lambda\).
+    In particular, the Littlewood--Richardson rule then gives us
+    \begin{equation}
+        \sigma_\lambda \sigma_\mu = \sum_\nu c^\nu_{\lambda\mu} \sigma_\nu,
+    \end{equation}
+    so the Littlewood--Richardson coefficients play the role of the intersection numbers.
     
     % Appdendix
 	\appendixpage
