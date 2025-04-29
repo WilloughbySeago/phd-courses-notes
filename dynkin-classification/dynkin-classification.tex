@@ -168,6 +168,10 @@ noabbrev
 \newcommand{\quaternions}{\symbb{H}}
 \newcommand{\qand}{\quad\text{and}\quad}
 \newcommand{\qqand}{\qquad\text{and}\qquad}
+\DeclareMathOperator{\Fix}{Fix}
+\DeclareMathOperator{\Gr}{Gr}
+\newcommand{\projective}{\symbb{P}}
+\newcommand{\action}{\mathbin{.}}
 
 \begin{document}
     \frontmatter
@@ -195,7 +199,7 @@ noabbrev
         is fixed pointwise, so \(s(\lambda) = \lambda\) for \(\lambda \in H_\alpha\), in other words \(s\) acts as the identity on \(H_\alpha\), so \(s|_{H_\alpha} = \id_{H_\alpha}\).
     \end{dfn}
     
-    \begin{lma}{}{}
+    \begin{lma}{}{lma:reflection formula}
         The map defined by
         \begin{equation}
             s_\alpha(\lambda) = \lambda - 2\frac{\innerprod{\alpha}{\lambda}}{\innerprod{\alpha}{\alpha}} \alpha
@@ -417,4 +421,54 @@ noabbrev
     For example, one shape with its symmetry corresponding to \(\E[6]\) is the so-called \(2_{21}\)-polytope.
     This is a \(6\)-dimensional shape which is constructed by taking \(W(\E[6])\), acting as reflections of \(\reals^6\) and then taking the orbit of a nonzero point under this group to define the vertices of the polytope.
     This method will work for generating a polytope with any given reflection symmetry group.
+    
+    \section{Root Systems}
+    Given a vector, \(\alpha \in V \setminus 0\), we've constructed a hyperplane, \(H_\alpha \subset V\).
+    We have then considered reflections in this hyperplane.
+    We can go the other way.
+    Given a reflection, \(s \in \orthogonal(V)\), we can recover the hyperplane as
+    \begin{equation}
+        H_\alpha = \Fix(s) = \ker(s - \id_{\reals^n})
+    \end{equation}
+    where \(\Fix(f)\) denotes the fixed points of the map \(f\).
+    We can then pick any vector orthogonal to the hyperplane to be \(\alpha\), and this determines \(\alpha\) up to a scalar factor.
+    To get a unique identification instead of \(\alpha\) we might consider
+    \begin{equation}
+        L_\alpha = \reals \alpha = H_\alpha^{\perp}.
+    \end{equation}
+    Then there is a one-to-one correspondence between reflections and these one-dimensional subspaces of \(\reals^n\).
+    
+    \begin{remark}{}{}
+        The space of one-dimensional subspaces, \(L_\alpha \subset V\), is the Grassmannian \(\Gr(1, n)\), or equivalently, the projective space, \(\projective^{n-1}\).
+        Either of these interpretations comes naturally equipped with extra structure that we can exploit.
+        These objects will come back later.
+    \end{remark}
+    
+    The orthogonal group, \(\orthogonal(V)\), acts on \(V\) by definition.
+    It also acts on itself by conjugation.
+    The following shows that these operations are actually equivalent when we restrict to acting on reflections.
+    
+    \begin{lma}{}{}
+        Given \(w \in \orthogonal(V)\) and \(\alpha \in V \setminus 0\) we have \(ws_\alpha w^{-1} = s_{w(\alpha)}\).
+        \begin{proof}
+            We simply have to check that \(ws_\alpha w^{-1}\) sends \(w(\alpha)\) to its negative and fixes \(H_{w(\alpha)}\).
+            First, we have
+            \begin{align}
+                ws_{\alpha}w^{-1}(w(\alpha)) = ws_\alpha(\alpha) = w(-\alpha) = -w(\alpha).
+            \end{align}
+            Second, \(\lambda \in H_\alpha\) if and only if \(w(\lambda) \in H_{w(\alpha)}\), since \(\lambda \in H_\alpha\) means \(\innerprod{\alpha}{\lambda} = 0\) and \(w(\lambda) \in H_{w(\alpha)}\) means \(\innerprod{w(\alpha)}{w(\lambda)} = 0\), and by the definition of an orthogonal transformation \(\innerprod{\alpha}{\lambda} = \innerprod{w(\alpha)}{w(\lambda)}\).
+            Then, if \(\lambda \in H_\alpha\), so \(\innerprod{\alpha}{\lambda} = 0\), we have
+            \begin{equation}
+                ws_\alpha w^{-1}(w(\lambda)) = ws_\alpha(\lambda) = w\left( \lambda - 2\frac{\innerprod{\alpha}{\lambda}}{\innerprod{\alpha}{\alpha}}\alpha \right) = w(\lambda).
+            \end{equation}
+            Thus, elements of \(H_{w(\alpha)}\), which are of the form \(w(\lambda)\) for \(\lambda \in H_\alpha\), are fixed pointwise by \(ws_\alpha w^{-1}\).
+        \end{proof}
+    \end{lma}
+    
+    \begin{crl}{}{}
+        There is a natural action of a reflection group, \(W\), on the collection of lines \(\{L_\alpha \mid s_\alpha \in W\}\) given by \(w \action L_\alpha = L_{w(\alpha)}\).
+    \end{crl}
+    
+    This action on \(\{L_\alpha \mid s_\alpha \in W\}\) is simply permuting the lines in some way.
+    
 \end{document} 
