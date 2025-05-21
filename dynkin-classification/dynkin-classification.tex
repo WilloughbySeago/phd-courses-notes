@@ -172,6 +172,7 @@ noabbrev
 \DeclareMathOperator{\Gr}{Gr}
 \newcommand{\projective}{\symbb{P}}
 \newcommand{\action}{\mathbin{.}}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
 
 \begin{document}
     \frontmatter
@@ -470,5 +471,164 @@ noabbrev
     \end{crl}
     
     This action on \(\{L_\alpha \mid s_\alpha \in W\}\) is simply permuting the lines in some way.
+    To study this action we don't need to look at the whole line, \(L_\alpha\), instead, we can just take the two unit vectors which lie in this line.
+    The collection of all such unit vectors, called a root system, arises in lots of fields of mathematics.
+    The case of the regular pentagon is shown in \cref{fig:regular pentagon root system}.
+    Notice that we get one root in each region given by splitting along the reflection planes.
+    These regions are known as \define{Weyl chambers}.
     
-\end{document} 
+    \begin{figure}
+        \centering
+        \tikzsetnextfilename{regular-pentagon-root-system}
+        \begin{tikzpicture}
+            \draw [very thick, rotate=90] (0:2) -- (72:2) -- (144:2) -- (216:2) -- (288:2) -- cycle;
+            \draw [thick, dashed, gray, rotate=90] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+72] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+2*72] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+3*72] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+4*72] (36.5:-3) -- (36.5:3);
+            \foreach \a in {0, 36, ..., 360} {
+                \fill [dark orange] (\a:1) circle [radius=0.1];
+            }
+            \begin{scope}[xshift=7cm]
+                \draw [very thick, rotate=90] (0:2) -- (72:2) -- (144:2) -- (216:2) -- (288:2) -- cycle;
+                \draw [thick, dashed, gray, rotate=90+3*72] (36.5:-3) -- (36.5:3);
+                \foreach \a in {2*36, 7*36} {
+                    \fill [dark orange] (\a:1) circle [radius=0.1];
+                }
+            \end{scope}
+        \end{tikzpicture}
+        \caption[The root system of the regular pentagon.]{The root system of the regular pentagon, on the right a single reflection plane, \(H_\alpha\), and the corresponding roots, \(\pm \alpha\), are highlighted.}
+        \label{fig:regular pentagon root system}
+    \end{figure}
+    
+    \begin{dfn}{Root System (Explicit)}{}
+        The \define{root system} of a finite reflection group, \(W\), is the set
+        \begin{equation}
+            \Phi(W) = \{\beta \in V \mid s_\beta \in W \text{ and } \abs{\beta} = 1\}.
+        \end{equation}
+    \end{dfn}
+    
+    \begin{remark}{}{}
+        This definition is for a root system as it arises in the study of Coxeter groups.
+        In other areas of maths it's preferable to take non-unit vectors so that certain quantities take integer values.
+        These non-unit-vector root systems are referred to as \define{crystallographic} root systems.
+    \end{remark}
+    
+    We call the definition above an explicit root system.
+    This distinguishes it from the following definition of an \enquote{abstract} root system.
+    It turns out that after normalisation every abstract root system corresponds to an explicit root system, and vice versa, so the distinction isn't important.
+    The fact that root systems (and hence Dynkin diagrams) appear in so many areas of maths is mostly due to the fact that abstract root systems appear in many areas of maths, and this in turn is explained by their nature as a fairly natural way of arranging a small number of vectors in a very symmetric way.
+    
+    \begin{dfn}{Root System (Abstract)}{}
+        A finite set, \(\Phi \subseteq V \setminus 0\) is an abstract \define{root system} if for all \(\alpha \in \Phi\) we have
+        \begin{itemize}
+            \item \(\Phi \cap \reals \alpha = \{\pm \alpha\}\) (that is, the only scalar multiples of \(\alpha\) which are included in \(\Phi\) are \(\pm \alpha\));
+            \item \(s_\alpha(\Phi) = \Phi\) (so \(s_\alpha\) acts by permuting roots).
+        \end{itemize}
+    \end{dfn}
+    
+    The correspondence between a reflection group, \(W\), and its root system, \(\Phi\), goes both ways.
+    Given a root system, \(\Phi\), we can define the finite reflection group
+    \begin{equation}
+        W(\Phi) = \langle s_\alpha \mid \alpha \in \Phi \rangle.
+    \end{equation}
+    We then recover the (normalised) root system as
+    \begin{equation}
+        \Phi(W(\Phi)) = \left\{ \frac{\beta}{\abs{\beta}} \,\middle\vert\, \beta \in \Phi \right\}.
+    \end{equation}
+    
+    \section{Simple and Positive Roots}
+    It turns out that even a root system contains far more information than is needed.
+    To start with, if \(\alpha\) is a root, so is \(-\alpha\).
+    So, we can throw away half of the roots.
+    It doesn't really matter which half we choose, as long as we keep one of each \(\pm\) pair.
+    This defines the \enquote{positive} roots.
+    
+    \begin{dfn}{Positive Roots}{}
+        Consider a root system, \(\Phi\), in the ambient space \(V\).
+        Let \(H \subset V\) be a generic hyperplane through the origin.
+        By this we mean that \(H \cap \Phi = \emptyset\).
+        Choose one side of \(H\), and define this side to be \(H^+\).
+        We call \(\Pi = \Phi \cap H^+\) the \define{positive roots}.
+    \end{dfn}
+    
+    While there are two choices made here (the hyperplane, and which side is positive) it turns out that these choices don't matter in practice.
+    That is, any other valid choice simply results in isomorphic structures, and so we usually just make some choice that is easiest to work with.
+    
+    \Cref{fig:regular pentagon positive roots} shows one choice of positive roots for the regular pentagon.
+    
+    \begin{figure}
+        \centering
+        \tikzsetnextfilename{regular-pentagon-positive-roots}
+        \begin{tikzpicture}
+            \draw [very thick, rotate=90] (0:2) -- (72:2) -- (144:2) -- (216:2) -- (288:2) -- cycle;
+            \draw [thick, dashed, gray, rotate=90] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+72] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+2*72] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+3*72] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+4*72] (36.5:-3) -- (36.5:3);
+            \draw [thick, mid orange, rotate=98] (36.5:-3) coordinate (A) -- (36.5:3);
+            \draw [thick, ->, mid orange, rotate=98] ($(A)!0.1!(0, 0)$) -- ++ (-55:0.4) node [right, shift={(-0.1,-0.05)}] {\(H^{+}\)};
+            \node [dark orange] at ($(0, 0)!1.075!(A)$) {\(H\)};
+            \foreach \a in {0, 36, 72, 108, 324} {
+                \fill [dark orange] (\a:1) circle [radius=0.1];
+            }
+            \foreach \a in {144, 180, 216, 252, 288} {
+                \fill [light orange!30] (\a:1) circle [radius=0.1];
+            }
+        \end{tikzpicture}
+        \caption{A choice of positive roots for the root system of the regular pentagon.}
+        \label{fig:regular pentagon positive roots}
+    \end{figure}
+    
+    For many purposes there's still more information in the positive roots than we need.
+    For example, if we look at \cref{fig:regular pentagon positive roots} for many purposes it's sufficient to take the two extremal roots closest to the hyperplane \(H\).
+    A set of roots that contains the information these have is called a simple root system, or a set of simple roots.
+    
+    \begin{dfn}{Simple Roots}{}
+        Let \(\Phi\) be a root system with chosen positive roots, \(\Pi\).
+        We call \(\Delta \subseteq \Pi\) a set of simple roots if it generates the cone
+        \begin{equation}
+            \mathop{\operatorname{cone}} \Pi = \sum_{\beta \in \Pi} \reals_+ \beta.
+        \end{equation}
+    \end{dfn}
+    
+    The cone consists of all vectors which can be written as a linear combination of positive roots with positive coefficients.
+    For the pentagon this cone, as well as the two simple roots, are shown in \cref{fig:regular pentagon simple roots}.
+    
+    \begin{figure}
+        \centering
+        \tikzsetnextfilename{regular-pentagon-simple-roots}
+        \begin{tikzpicture}
+            \begin{scope}
+                \clip (0, 0) circle [radius=3cm];
+                \fill [thick, dark orange!20] (0, 0) -- (324:10) -- (108:10) -- cycle;
+            \end{scope}
+            \draw [very thick, rotate=90] (0:2) -- (72:2) -- (144:2) -- (216:2) -- (288:2) -- cycle;
+            \draw [thick, dashed, gray, rotate=90] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+72] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+2*72] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+3*72] (36.5:-3) -- (36.5:3);
+            \draw [thick, dashed, gray, rotate=90+4*72] (36.5:-3) -- (36.5:3);
+            \draw [thick, mid orange, rotate=98] (36.5:-3) coordinate (A) -- (36.5:3);
+            \draw [thick, ->, mid orange, rotate=98] ($(A)!0.1!(0, 0)$) -- ++ (-55:0.4) node [right, shift={(-0.1,-0.05)}] {\(H^{+}\)};
+            \node [dark orange] at ($(0, 0)!1.075!(A)$) {\(H\)};
+            \foreach \a in {0, 36, 72, 108, 324} {
+                \fill [dark orange!50] (\a:1) circle [radius=0.1];
+            }
+            \foreach \a in {108, 324} {
+                \fill [dark orange] (\a:1) circle [radius=0.1];
+            }
+            \foreach \a in {144, 180, 216, 252, 288} {
+                \fill [light orange!10] (\a:1) circle [radius=0.1];
+            }
+        \end{tikzpicture}
+        \caption[Simple Roots]{For a choice of positive roots of the pentagon the two simple roots are the two either side of the cone spanned by positive linear combinations of positive roots.}
+        \label{fig:regular pentagon simple roots}
+    \end{figure}
+    
+    In this two dimensional space we have two simple roots, and that is, in general, as far as we can go without losing information.
+    Note that the simple roots don't contain \emph{all} of the information, we still have to remember which positive linear combinations of the simple roots we allow to generate all positive roots, which we can then reflect through the origin to produce the negative roots.
+    The simple roots are still an important subset containing much of the needed information though.
+\end{document}
