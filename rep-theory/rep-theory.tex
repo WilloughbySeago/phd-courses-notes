@@ -8,6 +8,9 @@
 \usepackage{ytableau}
 \usepackage{siunitx}
 
+\let\oldwidehat=\widehat
+\AtBeginDocument{\let\widehat=\oldwidehat}
+
 \usepackage{tikz}
 \usetikzlibrary{external}
 \tikzexternalize[prefix=tikz-external/]
@@ -65,6 +68,7 @@ noabbrev
 \newcommand{\Rep}{\c@egory{Rep}}
 \newcommand{\Set}{\c@egory{Set}}
 \newcommand{\Alg}[1][\field]{{#1}\text{-}\c@egory{Alg}}
+\newcommand{\Lie}[1][\field]{{#1}\text{-}\c@egory{Lie}}
 \makeatother
 \DeclareMathOperator{\im}{im}
 \newcommand{\isomorphic}{\cong}
@@ -128,6 +132,9 @@ noabbrev
 \DeclareMathOperator{\proj}{proj}
 \newcommand{\ch}{\symrm{ch}}
 \newcommand{\Gr}{\symrm{Gr}}
+\renewcommand{\dd}{\,\symrm{d}}
+\newcommand{\ad}{\symrm{ad}}
+\DeclareMathOperator{\gr}{gr}
 
 \includeonly{parts/algebra-reps, parts/group-reps}
 
@@ -1706,9 +1713,6 @@ noabbrev
     It turns out that the cohomology of \(\Gr_k(\complex^n)\) is a freely generated abelian group on the classes \(\sigma_\lambda = [\Omega_\lambda]\) as \(\lambda\) ranges over all Young diagrams with at most \(k\) rows and \(n - k\) columns.
     This is a general fact about the cohomology of spaces admitting such a cellular decomposition.
     
-    % https://surim.stanford.edu/sites/g/files/sbiybj26191/files/media/file/2017-tu_0.pdf
-    % page 4, section 3.1 cell decomposition
-    
     Given a space, \(X\), with a cohomology theory we can define the cohomology ring to be
     \begin{equation}
         H^{\bullet}(X) = \bigoplus_m H^m(X).
@@ -2037,9 +2041,24 @@ noabbrev
     \end{crl}
     
     \begin{exm}{}{}
-        For \(\lambda = (n)\) we have \(L_{(n)} = S^nV\).
-        For \(\lambda = (1^n)\) we have \(L_{(1^n)} = \Lambda^nV\).
-        These are indeed irreducible modules (when \(n \le \dim V\), otherwise \(\Lambda^nV = 0\)).
+        For \(\lambda = (n)\) we have
+        \begin{equation}
+            L_{(n)} = \Hom_{\field S_n}(V_{(n)}, V^{\otimes n}).
+        \end{equation}
+        We know that as a vector space \(V_{(n)}\) is one-dimensional, and \(\sigma \in S_n\) acts trivially on \(V_{(n)}\).
+        Thus, maps \(V_{(n)} \to V^{\otimes n}\) preserving this action are precisely maps \(f \colon V_{(n)} \to V^{\otimes n}\) such that \(\sigma \action f(v) = f(\sigma \action v) = f(v)\) for \(v \in V_{(n)}\) and \(\sigma \in S_n\).
+        Such a map can be identified with the image of the single basis vector, \(v \in V_{(n)}\), providing a bijection \(\Hom_{\field S_n}(V_{(n)}, V^{\otimes n}) \to V^{\otimes n}\) by \(f \mapsto f(v)\).
+        Since \(f(v)\) is invariant under the action of \(S_n\) we know that \(f(v) \in S^nV \subseteq V^{\otimes n}\).
+        Thus, we can identify \(\Hom_{\field S_n}(V_{(n)}, V^{\otimes n})\) with an \(S_n\)-submodule of \(S^nV\), and since \(S^nV\) is a simple \(S_n\)-module it must be that \(\Hom_{\field S_n}(V_{(n)}, V^{\otimes n}) \isomorphic S^nV\).
+        
+        We can do something similar for \(\lambda = (1^n)\), we have
+        \begin{equation}
+            L_{(1^n)} = \Hom_{\field S_n}(V_{(1^n)}, V^{\otimes n}).
+        \end{equation}
+        We know that as a vector space \(V_{(1^n)}\) is one-dimensional, and \(\sigma \in S_n\) acts by a sign.
+        Thus, maps \(V_{(1^n)} \to V^{\otimes n}\) preserving this action are precisely maps \(f \colon V_{(1^n)} \to V^{\otimes n}\) such that \(\sigma \action f(v) = f(\sigma \action v) f((\sgn \sigma) v) = (\sgn \sigma) f(v)\) for \(v \in V_{(1^n)}\) and \(\sigma \in S_n\).
+        Again, we can identify such a map with \(f(v)\) for some fixed \(v \in V_{(1^n)}\).
+        Since \(S_n\) acts on \(f(v)\) by a sign we know that \(f(v) \in \Lambda^nV\), and since \(\Lambda^nV\) is a simple \(S_n\)-module (for \(n \le \dim V\)) we must have \(\Hom_{\field S_n}(V_{(1^n)}, V^{\otimes n}) \isomorphic \Lambda^nV\).
     \end{exm}
     
     \subsection{Finite Dimensional \texorpdfstring{\(\generalLinear_m(\field)\)}{GLm(k)}-Modules}
@@ -2048,7 +2067,7 @@ noabbrev
     \begin{equation}
         \rho \colon \generalLinear_m(\field) \to \generalLinear(V).
     \end{equation}
-    Since we're working with finite-dimensional spaces we can identify \(\generalLinear(V) = \generalLinear_n(\field)\).
+    Since we're working with finite-dimensional spaces we can pick a basis and identify \(\generalLinear(V) = \generalLinear_n(\field)\).
     Then this is a map taking in an invertible \(m \times m\) matrix, \(g\), and outputting an invertible \(n \times n\) matrix, \(\rho(g)\).
     
     \begin{dfn}{Regular and Polynomial Representations}{}
@@ -2089,7 +2108,879 @@ noabbrev
         \end{proof}
     \end{prp}
     
+    \begin{thm}{Polynomial Representations}{}
+        The irreducible polynomial representations of \(\generalLinear_m(\complex)\) are precisely the \(L_\lambda\) for which \(\lambda\) is a partition (of an arbitrary nonnegative integer) of length at most \(m\).
+        Further, the character of \(g \in \generalLinear_m(\complex)\) in this representation is precisely the Schur polynomial \(s_\lambda(x_1, \dotsc, x_m)\) evaluated at the \(m\) eigenvalues \(x_1, \dotsc, x_m\) of \(g\).
+    \end{thm}
     
+    If \(V\) is an \(m\)-dimensional vector space then we can consider the polynomial representation \(L_\lambda\) as a submodule of \(V^{\otimes n}\).
+    Specifically, it's the image of \(V\) under the Schur functor \(S_\lambda \colon \AMod[\generalLinear_m] \to \AMod[\generalLinear_m]\), defined by setting \(S_\lambda(V)\) to be the result of acting on \(V^{\otimes n}\) with the corresponding Young projector of \(\lambda\).
+    For example, \(S_{(n)} V = S^n V\) and \(S_{(1^n)}(V) = \Lambda^nV\).
+    For \(n = 3\) \(S_{(2,1)}V\) is the subspace of \(V^{\otimes n}\) which is symmetric under exchange of the first two factors, and antisymmetric under exchange of any factor with the third factor.
+    
+    Non-polynomial representations can also be indexed by decreasing sequences of integers, known as weights, but there is no positivity requirement, so they aren't (necessarily) partitions.
+    
+    Let \(g \in \generalLinear_m(\complex)\) have eigenvalues \(x_1, \dotsc, x_n \in \complex\).
+    Consider the setup of Schur--Weyl duality, that is \(V = \complex^m\), \(E = V^{\otimes n}\), considered as an \((S_n \times \generalLinear_m(\complex))\)-module.
+    Then for \(w \in S_n\) of cycle type \(\mu\) we can take the trace in this representation.
+    On the one hand, we have
+    \begin{equation}
+        \tr_E((w, g^{\otimes n})) = p_\mu(x_1, \dotsc, x_m),
+    \end{equation}
+    and on the other we have
+    \begin{equation}
+        \tr_E((w, g^{\otimes n})) = \tr_{\bigoplus_\lambda V_\lambda \otimes L_\lambda}(wg^{\otimes n}) = \sum_\lambda \chi_\lambda(\mu) s_\lambda(x_1, \dotsc, x_m).
+    \end{equation}
+    Thus, we have
+    \begin{equation}
+        p_\mu(x_1, \dotsc, x_m) = \sum_{\lambda} \chi_\lambda(\mu) s_\lambda(x_1, \dotsc, x_m)
+    \end{equation}
+    where \(\lambda\) runs over all partitions of \(n\), \(\mu\) is some fixed partition of \(n\), and \(\chi_\lambda\) is the character of the corresponding irreducible \(S_n\)-module.
+    
+    \begin{thm}{Peter--Weyl Theorem}{thm:peter-weyl}
+        Let \(R\) be the algebra of polynomial functions on \(\generalLinear(V)\).
+        Then this is a \((\generalLinear(V) \times \generalLinear(V))\)-module, with the action \(((g, h) \action \varphi)(x) = \varphi(g^{-1}xh)\) for \(g, h, x \in \generalLinear(V)\) and \(\varphi \in R\).
+        Then \(R\) decomposes as
+        \begin{equation}
+            R = \bigoplus_{\lambda} L_\lambda^* \otimes L_\lambda
+        \end{equation}
+        where \(\lambda\) runs over all partitions.
+    \end{thm}
+    
+    \section{Howe Duality}
+    Schur--Weyl duality is concerned with \((S_n \times \generalLinear_m)\)-modules.
+    Howe duality, on the other hand, is concerned with \((\generalLinear_m \times \generalLinear_n)\)-modules.
+    
+    We'll work over the complex numbers in this section.
+    There is a natural action of \(\generalLinear_m \times \generalLinear_n\) on \(\complex^m \otimes \complex^n\), namely \((g, g') \action v \otimes v' = gv \otimes g'v'\).
+    By the same arguments as applied to Schur--Weyl duality this action commutes with the action of \(S_k \times S_\ell\) on \((\complex^m)^{\otimes k} \otimes (\complex^n)^{\otimes \ell}\).
+    Thus, we can consider \(S(\complex^m \otimes \complex^n)\) and \(\Lambda(\complex^m \otimes \complex^n)\).
+    Howe duality is then a statement as to how these decompose as \((\generalLinear_m \times \generalLinear_n)\)-modules.
+    
+    \begin{thm}{Howe Duality}{thm:howe duality}
+        We have
+        \begin{itemize}
+            \item \(\displaystyle S(\complex^m \otimes \complex^n) \isomorphic \bigoplus_{\lambda : \ell(\lambda) \le \min\{m, n\}} L_\lambda^m \otimes L_\lambda^n\);
+            \item \(\displaystyle \Lambda(\complex^m \otimes \complex^n) \isomorphic \bigoplus_{\lambda \subseteq \raisebox{-0.7ex}{\(\begin{smallmatrix} \square & m\\ n \end{smallmatrix}\)}} L_\lambda^m \otimes L_{\lambda'}^n\) where \(\lambda \subseteq \raisebox{-0.6ex}{\(\begin{smallmatrix} {\textstyle \square} & m\\ n \end{smallmatrix}\)}\) means that the Young diagram of \(\lambda\) fits in an \(m \times n\) bounding box, that is, \(\lambda\) has at most \(m\) rows and \(n\) columns.
+        \end{itemize}
+    \end{thm}
+    
+    Note that \(S(\complex^m \otimes \complex^n)\) is infinite dimensional (for \(m, n \ne 0\)).
+    This means that the character of this representation is not well defined.
+    We fix this with the graded character, which encodes the character of each homogeneous component.
+    Specifically, we have
+    \begin{equation}
+        S(\complex^m \otimes \complex^n) = \bigoplus_{k \ge 0} S^k(\complex^m \otimes \complex^n),
+    \end{equation}
+    and we can define the graded character to be the formal power series
+    \begin{equation}
+        \chi_S = \sum_{k \ge 0} z^k \chi_{S^k}.
+    \end{equation}
+    Here \(\chi_{S^k}\) is the character in the representation \(S^k(\complex^m \otimes \complex^n)\), which is well defined as the trace of an operator on a finite-dimensional space.
+    Note that when we evaluate \(\chi_S\) on \((g, g') \in \generalLinear_m \times \generalLinear_n\) we get a power series in \(z\), and so \(\chi_S\) is a power-series valued linear function, \(\chi_S \in \Hom(\generalLinear_m \times \generalLinear_n, \complex \lBrack z \rBrack)\).
+    Note that taking the graded trace of \((I_m, I_n)\) gives us the graded dimension,
+    \begin{equation}
+        \sum_{k \ge 0} z^k \dim(S^k(\complex^m \otimes \complex^n)).
+    \end{equation}
+    This definition of the graded trace and dimension can be extended to any graded representation.
+    
+    \begin{prp}{Cauchy Identities}{}
+        The following hold
+        \begin{itemize}
+            \item \(\displaystyle \prod_{i=1}^m \prod_{j=1}^n \frac{1}{1 - zx_i y_j} = \sum_{\lambda : \ell(\lambda) \le \min\{m, n\}} z^{\abs{\lambda}} s_\lambda(x) s_\lambda(y)\);
+            \item \(\displaystyle \prod_{i=1}^m \prod_{j=1}^n (1 + zx_i y_j) = \sum_{\lambda \subseteq \raisebox{-0.7ex}{\(\begin{smallmatrix} \square & m\\ n \end{smallmatrix}\)}} z^{\abs{\lambda}} s_\lambda(x) s_{\lambda'}(y)\).
+        \end{itemize}
+    \end{prp}
+    
+    The Cauchy identities can be proven from Howe duality by taking characters, or they can be proven purely from the theory of symmetric functions and a result known as the RSK correspondence.
+    We can then use the Cauchy identities to prove Howe duality.
+    
+    \begin{prp}{Pieri Rules}{}
+        Let \(\mu\) be a partition of \(n\).
+        Then as \(\generalLinear_m\)-modules we have the decompositions
+        \begin{itemize}
+            \item \(L_\mu \otimes S^r(\complex^m) \isomorphic \bigoplus_\lambda L_\lambda\) where the sum is over partitions, \(\lambda\), of \(n + r\) such that i) \(\lambda \setminus \mu\) is a horizontal strip (at most one box in each column) and ii) \(\lambda\) has at most \(m\) rows;
+            \item \(L_\mu \otimes \Lambda^r(\complex^m) \isomorphic \bigoplus_\lambda L_\lambda\) where the sum is over partitions, \(\lambda\), of \(n + r\) such that i) \(\lambda \setminus \mu\) is a vertical strip (at most one box in each row) ii) \(\lambda\) has at most \(m\) rows.
+        \end{itemize}
+    \end{prp}
+    
+    Notice that \(g \in \generalLinear_m\) acts on the \(r\)th tensor power by acting on each term with \(g\).
+    This means that \(g\) acts like \(g^r\).
+    If \(g\) is diagonal with eigenvalues \(\{x_1, \dotsc, x_m\}\) then \(g^r\) is diagonal with eigenvalues \(x_i^r\), and thus taking the trace of this action we find that the character is \(x_1^r + \dotsb + x_m^r = p_r(x)\).
+    For \(S^r(\complex^m)\) we have a similar result, except that we are symmetrising everything, which means that we get all possible degree \(r\) monomials in the \(x_i\), not just \(x_i^r\), we also get, for example, \(x_1x_2^{r-1}\) and \(x_1 x_2^3 x_7^{r-4}\).
+    Thus, the character of the representation \(S^r(\complex^m)\) is \(h_r(x)\).
+    For \(\Lambda^r(\complex^m)\) we are antisymmetrising everything, and this means we get all possible degree \(r\) monomials in the \(x_i\) with the additional restriction that no element can be repeated.
+    For example, if \(r = 3\) then we get \(x_1x_2x_3\) and \(x_1 x_2 x_7\), but not \(x_1^2x_2\).
+    Thus, the character of the representation \(\Lambda^r(\complex^m)\) is \(e_r(x)\).
+    
+    Taking characters of the results in the previous proposition thus gives us the following corollary.
+    
+    \begin{crl}{}{}
+        With the same notation as above
+        \begin{itemize}
+            \item \(s_\mu h_r = \sum_\lambda s_\lambda\) where the sum is over partitions, \(\lambda\), of \(n + r\) such that i) \(\lambda \setminus \mu\) is a horizontal strip (at most one box in each column) ii) \(\lambda\) has at most \(m\) rows
+            \item \(s_\mu e_r = \sum_\lambda s_\lambda\) where the sum is over partitions, \(\lambda\), of \(n + r\) such that i) \(\lambda \setminus \mu\) is a vertical strip (at most one box in each row) ii) \(\lambda\) has at most \(m\) rows.
+        \end{itemize}
+    \end{crl}
+    
+    We can check this for a small example, taking \(m = 2\), \(n = 3\), \(r = 2\), and \(\mu = (2, 1)\).
+    We then have
+    \ytableausetup{boxsize=0.5em}
+    \begin{align}
+        s_{\ydiagram{2,1}} h_2 &= (x_1^2x_2 + x_1x_2^2)(x_1^2 + x_1x_2 + x_2^2)\\
+        &= x_1^4 x_2 + 2 x_1^3 x_2^2 + 2 x_1^2 x_2^3 + x_1 x_2^4.
+    \end{align}
+    The \(5\) box Young diagrams with at most 2 rows are
+    \ytableausetup{smalltableaux}
+    \begin{equation}
+        \ydiagram{5}\,,\quad 
+        \begin{ytableau}
+            \mathstrut & \mathstrut & *(highlight!50) \mathstrut & *(highlight!50) \mathstrut\\
+            \mathstrut
+        \end{ytableau}
+        \,, \qand 
+        \begin{ytableau}
+            \mathstrut & \mathstrut & *(highlight!50) \mathstrut\\
+            \mathstrut & *(highlight!50) \mathstrut
+        \end{ytableau}
+        \,.
+    \end{equation}
+    Of these, the first cannot be achieved by adding boxes to \(\mu = (2, 1)\), the other two can, with the added boxes highlighted above.
+    Note that no column contains more than one highlighted box, and thus both are given by adding a horizontal strip to \(\mu = (2, 1)\), and thus \(\lambda \setminus \mu\) is always a horizontal strip.
+    Thus, if the result above holds we should have
+    \ytableausetup{boxsize=0.5em}
+    \begin{equation}
+        s_{\ydiagram{2,1}} h_2 = s_{\ydiagram{4,1}} + s_{\ydiagram{3,2}},
+    \end{equation}
+    and indeed this is the case, as one can check:
+    \begin{equation}
+        s_{\ydiagram{4,1}} + s_{\ydiagram{3,2}} =
+        (x_1^4 x_2 + x_1^3 x_2^2 + x_1^2 x_2^3 + x_1 x_2^4) + (x_1^3 x_2^2 + x_1^2 x_2^3)
+    \end{equation}
+    which gives the same result as above.
+    
+    If instead \(m \ge 5\) then we have to consider all 5 box Young diagrams which are generated by adding a two box horizontal strip to \(\mu = (2, 1)\).
+    These are
+    \ytableausetup{smalltableaux}
+    \begin{equation}
+        \begin{ytableau}
+            \mathstrut & \mathstrut \\
+            \mathstrut & *(highlight!50) \mathstrut\\
+            *(highlight!50) \mathstrut
+        \end{ytableau}
+        \, \quad
+        \begin{ytableau}
+            \mathstrut & \mathstrut & *(highlight!50) \mathstrut\\
+            \mathstrut & *(highlight!50) \mathstrut
+        \end{ytableau}
+        \, \quad
+        \begin{ytableau}
+            \mathstrut & \mathstrut & *(highlight!50) \mathstrut\\
+            \mathstrut\\
+            *(highlight!50) \mathstrut
+        \end{ytableau}
+        \, \qand 
+        \begin{ytableau}
+            \mathstrut & \mathstrut & *(highlight!50) \mathstrut & *(highlight!50) \mathstrut\\
+            \mathstrut
+        \end{ytableau}
+        \,.
+    \end{equation}
+    One can then check that
+    \ytableausetup{boxsize=0.5em}
+    \begin{equation}
+        h_2 s_{\ydiagram{2,1}} = s_{\ydiagram{2,2,1}} + s_{\ydiagram{3,2}} + s_{\ydiagram{3,1,1}} + s_{\ydiagram{4,1}}.
+    \end{equation}
+    For example, the following code does this in Mathematica.
+    
+    \begin{cde}{}{}
+        \begin{lstlisting}[gobble=12, language=Mathematica, mathescape]
+            SchurS = ResourceFunction["SchurS"];
+            Module[{h, s, vars}
+                vars = {x$_1$, x$_2$, x$_3$, x$_4$, x$_5$};
+                h = SchurS[{2}, vars];
+                s[$\lambda$_] = SchurS[$\lambda$, vars];
+                h s[{2,1}] == s[{2,2,1}] + s[{3,2}]
+                    + s[{3,1,1}] + s[{4,1}] // Simplify
+            ]
+        \end{lstlisting}
+    \end{cde}
+    
+    Note that these results are special cases of the Littlewood--Richardson rule.
+    In particular, we've taken \(h_r = s_{(r)}\) and \(e_r = s_{(1^r)}\).
+    
+    \section{\texorpdfstring{\(\generalLinear_m(\complex)\)}{GLm} Branching Rules}
+    Let \(\lambda\) and \(\mu\) be partitions.
+    We say that \(\mu\) \define{interleaves}\index{interleave} \(\lambda\) if
+    \begin{equation}
+        \lambda_1 \ge \mu_1 \ge \lambda_2 \ge \mu_2 \ge \dotsb \ge \mu_{m-1} \ge \lambda_m.
+    \end{equation}
+    Consider the inclusion
+    \begin{equation}
+        \begin{aligned}
+            \generalLinear_{m-1} &\hookrightarrow \generalLinear_m\\
+            g & \mapsto
+            \begin{pmatrix}
+                g & 0\\
+                0 & 1
+            \end{pmatrix}
+            .
+        \end{aligned}
+    \end{equation}
+    
+    \begin{prp}{}{}
+        With the inclusion above we have
+        \begin{equation}
+            \Res^{\generalLinear_m}_{\generalLinear_{m-1}} L_\lambda^{\generalLinear_m} = \bigoplus_\mu L_\mu^{\generalLinear_{m-1}}
+        \end{equation}
+        where \(\mu\) runs over all partitions which interleave \(\lambda\), and we write \(L_\mu^G\) for the irreducible \(G\)-modules of \(G = \generalLinear_m, \generalLinear_{m-1}\).
+    \end{prp}
+    
+    Note in particular that the decomposition above is multiplicity free.
+    
+    We can chain together inclusions like the above:
+    \begin{equation}
+        \complex^{\times} \isomorphic \generalLinear_1 \hookrightarrow \generalLinear_2 \hookrightarrow \dotso \hookrightarrow\generalLinear_{m-n} \hookrightarrow GL_m.
+    \end{equation}
+    
+    \begin{crl}{}{}
+        With the chain of inclusions above we have
+        \begin{equation}
+            \Res^{\generalLinear_m}_{\generalLinear_1} L_\lambda^{\generalLinear_m} = \bigoplus_\Lambda \complex v_\Lambda
+        \end{equation}
+        where \(\Lambda\) runs over all Gelfand--Zetlin patterns (defined after this result) starting with \(\lambda\).
+    \end{crl}
+    
+    Let \(\lambda\) be a partition with \(m\) parts.
+    A \defineindex{Gelfand--Zetlin pattern} is an upside-down triangle of rows of numbers, \(\Lambda_{ij}\), where \(i\) is the row, and \(j\) the position in the row.
+    The Gelfand--Zetlin pattern corresponding to \(\lambda\) starts with the row
+    \begin{equation}
+        \begin{array}{ccccccccc}
+            \Lambda_{m1} && \Lambda_{m2} && \Lambda_{m3} && \dotso && \Lambda_{mm}
+        \end{array}
+    \end{equation}
+    where \(\Lambda_{mk} = \lambda_k\).
+    For a valid Gelfand--Zetlin pattern the row below this must satisfy \(\Lambda_{m\ell} \ge \Lambda_{m-1,\ell} \ge \Lambda_{m-1,\ell+1}\).
+    The second row has \(m - 2\) entries, and interpreted as a partition, \(\mu\) with \(\mu_k = \Lambda_{m-1,k}\) this construction is such that \(\mu\) interleaves \(\lambda\).
+    Thus, we have two rows
+    \begin{equation}
+        \begin{array}{ccccccccc}
+            \Lambda_{m1} && \Lambda_{m2} && \Lambda_{m3} && \dotso && \Lambda_{mm}\\[1.5ex]
+            & \Lambda_{m-1,1} && \Lambda_{m-1,2} && \Lambda_{m-1,3} & \dotso & \Lambda_{m-1,m-1} &
+        \end{array}
+    \end{equation}
+    The next row is defined similarly, and so on, we always have \(\Lambda_{m-k,\ell} \ge \Lambda_{m-k-1,\ell} \ge \Lambda_{m-k,\ell+1}\), and the \(k\)th row has \(k\) entries.
+    So, a full Gelfand--Zetlin pattern looks like 
+    \begin{equation}
+        \begin{array}{ccccccccc}
+            \Lambda_{m1} && \Lambda_{m2} && \Lambda_{m3} && \dotso && \Lambda_{mm}\\[1.5ex]
+            & \Lambda_{m-1,1} && \Lambda_{m-1,2} && \Lambda_{m-1,3} & \dotso & \Lambda_{m-1,m-1} &\\[2ex]
+            & \ddots && \ddots && \rotatebox{90}{\(\ddots\)} &  & \rotatebox{90}{\(\ddots\)} &\\[2ex]
+            &&& \Lambda_{21} && \Lambda_{22} &&&\\[1.5ex]
+            &&&& \Lambda_{11} &&&&
+        \end{array}
+    \end{equation}
+    where each entry is bounded between the two entries above it to either side.
+    
+    Since we have a decomposition into one-dimensional spaces, \(\complex v_\Lambda\), indexed by Gelfand--Zetlin patterns we see that the Gelfand--Zetlin patterns provide a basis for
+    \begin{equation}
+        L_\lambda \isomorphic \Hom_{S_n}(V_\lambda, (\complex^m)^{\otimes n}).
+    \end{equation}
+    
+    Let \(\lambda\) and \(\mu\) be partitions with \(\mu\) interleaving \(\lambda\).
+    In terms of Young diagrams this means that \(\lambda \setminus \mu\) must be a horizontal strip.
+    We can see this from the following example:
+    \ytableausetup{smalltableaux}
+    \begin{equation}
+        \begin{ytableau}
+            \mathstrut & \mathstrut & \mathstrut & \mathstrut & *(highlight!50) \mathstrut & *(highlight!50) \mathstrut\\
+            \mathstrut & \mathstrut & \mathstrut & \mathstrut\\
+            \mathstrut & \mathstrut & *(highlight!50) \mathstrut & *(highlight!50) \mathstrut\\
+            \mathstrut & *(highlight!50) \mathstrut
+        \end{ytableau}
+    \end{equation}
+    where the highlighted boxes are \(\lambda \setminus \mu\) (so the white boxes are \(\mu\) and \(\lambda\) is the whole diagram).
+    If instead we had
+    \begin{equation}
+        \begin{ytableau}
+            \mathstrut & \mathstrut & \mathstrut & \mathstrut & *(highlight!50) \mathstrut & *(highlight!50) \mathstrut\\
+            \mathstrut & \mathstrut & \mathstrut & \mathstrut & *(highlight!50) \mathstrut\\
+            \mathstrut & \mathstrut & *(highlight!50) \mathstrut & *(highlight!50) \mathstrut\\
+            \mathstrut & *(highlight!50) \mathstrut
+        \end{ytableau}
+    \end{equation}
+    then the extra box means that \(\lambda_2 = 5 > \mu_1 = 4\), which isn't allowed if \(\mu\) interleaves \(\lambda\).
+    
+    From this we can see that the Gelfand--Zetlin patterns are in bijection with the semistandard Young tableaux of shape \(\lambda\), since we can consider such a tableau to be built up in horizontal strips in the order of labelling the boxes.
+    Recall also that the number of semistandard Young tableau of shape \(\lambda\) with weight \(\mu\) is given by the Kostka numbers, \(K_{\lambda\mu}\).
+    
+    Start with the semistandard Young tableau of shape \(\lambda = (4, 3, 2)\) given by
+    \begin{equation}
+        T = 
+        \begin{ytableau}
+            *(highlight) 1 & *(highlight) 1 & *(highlight!50) 2 & *(highlight!20) 3\\
+            *(highlight!50) 2 & *(highlight!50) 2 & *(highlight!20) 3\\
+            *(highlight!30) 3 & *(highlight!20) 3
+        \end{ytableau}
+        \,.
+    \end{equation}
+    We then have the inclusions
+    \begin{equation}
+        \emptyset \subset
+        \begin{ytableau}
+            *(highlight) \mathstrut & *(highlight) \mathstrut
+        \end{ytableau}
+        \subset
+        \begin{ytableau}
+            *(highlight!50) \mathstrut & *(highlight!50) \mathstrut & *(highlight!50) \mathstrut\\
+            *(highlight!50) \mathstrut & *(highlight!50) \mathstrut
+        \end{ytableau}
+        \subset
+        \begin{ytableau}
+            *(highlight!20) \mathstrut & *(highlight!20) \mathstrut & *(highlight!20) \mathstrut & *(highlight!20) \mathstrut\\
+            *(highlight!20) \mathstrut & *(highlight!20) \mathstrut & *(highlight!20) \mathstrut\\
+            *(highlight!20) \mathstrut & *(highlight!20) \mathstrut
+        \end{ytableau}
+    \end{equation}
+    The corresponding Gelfand--Zetlin pattern is given by taking each row to be one of these partitions:
+    \begin{equation}
+        \begin{array}{ccccc}
+            \mathcolor{highlight!30}{4} && \mathcolor{highlight!30}{3} && \mathcolor{highlight!30}{2}\\
+            & \mathcolor{highlight!60}{3} && \mathcolor{highlight!60}{2}\\
+            && \mathcolor{highlight}{2}
+        \end{array}
+    \end{equation}
+    This gives us a bijection between semistandard Young tableaux of shape \(\lambda\) and Gelfand--Zetlin patterns.
+    
+    Taking the character of the module
+    \begin{equation}
+        \Res^{\generalLinear_m}_{\generalLinear_1} L_\lambda^{\generalLinear_m} = \bigoplus_\Lambda \complex v_\Lambda
+    \end{equation}
+    we get
+    \begin{equation}
+        s_\lambda(x_1, \dotsc, x_m) = \sum_{T} x^T
+    \end{equation}
+    where \(T\) is a semistandard tableau of shape \(\lambda\) and
+    \begin{equation}
+        x^T \coloneq x_1^{\abs{T^{-1}(1)}} \dotsm x_m^{\abs{T^{-1}(m)}}
+    \end{equation}
+    where \(\abs{T^{-1}(i)}\) is the number of boxes filled with an \(i\).
+    
+    This result shows that the \(s_\lambda\) really are polynomials, our initial definition only has them as rational functions.
+    It also shows that the coefficients of the \(L_\lambda\) characters are manifestly positive.
+    
+    In order for the Gelfand--Zetlin basis to be useful we need to understand how \(\generalLinear_m\) acts on it.
+    It turns out to actually be easier to consider how \(\generalLinearLie_m\) acts on this basis.
+    Let \(E_{ij}\) be the elementary \(m \times m\) matrix with a \(1\) in position \((i,j)\) and zero everywhere else.
+    These matrices form a basis of \(\generalLinearLie_m\), and \(\bracket{E_{ij}}{E_{k\ell}} = \delta_{jk}E_{i\ell} - \delta_{i\ell} E_{kj}\) is the Lie bracket in this basis.
+    
+    The matrices \(E_{kk}\) form the standard Cartan subalgebra of diagonal matrices.
+    The entirety of \(\generalLinearLie_m\) is generated by \(E_{kk}\), \(E_{k,k+1}\) and \(E_{k+1,k}\).
+    
+    The basis \(\{v_\Lambda\}\) for \(L_\lambda\) is then such that
+    \begin{align}
+        E_{kk} v_\Lambda &= \left( \sum_{i=1}^k \Lambda_{ki} - \sum_{i=1}^{k-1} \Lambda_{k-1,i} \right)v_\Lambda\\
+        E_{k,k+1} v_\Lambda &= -\sum_{i=1}^k \frac{(l_{ki} - l_{k+1,1}) \dotsm (l_{ki} - l_{k+1,k+1})}{(l_{ki} - l_{k1}) \dotsm \widehat{(l_{ki} - l_{ki})} \dotsm (l_{ki} - l_{kk})} v_{\Lambda + \delta_{ki}}\\
+        E_{k+1,k} v_\Lambda &= \sum_{i=1}^k \frac{(l_{ki} - l_{k-1,1}) \dotsm (l_{ki} - l_{k-1,k-1})}{(l_{ki} - l_{k1}) \dotsm \widehat{(l_{ki} - l_{ki})} \dotsm (l_{ki} - l_{kk})} v_{\Lambda - \delta_{ki}}
+    \end{align}
+    where \(l_{ki} = \Lambda_{ki} - i + 1\) and \(\widehat{x}\) denotes that \(x\) is omitted from the product and \(\Lambda \pm \delta_{ki}\) is given by replacing \(\Lambda_{ki}\) with \(\Lambda_{ki} \pm 1\).
+    If the result is not a Gelfand--Zetlin pattern then we set \(v_{\Lambda \pm \delta_{ki}} = 0\).
+    
+    For example, for \(\generalLinearLie_2\) take \(\lambda = (2, 1)\).
+    The semistandard Young tableaux of shape \(\lambda\) are then
+    \begin{equation}
+        \ytableaushort{11,2}\, \qand \ytableaushort{12,2}\,.
+    \end{equation}
+    The corresponding inclusions chains are
+    \begin{equation}
+        \emptyset \subset \ydiagram{2} \subset \ydiagram{2,1}\,, \qand \emptyset \subset \ydiagram{1,1} \subset \ydiagram{2,1}\,.
+    \end{equation}
+    The corresponding Gelfand--Zetlin patterns are
+    \begin{equation}
+        \begin{array}{ccc}
+            2 && 1\\
+            & 2
+        \end{array}
+        ,\qand 
+        \begin{array}{ccc}
+            2 && 1\\
+            & 1
+        \end{array}
+        .
+    \end{equation}
+    Let these be patterns \(\Lambda^1\) and \(\Lambda^2\) respectively, and call the corresponding basis vectors \(v_1\) and \(v_2\).
+    Then we have the action of the Cartan subalgebra given by
+    \begin{align}
+        E_{11}v_1 &= \left( \sum_{i=1}^1 \Lambda^1_{1i} - \sum_{i=1}^{1-1} \Lambda^1_{1-1,i} \right)v_1 = \Lambda^1_{11} v_1 = 2v_1,\\
+        E_{11}v_2 &= \left( \sum_{i=1}^1 \Lambda^2_{1i} - \sum_{i=1}^{1-1} \Lambda^2_{1-1,i} \right)v_2 = \Lambda^2_{21} v_2 = v_2,\\
+        E_{22}v_1 &= \left( \sum_{i=1}^2 \Lambda^1_{2i} - \sum_{i=1}^{2-1} \Lambda^1_{2-1,i} \right)v_1 = (\Lambda^1_{21} + \Lambda^1_{22} - \Lambda^1_{11})v_1\\
+        &= (2 + 1 - 2)v_1 = v_1,\\
+        E_{22}v_2 &= \left( \sum_{i=1}^2 \Lambda^2_{2i} - \sum_{i=1}^{2-1} \Lambda^2_{2-1,i} \right)v_2 = (\Lambda^2_{21} + \Lambda^2_{22} - \Lambda^1_{11})v_2\\
+        &= (2 + 1 - 1)v_2 = 2v_2.
+    \end{align}
+    The action of the off diagonal matrices can also be computed with a bit of work, for example, we have
+    \begin{align}
+        E_{12}v_1 &= -\sum_{i=1}^1 \frac{(l_{1i} - l_{1+1,1}) \dotsm (l_{1i} - l_{1+1,1+1})}{(l_{1i} - l_{11}) \dotsm \widehat{(l_{1i} - l_{1i})} \dotsm (l_{1i} - l_{11})}v_{\Lambda^1 - \delta_{1i}}\\
+        &= - (l_{11} - l_{21}) (l_{11} - l_{22})v_1\\
+        &= - (\Lambda^1_{11} - 1 + 1 - \Lambda^1_{21} +1 - 1) (\Lambda^1_{11} - 1 + 1 - \Lambda^1_{22} + 2 - 1)v_1\\
+        &= -(2 - 1 + 1 - 2 + 1 - 1) (2 - 1 + 1 - 1 - 2 + 1)v_1\\
+        &= 0.
+    \end{align}
+    
+    \chapter{Lie Algebras}
+    In this section we give a rapid, relatively proof free, tour of the representation theory of Lie algebras.
+    We refer the reader to other sources for details, such as my lecture notes \url{https://github.com/WilloughbySeago/phd-courses-notes/tree/main/lie-theory}.
+    
+    \section{Lie Algebras}
+    \begin{dfn}{Lie Algebra}{}
+        A \defineindex{Lie algebra}, \(\lie{g}\), is a \(\field\)-vector space equipped with a linear map \(\lie{g} \otimes \lie{g} \to \lie{g}\) called the \defineindex{Lie bracket} subject to the following:
+        \begin{itemize}
+            \item \define{alternativity}\index{alternating}: \(\bracket{x}{x} = 0\) for all \(x \in \lie{g}\);
+            \item \defineindex{Jacobi identity}: \(\bracket{x}{\bracket{y}{z}} + \bracket{y}{\bracket{z}{x}} + \bracket{z}{\bracket{x}{y}} = 0\) for all \(x, y, z \in \lie{g}\).
+        \end{itemize}
+    \end{dfn}
+    
+    Note that more commonly the definition is given as a bilinear map \(\lie{g} \times \lie{g} \to \lie{g}\).
+    The universal property of the tensor product means that these are equivalent.
+    For fields of characteristic other than 2 the first relation is usually replaced with antisymmetry, \(\bracket{x}{y} = -\bracket{y}{x}\) for all \(x, y \in \lie{g}\).
+    With our definition using the tensor product we can pass to the quotient \(\Lambda^2\lie{g}\) and we see that \(\bracket{-}{-}\) induces a map \(\bracket{-}{-} \colon \Lambda^2\lie{g} \to \lie{g}\) which trivially is such that \(\bracket{x}{x} = 0\) since \(x \otimes x\) maps to zero in \(\Lambda^2 \lie{g}\).
+    
+    \begin{dfn}{}{}
+        Let \(\lie{g}\) and \(\lie{g}'\) be Lie algebras over the same field, \(\field\).
+        A morphism of Lie algebras, \(\varphi \colon \lie{g} \to \lie{g}'\) is a linear map which preserves the Lie bracket, that is
+        \begin{equation}
+            \varphi(\bracket{x}{y}) = \bracket{\varphi(x)}{\varphi(y)}
+        \end{equation}
+        where the bracket on the left is that of \(\lie{g}\) and on the right it's that of \(\lie{g}'\).
+    \end{dfn}
+    
+    \begin{exm}{}{}
+        \begin{itemize}
+            \item Let \(A\) be an associative algebra, then we can make this into a Lie algebra by defining the bracket \(\bracket{a}{b} = ab - ba\).
+            A special case of this is \(A = \End V\) for some vector space, \(V\).
+            Then we call the corresponding Lie algebra \(\generalLinearLie(V)\), or if \(\dim V = n\) we call it \(\generalLinearLie_n\) (note that as vector spaces \(\generalLinearLie(V)\) is exactly \(A = \End V\), the name change just reflects a shifting view point from associative algebras to Lie algebras).
+            \item Any vector space, \(V\), can be made into a Lie algebra by defining \(\bracket{x}{y} = 0\) for all \(x, y \in V\).
+            Such a Lie algebra is called \define{abelian}\index{abelian Lie algebra}.
+            The idea is that the commutator vanishing means that multiplication is commutative, an idea that only makes sense if \(\bracket{-}{-}\) really is the commutator, like in the previous example.
+        \end{itemize}
+    \end{exm}
+    
+    \begin{dfn}{Lie Subalgebra}{}
+        Let \(\lie{g}\) be a Lie algebra over \(\field\).
+        A Lie subalgebra, \(\lie{h}\), is a Lie algebra over \(\field\) equipped with an injective Lie algebra morphism \(\lie{h} \hookrightarrow \lie{g}\).
+    \end{dfn}
+    
+    An almost identical definition is that a Lie subalgebra is a subspace, \(\lie{h} \subseteq \lie{g}\) such that \(\lie{h}\) is a Lie algebra in its own right (with the same bracket as \(\lie{g}\)).
+    One can then show that this is true so long as the \(\lie{h}\) is closed under the Lie bracket.
+    That is, \(\bracket{\lie{h}}{\lie{h}}\) is a subset of \(\lie{h}\).
+    Note that in general if \(U\) and \(V\) are subspaces of \(\lie{g}\) then \(\bracket{U}{V}\) is defined to be the span of all \(\bracket{u}{v}\) with \(u \in U\) and \(v \in V\).
+    Similarly, if \(x \in \lie{g}\) then \(\bracket{x}{U}\) is the span of all \(\bracket{x}{y}\) with \(y \in \lie{g}\).
+    
+    The only subtle difference between these two definitions is that the existence of a monomorphism \(\lie{h} \hookrightarrow \lie{g}\) only implies that \(\lie{h}\) is isomorphic to a subalgebra of \(\lie{g}\) with the second definition, but we'll only consider things up to isomorphism most the time so this is really the definition we want.
+    
+    \begin{exm}{}{}
+        \begin{itemize}
+            \item Let \(\lie{g}\) be any Lie algebra.
+            Any one-dimensional subspace, \(\lie{l}\), is an abelian subalgebra, since if \(l, l' \in \lie{l}\) then \(l = \lambda l'\) for some \(\lambda \in \field\), and so \(\bracket{l}{l'} = \bracket{kl'}{l'} = k\bracket{l'}{l'} = 0\) and \(0 \in \lie{l}\).
+            \item The \define{centre}\index{centre!of a Lie algebra} of a Lie algebra, \(\lie{g}\), is the abelian subalgebra
+            \begin{equation}
+                \lie{z}(\lie{g}) \coloneq \{x \in \lie{g} \mid [x, \lie{g}] = 0\} \subseteq \lie{g}.
+            \end{equation}
+            \item For \(V\) a finite-dimensional vector space of dimension \(n\) we know that \(\generalLinearLie_n = \End V\) is a Lie algebra.
+            Fixing a basis the elements of \(\generalLinearLie_n\) are just all \(n \times n\) matrices with entries in \(\field\).
+            There is a subalgebra, \(\specialLinearLie_n \subset \generalLinearLie_n\), consisting of only the matrices with zero trace.
+            This follows because we have
+            \begin{equation}
+                \tr(\bracket{x}{y}) = \tr(xy) - \tr(yx) = 0.
+            \end{equation}
+            This holds for all \(x, y \in \generalLinearLie_n\), not just for the traceless case, and so this turns out to be a special case of another construction, called the derived subalgebra, \(\lie{g}' \coloneq \bracket{\lie{g}}{\lie{g}}\).
+        \end{itemize}
+    \end{exm}
+    
+    \begin{dfn}{Ideal}{}
+        Let \(\lie{g}\) be a Lie algebra.
+        A Lie subalgebra, \(\lie{i} \subseteq \lie{g}\), is an \define{ideal}\index{ideal!of a Lie algebra} if \(\bracket{\lie{i}}{\lie{g}} \subseteq \lie{i}\).
+    \end{dfn}
+    
+    Compare this to the definition of a subalgebra, which only requires that \(\bracket{\lie{i}}{\mathcolor{highlight}{\lie{i}}} \subseteq \lie{i}\).
+    Compare this also to the notion of an ideal, \(I\), of a ring, \(R\), which is a subgroup of the additive group such that \(IR \subseteq I\).
+    
+    The idea is that ideals are to Lie algebras as ideals are to rings, or as normal subgroups are to groups.
+    In particular, we have a correspondence between ideals, \(\lie{i} \subseteq g\) and Lie algebra morphisms, \(\varphi \colon \lie{g} \to \lie{h}\) given by \(\lie{i} \leftrightarrow \ker \varphi\) (where the kernel is defined as it is for any linear map).
+    We also have that \(\lie{g}/\lie{i}\) is a well defined quotient and a Lie algebra.
+    Note that the quotient of any vector space by a subspace is again a vector space, but it's only a Lie algebra again if we quotient by an ideal.
+    The bracket of this quotient is defined by \(\bracket{x + \lie{i}}{y + \lie{i}} = \bracket{x}{y} + \lie{i}\).
+    
+    \begin{dfn}{Derived Subalgebra}{}
+        Let \(\lie{g}\) be a Lie algebra, then \(\lie{g}' = \bracket{\lie{g}}{\lie{g}}\) is the \defineindex{derived subalgebra}.
+    \end{dfn}
+    
+    \begin{dfn}{Solvable Lie Algebra}{}
+        A Lie algebra, \(\lie{g}\), is solvable if the series
+        \begin{equation}
+            \lie{g} \supseteq \lie{g}' \supseteq \lie{g}'' \supseteq \dotsb
+        \end{equation}
+        terminates.
+    \end{dfn}
+    
+    \begin{dfn}{Nilpotent Lie ALgebra}{}
+        A Lie algebra, \(\lie{g}\), is solvable if the series
+        \begin{equation}
+            \lie{g} \supseteq \bracket{\lie{g}}{\lie{g}} \supseteq \bracket{\lie{g}}{\bracket{\lie{g}}{\lie{g}}} \supseteq \dotsb
+        \end{equation}
+        terminates.
+    \end{dfn}
+    
+    The difference between these two is subtle, one nests brackets on both sides, and the other only on the other side.
+    More concretely, the upper triangular matrices form a solvable subalgebra of \(\generalLinearLie_n\) (in fact, this is a maximal solvable subalgebra, also known as a \defineindex{Borel subalgebra}), and the \emph{strictly} upper triangular matrices form a (maximal) nilpotent subalgebra of \(\generalLinearLie_n\).
+    
+    \begin{dfn}{}{}
+        The maximal solvable \emph{ideal} of \(\lie{g}\) is called its \define{radical}\index{radical!of a Lie algebra}, \(\Rad \lie{g}\).
+    \end{dfn}
+    
+    \begin{dfn}{}{}
+        A Lie algebra, \(\lie{g}\), is \define{semisimple}\index{semisimple!Lie algebra} if \(\Rad \lie{g} = 0\), that is, if \(\lie{g}\) has no proper solvable ideals.
+        Similarly, \(\lie{g}\) is \define{simple}\index{simple!Lie algebra} if it has no proper ideals (solvable or not).
+    \end{dfn}
+    
+    \begin{dfn}{Linear Lie Algebra}{}
+        A linear Lie algebra is any Lie algebra which is isomorphic to a Lie subalgebra of some \(\generalLinearLie(V)\) for \(V\) a finite-dimensional vector space.
+    \end{dfn}
+    
+    Ado's theorem tells us that (over a field of characteristic zero) every finite-dimensional Lie algebra is linear.
+    
+    \begin{thm}{Ado's Theorem}{}
+        Let \(\lie{g}\) be a finite-dimensional Lie algebra over a field of characteristic zero.
+        Then \(\lie{g}\) admits a faithful representation \(\lie{g} \hookrightarrow \generalLinearLie(V)\) for some finite-dimensional vector space, \(V\).
+        Further, one can choose this representation such that the maximal nilpotent ideal\footnote{ % TODO reference to definition of ideal, reference to definition of nilpotent
+        It turns out that (up to isomorphism) there is always a unique maximal (with respect to inclusion) nilpotent ideal.}, \(\lie{n} \subseteq \lie{g}\) acts nilpotently on \(V\).
+    \end{thm}
+    
+    There are some special linear Lie algebras.
+    Over \(\complex\) these are
+    \begin{itemize}
+        \item \(\generalLinearLie_n = \{x \in \Mat_n(\complex\}\) (real dimension \(2n^2\))
+        \item \(\specialLinearLie_n = \{x \in \Mat_n(\complex) \mid \tr x = 0\}\) (real dimension \(2(n^2 - 1)\));
+        \item \(\specialOrthogonalLie_n = \{x \in \Mat_n(\complex) \mid x^{\trans} + x^{\trans} = 0\}\) (real dimension \(n(n - 1)\));
+        \item \(\symplecticLie_{2n} = \{x \in \Mat_{2n}(\complex) \mid Jx + x^{\trans}J = 0\}\) where \(J = \begin{pmatrix} 0 & -I_n\\ I_n & 0 \end{pmatrix}\) with \(I_n \in \Mat_n(\complex)\) the identity matrix (real dimension \(2 \binom{2n + 1}{2}\)).
+    \end{itemize}
+    Over \(\reals\) these are
+    \begin{itemize}
+        \item \(\generalLinearLie_n = \{x \in \Mat_n(\reals)\}\) (real dimension \(n^2\));
+        \item \(\specialOrthogonalLie_n = \{x \in \Mat_n(\reals) \mid \tr x = 0\}\) (real dimension \(n^2 - 1\));
+        \item \(\unitaryLie_n = \{x \in \Mat_n(\complex) \mid x + x^* = 0\}\) (real dimension \(n^2\));
+        \item \(\specialUnitaryLie_n = \{x \in \Mat_n(\complex) \mid x + x^* = 0 \text{ and } \tr x = 0\}\) (real dimension \(n^2 - 1\));
+        \item \(\symplecticLie_{2n} = \{x \in \Mat_n(\quaternions) \mid x + x^* = 0\}\) (real dimension \(2n^2 + n\)).
+    \end{itemize}
+    
+    \section{Representation Theory of Lie Algebras}
+    \begin{dfn}{Representation}{}
+        A \define{representation}\index{representation!of a Lie algebra}, \(\lie{g}\) (over \(\field\)), is a \(\field\)-vector space, \(V\), equipped with a Lie algebra morphism
+        \begin{equation}
+            \rho \colon \lie{g} \to \generalLinearLie(V).
+        \end{equation}
+        
+        Equivalently, a \define{\(\lie{g}\)-module}, \(V\), is a vector space equipped with a (left) Lie algebra action of \(\lie{g}\), that is, a map \(\lie{g} \times V \to V\), \((x, v) \mapsto x \action v\) subject to the following:
+        \begin{itemize}
+            \item Linearity in the first argument: \((\alpha x + \beta y) \action v = \alpha (x \action v) + \beta (y \action v)\) for all \(\alpha, \beta \in \field\), \(x, y \in \lie{g}\) and \(v \in V\);
+            \item Linearity in the second argument: \(x \action (\alpha v + \beta w) = \alpha(x \action v) + \beta(x \action w)\) for all \(\alpha, \beta \in \field\), \(x \in \lie{g}\) and \(v, w \in V\);
+            \item Respects the bracket: \(\bracket{x}{y} \action v = x \action (y \action v) - y \action (x \action v)\) for all \(x, y \in \lie{g}\) and \(v \in V\).
+        \end{itemize}
+    \end{dfn}
+    
+    As with groups and associative algebras the \(\lie{g}\)-module and representation of \(\lie{g}\) carry exactly the same information, and as such which we use is a matter of preference.
+    
+    \begin{dfn}{Adjoint Representation}{}
+        Every Lie algebra, \(\lie{g}\), is a \(\lie{g}\)-module in a canonical way, known as the \defineindex{adjoint representation}
+        \begin{equation}
+            \begin{aligned}
+                \ad \colon \lie{g} &\to \generalLinearLie(\lie{g})\\
+                x &\mapsto \ad_x
+            \end{aligned}
+        \end{equation}
+        where \(\ad_x \colon \lie{g} \to \lie{g}\) is defined by \(\ad_x(y) = \bracket{x}{y}\) for all \(x, y \in \lie{g}\).
+    \end{dfn}
+    
+    For the adjoint representation to be a representation we need \(\ad\) to be a Lie algebra morphism.
+    That is, we need to have \(\ad_{\bracket{x}{y}} = \bracket{\ad_x}{\ad_y}\) for \(x, y \in \lie{g}\).
+    It turns out that this is true precisely because the this statement, upon applying both sides of the above to \(z \in \lie{g}\), expands to the Jacobi identity:
+    \begin{align}
+        \ad_{\bracket{x}{y}}(z) &= \bracket{\bracket{x}{y}}{z}\\
+        \bracket{\ad_x}{\ad_y}(z) = (\ad_x \circ \ad_y - \ad_y \circ \ad_x)(z) = \bracket{x}{\bracket{y}{z}} - \bracket{y}{\bracket{x}{z}}.
+    \end{align}
+    Equality between the two lines above is, after applying the antisymmetry property, exactly the Jacobi identity.
+    
+    \begin{dfn}{}{}
+        Given \(\lie{g}\)-modules \(V\) and \(W\) we can define
+        \begin{itemize}
+            \item the \define{direct sum}\index{direct sum!of Lie algebra representations}, \(V \oplus W\), which has the action \(x \action (v + w) = x \action v + x \action w\);
+            \item the \define{tensor product}\index{tensor product!of Lie algebra representations}, \(V \otimes W\), which has the action \(x \action (v \otimes w) = (x \action v) \otimes w + v \otimes (x \action w)\);
+            \item the \define{dual representation}\index{dual representation!of a Lie algebra representation}, \(V^*\), which has the action \(\rho_{V^*}(x) = -\rho_V(x)^*\)
+        \end{itemize}
+        all for \(x \in \lie{g}\), \(v \in V\), and \(w \in W\).
+    \end{dfn}
+    
+    \section{Universal Enveloping Algebra}
+    \begin{dfn}{Universal Enveloping Algebra}{}
+        Let \(\lie{g}\) be a Lie algebra.
+        An enveloping algebra, \((E, i)\), is an associative unital algebra, \(E\), and an inclusion of vector spaces \(i \colon \lie{g} \hookrightarrow E\) such that
+        \begin{equation}
+            i(\bracket{x}{y}) = i(x)i(y) - i(y)i(x).
+        \end{equation}
+        The \defineindex{universal enveloping algebra} is the\footnote{turns out that the universal enveloping algebra both exists, and is unique up to unique isomorphism} enveloping algebra \((U(\lie{g}), \iota)\) such that for any other enveloping algebra, \((E, i)\), there is a unique morphism of associative unital algebras, \(\varphi \colon U(\lie{g}) \to E\) such that \(i = \varphi \circ \iota\).
+    \end{dfn}
+    
+    The definition is a bit terse, the idea is that \(U(\lie{g})\) (dropping \(\iota\) from the notation) is the smallest associative unital algebra containing \(\lie{g}\) in such a way that the bracket of \(\lie{g}\) in \(U(\lie{g})\) really is just the commutator.
+    For example, the universal enveloping algebra of \(\generalLinearLie(V)\) is simply \(\End(V)\), which is just \(\generalLinearLie(V)\) but viewed as an associative algebra.
+    
+    \begin{thm}{}{}
+        The universal enveloping algebra exists.
+        An explicit construction is as follows.
+        Let \(U(\lie{g}) = T(\lie{g})/I\), where \(I\) is the ideal of the tensor algebra, \(T(\lie{g})\), generated by elements of the form
+        \begin{equation}
+            \bracket{x}{y} - x \otimes y + y \otimes x
+        \end{equation}
+        for \(x, y \in \lie{g}\).
+    \end{thm}
+    
+    The universal property of the universal enveloping algebra can be characterised as the statement that there is an isomorphism
+    \begin{equation}
+        \Hom_{\Lie}(\lie{g}, L(A)) \isomorphic \Hom_{\Alg}(U(\lie{g}), A)
+    \end{equation}
+    where
+    \begin{itemize}
+        \item \(\Lie\) is the category of Lie algebras and Lie algebra homomorphisms;
+        \item \(\lie{g}\) is a Lie algebra
+        \item \(A\) is an unital associative algebra;
+        \item \(L(A)\) is the Lie algebra given by equipping \(A\) with the commutator;
+        \item \(\Alg\) is the category of unital associative algebras and their homomorphisms.
+    \end{itemize}
+    Simply send the Lie algebra homomorphism \(\varphi \colon \lie{g} \to L(A)\) to the associative algebra homomorphism \(\tilde{\varphi} \colon U(\lie{g}) \to A\) defined by \(\tilde{\varphi}(x) = \varphi(x)\) for \(x \in \lie{g}\) and extended by linearity and the requirement that \(\tilde{\varphi}\) preserves multiplication.
+    This works precisely because of the universal property.
+    For the inverse, send \(\psi \colon U(\lie{g}) \to A\) to the restriction \(\psi|_{\lie{g}}\).
+    
+    It turns out that \(L \colon \Alg \to \Lie\) is a functor, if \(f \colon A \to B\) is a morphism of associative algebras then we can define \(L(f) \colon L(A) \to L(B)\) by defining \(L(f)(\bracket{x}{y}) = \bracket{f(x)}{f(y)} = f(x)f(y) - f(y)f(x)\) for \(x, y \in A\).
+    That is, we just require that \(L(f)\) is a Lie algebra homomorphism.
+    Similarly, \(U \colon \Lie \to \Alg\) is a functor, if \(f \colon \lie{g} \to \lie{h}\) is a morphism of Lie algebras then we can define \(U(f) \colon U(\lie{g}) \to U(\lie{h})\) by defining \(U(f)(xy) = U(f)(x) U(f)(y)\) for \(x, y \in \lie{g}\) and similarly for products of more than two elements, and extended by linearity to all of \(U(\lie{g})\).
+    That is, we just require that \(U(f)\) respects the multiplication of the associative algebra.
+    Then the above isomorphism happens to be natural, and we thus have that \(L\) is right adjoint to \(U\).
+    
+    The important thing here is that if we take \(A = \End V\) then we have
+    \begin{equation}
+        \Hom_{\Lie}(\lie{g}, \generalLinearLie(V)) \isomorphic \Hom_{\Alg}(U(\lie{g}), \End V).
+    \end{equation}
+    This means that a map \(\lie{g} \to \generalLinearLie(V)\) carries the same data as a map \(U(\lie{g}) \to \End V\).
+    We can identify a map of the first type as a Lie algebra representation of \(\lie{g}\), and a map of the second type as a unital associative algebra representation of \(U(\lie{g})\).
+    That is, representations of \(\lie{g}\) are \enquote{the same} as representations of \(U(\lie{g})\).
+    
+    Another way of thinking about this is that \(U(\lie{g})\) is to \(\lie{g}\) as \(\field G\) is to \(G\) for a finite group, \(G\).
+    We can study the representation theory of \(\lie{g}\) or \(G\) just by studying the representation theory of the universal enveloping algebra or group algebra.
+    
+    \begin{prp}{}{}
+        The universal enveloping algebra, \(U(\lie{g})\), is a Hopf algebra with the comultiplication
+        \begin{equation}
+            \Delta(x) = x \otimes 1 + 1 \otimes x,
+        \end{equation}
+        counit
+        \begin{equation}
+            \varepsilon(x) = 0,
+        \end{equation}
+        and antipode
+        \begin{equation}
+            \chi(x) = -x.
+        \end{equation}
+    \end{prp}
+    
+    Compare and contrast this to the group algebra, \(\field G\), which is a Hopf algebra with
+    \begin{equation}
+        \Delta(g) = g \otimes g, \quad \varepsilon(g) = 1, \qand \chi(g) = g^{-1}.
+    \end{equation}
+    These are, in some ways, two opposite ends of the scale for how a Hopf algebra can behave.
+    
+    \begin{dfn}{Filtred Algebra}{}
+        Let \(A\) be an associative algebra.
+        We say that \(A\) is \define{\(\integers_{\ge 0}\)-filtred}\index{filtred algebra} if we have a chain of subspaces
+        \begin{equation}
+            0 = F_{-1}A \subseteq F_0A \subseteq F_1A \subseteq \dotsb \subseteq F_nA \subseteq \dotsb
+        \end{equation}
+        such that \(1 \in F_0 A\),
+        \begin{equation}
+            \bigcup_{n=0}^{\infty} F_nA = A,
+        \end{equation}
+        and \(F_iA \cdot F_jA \subseteq F_{i+j} A\).
+    \end{dfn}
+    
+    \begin{dfn}{Degree Filtration}{}
+        If \(A\) is an associative algebra generated by \(\{x_\alpha\}\) then we can define a filtration on \(A\) by declaring all \(x_\alpha\) to be of degree \(1\), and defining \(F_nA \coloneq (F_1A)^n\) to be formed of all terms of degree at most \(n\) (note that the degree of \(x_\alpha x_{\alpha'}\) is 2, as is the degree of \(x_\alpha^2\), and so on).
+    \end{dfn}
+    
+    \begin{dfn}{Associated Graded Algebra}{}
+        Given a filtred algebra, \(A\), we define the \defineindex{associated graded algebra} to be
+        \begin{equation}
+            \gr(A) \coloneq \bigoplus_{n=0}^{\infty} F_n(A)/F_{n-1}(A).
+        \end{equation}
+    \end{dfn}
+    
+    For the degree filtration the associated graded algebra is
+    \begin{equation}
+        \gr(A) = \bigoplus_{n=0}^{\infty} A_n
+    \end{equation}
+    where \(A_n\) is the span of all words of degree exactly \(n\).
+    
+    If \(\lie{g}\) is a Lie algebra then we can define a degree filtration on \(U(\lie{g})\) by setting the degree of any \(x \in \lie{g}\) to be \(1\).
+    Then \(F_nU(\lie{g})\) is the image of \(\bigoplus_{k=0}^n \lie{g}^{\otimes k} \subset T(\lie{g})\) under the quotient map \(T(\lie{g}) \twoheadrightarrow T(\lie{g})/I\).
+    Since in \(U(\lie{g})\) we have \(xy - yx = \bracket{x}{y}\) for \(x \in \lie{g}\) and \(y \in U(\lie{g})\) it follows that \(\bracket{F_iU(\lie{g})}{F_jU(\lie{g})} \subseteq F_{i + j - 1}U(\lie{g})\).
+    It then follows that when we take \(F_nU(\lie{g}) / F_{n-1}U(\lie{g})\) in \(\gr(U(\lie{g}))\) we are quotenting by (among other things) all commutators of elements of degree less than \(n\).
+    This makes \(\gr(U(\lie{g}))\) commutative.
+    This in turn means that there is an epimorphism of associative algebras
+    \begin{equation}
+        S(\lie{g}) \twoheadrightarrow \gr(U(\lie{g})).
+    \end{equation}
+    This is a statement that \(S(A)\) is universal amongst commutative subalgebras of \(T(A)\), i.e., that any such subalgebra can be recognised by taking \(S(A)\) and applying some quotient to identify certain terms.
+    
+    \begin{dfn}{PBW Theorem}{}
+        The homomorphism \(S(\lie{g}) \to \gr(U(\lie{g}))\) is an isomorphism.
+    \end{dfn}
+    
+    \begin{crl}{}{}
+        If \(\{x_i\}\) is a basis of \(\lie{g}\) we can fix an order on the basis.
+        Then \(U(\lie{g})\) is spanned by ordered monomials \(\prod_i x_i^{n_i}\) with \(n_i \in \integers_{\ge 0}\).
+    \end{crl}
+    
+    \begin{thm}{PBW Theorem}{}
+        The ordered monomials described above are actually linearly independent, and thus form a basis for \(U(\lie{g})\).
+    \end{thm}
+    
+    \begin{exm}{}{}
+        Consider \(\specialLinearLie_2(\complex)\).
+        This is a three-dimensional Lie algebra with generators \(\{e, h, f\}\).
+        If we order them so that \(e < h < f\) then a basis for \(U(\specialLinearLie_2(\complex))\) is \(e^a h^b f^c\) with \(a, b, c \in \integers_{\ge 0}\).
+    \end{exm}
+    
+    \section{Representation Theory of \texorpdfstring{\(\specialLinearLie_2(\complex)\)}{sl2}}
+    The representation theory of all finite dimensional semisimple Lie algebras over \(\complex\) is almost entirely controlled by the representation theory of \(\specialLinearLie_2\).
+    For this reason we'll now devote some time to the study of \(\specialLinearLie_2\).
+    
+    Recall that \(\specialLinearLie_2\) (working over \(\complex\)) is defined to consist of all traceless \(2 \times 2\) complex matrices.
+    There is a basis for these given by
+    \begin{equation}
+        e = 
+        \begin{pmatrix}
+            0 & 1\\
+            0 & 0
+        \end{pmatrix}
+        , \quad 
+        h = 
+        \begin{pmatrix}
+            1 & 0\\
+            0 & -1
+        \end{pmatrix}
+        ,\qand f =
+        \begin{pmatrix}
+            0 & 0\\
+            1 & 0
+        \end{pmatrix}
+        .
+    \end{equation}
+    One can check that these satisfy the commutation relations
+    \begin{equation}
+        \bracket{h}{e} = 2e, \quad \bracket{h}{f} = -2f, \qand \bracket{e}{f} = h.
+    \end{equation}
+    We can then abstract the definition of \(\specialLinearLie_2\) to be \(\Span_{\complex}\{e, h, f\}\) subject to the above commutation relations, without needing an explicit matrix form.
+    
+    \begin{lma}{}{}
+        Let \(V\) be a finite-dimensional representation of \(\specialLinearLie_2\).
+        Then we have the decomposition
+        \begin{equation}
+            V \isomorphic \bigoplus_{\alpha \in \complex} V_\alpha
+        \end{equation}
+        where \(V_\alpha\) is the \defineindex{weight space}, defined to be the eigenspace
+        \begin{equation}
+            V_\alpha = \{v \in V \mid h \action v = \alpha v\}.
+        \end{equation}
+        \begin{proof}
+            It is a fact that finite-dimensional \(\specialLinearLie_2\)-representations are completely reducible.
+            Thus, we may assume without loss of generality that \(V\) is irreducible, since if it isn't we can decompose it into a sum of irreducibles and then treat each of these separately.
+            
+            Let \(W\) be the subspace of eigenvectors of \(h\).
+            It is then sufficient to show that \(W = V\).
+            To do this we show that \(W\) is a subrepresentation, that is, it's closed under \(h\), \(e\), and \(f\).
+            Then irreducibility will imply that \(W = V\).
+            
+            By definition \(h\) acts as a scalar on \(W\), so \(W\) is closed under \(h\).
+            For \(e\) let \(v \in W\) be an eigenvector of \(h\), that is \(hv = \alpha v\).
+            Then a direct computation gives
+            \begin{align}
+                he \action v &= (\bracket{h}{e} + eh) \action v\\
+                &= (2e + eh) \action v\\
+                &= 2e \action v + eh \action v\\
+                &= 2e \action v + \alpha e\action v\\
+                &= (\alpha + 2) e \action v.
+            \end{align}
+            Thus, \(e \action v\) is again an eigenvector of \(h\), with eigenvalue \(\alpha + 2\).
+            Similarly, one can show that \(f \action v\) is an eigenvector of \(h\) with eigenvalue \(\alpha - 2\).
+            
+            Thus, \(W\) is closed under the action of \(e\), \(h\), and \(f\), and thus is a subrepresentation, and so by irreducibility \(W = V\).
+            Thus, if \(V\) is not irreducible is a direct sum of irreducibles, each of which is an eigenspace of \(h\) with some given eigenvalue \(\alpha\).
+            We may as well sum over all possible eigenvalues, \(\alpha \in \complex\), and simply have \(V_\alpha = 0\) for many terms.
+        \end{proof}
+    \end{lma}
+    
+    \begin{exm}{}{}
+        The definition of \(\specialLinearLie_2\) in terms of \(2 \times 2\) matrices gives us a natural action of \(\specialLinearLie_2\) on \(\complex^2\).
+        Let \(\{e_1, e_2\}\) be the standard basis of \(\complex^2\).
+        We have \(he_1 = e_1\) and \(he_2 = -e_2\), so we have two eigenvectors, and the corresponding eigenspaces \(V_1 = \complex e_1\) and \(V_{-1} = \complex e_2\).
+        Then we have the following picture:
+        \begin{equation}
+            \begin{tikzcd}
+                V_1 \arrow[loop right, "h"] \arrow[d, bend left, "f"]\\
+                V_{-1} \arrow[loop right, "h"] \arrow[u, bend left, "e"]
+            \end{tikzcd}
+        \end{equation}
+        The interpretation of this picture is that \(e\) and \(f\) act to shift the eigenvalue up and down by \(2\).
+        Note that applying \(e\) to \(e_1\) gives \(ee_1 = 0\), and likewise, \(fe_2 = 0\).
+        Thus, we can add \(0\) to the top and bottom of this picture:
+        \begin{equation}
+            \begin{tikzcd}
+                0 \arrow[d, bend left, "f"]\\
+                V_1 \arrow[loop right, "h"] \arrow[d, bend left, "f"] \arrow[u, bend left, "e"]\\
+                V_{-1} \arrow[loop right, "h"] \arrow[u, bend left, "e"] \arrow[d, bend left, "f"]\\
+                0 \arrow[u, bend left, "e"]
+            \end{tikzcd}
+        \end{equation}
+    \end{exm}
+    
+    The picture above actually generalises to any finite dimensional representation, we can always draw a picture like the following:
+    \begin{equation}
+        \begin{tikzcd}
+            0 \arrow[d, bend left, "f"]\\
+            V_{\alpha + 2k} \arrow[u, "e"] \arrow[loop right, "h"] \arrow[d, bend left, "f"]\\
+            \vdots \arrow[d, bend left, "f"] \arrow[u, bend left, "e"]\\
+            V_{\alpha + 2} \arrow[loop right, "h"] \arrow[d, bend left, "f"] \arrow[u, "e", bend left]\\
+            V_{\alpha} \arrow[loop right, "h"] \arrow[u, bend left, "e"] \arrow[d, bend left, "f"]\\
+            V_{\alpha - 2} \arrow[loop right, "h"] \arrow[u, bend left, "e"] \arrow[d, bend left, "f"]\\
+            \vdots \arrow[d, bend left, "f"] \arrow[u, bend left, "e"]\\
+            V_{\alpha - 2\ell} \arrow[loop right, "h"] \arrow[d, bend left, "f"] \arrow[u, "e", bend left]\\
+            0 \arrow[u, bend left, "e"]
+        \end{tikzcd}
+    \end{equation}
+    The fact that we must always eventually get to \(0\) going either up or down is simply due to the fact that \(V\) is finite-dimensional.
+    
+    \begin{exm}{}{}
+        Consider the vector space \(S^k(\complex^2)\).
+        We may identify this with the space of degree \(k\) homogenous polynomials (with coefficients in \(\complex\)).
+        For example, for \(S^3(\complex^2)\) we identify \(e_1 \otimes e_1 \otimes e_1\) with \(x^3\), \(e_1 \otimes e_1 \otimes e_2 = e_1 \otimes e_2 \otimes e_1 = e_2 \otimes e_1 \otimes e_1\) with \(x^2y\), and so on.
+        Basically, send \(e_1\) to \(x\), \(e_2\) to \(y\), and remember that all tensor products are symmetrised.
+        Note then that we can identify \(S(\complex^2)\) and \(\complex[x, y]\) (more generally, \(S(\complex^m)\) and \(\complex[x_1, \dotsc, x_m]\)), an important identification in algebraic geometry.
+        
+        There is a representation of \(\specialLinearLie_2\) on \(\complex[x, y]\) given by
+        \begin{equation}
+            e = -y\partial_x, \quad h = -x \partial_x + y \partial_y, \qand f = -x\partial_y.
+        \end{equation}
+        Note that each operator preserves the total degree of any polynomial (so long as it doesn't send it to zero).
+        Thus, we can identify submodules of degree \(k\)-polynomials.
+        More generally, the above identification defines an action of \(\specialLinearLie_2\) on smooth functions \(\complex^2 \to \complex\), of which the \(S^k(\complex^2)\) are submodules.
+    \end{exm}
     
     % Appdendix
 	\appendixpage
