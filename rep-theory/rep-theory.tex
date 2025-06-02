@@ -7,6 +7,7 @@
 \usepackage{enumitem}
 \usepackage{ytableau}
 \usepackage{siunitx}
+\usepackage{subcaption}
 
 \let\oldwidehat=\widehat
 \AtBeginDocument{\let\widehat=\oldwidehat}
@@ -18,6 +19,8 @@
 \usepackage{tikz-cd}
 \AtBeginEnvironment{tikzcd}{\tikzexternaldisable}
 \AtEndEnvironment{tikzcd}{\tikzexternalenable}
+
+\usetikzlibrary{arrows.meta}
 
 \usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes from Representation Theory Course},pdfkeywords={representation theory},pdfsubject={Representation Theory}]{hyperref}  % Should be loaded second last (cleveref last)
 \colorlet{hyperrefcolor}{blue!60!black}
@@ -135,6 +138,8 @@ noabbrev
 \renewcommand{\dd}{\,\symrm{d}}
 \newcommand{\ad}{\symrm{ad}}
 \DeclareMathOperator{\gr}{gr}
+\DeclarePairedDelimiterX{\rootProd}[2]{(}{)}{#1 , #2}
+\newcommand{\dynkin}[2]{\symrm{#1}_{#2}}
 
 \includeonly{parts/algebra-reps, parts/group-reps}
 
@@ -2644,7 +2649,7 @@ noabbrev
     \end{dfn}
     
     \begin{dfn}{Linear Lie Algebra}{}
-        A linear Lie algebra is any Lie algebra which is isomorphic to a Lie subalgebra of some \(\generalLinearLie(V)\) for \(V\) a finite-dimensional vector space.
+        A \defineindex{linear Lie algebra} is any Lie algebra which is isomorphic to a Lie subalgebra of some \(\generalLinearLie(V)\) for \(V\) a finite-dimensional vector space.
     \end{dfn}
     
     Ado's theorem tells us that (over a field of characteristic zero) every finite-dimensional Lie algebra is linear.
@@ -2652,8 +2657,7 @@ noabbrev
     \begin{thm}{Ado's Theorem}{}
         Let \(\lie{g}\) be a finite-dimensional Lie algebra over a field of characteristic zero.
         Then \(\lie{g}\) admits a faithful representation \(\lie{g} \hookrightarrow \generalLinearLie(V)\) for some finite-dimensional vector space, \(V\).
-        Further, one can choose this representation such that the maximal nilpotent ideal\footnote{ % TODO reference to definition of ideal, reference to definition of nilpotent
-        It turns out that (up to isomorphism) there is always a unique maximal (with respect to inclusion) nilpotent ideal.}, \(\lie{n} \subseteq \lie{g}\) acts nilpotently on \(V\).
+        Further, one can choose this representation such that the maximal nilpotent ideal, \(\lie{n} \subseteq \lie{g}\) acts nilpotently on \(V\).
     \end{thm}
     
     There are some special linear Lie algebras.
@@ -2888,7 +2892,7 @@ noabbrev
     \end{equation}
     We can then abstract the definition of \(\specialLinearLie_2\) to be \(\Span_{\complex}\{e, h, f\}\) subject to the above commutation relations, without needing an explicit matrix form.
     
-    \begin{lma}{}{}
+    \begin{lma}{}{lma:weight space decomposition of sl2}
         Let \(V\) be a finite-dimensional representation of \(\specialLinearLie_2\).
         Then we have the decomposition
         \begin{equation}
@@ -2966,7 +2970,7 @@ noabbrev
     \end{equation}
     The fact that we must always eventually get to \(0\) going either up or down is simply due to the fact that \(V\) is finite-dimensional.
     
-    \begin{exm}{}{}
+    \begin{exm}{}{exm:homogeneous polynomials as sl2 rep}
         Consider the vector space \(S^k(\complex^2)\).
         We may identify this with the space of degree \(k\) homogenous polynomials (with coefficients in \(\complex\)).
         For example, for \(S^3(\complex^2)\) we identify \(e_1 \otimes e_1 \otimes e_1\) with \(x^3\), \(e_1 \otimes e_1 \otimes e_2 = e_1 \otimes e_2 \otimes e_1 = e_2 \otimes e_1 \otimes e_1\) with \(x^2y\), and so on.
@@ -2980,13 +2984,717 @@ noabbrev
         Note that each operator preserves the total degree of any polynomial (so long as it doesn't send it to zero).
         Thus, we can identify submodules of degree \(k\)-polynomials.
         More generally, the above identification defines an action of \(\specialLinearLie_2\) on smooth functions \(\complex^2 \to \complex\), of which the \(S^k(\complex^2)\) are submodules.
+        
+        Consider \(S^k(\complex^2)\), which we now identify with the space of degree \(k\) polynomials in \(x\) and \(y\).
+        A basis for this space consists of vectors
+        \begin{equation}
+            v_r = \binom{k}{r} x^r y^{k - r}.
+        \end{equation}
+        Acting on this with \(h\) we have
+        \begin{multline}
+            hv_r = (-x \partial_x + y\partial_y) \binom{k}{r}x^r y^{k-r}\\
+            = -r\binom{k}{r}x^ry^{k-r} -(k - r)\binom{k}{r}x^ry^{k-r}) = (k - 2r)v_r, 
+        \end{multline}
+        so \(v_r\) has \(h\)-eigenvalue \(\alpha = k - 2r\).
+        We also have
+        \begin{equation}
+            ev_r = -y\partial_x \binom{k}{r} x^r y^{k-r} = -r \binom{k}{r}x^{r-1} y^{k-r+1} = (r - k - 1) v_{r-1}
+        \end{equation}
+        and the \(h\)-eigenvalue of \(v_{r-1}\) is \(k - 2(r - 1) = k - 2r + 2 = \alpha + 2\).
+        Similarly, we have
+        \begin{equation}
+            fv_r = -x \partial_y \binom{k}{r} x^r y^{k-r} = -(k-r) \binom{k}{r} x^{r + 1} y^{k - r - 1} = -(1 + r)v_{r + 1}
+        \end{equation}
+        and the \(h\)-eigenvalue of \(v_{r + 1}\) is \(k -2(r + 1) = k - 2r - 2 = \alpha - 2\).
+        Then letting \(V_{k - 2r} = \complex v_{r}\) we have
+        \begin{equation}
+            \begin{tikzcd}
+                V_{k - 2r + 2} \arrow[loop right, "h \sim k-2r"] \arrow[d, bend left, "f \sim -(1 + r)"]\\
+                V_{k - 2r} \arrow[loop right, "h \sim k-2r"] \arrow[u, bend left, "e \sim r - k - 1"]
+            \end{tikzcd}
+        \end{equation}
+        Here \(a \sim \lambda\) we mean that \(a\) acts by sending the basis vector of one space to the basis vector of the next multiplied by \(\lambda\).
+        
+        Let \(V(k) = S^k(\complex^2)\) be this \(\specialLinearLie_2\)-module.
+        This is an irreducible module.
+        Given any basis vector it lives in one of the \(V_\alpha\), and if we continuously act with \(e\) we eventually get \(v_0\).
+        Then \(v_0\) generates this entire module by acting with \(f\) and scalar multiplication.
+        Note that \(\dim V(k) = k + 1\), since we have the basis \(\{v_0, \dotsc, v_k\}\).
     \end{exm}
     
+    The previous example actually captures all irreducible modules of \(\specialLinearLie_2\), as the following proves.
+    The argument basically mirrors the argument above without reference to an explicit structure of polynomials.
+    
+    \begin{prp}{Classification of Finite Dimensional Irreducible \(\specialLinearLie_2\)-Modules}{}
+        Let \(V\) be a \((k + 1)\)-dimensional \(\specialLinearLie_2\)-module.
+        Then \(V \isomorphic V(k)\) with \(V(k)\) as defined in \cref{exm:homogeneous polynomials as sl2 rep}.
+        \begin{proof}
+            By the same argument as in the proof of \cref{lma:weight space decomposition of sl2} we know that the eigenvectors of \(h\) span \(V\) (which we're assuming is irreducible).
+            Since \(V\) is finite-dimensional \(h\) has a finite number of eigenvalues, so there must be some \(h\)-eigenvector, \(v_0\), for which we have \(h v_0 = 0\).
+            Consider \(f^k v_0\), as we have a finite-dimensional space, and thus finitely many eigenvectors of \(h\), we must have for some \(N\) that \(f^N v_0 = 0\), and suppose \(N\) is the smallest such value.
+            If we take \(B = \{v_0, fv_0, \dotsc, f^{N-1}v_0\}\) then this is a submodule of \(V\), and thus is all of \(V\).
+            Thus, knowing that \(V\) has dimension \(k + 1\) we know that \(N = k + 1\).
+            In particular, \(f^{N-1}v_0 = f^kv_0\) is the last element of this basis.
+            
+            For what follows it's useful to absorb some scale factor into the basis, define \(v_r = f^r v_0 / r!\) for \(r = 0, \dotsc, k\).
+            Then \(\{v_r\}\) is a basis of \(V\).
+            
+            All that remains is to show that the action of \(e\) and \(f\) on this basis is fully determined.
+            Starting with \(e\) we use the fact that \(hv_r = (\alpha_0 - 2r)v_r\) where \(\alpha_0\) is the \(h\)-eigenvalue of \(v_0\).
+            We then have
+            \begin{align}
+                ev_0 &= 0\\
+                ev_1 &= efv_0 = \bracket{e}{f}v_0 + fev_0 = hv_0 + 0 = \alpha_0 v_0\\
+                ev_2 &= efv_1/2 = \bracket{e}{f}v_1/2 + fev_1/2 = hv_1/2 + \alpha_0fv_0/2\\
+                &= (\alpha_0 - 2)v_1/2 + \alpha_0v_1/2 = (\alpha_0 - 1)v_1.
+            \end{align}
+            We thus make the induction hypothesis that
+            \begin{equation}
+                ev_n = (\alpha_0 - n + 1)v_{n-1}.
+            \end{equation}
+            Assuming the equivalent statement for \(v_{n - 1}\) holds we then have
+            \begin{align}
+                ev_n &= efv_{n-1}/n = \bracket{e}{f}v_{n-1}/n + fev_{n-1}/n\\
+                &= hv_{n-1}/n + fev_{n-1}/n\\
+                &= (\alpha_0 - 2n + 2)v_{n-2} + (\alpha_0 - n + 2) fv_{n-2}/n\\
+                &= (\alpha_0 - 2n + 2)v_{n-1}/n + (n - 1)(\alpha_0 - n + 2)v_{n-1}/n\\
+                &= (\alpha_0 - n + 1)v_{n-1}.
+            \end{align}
+            
+            This shows that the structure of \(V\) is entirely determined by \(\alpha_0\), we now show that \(\alpha_0\) is fixed.
+            We know that \(fv_k = 0\), and we have
+            \begin{align}
+                efv_k &= \bracket{e}{f}v_k + fev_k = hv_k + (\alpha_0 - k + 1)fv_{k-1}\\
+                &= (\alpha_0 - 2k)v_k + (\alpha_0 - k + 1)k v_k\\
+                &= (k + 1)(\alpha_0 - k)v_{k-1}.
+            \end{align}
+            For this to vanish, given that \(k + 1\), the dimension, is positive (for \(k + 1 = 0\) clearly all zero dimensional \(\specialLinearLie_2\)-modules are isomorphic), and thus \(\alpha_0 = k\) is fixed, and so as soon as we know the dimension of a finite-dimensional irreducible \(\specialLinearLie_2\)-module we know everything about it.
+        \end{proof}
+    \end{prp}
+    
+    \begin{dfn}{Weight Vectors}{}
+        Let \(V\) be an \(\specialLinearLie_2\)-module.
+        We call eigenvectors of \(h\) \define{weight vectors}\index{weight vector}, and the eigenvalue is called its weight.
+        If \(v\) is a weight vector and \(ev = 0\) we call \(v\) a \defineindex{highest weight vector}, similarly, if \(fv = 0\) we call \(v\) a \defineindex{lowest weight vector}.
+    \end{dfn}
+    
+    The above proposition then says that any finite-dimensional irreducible \(\specialLinearLie_2\)-module is generated by a highest weight vector, \(v_0\).
+    
+    \section{Classification of Semisimple Lie Algebras Over \texorpdfstring{\(\complex\)}{C}}
+    The steps followed for classifying irreducible finite-dimensional irreducible \(\specialLinearLie_2\)-modules actually generalise remarkably well to classifying not just representations of other Lie algebras, but classifying a whole type of algebra, just by studying the adjoint representations in which these algebras act on themselves.
+    
+    There were three steps we followed with \(\specialLinearLie_2\).
+    First, decompose \(V\) into eigenspaces of \(h\).
+    Second, use the commutation relations to determine how \(e\) and \(f\) act on these eigenspaces.
+    Finally, use the irreducibility of the module to show that it is generated by a single highest weight vector.
+    
+    In order to apply this method to other Lie algebras we'll need to generalise some things.
+    The main one is that instead of just a single operator, \(h\), we end up with a whole subalgebra of operators, \(\lie{h}\).
+    Before we get to this we need a few definitions.
+    
+    \begin{dfn}{Semisimple and Nilpotent Elements}{}
+        Let \(\lie{g}\) be a Lie algebra.
+        We say that \(x \in \lie{g}\) is \defineindex{semisimple} if \(\ad_x\) is diagonalisable, and \defineindex{nilpotent} if \(\ad_x\) is nilpotent.
+    \end{dfn}
+    
+    For example, in \(\specialLinearLie_2\) \(h\) is semisimple, since in the adjoint representation, with the ordered basis \(\{e, h, f\}\), we have
+    \begin{equation}
+        \ad_h = 
+        \begin{pmatrix}
+            2\\
+            & 0\\
+            && -2
+        \end{pmatrix}
+        .
+    \end{equation}
+    On the other hand, \(e\) and \(f\) are nilpotent, since in the adjoint representation
+    \begin{equation}
+        \ad_e =
+        \begin{pmatrix}
+            0 & -2 & 0\\
+            0 & 0 & 1\\
+            0 & 0 & 0
+        \end{pmatrix}
+        , \qand \ad_f =
+        \begin{pmatrix}
+            0 & 0 & 0\\
+            -1 & 0 & 0\\
+            0 & 2 & 0
+        \end{pmatrix}
+        ,
+    \end{equation}
+    both of which have vanishing third power.
+    
+    An abelian subalgebra, \(\lie{h} \subseteq \lie{g}\) is called \defineindex{toral}\footnote{This name comes from the fact that if \(G\) is a Lie group with Lie algebra \(\lie{g}\) then any toral subgroup, \(H\), will have a Lie algebra isomorphic to \(\lie{h}\). In turn, a toral subgroup is a Lie subgroup of \(G\) which is isomorphic to a torus.} if it consists of only semisimple elements.
+    For any toral subalgebra we have the following decomposition:
+    \begin{equation}
+        \lie{g} = \bigoplus_{\alpha \in \lie{h}^*} \lie{g}_\alpha
+    \end{equation}
+    where
+    \begin{equation}
+        \lie{g}_\alpha = \{x \in \lie{g}_\alpha \mid \ad_h(x) = \bracket{h}{x} = \alpha(h)x \text{ for } h \in \lie{h}\}.
+    \end{equation}
+    This is simply the weight space decomposition of \(\lie{g}\) viewed as an \(\lie{h}\)-module through (restricted) adjoint action.
+    
+    One can show that
+    \begin{equation}
+        \bracket{\lie{g}_\alpha}{\lie{g}_\beta} \subseteq \lie{g}_{\alpha + \beta}.
+    \end{equation}
+    In particular, \(\lie{g}_0\) is a Lie subalgebra, since \(\bracket{\lie{g}_0}{\lie{g}_0} \subseteq \lie{g}_0\), and \(\lie{h} \subseteq \lie{g}_0\).
+    
+    \begin{dfn}{Cartan Subalgebra}{}
+        If \(\lie{g}\) is a Lie algebra with toral subalgebra, \(\lie{h}\), such that, with the notation above, we have \(\lie{g}_0 = \lie{h}\) then we call \(\lie{h}\) a \defineindex{Cartan subalgebra} of \(\lie{g}\).
+    \end{dfn}
+    
+    Note that while Cartan subalgebras aren't unique they are all conjugate, so we typically speak of \emph{the} Cartan subalgebra, when it exists.
+    
+    When we have a Cartan subalgebra we can change the decomposition to
+    \begin{equation}
+        \lie{g} = \lie{h} \oplus \bigoplus_{\alpha \in \Delta} \lie{g}_\alpha
+    \end{equation}
+    where \(\Delta = \{\alpha \in \lie{h}^*\setminus 0 \mid \lie{g}_\alpha \ne 0\}\) is the subset of \(\lie{h}^*\) for which \(\alpha \ne 0\) and \(\lie{g}_\alpha\) is nontrivial.
+    We call \(\Delta\) a set of \define{simple roots}\index{simple roots}.
+    
+    For example, for \(\specialLinearLie_2\) we have the Cartan subalgebra \(\lie{h} = \complex h\).
+    In this case we have \(\lie{g}_{2} = \complex e\) and \(\lie{g}_{-2} = \complex f\), and we get the decomposition
+    \begin{equation}
+        \specialLinearLie_2 = \complex h \oplus \complex e \oplus \complex f.
+    \end{equation}
+    
+    \subsection{Root Systems}
+    \begin{dfn}{Reflection}{}
+        Let \(E\) be a Euclidean space with inner product \(\rootProd{-}{-} \colon E \otimes E \to \reals\).
+        A \defineindex{reflection} is a linear map \(s \colon E \to E\) such that there exists some \(v \in E\) such that \(s(v) = -v\) and the hyperplane \((\reals v)^{\perp}\) is fixed pointwise by \(s\).
+        Then we call \(s\) a reflection along \(v\).
+    \end{dfn}
+    
+    Note that given \(v\) the following formula gives a reflection along \(v\):
+    \begin{equation}
+        s_v(w) = w - 2\frac{\rootProd{v}{w}}{\rootProd{v}{v}} v.
+    \end{equation}
+    
+    \begin{dfn}{Root System}{}
+        Let \(E\) be a real Euclidean space with inner product \(\rootProd{-}{-}\).
+        A \defineindex{root system}, \(\Phi\), in \(E\) is a finite set of nonzero vectors or \define{roots}\index{root} such that
+        \begin{enumerate}
+            \item \(\Span_{\reals} \Phi = E\);
+            \item if \(\alpha \in \Phi\) then \(c \alpha \in \Phi\) only for \(c = \pm 1\);
+            \item \(s_\alpha(\Phi) = \Phi\) for \(\alpha \in \Phi\);
+            \item \(2\rootProd{\alpha}{\beta}/\rootProd{\alpha}{\alpha} \in \integers\).
+        \end{enumerate}
+        Sometimes the second condition isn't required, root systems for which the second condition holds are known as \define{reduced root systems}\index{reduced root system}\index{root system!reduced}.
+        
+        The \defineindex{rank} of the root system is \(\dim_{\reals} E\).
+    \end{dfn}
+    
+    \begin{dfn}{Positive and Simple Roots}{}
+        Given a root system we can make arbitrary choice of a hyperplane containing none of the roots.
+        We then choose one side of this hyperplane, again, arbitrarily, and declare roots in this half to be \define{positive}\index{positive root}.
+        The \define{simple roots}\index{simple root} are the positive roots which cannot be written as a sum, \(\alpha + \beta\), of two elements of the positive roots, \(\alpha\) and \(\beta\), alternatively, the simple roots are precisely the subset of the positive roots which generate the positive roots through linear combinations with positive integral coefficients.
+    \end{dfn}
+    
+    \begin{ntn}{}{}
+        Notation varies here, but we'll call \(\Phi\) the set of roots, \(\Pi\) the set of positive roots and \(\Delta\) the set of simple roots.
+    \end{ntn}
+    
+    It turns out that root systems actually turn up in many different areas of mathematics, but we'll focus on how they're relevant to Lie algebras.
+    
+    It turns out that, up to scaling, there is only one rank 1 root system.
+    For reasons we'll get into later this root system is known as \(\dynkin{A}{1}\).
+    This root system is depicted in \cref{fig:root system A1}.
+    There are also only four rank 2 root systems, known as \(\dynkin{A}{1} \oplus \dynkin{A}{1}\) (being two orthogonal copies of \(\dynkin{A}{1}\)), \(\dynkin{A}{2}\), \(\dynkin{B}{2}\) (or \(\dynkin{C}{2}\)) and \(\dynkin{G}{2}\).
+    These are depicted in \cref{fig:root system rank 2}.
+    \Cref{tab:root systems of rank 2} lists the roots, \(\Phi\), positive roots, \(\Pi\), and simple roots, \(\Delta\).
+    In all cases we've chosen to label our roots by expressing them in terms of two chosen simple roots, \(\alpha\) and \(\beta\).
+    
+    \begin{figure}
+        \centering
+        \tikzsetnextfilename{root-system-A1}
+        \begin{tikzpicture}
+            \draw [->] (0, 0) -- ++ (2, 0) node [right] {\(\alpha\)};
+            \draw [->] (0, 0) -- ++ (-2, 0) node [left] {\(-\alpha\)};
+            \fill (0, 0) circle [radius = 0.03cm];
+        \end{tikzpicture}
+        \caption{The \(\dynkin{A}{1}\) root system, \(\Phi = \{\alpha, -\alpha\}\), with chosen positive roots, \(\Pi = \{\alpha\}\), and simple roots, \(\Delta = \{\alpha\}\).}
+        \label{fig:root system A1}
+    \end{figure}
+    
+    \begin{figure}
+        \centering
+        \begin{subfigure}{0.45\textwidth}
+            \centering
+            \tikzsetnextfilename{root-system-A1+A1}
+            \begin{tikzpicture}
+                \draw [->] (0, 0) -- ++ (2, 0) node [right] {\(\alpha\)};
+                \draw [->] (0, 0) -- ++ (-2, 0) node [left] {\(-\alpha\)};
+                \draw [->] (0, 0) -- ++ (0, 2) node [above] {\(\beta\)};
+                \draw [->] (0, 0) -- ++ (0, -2) node [below] {\(\mathllap{-}\beta\)};
+                \fill (0, 0) circle [radius = 0.03cm];
+            \end{tikzpicture}
+            \caption{The \(\dynkin{A}{1} \oplus \dynkin{A}{1}\) root system.}
+            \label{fig:root system A1+A1}
+        \end{subfigure}
+        \begin{subfigure}{0.45\textwidth}
+            \centering
+            \tikzsetnextfilename{root-system-A2}
+            \begin{tikzpicture}
+                \draw [->] (0, 0) -- ++ (2, 0) node [right] {\(\alpha\)};
+                \draw [->] (0, 0) -- ++ (pi/3 r:2) node [right] {\(\alpha + \beta\)};
+                \draw [->] (0, 0) -- ++ (2*pi/3 r:2) node [left] {\(\beta\)};
+                \draw [->] (0, 0) -- ++ (-2, 0) node [left] {\(-\alpha\)};
+                \draw [->] (0, 0) -- ++ (4*pi/3 r:2) node [left] {\(-\alpha - \beta\)};
+                \draw [->] (0, 0) -- ++ (5*pi/3 r:2) node [right] {\(-\beta\)};
+                \fill (0, 0) circle [radius = 0.03cm];
+            \end{tikzpicture}
+            \caption{The \(\dynkin{A}{2}\) root system.}
+            \label{fig:root system A2}
+        \end{subfigure}
+        
+        \begin{subfigure}{0.7\textwidth}
+            \centering
+            \tikzsetnextfilename{root-system-B2}
+            \begin{tikzpicture}
+                \draw [->] (0, 0) -- ++ (2, 0) node [right] {\(\alpha\)};
+                \draw [->] (0, 0) -- ++ (45:{2*sqrt(2)}) node [right] {\(2\alpha + \beta\)};
+                \draw [->] (0, 0) -- ++ (0, 2) node [above] {\(\alpha + \beta\)};
+                \draw [->] (0, 0) -- ++ (135:{2*sqrt(2)}) node [left] {\(\beta\)};
+                \draw [->] (0, 0) -- ++ (-2, 0) node [left] {\(-\alpha\)};
+                \draw [->] (0, 0) -- ++ (225:{2*sqrt(2)}) node [left] {\(-2\alpha - \beta\)};
+                \draw [->] (0, 0) -- ++ (0, -2) node [below] {\(\mathllap{-}\alpha - \beta\)};
+                \draw [->] (0, 0) -- ++ (-45:{2*sqrt(2)}) node [right] {\(-\beta\)};
+                \fill (0, 0) circle [radius = 0.03cm];
+            \end{tikzpicture}
+            \caption{The \(\dynkin{B}{2}\) root system.}
+            \label{fig:root system B2}
+        \end{subfigure}
+        \begin{subfigure}{0.7\textwidth}
+            \centering
+            \tikzsetnextfilename{root-system-G2}
+            \begin{tikzpicture}
+                \draw [->] (0, 0) -- ++ (2, 0) node [right] {\(\alpha\)};
+                \draw [->] (0, 0) -- ++ (pi/3 r:2) node [above] {\(2\alpha + \beta\)};
+                \draw [->] (0, 0) -- ++ (2*pi/3 r:2) node [above] {\(\alpha + \beta\)};
+                \draw [->] (0, 0) -- ++ (-2, 0) node [left] {\(-\alpha\)};
+                \draw [->] (0, 0) -- ++ (4*pi/3 r:2) node [below] {\(\mathllap{-}2\alpha - \beta\)};
+                \draw [->] (0, 0) -- ++ (5*pi/3 r:2) node [below] {\(\mathllap{-}\alpha - \beta\)};
+                \begin{scope}[rotate=pi/6 r, scale={sqrt(3)}]
+                    \draw [->] (0, 0) -- ++ (2, 0) node [right] {\(3\alpha + \beta\)};
+                    \draw [->] (0, 0) -- ++ (pi/3 r:2) node [above] {\(3\alpha + 2\beta\)};
+                    \draw [->] (0, 0) -- ++ (2*pi/3 r:2) node [left] {\(\beta\)};
+                    \draw [->] (0, 0) -- ++ (-2, 0) node [left] {\(\mathllap{-}3\alpha - \beta\)};
+                    \draw [->] (0, 0) -- ++ (4*pi/3 r:2) node [below] {\(\mathllap{-}3\alpha - 2\beta\)};
+                    \draw [->] (0, 0) -- ++ (5*pi/3 r:2) node [right] {\(-\beta\)};
+                \end{scope}
+                \fill (0, 0) circle [radius = 0.03cm];
+            \end{tikzpicture}
+            \caption{The \(\dynkin{G}{2}\) root system.}
+            \label{fig:root system G2}
+        \end{subfigure}
+        
+        \caption{The rank \(2\) root systems.}
+        \label{fig:root system rank 2}
+    \end{figure}
+    
+    \begin{table}
+        \centering
+        \caption[Root systems of rank at most 2]{Information on the root systems of rank at most \(2\). Notice that \(\Phi = \Pi \sqcup (-\Pi)\) and in all cases we have chosen our naming of roots such that \(\Delta = \{\alpha, \beta\}\). Notice that the positive roots, \(\Pi\), are always found in the cone between the simple roots.}
+        \label{tab:root systems of rank 2}
+        \small
+        \begin{tabular}{clll}
+            \toprule
+            & \(\Phi\) & \(\Pi\) & \(\Delta\) \\ \midrule
+            \(\dynkin{A}{1}\) & \(\pm\alpha\) & \(\alpha\) & \(\alpha\)\\
+            \(\dynkin{A}{1} \oplus \dynkin{A}{1}\) & \(\pm\alpha\), \(\pm\beta\) & \(\alpha\), \(\beta\) & \(\alpha\), \(\beta\)\\
+            \(\dynkin{A}{2}\) & \(\pm \alpha\), \(\pm \beta\), \(\pm(\alpha + \beta)\) & \(\alpha\), \(\beta\), \(\alpha + \beta\) & \(\alpha\), \(\beta\)\\
+            \(\dynkin{B}{2}\) & \(\pm\alpha\), \(\pm\beta\), \(\pm(\alpha + \beta)\), \(\pm(2\alpha + \beta)\) & \(\alpha\), \(\beta\), \(\alpha + \beta\), \(2\alpha + \beta\) & \(\alpha\), \(\beta\)\\
+            \(\dynkin{G}{2}\) & \(\pm \alpha\), \(\pm\beta\), \(\alpha + \beta\), \(\pm(2\alpha + \beta)\), \(\pm(3\alpha + \beta)\) & \(\alpha\), \(\beta\), \(\alpha + \beta\), \(2\alpha + \beta\), \(3\alpha + \beta\) & \(\alpha\), \(\beta\) \\ \bottomrule
+        \end{tabular}
+    \end{table}
+    
+    \subsection{Connection to Semisimple Lie Algebras}
+    The reason that these root systems, as abstract subsets of some Euclidean space, are relevant is that given a semisimple Lie algebra the set of simple roots, \(\Delta\), (that is \(\alpha \in \lie{h}^*\) such that \(\lie{g}_\alpha \ne 0\)) is actually the set of simple roots of a corresponding root system.
+    
+    \begin{thm}{}{}
+        Let \(\lie{g}\) be a semisimple Lie algebra over \(\complex\), with Cartan subalgebra \(\lie{h}\).
+        Let \(E\) be a Euclidean space such that the complexification of \(E\) is \(\lie{h}^*\).
+        Then
+        \begin{itemize}
+            \item \(\Delta\) forms a reduced root system in \(E\);
+            \item Eigenspaces are one-dimensional, \(\lie{g}_\alpha \isomorphic \complex\) for \(\alpha \in \Delta\);
+            \item \(\bracket{\lie{g}_\alpha}{\lie{g}_\beta} = \lie{g}_{\alpha + \beta}\).
+        \end{itemize}
+    \end{thm}
+    
+    It turns out that these properties are exactly as is required in order for the following result to hold.
+    
+    \begin{thm}{}{}
+        There is a bijection between semisimple Lie algebras over \(\complex\) and reduced root systems.
+    \end{thm}
+    
+    We've constructed the root system from a semisimple Lie algebra.
+    Since these objects are in bijection we can construct a semisimple Lie algebra in a unique way from a given root system.
+    The process is unfortunately not that insightful, and basically reduces to imposing a bunch of relations on a free Lie algebra according to information encoded in the root system.
+    The nice thing about this result is that it turns out to be much simpler to classify all of the finite-rank root systems.
+    
+    \begin{dfn}{Cartan Matrix}{}
+        A (finite-type) \defineindex{Cartan matrix} is an \(n \times n\) matrix, \(A = (a_{ij})_{1 \le i, j \le n}\) such that
+        \begin{itemize}
+            \item \(a_{ii} = 2\) and \(a_{ij} \in \integers_{\le 0}\) for \(i \ne j\);
+            \item \(A\) is symmetrisable (there exists some diagonal matrix, \(D\), such that \(DA\) is a symmetric matrix);
+            \item \(A\) is positive (all principle minors of \(A\) are positive).
+        \end{itemize}
+    We consider two Cartan matrices to be the same if they are equal up to a simultaneous permutation of the rows and columns.
+    That is, \(A\) and \(B\) are the same if \(a_{i,j} = b_{\sigma(i),\sigma(j)}\) for some \(\sigma \in S_n\).
+    \end{dfn}
+    
+    \begin{lma}{}{}
+        Let \(\Phi\) be a root system with chosen simple roots, \(\Delta = \{\alpha_1, \dotsc, \alpha_n\}\).
+        Define a matrix \(A = (a_{ij})_{1 \le i, j \le n}\) by
+        \begin{equation}
+            a_{ij} \coloneq \frac{2\rootProd{\alpha_i}{\alpha_j}}{\rootProd{\alpha_i}{\alpha_i}}.
+        \end{equation}
+        This is a Cartan matrix, and is uniquely determined by the root system (up to permutation of the labels of our simple roots).
+        Conversely, given a Cartan matrix one can construct a root system with that Cartan matrix.
+    \end{lma}
+    
+    The above result means that classifying Cartan matrices classifies root systems, which in turn classifies semisimple Lie algebras.
+    
+    We're now ready to state the reverse process, for going from a root system or Cartan matrix to the corresponding semisimple Lie algebra.
+    
+    \begin{prp}{}{}
+        Let \(A = (a_{ij})\) be an \(n \times n\) Cartan matrix.
+        Let \(\lie{g}\) be the Lie algebra generated by \(\{e_i, h_i, f_i \mid 1 \le i \le n\}\) subject to the relations
+        \begin{itemize}
+            \item \(\bracket{h_i}{e_j} = a_{ij}e_j\);
+            \item \(\bracket{h_i}{f_j} = -a_{ij}f_j\);
+            \item \(\bracket{e_i}{f_j} = \delta_{ij}h_i\);
+            \item \(\bracket{h_i}{h_j} = 0\);
+            \item \((\ad_{e_i})^{1 - a_{ij}}e_j = 0\);
+            \item \((\ad_{f_i})^{1 - a_{ij}}f_i = 0\).
+        \end{itemize}
+        Then this is a semisimple Lie algebra over \(\complex\) and is uniquely determined by \(A\).
+    \end{prp}
+    
+    The last two relations above are called the \defineindex{Serre relations}.
+    
+    Note that in the above \(1 - a_{ij}\) is always positive, and \((\ad_{e_i})^{k}\) means the \(k\)-nested bracket with \(e_i\), for example, \((\ad_{e_i})^{3}(x) = \bracket{e_i}{\bracket{e_i}{\bracket{e_i}{x}}}\).
+    
+    \begin{exm}{\(\specialLinearLie_2\)}{}
+        Consider \(\specialLinearLie_2\).
+        We will demonstrate here that \(\specialLinearLie_2\) is precisely the semisimple Lie algebra corresponding to \(\dynkin{A}{1}\).
+        
+        To do so we start with finding the Cartan matrix of \(\dynkin{A}{1}\).
+        Since \(\Phi = \{\pm\alpha\}\) and \(\Delta = \{\alpha\}\) this Cartan matrix is just \(1 \times 1\), with the single entry being
+        \begin{equation}
+            a_{1 1} = \frac{2\rootProd{\alpha}{\alpha}}{\rootProd{\alpha}{\alpha}} = 2.
+        \end{equation}
+        So, \(A = (2)\), of course the diagonal of the Cartan matrix is, by definition, always 2s, so we didn't actually need this calculation.
+        
+        Then we can take \(\lie{g}\) to be the Lie algebra generated by \(\{e_1, h_1, f_1\}\) subject to the relations
+        \begin{itemize}
+            \item \(\bracket{h_1}{e_1} = a_{11}e_1 = 2e_2\);
+            \item \(\bracket{h_1}{f_1} = -a_{11}e_1 = -2f_1\);
+            \item \(\bracket{e_1}{f_1} = \delta_{11}h_1 = h_1\);
+            \item \(\bracket{h_1}{h_1} = 0\).
+        \end{itemize}
+        The last of these is always true, the first three are exactly the relations on \(\{e, h, f\}\) which we impose on \(\specialLinearLie_2\), so \(\lie{g} \isomorphic \specialLinearLie_2\).
+        
+        More generally, if we construct a Lie algebra from an arbitrary root system and take the subalgebra generated by \(e_i\), \(h_i\) and \(f_i\) for fixed \(i\) then, since \(a_{ii} = 2\) we always get a copy of \(\specialLinearLie_2\).
+    \end{exm}
+    
+    \begin{exm}{\(\specialLinearLie_3\)}{}
+        Let's go one dimension up and consider \(\dynkin{A}{2}\).
+        This root system has \(\Phi = \{\pm\alpha, \pm\beta, \pm(\alpha + \beta)\}\) and \(\Delta = \{\alpha, \beta\}\).
+        Let \(\alpha_1 = \alpha\) and \(\alpha_2 = \beta\) in what follows.
+        Then the Cartan matrix has diagonals 2.
+        Looking at the root diagram in \cref{fig:root system A2} the angle between \(\alpha\) and \(\beta\) is \(2\pi/3\), and both roots are the same length.
+        Thus, \(\rootProd{\alpha}{\beta} = \rootProd{\alpha_1}{\alpha_2} = \cos(2\pi/3) = -1/2\), and thus
+        \begin{equation}
+            a_{12} = \frac{2\rootProd{\alpha_1}{\alpha_1}}{\rootProd{\alpha_1}{\alpha_1}} = -1, \qand a_{21} = \frac{2\rootProd{\alpha_2}{\alpha_1}}{\rootProd{\alpha_2}{\alpha_2}} = 1 
+        \end{equation}
+        having chosen a normalisation such that \(\rootProd{\alpha_1}{\alpha_1} = \rootProd{\alpha_2}{\alpha_2} = 1\).
+        The Cartan matrix of \(\dynkin{A}{2}\) is thus
+        \begin{equation}
+            A = 
+            \begin{pmatrix}
+                2 & -1\\
+                -1 & 2
+            \end{pmatrix}
+            .
+        \end{equation}
+        
+        The corresponding semisimple Lie algebra is generated by \(\{e_1, e_2, h_1, h_2, f_1, f_2\}\) subject to
+        \begin{itemize}
+            \item \(\bracket{h_1}{e_1} = 2e_1\), \(\bracket{h_1}{e_2} = -e_2\), \(\bracket{h_2}{e_1} = -e_1\), \(\bracket{h_2}{e_2} = 2e_2\);
+            \item \(\bracket{h_1}{f_1} = -2e_1\), \(\bracket{h_1}{f_2} = f_2\), \(\bracket{h_2}{f_1} = f_1\), \(\bracket{h_2}{f_2} = -2f_2\);
+            \item \(\bracket{e_1}{f_1} = h_1\), \(\bracket{e_2}{f_2} = h_2\), \(\bracket{e_1}{f_2} = \bracket{e_2}{f_1} = 0\);
+            \item \(\bracket{h_1}{h_2} = 0\);
+            \item \((\ad_{e_1})^{1 - a_{12}}e_2 = (\ad_{e_1})^2e_2 = \bracket{e_1}{\bracket{e_1}{e_2}} = 0\), \(\bracket{e_2}{\bracket{e_2}{e_1}} = 0\);
+            \item \(\bracket{f_1}{\bracket{f_1}{f_2}} = \bracket{f_2}{\bracket{f_2}{f_1}} = 0\).
+        \end{itemize}
+        This algebra is isomorphic to \(\specialLinearLie_3\).
+    \end{exm}
+    
+    \begin{exm}{\(\specialOrthogonalLie_5\)}{}
+        Consider the root system \(\dynkin{B}{3}\), which has \(\Delta = \{\alpha_1, \alpha_2\}\).
+        Looking at the root diagram, \cref{fig:root system B2}, we see that if we choose \(\alpha = \alpha_1\) to have length \(1\) then \(\alpha_2 = \beta\) has length \(\sqrt{2}\), and the angle between \(\alpha\) and \(\beta\) is \(3\pi/4\), and \(\cos(3\pi/4) = -\sqrt{2}/2\).
+        Thus,
+        \begin{align*}
+            a_{12} &= \frac{2\rootProd{\alpha_1}{\alpha_2}}{\rootProd{\alpha_1}{\alpha_1}} = \frac{2\norm{\alpha_1}\norm{\alpha_2}\cos(3\pi/4)}{\norm{\alpha_1}^2} = \frac{2 \cdot 1 \cdot \sqrt{2} \cdot (-\sqrt{2}/2)}{1} = -2,\\
+            a_{21} &= \frac{2\rootProd{\alpha_2}{\alpha_1}}{\rootProd{\alpha_2}{\alpha_2}} = \frac{2\norm{\alpha_2}\norm{\alpha_1} \cos(3\pi/4)}{\norm{\alpha_2}^2} = \frac{2 \cdot \sqrt{2} \cdot 1 \cdot (-\sqrt{2}/2)}{(\sqrt{2})^2} = -1.
+        \end{align*}
+        So, the Cartan matrix of \(\dynkin{B}{3}\) is
+        \begin{equation}
+            A =
+            \begin{pmatrix}
+                2 & -2\\
+                -1 & 2
+            \end{pmatrix}
+            .
+        \end{equation}
+        Note that this is symmetrisable:
+        \begin{equation}
+            D = 
+            \begin{pmatrix}
+                1 & 0\\
+                0 & 2
+            \end{pmatrix}
+            \implies DA = 
+            \begin{pmatrix}
+                2 & -2\\
+                -2 & 4
+            \end{pmatrix}
+            .
+        \end{equation}
+        
+        The corresponding Lie algebra is generated by \(\{e_1, e_2, h_1, h_2, f_1, f_2\}\), subject to the relations that
+        \begin{itemize}
+            \item \(\bracket{h_1}{e_1} = 2e_1\), \(\bracket{h_2}{e_2} = 2e_2\), \(\bracket{h_1}{e_2} = -2e_2\), \(\bracket{h_2}{e_1} = -e_1\);
+            \item \(\bracket{h_1}{f_1} = -2f_1\), \(\bracket{h_2}{f_2} = -2f_2\), \(\bracket{h_1}{f_2} = 2f_2\), \(\bracket{h_2}{f_1} = f_1\);
+            \item \(\bracket{e_1}{f_1} = h_1\), \(\bracket{e_2}{f_2} = h_2\), \(\bracket{e_1}{f_2} = \bracket{e_2}{f_1} = 0\);
+            \item \(\bracket{h_i}{h_j} = 0\) for \(i, j \in \{1, 2\}\);
+            \item \((\ad_{e_1})^{1 - a_{12}}e_2 = (\ad_{e_1})^3e_2 = \bracket{e_1}{\bracket{e_1}{\bracket{e_1}{e_2}}} = 0\), \(\bracket{e_2}{\bracket{e_2}{e_1}} = 0\);
+            \item \(\bracket{f_1}{\bracket{f_1}{\bracket{f_1}{f_2}}} = \bracket{f_2}{\bracket{f_2}{f_1}} = 0\).
+        \end{itemize}
+        This Lie algebra is isomorphic to that of \(\specialOrthogonalLie_5\).
+    \end{exm}
+    
+    Notice that in all of these examples, and more generally by inspecting the relations defining \(\lie{g}\), we always have that \(\{e_i, h_i, f_i\}\) (for fixed \(i\)) generates a copy of \(\specialLinearLie_2\).
+    These copies of \(\specialLinearLie_2\) are such that the \(e_i\)s and \(f_j\)s of distinct copies don't \enquote{interact} (i.e., they commute).
+    The interaction only occurs when \(h_i\)s are involved.
+    The \(h_i\)s themselves form a subalgebra, which is exactly the Cartan subalgebra, which we can see from these relations is always abelian.
+    
+    \subsection{Classification of Cartan Matrices}
+    The final part to classifying all finite-dimensional semisimple Lie algebras over \(\complex\) is to classify all finite-type Cartan matrices.
+    This has been done.
+    The tidiest way to frame this classification is to encode the information of a root system into a labelled graph, and then it turns out that all of the corresponding graphs either fall into one of four families of graphs, or one of five exceptional cases.
+    
+    First, given an \(n \times n\) Cartan matrix, \(A\), or the corresponding root system, \((\Phi, \Pi, \Delta)\), we can construct a labelled graph as follows:
+    \begin{itemize}
+        \item The nodes are the simple roots, \(\alpha_i \in \Delta\);
+        \item Draw \(a_{ij}a_{ji}\) edges between \(\alpha_i\) and \(\alpha_j\) (\(i \ne j\));
+        \item If \(\alpha_i\) is longer than \(\alpha_j\) draw an arrow on the edge pointing towards the shorter root.
+    \end{itemize}
+    The graph that we get is called the \defineindex{Dynkin diagram} of the root system/Cartan matrix.
+    
+    \begin{exm}{}{}
+        Consider \(\dynkin{A}{2}\), this has two simple roots, \(\alpha_1\) and \(\alpha_2\).
+        We have \(a_{12} a_{21} = (-1) (-11) = 1\), and so the corresponding Dynkin diagram is
+        \begin{equation}
+            \tikzsetnextfilename{dynkin-A2}
+            \begin{tikzpicture}
+                \fill (0, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_1}\)};
+                \fill (1, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_2}\)};
+                \draw (0, 0) -- (1, 0);
+            \end{tikzpicture}
+        \end{equation}
+        
+        Now consider \(\dynkin{B}{2}\), this has two simple roots, \(\alpha_1\) and \(\alpha_2\).
+        We have \(a_{12} a_{21} = (-2)(-1) = 2\), and \(\alpha_2\) is longer than \(\alpha_1\), so the corresponding Dynkin diagram is
+        \begin{equation}
+            \tikzsetnextfilename{dynkin-B2}
+            \begin{tikzpicture}
+                \fill (0, 0) circle [radius=0.075cm] node [below] {\(\alpha_1\)};
+                \fill (1, 0) circle [radius=0.075cm] node [below] {\(\alpha_2\)};
+                \draw (0, 0.03) -- ++ (1, 0);
+                \draw (0, -0.03) -- ++ (1, 0);
+                \draw [-{>[length=1.5mm,width=3mm]}, xshift=0.49cm] (0, 0) -- ++ (-0.001, 0);
+            \end{tikzpicture}
+        \end{equation}
+    \end{exm}
+    
+    This process is invertible, since the Dynkin diagram fully encodes the angles between roots and their relative lengths (well, it encodes which is longer, the actual relative length can then be computed by requiring that the Cartan matrix have integral entries).
+    
+    \begin{thm}{Classification of Root Systems}{}
+        Every (finite-type) \(n \times n\) Cartan matrix and its corresponding root system has a Dynkin diagram which is in one of the following infinite families (all with \(n\) vertices),
+        \begin{gather}
+            \tikzsetnextfilename{dynkin-An}
+            \begin{tikzpicture}[font=\small]
+                \node at (-1, 0) {\normalsize\(\dynkin{A}{n}\)};
+                \fill (0, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_1}\)};
+                \fill (1, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_2}\)};
+                \fill (2, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_3}\)};
+                \fill (3, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_4}\)};
+                \draw (0, 0) -- (3, 0);
+                \draw [dashed] (3, 0) -- ++ (1, 0);
+                \fill (4, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_{n-2}}\)};
+                \fill (5, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_{n-1}}\)};
+                \fill (6, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_n}\)};
+                \draw (4, 0) -- (6, 0);
+            \end{tikzpicture}
+            \\
+            \tikzsetnextfilename{dynkin-Bn}
+            \begin{tikzpicture}[font=\small]
+                \node at (-1, 0) {\normalsize\(\dynkin{B}{n}\)};
+                \fill (0, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_1}\)};
+                \fill (1, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_2}\)};
+                \fill (2, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_3}\)};
+                \fill (3, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_4}\)};
+                \draw (0, 0) -- (3, 0);
+                \draw [dashed] (3, 0) -- ++ (1, 0);
+                \fill (4, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_{n-2}}\)};
+                \fill (5, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_{n-1}}\)};
+                \fill (6, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_n}\)};
+                \draw (4, 0) -- (5, 0);
+                \draw (5, 0.03) -- ++ (1, 0); 
+                \draw (5, -0.03) -- ++ (1, 0);
+                \draw [-{>[length=1.5mm,width=3mm]}, xshift=5.52cm] (0, 0) -- ++ (0.001, 0);
+            \end{tikzpicture}
+            \\
+            \tikzsetnextfilename{dynkin-Cn}
+            \begin{tikzpicture}[font=\small]
+                \node at (-1, 0) {\normalsize\(\dynkin{C}{n}\)};
+                \fill (0, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_1}\)};
+                \fill (1, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_2}\)};
+                \fill (2, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_3}\)};
+                \fill (3, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_4}\)};
+                \draw (0, 0) -- (3, 0);
+                \draw [dashed] (3, 0) -- ++ (1, 0);
+                \fill (4, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_{n-2}}\)};
+                \fill (5, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_{n-1}}\)};
+                \fill (6, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_n}\)};
+                \draw (4, 0) -- (5, 0);
+                \draw (5, 0.03) -- ++ (1, 0); 
+                \draw (5, -0.03) -- ++ (1, 0);
+                \draw [-{>[length=1.5mm,width=3mm]}, xshift=5.48cm] (0, 0) -- ++ (-0.001, 0);
+            \end{tikzpicture}
+            \\
+            \tikzsetnextfilename{dynkin-Dn}
+            \begin{tikzpicture}[font=\small]
+                \node at (-1, 0) {\normalsize\(\dynkin{D}{n}\)};
+                \fill (0, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_1}\)};
+                \fill (1, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_2}\)};
+                \fill (2, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_3}\)};
+                \fill (3, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_4}\)};
+                \draw (0, 0) -- (3, 0);
+                \draw [dashed] (3, 0) -- ++ (1, 0);
+                \fill (4, 0) circle [radius=0.075cm] node [below] {\(\alpha\mathrlap{_{n-3}}\)};
+                \fill (5, 0) circle [radius=0.075cm] node [right] {\(\alpha\mathrlap{_{n-2}}\)};
+                \fill[xshift=5cm, shift={(45:1)}] coordinate (A) circle [radius=0.075cm] node [right] {\(\alpha\mathrlap{_{n-1}}\)};
+                \fill[xshift=5cm, shift={(-45:1)}] coordinate (B) circle [radius=0.075cm] node [right] {\(\alpha\mathrlap{_n}\)};
+                \draw (4, 0) -- (5, 0);
+                \draw (5, 0) -- (A);
+                \draw (5, 0) -- (B);
+            \end{tikzpicture}
+        \end{gather}
+        or is one of the following exceptional cases,
+        \begin{gather}
+            \tikzsetnextfilename{dynkin-G2}
+            \begin{tikzpicture}
+                \node at (-1, 0) {\(\dynkin{G}{2}\)};
+                \fill (0, 0) circle [radius=0.075cm];
+                \fill (1, 0) circle [radius=0.075cm];
+                \draw (0, 0) -- (1, 0);
+                \draw (0, -0.03) -- ++ (1, 0);
+                \draw (0, 0.03) -- ++ (1, 0);
+                \draw [-{>[length=1.5mm,width=3mm]}, xshift=0.48cm] (0, 0) -- ++ (-0.001, 0);
+            \end{tikzpicture}
+            \\
+            \tikzsetnextfilename{dynkin-F4}
+            \begin{tikzpicture}
+                \node at (-1, 0) {\(\dynkin{F}{4}\)};
+                \fill (0, 0) circle [radius=0.075cm];
+                \fill (1, 0) circle [radius=0.075cm];
+                \fill (2, 0) circle [radius=0.075cm];
+                \fill (3, 0) circle [radius=0.075cm];
+                \draw (0, 0) -- (1, 0);
+                \draw (1, -0.03) -- ++ (1, 0);
+                \draw (1, 0.03) -- ++ (1, 0);
+                \draw [-{>[length=1.5mm,width=3mm]}, xshift=1.48cm] (0, 0) -- ++ (-0.001, 0);
+                \draw (2, 0) -- (3, 0);
+            \end{tikzpicture}
+            \\
+            \tikzsetnextfilename{dynkin-E6}
+            \begin{tikzpicture}
+                \node at (-1, 0) {\(\dynkin{E}{6}\)};
+                \fill (0, 0) circle [radius=0.075cm];
+                \fill (1, 0) circle [radius=0.075cm];
+                \fill (2, 0) circle [radius=0.075cm];
+                \fill (3, 0) circle [radius=0.075cm];
+                \fill (4, 0) circle [radius=0.075cm];
+                \fill (2, 1) circle [radius=0.075cm];
+                \draw (0, 0) -- (4, 0);
+                \draw (2, 0) -- (2, 1);
+            \end{tikzpicture}
+            \\
+            \tikzsetnextfilename{dynkin-E7}
+            \begin{tikzpicture}
+                \node at (-1, 0) {\(\dynkin{E}{7}\)};
+                \fill (0, 0) circle [radius=0.075cm];
+                \fill (1, 0) circle [radius=0.075cm];
+                \fill (2, 0) circle [radius=0.075cm];
+                \fill (3, 0) circle [radius=0.075cm];
+                \fill (4, 0) circle [radius=0.075cm];
+                \fill (5, 0) circle [radius=0.075cm];
+                \fill (2, 1) circle [radius=0.075cm];
+                \draw (0, 0) -- (5, 0);
+                \draw (2, 0) -- (2, 1);
+            \end{tikzpicture}
+            \\
+            \tikzsetnextfilename{dynkin-E8}
+            \begin{tikzpicture}
+                \node at (-1, 0) {\(\dynkin{E}{8}\)};
+                \fill (0, 0) circle [radius=0.075cm];
+                \fill (1, 0) circle [radius=0.075cm];
+                \fill (2, 0) circle [radius=0.075cm];
+                \fill (3, 0) circle [radius=0.075cm];
+                \fill (4, 0) circle [radius=0.075cm];
+                \fill (5, 0) circle [radius=0.075cm];
+                \fill (6, 0) circle [radius=0.075cm];
+                \fill (2, 1) circle [radius=0.075cm];
+                \draw (0, 0) -- (6, 0);
+                \draw (2, 0) -- (2, 1);
+            \end{tikzpicture}
+        \end{gather}
+    \end{thm}
+    
+    There is much more to be said about Dynkin diagrams and the things that they classify, but this is all we have time for here.
+    
+    \section{Verma Modules}
+    We can use this classification to say something about the representation theory of semisimple Lie algebras over \(\complex\).
+    To start with, when \(\lie{g}\) is defined from a root system in terms of the generators \(e_i\), \(h_i\), and \(f_i\) we can make the following definition.
+    
+    \begin{dfn}{Verma Module}{}
+        Let \(\lie{g}\) be a semisimple Lie algebra over \(\complex\) with Cartan subalgebra \(\lie{h}\), and let \(\lambda \in \lie{h}^*\) be a weight.
+        Let \(I_\lambda \subseteq U(\lie{g})\) be the left ideal generated by the elements \(h - \lambda(h)1\) for \(h \in \lie{h}\) and \(e_i\) for \(i = 1, \dotsc, r\).
+        The \defineindex{Verma module}, \(M_\lambda\), is \(U(\lie{g}) / I_\lambda\).
+    \end{dfn}
+    
+    The idea of this definition is that \(M_\lambda\) is the largest (with respect to inclusion) highest weight representation with highest weight \(\lambda\).
+    Recall that by \enquote{highest weight representation} we mean that \(M_\lambda\) is generated (as a \(U(\lie{g})\)-module) by some highest weight vector, \(v\), which is such that \(h \action v = \lambda(h) v\) and \(e_i \action v = 0\).
+    Thus, \(M_\lambda\) consists of linear combinations of elements of the form \(f_{i_1} \dotsm f_{i_k} \action v\).
+    The only relations imposed amongst these elements are those that are enforced by the commutation relations of the \(f_i\)s.
+    As a consequence \(f_i\) need not act nilpotently, and thus \(M_\lambda\) is infinite dimensional.
+    
+    % Remark 25.8 is an alternative definition of the Verma module, need to define n_+
+    
+    
+    
     % Appdendix
-	\appendixpage
-	\begin{appendices}
-	    \include{appendix/complexification}
-	\end{appendices}
+%	\appendixpage
+%	\begin{appendices}
+%	    \include{appendix/complexification}
+%	\end{appendices}
 
     \backmatter
     \renewcommand{\glossaryname}{Acronyms}
