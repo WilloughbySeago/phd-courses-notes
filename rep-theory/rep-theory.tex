@@ -21,6 +21,8 @@
 \AtEndEnvironment{tikzcd}{\tikzexternalenable}
 
 \usetikzlibrary{arrows.meta}
+\usetikzlibrary{braids}
+\usetikzlibrary{hobby}
 
 \usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes from Representation Theory Course},pdfkeywords={representation theory},pdfsubject={Representation Theory}]{hyperref}  % Should be loaded second last (cleveref last)
 \colorlet{hyperrefcolor}{blue!60!black}
@@ -142,6 +144,7 @@ noabbrev
 \newcommand{\dynkin}[2]{\symrm{#1}_{#2}}
 \newcommand{\purebraid}{\symcal{PB}}
 \newcommand{\braid}{\symcal{B}}
+\DeclareMathOperator{\Homeo}{Homeo}
 
 \includeonly{}%{parts/algebra-reps, parts/group-reps, parts/Sn-reps}
 
@@ -1375,17 +1378,312 @@ noabbrev
     
     
     \chapter{Braids, Knots, and Hecke Algebras}
-    \section{The Braid Group}
+    \section{The Pure Braid Group}
     We start with a technical definition, assuming the reader is familiar with the notion of a braid group, if not maybe skip the definition and look at the pictures.
     
-    \begin{dfn}{Pure Braid Group}{}
+    \begin{dfn}{Pure Braid Group}{def:pure braid group}
         Let \(M_n = \{(z_1, \dotsc, z_n) \in \complex^n \mid z_i \ne z_j \text{ for } i \ne j\}\), which is a topological space as a subspace of \(\complex^n\).
         The \defineindex{pure braid group}, is the fundamental group, \(\purebraid_n = \pi_1(M_n)\).
     \end{dfn}
     
-    % C = plane
-    % M_n = { planes with n points, z_i, picked out }
-    % strands = path of these holes as we deform one of these planes into another (i.e., homotopy?)
+    A pure braid is then a (homotopy class) continuous function \(\beta \colon [0, 1] \to M_n\) with \(\beta(0) = \beta(1)\), given by \(t \mapsto (\beta_1(t), \dotsc, \beta_n(t))\) where the \(\beta_i\) are continuous functions \([0, 1] \to \complex \setminus \{z_1, \dotsc, \widehat{z_i}, \dotsc, z_n\}\) such that at no \(t \in [0, 1]\) do we have \(\beta_i(t) = \beta_j(t)\).
+    
+    Let \(\complex_n\) be the \(n\)-punctured complex plane\footnote{We're treating \(\complex\) as a topological space here, the position of the points doesn't matter, we won't use any algebraic properties of this copy of \(\complex\)}.
+    Then for a pure braid, \(\beta\), fixing some \(t \in [0, 1]\) we can view \(\beta(t)\) as a choice of \(n\) distinct points in \(\complex\).
+    Further, as \(t\) varies these points move around continuously.
+    We can draw the whole path by considering \(t \in [0, 1]\) as a third dimension, and considering the positions traced by these points as time goes from \(0\) to \(1\).
+    By lining up the punctures we can then project this down onto two dimensions, but keeping track of when a path goes over or under another.
+    This gives us the standard picture of a pure braid.
+    For example, \cref{fig:pure braid example} shows an element of \(\purebraid_4\).
+    
+    \begin{figure}
+        \centering
+        \tikzsetnextfilename{pure-braid-example}
+        \begin{tikzpicture}[braid/.cd]
+            \pic [thick] at (0, 0) {
+                braid={s_1-s_3 s_1 s_2 s_2 s_3}
+            };
+        \end{tikzpicture}
+        \caption[An element of the pure braid group]{An element of the pure braid group, \(\purebraid_4\).}
+        \label{fig:pure braid example}
+    \end{figure}
+    
+    The group operation of \(\pi_1(M_n)\) is path concatenation (with rescaling of time so that we still have \(t \in [0, 1]\)).
+    The corresponding operation for pure braids is given by taking \(\beta \beta'\) to be given by concatenating the diagram for \(\beta\) below the diagram for \(\beta'\) (reading the braid from the top down we want to do \(\beta'\) first\footnote{The alternative convention gives us a perfectly well defined group, but to match conventions with the symmetric group we want this order.}).
+    
+    \section{The Braid Group}
+    So far we've restricted our pure braids so that if a strand ends at the same puncture it begins at.
+    The braid group relaxes this condition.
+    
+    Let \(M_n\) be as in \cref{def:pure braid group}.
+    There is an obvious action of \(S_n\) on \(M_n\) given by permuting elements within a tuple, and this defines an equivalence relation on \(M_n\), in which two tuples are equivalent if they are related by permuting elements.
+    Let \(M_n/S_n\) be the quotient of \(M_n\) by this equivalence relation.
+    
+    \begin{dfn}{Braid Group}{}
+        The \defineindex{braid group} is \(\braid_n = \pi_1(M_n/S_n)\).
+    \end{dfn}
+    
+    In terms of the pictures of braids the only difference is that we no longer require that braids start and end at the same point.
+    See \cref{fig:braid example}.
+    The group operation is still concatenation.
+    Notice that by tracking where each strand starts and ends we get a permutation, \(w \in S_n\).
+    It is always possible to write a braid, \(b \colon [0, 1] \to M_n/S_n\), as a composite, \(b = \beta \circ p\), where \(\beta\) is a pure braid and \(w \in S_n\) is a permutation such that \(\beta(1) = w^{-1}(b(0))\).
+    
+    \begin{figure}
+        \centering
+        \tikzsetnextfilename{braid-example}
+        \begin{tikzpicture}[braid/.cd]
+            \pic [thick] at (0, 0) {
+                braid={s_1-s_3 s_1 s_2 s_3 s_3}
+            };
+        \end{tikzpicture}
+        \caption[An element of the braid group]{An element of the braid group, \(\braid_n\). Notice that the strands starting at \(1\), \(2\), \(3\) and \(4\) end at \(1\), \(3\), \(4\), and \(2\) respectively, defining a permutation \(\cycle{2,3,4}\).}
+        \label{fig:braid example}
+    \end{figure}
+    
+    \begin{thm}{[Artin]}{}
+        The braid group has the standard presentation
+        \begin{equation*}
+            \braid_n = \langle \sigma_1, \dotsc, \sigma_{n-1} \mid \sigma_i \sigma_{i + 1} \sigma_i = \sigma_{i + 1} \sigma_i \sigma_{i + 1}, \sigma_i \sigma_j = \sigma_j \sigma_i \text{ for } \abs{i - j} > 1 \rangle.
+        \end{equation*}
+    \end{thm}
+    
+    The relationship
+    \begin{equation}
+        \sigma_i \sigma_{i + 1} \sigma_i = \sigma_{i + 1} \sigma_i \sigma_{i + 1}
+    \end{equation}
+    is called the \defineindex{braid relation}.
+    The identification between this presentation and \(\braid_n\) is pretty simple.
+    For simplicity we'll just look at the \(n = 3\) case, but for other values of \(n\) the pictures generalise in the obvious way.
+    First, the identity, \(e\), is simply leaving all strands fixed:
+    \tikzexternaldisable
+    \begin{equation}
+        e =\ 
+        \tikzsetnextfilename{braid-3-strand-identity} 
+        \begin{tikzpicture}[braid/.cd, baseline=(current bounding box), number of strands=3]
+            \pic [thick] at (0, 0) {
+                braid={1}
+            };
+        \end{tikzpicture}
+        \,.
+    \end{equation}
+    Then \(\sigma_1\) is the braid
+    \begin{equation}
+        \tikzsetnextfilename{braid-3-strand-sigma1}
+        \sigma_1 =\  
+        \begin{tikzpicture}[braid/.cd, baseline=(current bounding box), number of strands=3]
+            \pic [thick] at (0, 0) {
+                braid={s_1}
+            };
+        \end{tikzpicture}
+        \,,
+    \end{equation}
+    and \(\sigma_1^{-1}\) is given by crossing in the other direction:
+    \begin{equation}
+        \sigma_1^{-1} =\  
+        \tikzsetnextfilename{braid-3-strand-sigma1-inverse}
+        \begin{tikzpicture}[braid/.cd, baseline=(current bounding box), number of strands=3]
+            \pic [thick] at (0, 0) {
+                braid={s_1^{-1}}
+            };
+        \end{tikzpicture}
+        \,.
+    \end{equation}
+    This makes sense, since we then have
+    \begin{equation}
+        \sigma_1 \sigma_1^{-1} = 
+        \tikzsetnextfilename{braid-3-strand-sigma1-sigma1-inverse}
+        \begin{tikzpicture}[braid/.cd, baseline=(current bounding box), number of strands=3]
+            \pic [thick] at (0, 0) {
+                braid={s_1 s_1^{-1}}
+            };
+        \end{tikzpicture}
+        \ =\ 
+        \tikzsetnextfilename{braid-3-strand-identity-2}
+        \begin{tikzpicture}[braid/.cd, baseline=(current bounding box), number of strands=3]
+            \pic [thick] at (0, 0) {
+                braid={1 1}
+            };
+        \end{tikzpicture}
+        \ = e.
+    \end{equation}
+    Similarly, we have
+    \begin{equation}
+        \sigma_2 =\  
+        \tikzsetnextfilename{braid-3-strand-sigma2}
+        \begin{tikzpicture}[braid/.cd, baseline=(current bounding box), number of strands=3]
+            \pic [thick] at (0, 0) {
+                braid={s_2}
+            };
+        \end{tikzpicture}
+        \qand \sigma_2^{-1} =\  
+        \tikzsetnextfilename{braid-3-strand-sigma2-inverse}
+        \begin{tikzpicture}[braid/.cd, baseline=(current bounding box), number of strands=3]
+            \pic [thick] at (0, 0) {
+                braid={s_2^{-1}}
+            };
+        \end{tikzpicture}
+        \,.
+    \end{equation}
+    So, \(\sigma_i\) means passing the \(i\)th strand over strand \(i + 1\), and \(\sigma_i^{-1}\) means passing the \(i\)th strand \emph{under} strand \(i + 1\).
+    
+    The braid relation in this case tells us that
+    \begin{equation}
+        \sigma_1 \sigma_2 \sigma_1 = \sigma_2 \sigma_1 \sigma_2,
+    \end{equation}
+    which is just the following picture:
+    \begin{equation}  
+        \tikzsetnextfilename{braid-relation-lhs}
+        \begin{tikzpicture}[braid/.cd, baseline=(current bounding box), number of strands=3]
+            \pic [thick] at (0, 0) {
+                braid={s_1 s_2 s_1}
+            };
+        \end{tikzpicture}
+        \ =\ 
+        \tikzsetnextfilename{braid-relation-rhs}
+        \begin{tikzpicture}[braid/.cd, baseline=(current bounding box), number of strands=3]
+            \pic [thick] at (0, 0) {
+                braid={s_2 s_1 s_2}
+            };
+        \end{tikzpicture}
+        \,.
+    \end{equation}
+    For \(n = 3\) we never have \(\abs{i - j} > 1\), so let's look at \(n = 4\), where this relation simply tells us that \enquote{sufficiently separated} swaps commute:
+    \begin{equation}
+        \tikzsetnextfilename{braid-commuting-swaps-lhs}
+        \begin{tikzpicture}[braid/.cd, baseline=(current bounding box), number of strands=3]
+            \pic [thick] at (0, 0) {
+                braid={s_1 s_3}
+            };
+        \end{tikzpicture}
+        \ =\ 
+        \tikzsetnextfilename{braid-commuting-swaps-lhs}
+        \begin{tikzpicture}[braid/.cd, baseline=(current bounding box), number of strands=3]
+            \pic [thick] at (0, 0) {
+                braid={s_3 s_1}
+            };
+        \end{tikzpicture}
+        .
+    \end{equation}
+    
+    So far, we've just been looking at braids and deciding if they're equal if they intuitively give the same picture after rearranging strands without passing them through each other.
+    This can be made rigorous as follows.
+    
+    First, we define the \define{Reidemeister moves}\index{Reidemeister move} of types II and III.
+    These are \enquote{local} operations on braids, in that we can apply them to any portion of the diagram without changing the rest of the diagram.
+    To represent this we use a dashed circle to \enquote{zoom in} on just a portion of the diagram:
+    The Reidemeister move of type II is
+    \begin{equation}
+        \tikzsetnextfilename{reidemeister-II}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw [dashed] (0, 0) circle [radius=2];
+            \draw [thick, rounded corners=20] (135:2) -- (1, 0) -- (-135:2);
+            \draw [line width=2mm, white, rounded corners=20] (45:2) -- (-1, 0) -- (-45:2);
+            \draw [thick, rounded corners=20] (45:2) -- (-1, 0) -- (-45:2);
+            \node at (2.5, 0) {\(\xleftrightarrow{\symrm{II}}\)};
+            \begin{scope}[xshift=5cm]
+                \draw [dashed] (0, 0) circle [radius=2];
+                \draw [thick, rounded corners=20] (135:2) -- (-0.5, 0) -- (-135:2);
+                \draw [line width=1.5mm, white, rounded corners=20] (45:2) -- (0.5, 0) -- (-45:2);
+                \draw [thick, rounded corners=20] (45:2) -- (0.5, 0) -- (-45:2);
+            \end{scope}
+        \end{tikzpicture}
+        \,.
+    \end{equation}
+    The Reidemeister move of type III is
+    \begin{equation}
+        \tikzsetnextfilename{reidemeister-III}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw [dashed] (0, 0) circle [radius=2];
+            \draw [thick] (pi/12 r:2) -- (14*pi/12 r:2);
+            \draw [line width=1.5mm, white] (7*pi/12 r:2) -- (17*pi/12 r:2);
+            \draw [thick] (7*pi/12 r:2) -- (17*pi/12 r:2);
+            \draw [line width=1.5mm, white] (10*pi/12 r:2) -- (23*pi/12 r:2);
+            \draw [thick] (10*pi/12 r:2) -- (23*pi/12 r:2);
+            \node at (2.5, 0) {\(\xleftrightarrow{\symrm{III}}\)};
+            \begin{scope}[xshift=5cm]
+                \draw [dashed] (0, 0) circle [radius=2];
+                \draw [thick] (13*pi/12 r:2) -- (2*pi/12 r:2);
+                \draw [line width=1.5mm, white] (5*pi/12 r:2) -- (19*pi/12 r:2);
+                \draw [thick] (5*pi/12 r:2) -- (19*pi/12 r:2);
+                \draw [line width=1.5mm, white] (11*pi/12 r:2) -- (22*pi/12 r:2);
+                \draw [thick] (11*pi/12 r:2) -- (22*pi/12 r:2);
+            \end{scope}
+        \end{tikzpicture}
+        \,.
+    \end{equation}
+    These are simply capturing the fact that we want \(\sigma_i^{-1} \sigma_i = e\) and the braid relation.
+    
+    \begin{remark}{}{}
+        The Reidemeister moves first arose in knot theory, in which there is a third Reidemenster move, move number I, which is
+        \begin{equation}
+            \tikzsetnextfilename{reidemeister-I}
+            \begin{tikzpicture}[baseline=(current bounding box)]
+                \draw [dashed] (0, 0) circle [radius=1];
+                \draw [thick, rounded corners] (0, -1) -- ++ (0, 0.75) -- ++ (0.5, 0.5) -- ++ (0, -0.25) coordinate (A);
+                \draw [thick, rounded corners] (A) -- ++ (0, -0.25) -- ++ (-0.5, 0.5) -- ++ (0, 0.75);
+                \draw [line width=1mm, azure(web)(azuremist)!45, rounded corners] (0, -1) -- ++ (0, 0.75) -- ++ (0.5, 0.5) -- ++ (0, -0.25) coordinate (A);
+                \draw [thick, rounded corners] (0, -1) -- ++ (0, 0.75) -- ++ (0.5, 0.5) -- ++ (0, -0.25) coordinate (A);
+                \node at (1.5, 0) {\(\xleftrightarrow{\symrm{I}}\)};
+                \begin{scope}[xshift=3cm]
+                    \draw [dashed] (0, 0) circle [radius=1];
+                    \draw [thick] (0, -1) -- (0, 1);
+                \end{scope}
+            \end{tikzpicture}
+            \,
+        \end{equation}
+        We don't consider this as strands in braids aren't allowed to loop back up.
+    \end{remark}
+    
+    \begin{prp}{}{}
+        Two braids are the same if and only if they are related by an isotopy and a sequence of Reidemeister moves of type II and III.
+    \end{prp}
+    
+    \begin{remark}{}{}
+        In physics a braid describes the adiabatic exchange of indistinguishable quasi particles in two dimensions.
+        This is important in, for example, the fractional quantum Hall effect.
+        This idea has applications to quantum computing.
+        Particles whose exchange is governed by the braid group are called \emph{anyons} (cf.\@ bosons and whose exchange is governed by the trivial and antisymmetric representations of the symmetric group).
+    \end{remark}
+    
+    \begin{remark}{}{}
+        From a geometric view point \(\braid_n\) is the \enquote{mapping class group} of the punctured disc with \(n\) points.
+        We swap the plane to a disc just because it's nicer to work with compact things, and we're not allowing punctures at infinity anyway.
+        
+        The mapping class group is defined as follows.
+        Let \(S\) be a surface, and \(Q \subset S\) a finite set of marked points.
+        Denote by \(\Homeo(S, Q)\) the group of homeomorhpisms of \(S\) which fix \(Q\) as a set and fix the boundary pointwise.
+        That is, \(\varphi \in \Homeo(S, Q)\) is such that for every marked point, \(p\), there is some marked point \(q\) (not necessarily distinct) such that \(\varphi(p) = q\), and for every boundary point, \(x\) we have \(\varphi(x) = x\).
+        The \defineindex{mapping class group} of the marked surface \((S, Q)\) is
+        \begin{equation}
+            \symrm{Mod}(S, Q) = \Homeo^+(S, Q) / \Homeo_0(S, Q)
+        \end{equation}
+        where \(\Homeo^+(S, Q)\) denotes the collection of orientation preserving homeomorphisms in \(\Homeo(S, Q)\), and \(\Homeo_0(S, Q)\) denotes the connected component of \(\Homeo(S, Q)\) containing the identity (in the compact-open topology).
+        
+        This group is also sometimes called the modular group, hence the notation \(\symrm{Mod}(S, Q)\).
+        This is because when we take the torus with no marked points the mapping class group ends up being isomorphic to the modular group, \(\specialLinear_2(\integers)\).
+        
+        When we say that \(\braid_n\) is the mapping class group of the disc with \(n\) punctured points we mean that if \(D\) is this punctured disc and \(Q\) is our set of punctures then there is an isomorphism \(\braid_n \to \symrm{Mod}(D, Q)\) given by \(\sigma_i \mapsto H_i\) where \(\sigma_i\) is a generator of the braid group in the standard presentation and \(H_i\) is the homeomorphism of the \(n\)-punctured disc given by a half twist exchanging the points numbered \(i\) and \(i + 1\).
+        See \cref{fig:half twist of the disc}.
+    \end{remark}
+    
+    \begin{figure}
+        \centering
+        \tikzsetnextfilename{disc-half-twist}
+        \begin{tikzpicture}
+            \draw (0, 0) circle [radius = 2cm];
+            \draw [dashed] (-2, 0) -- ++ (4, 0);
+            \fill [highlight] (-0.5, 0) circle [radius=0.1];
+            \fill [highlight!40] (0.5, 0) circle [radius=0.1];
+            \draw [|->] (2.5, 0) -- ++ (1, 0) node [midway, above] {\(H_i\)};
+            \draw (6, 0) circle [radius = 2cm];
+            \draw [dashed, use Hobby shortcut] (4, 0) .. (6, 1) .. (7, 0.1) .. (6.5, 0) .. (5.5, 0) .. (5, -0.1) .. (6, -1) .. (8, 0);
+            \fill [highlight!40] (5.5, 0) circle [radius=0.1];
+            \fill [highlight] (6.5, 0) circle [radius=0.1];
+        \end{tikzpicture}
+        \caption[Half twist of the disc]{Half twist of the disc exchanging \(i\) and \(i + 1\). The dashed line shows some curve and its image under \(H_i\).}
+        \label{fig:half twist of the disc}
+    \end{figure}
     
     
     
