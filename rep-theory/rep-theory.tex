@@ -23,6 +23,7 @@
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{braids}
 \usetikzlibrary{hobby}
+\usetikzlibrary{calc}
 
 \usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes from Representation Theory Course},pdfkeywords={representation theory},pdfsubject={Representation Theory}]{hyperref}  % Should be loaded second last (cleveref last)
 \colorlet{hyperrefcolor}{blue!60!black}
@@ -2043,8 +2044,484 @@ noabbrev
     \begin{remark}{}{}
         For \(n \le 3\) the Burau representation is faithful (as the above shows in the \(n = 3\) case, the \(n = 2\) case is trivially faithful).
         For \(n \ge 5\) the Burau representation is not faithful.
-        For \(n = 4\) faithfulness is unknown, but it is known that \(\rho_4\) is a faithful representation if the Jones polynomial detects the unknot.
+        For \(n = 4\) faithfulness is unknown, but it is known that \(\rho_4\) is a faithful representation if the Jones polynomial detects the unknot, an open question.
+        See \cref{sec:knots}.
+        
+        An interpretation of the Burau representation, due to Jones, is as follows.
+        Picture a braid, \(b \in \braid_n\) as a bowling alley where each strand becomes a lane.
+        Throw a bowling ball down one lane.
+        Upon crossing over a lane below have the ball fall down to the lower lane with probability \(t\) (so it remains in the upper lane with probability \(1 - t\)).
+        Then the entry in position \((i, j)\) of \(\rho_n(b)\) is the probability that a ball thrown initially down lane \(i\) ends up in lane \(j\).
     \end{remark}
+    
+    For \(n > 2\) the Burau representation is not irreducible, it admits a one-dimensional invariant subspace.
+    Taking the quotient of \(\Lambda^n\) by this invariant subspace we we get the reduced Burau representation, which is irreducible.
+    
+    \begin{prp}{}{}
+        Let \(\Lambda = \integers[t, t^{-1}]\).
+        For \(n\) and integer greater than \(2\) there is a group homomorphism
+        \begin{equation}
+            \tilde{\rho}_n \colon \braid_n \to \generalLinear_{n-1}(\Lambda)
+        \end{equation}
+        given by
+        \begin{align}
+            \tilde{\rho}_n(b_1) &= 
+            \begin{pmatrix}
+                -t & 0 & 0\\
+                1 & 1 & 0\\
+                0 & 0 & I_{n-3}
+            \end{pmatrix}
+            ,\\
+            \tilde{\rho}_n(b_i) &=
+            \begin{pmatrix}
+                I_{i-2} & 0 & 0 & 0 & 0\\
+                0 & 1 & t & 0 & 0\\
+                0 & 0 & -t & 0 & 0\\
+                0 & 0 & 1 & 1 & 0\\
+                0 & 0 & 0 & 0 & I_{n-i-2}
+            \end{pmatrix}
+            \\
+            \tilde{\rho}_n(b_{n-1}) &= 
+            \begin{pmatrix}
+                I_{n-3} & 0 & 0\\
+                0 & 1 & t\\
+                0 & 0 & -t
+            \end{pmatrix} 
+        \end{align}
+        where \(2 \le i \le n - 2\).
+        This representation of \(\braid_n\) is called the \defineindex{reduced Burau representation}\index{Burau representation!reduced}.
+    \end{prp}
+    
+    \begin{lma}{}{}
+        Let \(C\) be the \(n \times n\) matrix
+        \begin{equation}
+            C =
+            \begin{pmatrix}
+                1 & 1 & 1 & \dots & 1\\
+                0 & 1 & 1 & \dots & 1\\
+                0 & 0 & 1 & \dots & 1\\
+                \vdots & \vdots & \vdots & \ddots & \vdots\\
+                0 & 0 & 0 & \dots & 1
+            \end{pmatrix}
+            .
+        \end{equation}
+        Then
+        \begin{equation}
+            C^{-1} \rho_n(b_i)C = 
+            \begin{pmatrix}
+                \tilde{\rho}_n(b_i) & 0\\
+                X_i & 1
+            \end{pmatrix}
+        \end{equation}
+        where \(X_i\) is the row of length \(n - 1\) which is \((0, \dotsc, 0)\) if \(i \ne n - 1\) and \((0, \dotsc, 0, 1)\) for \(i = n - 1\).
+    \end{lma}
+    
+    \section{Knots}
+    \label{sec:knots}
+    \begin{dfn}{Knot}{}
+        A \defineindex{knot} is an embedding of \(S^1\) in \(\reals^3\), considered up to ambient isotopy.
+        A \defineindex{link} is an embedding of \(\bigsqcup_{k=1}^n S^1\), up to ambient isotopy.
+    \end{dfn}
+    
+    We draw knots as their projection onto the plane.
+    The simplest case is the unknot which \emph{can}\footnote{It's possible also to draw it with crossings.} be drawn with no crossings, in which case it just looks like what we would normally think of as a circle.
+    A knot or link is oriented if we assign an orientation to each copy of \(S^1\).
+    Similarly, any braid can be oriented by declaring that all strands are oriented downwards.
+    
+    Given a braid, \(b\), its closure is given by joining the strand starting at position \(i\) to the strand ending at position \(i\) without introducing any new crossings.
+    The result is a link.
+    This is shown in \cref{fig:closure of a braid}.
+    
+    \begin{figure}
+        \centering
+        \tikzsetnextfilename{closing-a-braid}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \node [minimum width=3.2cm, minimum height=2cm, draw] (b) at (0, 0) {\(b\)};
+            \draw [thick] ($(b.north) + (-1, 0)$) -- ++ (0, 1);
+            \draw [thick] ($(b.north) + (-0.5, 0)$) -- ++ (0, 1);
+            \node at ($(b.north) + (0, 0.5)$) {\(\dots\)};
+            \draw [thick] ($(b.north) + (1, 0)$) -- ++ (0, 1);
+            \draw [thick] ($(b.north) + (0.5, 0)$) -- ++ (0, 1);
+            \draw [thick] ($(b.south) + (-1, 0)$) -- ++ (0, -1);
+            \draw [thick] ($(b.south) + (-0.5, 0)$) -- ++ (0, -1);
+            \node at ($(b.south) + (0, -0.5)$) {\(\dots\)};
+            \draw [thick] ($(b.south) + (1, 0)$) -- ++ (0, -1);
+            \draw [thick] ($(b.south) + (0.5, 0)$) -- ++ (0, -1);
+            \draw [|->] (1.75, 0) -- ++ (2.5, 0) node [midway, above] {Closure};
+            \begin{scope}[xshift=6cm]
+                \node [minimum width=3.2cm, minimum height=2cm, draw] (b) at (0, 0) {\(b\)};
+                \draw [thick] ($(b.north) + (-1, 0)$) -- ++ (0, 1) arc (180:0:2.5) -- ++ (0, -4) arc (0:-180:2.5);
+                \draw [thick] ($(b.north) + (-0.5, 0)$) -- ++ (0, 1) arc (180:0:2) -- ++ (0, -4) arc (0:-180:2);
+                \node at ($(b.north) + (0, 0.5)$) {\(\dots\)};
+                \draw [thick] ($(b.north) + (1, 0)$) -- ++ (0, 1) arc (180:0:0.5) -- ++ (0, -4) arc (0:-180:0.5);
+                \draw [thick] ($(b.north) + (0.5, 0)$) -- ++ (0, 1) arc (180:0:1) -- ++ (0, -4) arc (0:-180:1);
+                \draw [thick] ($(b.south) + (-1, 0)$) -- ++ (0, -1);
+                \draw [thick] ($(b.south) + (-0.5, 0)$) -- ++ (0, -1);
+                \node at ($(b.south) + (0, -0.5)$) {\(\dots\)};
+                \draw [thick] ($(b.south) + (1, 0)$) -- ++ (0, -1);
+                \draw [thick] ($(b.south) + (0.5, 0)$) -- ++ (0, -1);
+                \node at (3, 1.5) {\(\dots\)};
+                \node at (3, -1.5) {\(\dots\)};
+            \end{scope}
+        \end{tikzpicture}
+        \caption{The closure of a braid, \(b\), to produce a link.}
+        \label{fig:closure of a braid}
+    \end{figure}
+    
+    For example, in \(\braid_2\) the closure of \(\sigma_1\) is the unknot,
+    \begin{equation}
+        \tikzsetnextfilename{braid-closure-of-sigma-1}
+        \begin{tikzpicture}[braid/.cd, baseline=(current bounding box)]
+            \pic [thick] (a) {
+                braid={s_1}
+            };
+            \draw [thick] (a-1-s) arc (180:0:1) coordinate (b) -- (b |- a-1-e) arc (0:-180:1);
+            \draw [thick] (a-2-s) arc (180:0:0.3) coordinate (b) -- (b |- a-1-e) arc (0:-180:0.3);
+            \node (equal) at ($(a-1-s)!0.5!(a-1-e) + (2, 0)$) {\(=\)};
+            \draw [thick] ($(equal) + (2, 0)$) circle [radius=1.5];
+        \end{tikzpicture}
+        \,,
+    \end{equation}
+    the closure of \(\sigma_1\sigma_1^{-1} = e\) is the two component unlink,
+    \begin{equation}
+        \tikzsetnextfilename{braid-closure-of-identity}
+        \begin{tikzpicture}[braid/.cd, baseline=(current bounding box), number of strands=2]
+            \pic [thick] (a) {
+                braid={s_1 s_1^{-1}}
+            };
+            \draw [thick] (a-1-s) arc (180:0:1) coordinate (b) -- (b |- a-1-e) arc (0:-180:1);
+            \draw [thick] (a-2-s) arc (180:0:0.3) coordinate (b) -- (b |- a-1-e) arc (0:-180:0.3);
+            \node (equal) at ($(a-1-s)!0.5!(a-1-e) + (2.5, 0)$) {\(=\)};
+            \draw [thick] ($(a-1-s) + (3, 0)$) -- ($(a-1-e) + (3, 0)$) arc (-180:0:1) coordinate (c) -- (c |- a-1-s) arc (0:180:1);
+            \draw [thick] ($(a-2-s) + (3, 0)$) -- ($(a-2-e) + (3, 0)$) arc (-180:0:0.3) coordinate (c) -- (c |- a-2-s) arc (0:180:0.3);
+            \draw [thick] ($(a-1-s) + (4, 0)$) -- ($(a-1-e) + (4, 0)$);
+            \node (equal2) at ($(a-1-s)!0.5!(a-1-e) + (5.5, 0)$) {\(=\)};
+            \draw [thick] ($(equal2) + (1.5, 0)$) circle [radius=1];
+            \draw [thick] ($(equal2) + (4, 0)$) circle [radius=1];
+        \end{tikzpicture}
+        \,,
+    \end{equation}
+    and the closure of \(\sigma_1^2\) is the \defineindex{Hopf link},
+    \begin{equation}
+        \tikzsetnextfilename{braid-closure-of-sigma1-squared}
+        \begin{tikzpicture}[braid/.cd, baseline=(current bounding box), number of strands=2]
+            \pic [thick] (a) {
+                braid={s_1 s_1}
+            };
+            \draw [thick] (a-1-s) arc (180:0:1) coordinate (b) -- (b |- a-1-e) arc (0:-180:1);
+            \draw [thick] (a-2-s) arc (180:0:0.3) coordinate (b) -- (b |- a-1-e) arc (0:-180:0.3);
+            \node (equal) at ($(a-1-s)!0.5!(a-1-e) + (2.5, 0)$) {\(=\)};
+            \begin{scope}[shift={($(equal) + (1.5, 0)$)}]
+                \draw [thick] (35:1) arc (35:385:1);
+                \draw [xshift=1.732cm, thick] (205:1) arc (205:-145:1);
+            \end{scope}
+        \end{tikzpicture}
+        .
+    \end{equation}    
+    
+    \begin{thm}{Alexander}{}
+        Any oriented link can be obtained as the closure of an oriented braid.
+    \end{thm}
+    
+    Note that there will be many braids which close to give the same link.
+    Thus, there generally multiple ways to take a link and cut it resulting in different braids with the same closure.
+    
+    In order to consider all links at once it is not sufficient to consider \(\braid_n\) for some fixed number of strands, \(n\).
+    Instead we can define the \defineindex{infinite braid group} to be the direct limit
+    \begin{equation}
+        \braid_{\infty} \coloneq \varinjlim_n \braid_n,
+    \end{equation}
+    of the directed system given by the obvious inclusions \(\iota \colon \braid_n \to \braid_{n+1}\), adding a strand on the right which doesn't cross any of the \(n-1\) original strands.
+    The resulting group can then be thought of as the braid group on an infinite number of strands.
+    The way to reason about this is to only consider braids in which a finite number of strands are actually crossing, in which case we can just consider \(\braid_n\) with \(n\) chosen to be sufficiently large\footnote{cf.\@ any element of the ring of symmetric functions can, despite having infinitely many variables, be considered as a polynomial in \enquote{sufficiently many} variables.}.
+    
+    \begin{dfn}{Markov Moves}{}
+        The \defineindex{Markov moves} are certain replacement rules in \(\braid_{\infty}\) which come in two types.
+        Consider \(a\) and \(b\) to be elements of \(\braid_{\infty}\), and in particular, suppose that \(b\) has no crossings after string \(n-1\), so can be viewed as an element of \(\braid_n\).
+        Type I, conjugation, allows us to replace \(ab\) with \(ba\).
+        Type II comes in two subtypes, stabilisation, we can replace \(b\) with \(\iota(b)b_n\) and destabilisation, we can replace \(b\) with \(\iota(b)b_n^{-1}\) where the subscript \(n\) denotes that we start the braid \(b_n\) at strand \(n\).
+    \end{dfn}
+    
+    The ultimate goal of much of knot theory is to compute knot invariants which allow us to distinguish different knots.
+    By \enquote{invariants} we mean objects (booleans, numbers, polynomials, vector spaces, etc.) which don't change with an ambient isotopy of the knot, so are the same however we draw the knot.
+    By \enquote{distinguish} we mean that these values differ between different knots.
+    
+    Some knot invariants successfully distinguish all knots, for example the complement of a knot (viewed as a topological space) is a \enquote{complete invariant}.
+    Unfortunately, these complete invariants tend to be hard to compute.
+    Many more knot invariants fail to distinguish between many distinct knots.
+    For example, whether a knot is 3-colourable\footnote{A knot is 3-colourable if each strand of the knot diagram (considering a strand passing under another to be a break in the strand) such that at least two colours are used and at each crossing all three strands are either the same colour or different colours} is an invariant, but only separates knots into one of two classes.
+    This is still useful though, it distinguishes the unknot (not 3-colourable) from the trefoil (3-colourable).
+    
+    Perhaps the most celebrated knots invariants are polynomial invariants.
+    The first of these discovered is the Alexander polynomial.
+    Conway later showed that a slightly different form of this polynomial admits a description in terms of skein relations.
+    Later more knot polynomials, such as the Jones and HOMFLYPT polynomials were found.
+    These all have deep connections to representation theory.
+    For example, the Jones polynomial can be understood through representations of the quantum group \(U_q(\specialLinearLie_2)\).
+    
+    \begin{dfn}{Alexander--Conway Polynomial}{}
+        Let \(L\) be an oriented link, and let \(b \in \braid_n\) be such that the closure of \(b\) is \(L\).
+        Let \(t = q^2\)
+        Then the \defineindex{Alexander--Conway polynomial} of \(L\) is the element of \(\integers[t^{\pm 1/2}] = \integers[q^{\pm}]\) given by
+        \begin{equation}
+            \nabla(L) \coloneq (-1)^{n+1} q^{\deg b} \frac{q - q^{-1}}{q^n - q^{-n}} \det(\tilde{\rho}_n(b) - I_{n-1}).
+        \end{equation}
+    \end{dfn}
+    
+    Note that
+    \begin{equation}
+        [n]_q = \frac{q^n - q^{-n}}{q - q^{-1}}
+    \end{equation}
+    is the \define{\(\symbf{q}\)-analogue}\index{q-analogue@\(q\)-analogue} \(n\), so there's already some relation to quantum groups occurring here.
+    
+    \begin{thm}{}{}
+        The Alexander--Conway polynomial is uniquely determined on oriented links, \(L\), by the following:
+        \begin{enumerate}
+            \item \(\nabla(\text{unknot}) = 1\) for either choice of orientation;
+            \item \(\nabla(L_+) - \nabla(L_-) = (q^{-1} - q)\nabla(L_0)\), known as the \defineindex{skein relation}.
+            Here \(L_+\), \(L_-\), and \(L_0\) are a Conway triple of links which differ only locally by the following:
+            \begin{equation}
+                \tikzsetnextfilename{skein}
+                \begin{tikzpicture}[baseline=(current bounding box), scale=0.6]
+                    \node at (-2.75, 0) {\(L_+\):};
+                    \draw [dashed] (0, 0) circle [radius=2];
+                    \draw [thick, ->] (135:2) -- (-45:2);
+                    \draw [line width=1.5mm, black!5] (45:2) -- (-135:2);
+                    \draw [thick, ->] (45:2) -- (-135:2);
+                    
+                    \begin{scope}[xshift=6cm]
+                        \node at (-2.75, 0) {\(L_+\):};
+                        \draw [thick, ->] (135:2) -- (-45:2);
+                        \draw [line width=1.5mm, black!5] (45:2) -- (-135:2);
+                        \draw [thick, ->] (45:2) -- (-135:2);
+                        \draw [dashed] (0, 0) circle [radius=2];
+                    \end{scope}
+                    
+                    \begin{scope}[xshift=12cm]
+                        \node at (-2.75, 0) {\(L_0\):};
+                        \draw [dashed] (0, 0) circle [radius=2];
+                        \draw [thick, rounded corners=20, ->] (135:2) -- (-0.5, 0) -- (-135:2);
+                        \draw [thick, rounded corners=20, ->] (45:2) -- (0.5, 0) -- (-45:2);
+                    \end{scope}
+                \end{tikzpicture}
+            \end{equation}
+            Outside of the circle these links will be the same.
+        \end{enumerate}
+    \end{thm}
+    
+    The Skein relation gives a way to compute the Alexander--Conway polynomial.
+    It will always be possible to use the skein relation to manipulate the polynomial into a combination of polynomials of links for which the Alexander--Conway polynomial is known.
+    For example, starting with the two component unlink we can we can perform the following calculation:
+    \begin{align}
+        \nabla \left(
+        \tikzsetnextfilename{alexander-conway-2-link}
+        \begin{tikzpicture}[baseline=-0.1cm]
+            \draw [thick] (0, 0) circle [radius=0.25];
+            \draw [thick] (0.7, 0) circle [radius=0.25];
+            \draw [thick, highlight] (45:0.25) arc (45:-45:0.25);
+            \draw [thick, highlight, xshift=0.7cm] (135:0.25) arc (135:215:0.25);
+            \draw [->] (-0.25, 0.05) -- ++ (0, 0.01);
+            \draw [->] (0.95, 0.05) -- ++ (0, 0.01);
+        \end{tikzpicture}
+        \right) &= \frac{1}{q^{-1} - q} \left[ \nabla \left(
+        \tikzsetnextfilename{alexander-conway-figure-8-1}
+        \begin{tikzpicture}[baseline=-0.1cm]
+            \draw [thick, highlight] (135:0.25) -- ++ (-45:0.5);
+            \draw [line width=1.5mm, white] (45:0.25) -- ++ (-135:0.5);
+            \draw [thick, highlight] (45:0.25) -- ++ (-135:0.5);
+            \draw [thick] (135:0.25) arc (45:325:0.25);
+            \draw [thick] (45:0.25) arc (135:-135:0.25);
+            \draw [->] (-0.6, 0.05) -- ++ (0, 0.01);
+            \draw [->] (0.6, 0.05) -- ++ (0, 0.01);
+        \end{tikzpicture}
+        \right) - \nabla \left(
+        \tikzsetnextfilename{alexander-conway-figure-8-2}
+        \begin{tikzpicture}[baseline=-0.1cm]
+            \draw [thick, highlight] (45:0.25) -- ++ (-135:0.5);
+            \draw [line width=1.5mm, white] (135:0.25) -- ++ (-45:0.5);
+            \draw [thick, highlight] (135:0.25) -- ++ (-45:0.5);
+            \draw [thick] (135:0.25) arc (45:325:0.25);
+            \draw [thick] (45:0.25) arc (135:-135:0.25);
+            \draw [->] (-0.6, 0.05) -- ++ (0, 0.01);
+            \draw [->] (0.6, 0.05) -- ++ (0, 0.01);
+        \end{tikzpicture}
+        \right)\right]\\
+        &= \frac{1}{q^{-1} - q} \left[
+        \nabla \left(
+        \tikzsetnextfilename{alexander-conway-unknot-1}
+        \begin{tikzpicture}[baseline=-0.1cm]
+            \draw [thick] (0, 0) circle [radius=0.25];
+            \draw [->] (-0.25, 0.05) -- ++ (0, 0.01);
+            \draw [->] (0.25, -0.05) -- ++ (0, -0.01);
+        \end{tikzpicture}
+        \right)
+        - \nabla \left(
+        \tikzsetnextfilename{alexander-conway-unknot-2}
+        \begin{tikzpicture}[baseline=-0.1cm]
+            \draw [thick] (0, 0) circle [radius=0.25];
+            \draw [->] (-0.25, 0.05) -- ++ (0, 0.01);
+            \draw [->] (0.25, -0.05) -- ++ (0, -0.01);
+        \end{tikzpicture}
+        \right)
+        \right]\\
+        &= 0.
+    \end{align}
+    We can then use this result to compute the Alexander--Conway polynomial of the Hopf link:
+    \begin{align}
+        \nabla \left(
+        \tikzsetnextfilename{alexander-conway-hopf-link}
+        \begin{tikzpicture}[baseline=-0.1cm]
+            \draw [thick] (40:0.25) arc (40:380:0.25);
+            \draw [xshift=1.732*0.25cm, thick] (200:0.25) arc (200:-140:0.25);
+            \draw [thick, highlight] (40:0.25) arc (40:60:0.25);
+            \draw [thick, highlight] (380:0.25) arc (380:360:0.25);
+            \draw [xshift=1.732*0.25cm, thick, highlight] (120:0.25) arc (120:180:0.25);
+            \draw [->] (-0.25, 0.05) -- ++ (0, 0.01);
+            \draw [->] (0.25+1.732*0.25, 0.05) -- ++ (0, 0.01);
+        \end{tikzpicture}
+        \right) &=
+        \nabla \left(
+        \tikzsetnextfilename{alexander-conway-2-link-2}
+        \begin{tikzpicture}[baseline=-0.1cm]
+            \draw [thick, xshift=1.732*0.25cm] (0, 0) circle [radius=0.25];
+            \draw [xshift=1.732*0.25cm, thick, highlight] (120:0.25) arc (120:180:0.25);
+            \draw [line width=0.8mm, white] (0, 0) circle [radius=0.25];
+            \draw [thick] (0, 0) circle [radius=0.25];
+            \draw [->] (-0.25, 0.05) -- ++ (0, 0.01);
+            \draw [->] (0.25+1.732*0.25, 0.05) -- ++ (0, 0.01);
+            \draw [thick, highlight] (60:0.25) arc (60:0:0.25);
+        \end{tikzpicture}
+        \right) + (q^{-1} - q) \nabla \left(
+        \tikzsetnextfilename{alexander-conway-unknot-twist}
+        \begin{tikzpicture}[baseline=0.12cm]
+            \draw [thick, rounded corners=1] ({0.1 + 0.2*sqrt(2)/2}, 0) -- ++ (-0.05, 0) -- ++ (135:0.2) -- ++ (-0.05, 0) coordinate (a1);
+            \draw [line width=1mm, rounded corners=1, white] (0, 0) -- ++ (0.05, 0) -- ++ (45:0.2) -- ++ (0.05, 0);
+            \draw [thick, rounded corners=1] (0, 0) -- ++ (0.05, 0) -- ++ (45:0.2) -- ++ (0.05, 0) coordinate (b1);
+            \draw [thick] (a1) arc (270:90:0.05) coordinate (a2) arc (-90:90:0.1) arc (90:270:0.22);
+            \draw [thick] (b1) arc (-90:90:0.05) coordinate (b2) arc (270:90:0.1) arc (90:-90:0.22);
+            \draw [thick, highlight] (a2) arc (-90:90:0.1);
+            \draw [thick, highlight] (b2) arc (270:90:0.1);
+            \draw [->] (-0.22, 0.22) -- ++ (0, 0.01);
+            \draw [->] (0.46, 0.22) -- ++ (0, 0.01);
+        \end{tikzpicture}
+        \right)\\
+        &= \underbrace{\nabla \left(
+            \tikzsetnextfilename{alexander-conway-2-link-3}
+            \begin{tikzpicture}[baseline=-0.1cm]
+                \draw [thick] (0, 0) circle [radius=0.25];
+                \draw [thick] (0.7, 0) circle [radius=0.25];
+                \draw [thick, highlight] (45:0.25) arc (45:-45:0.25);
+                \draw [thick, highlight, xshift=0.7cm] (135:0.25) arc (135:215:0.25);
+                \draw [->] (-0.25, 0.05) -- ++ (0, 0.01);
+                \draw [->] (0.95, 0.05) -- ++ (0, 0.01);
+            \end{tikzpicture}
+            \right)}_{=0}
+        + (q^{-1} - q) \underbrace{ \nabla \left(
+            \tikzsetnextfilename{alexander-conway-unknot-4}
+            \begin{tikzpicture}[baseline=-0.1cm]
+                \draw [thick] (0, 0) circle [radius=0.25];
+                \draw [->] (-0.25, 0.05) -- ++ (0, 0.01);
+                \draw [->] (0.25, -0.05) -- ++ (0, -0.01);
+            \end{tikzpicture}
+            \right)}_{=1}\\
+        &= q^{-1} - q.
+    \end{align}
+    
+    \section{Iwahori--Hecke Algebra}
+    In this section we define the Iwahori--Hecke algebra (often just called the Hecke algebra).
+    Recall that a given root system, \(\Phi\), has a corresponding Euclidean space, \(E = \Span_{\reals}\Phi\).
+    The \defineindex{Weyl group} of this root system, \(W\), is the subgroup of \(\orthogonal(E)\) generated by reflections in the hyperplanes orthogonal to the roots, that is, \(W\) is generated by the \(s_\alpha\).
+    Weyl groups are Coxeter groups, but not every Coxeter group is a Weyl group.
+    In fact, because root systems are classified by Dynkin diagrams so are Weyl groups, so there are Weyl groups of types \(\dynkin{A}{n}\), \(\dynkin{B}{n}\), \(\dynkin{C}{n}\), \(\dynkin{D}{n}\), \(\dynkin{E}{6}\), \(\dynkin{E}{7}\), \(\dynkin{E}{8}\), \(\dynkin{G}{2}\), and \(\dynkin{F}{4}\).
+    
+    It is possible to define the Iwahori--Hecke algebra for a general Weyl group, but we will only define it for the type \(\dynkin{A}{n}\) case.
+    
+    \begin{dfn}{}{}
+        The type \(\dynkin{A}{n}\) \defineindex{Iwahori--Hecke algebra}, \(H_n\), is the unital associative \(\rationals(q)\)-algebra with generators \(T_1, \dotsc, T_{n-1}\) and relations
+        \begin{enumerate}
+            \item \(T_iT_{i+1}T_i = T_{i+1}T_iT_{i+1}\);
+            \item \(T_iT_j = T_jT_i\) for \(\abs{i - j} \ge 2\);
+            \item \((T_i - q)(T_i + q^{-1}) = 0\).
+        \end{enumerate}
+    \end{dfn}
+    
+    \begin{wrn}
+        Conventions vary quite a lot here, for example, it's common to swap \(q\) and \(q^{-1}\), and other authors use \(q^{1/2}\) instead of \(q\).
+    \end{wrn}
+    
+    \begin{remark}{}{}
+        We have chosen to make the definition here over the field \(\rationals(q)\).
+        This is the field of rational functions\footnote{that is, \(f \in \rationals(q)\) is a ratio \(f(q) = g(q)/h(q)\) with polynomials \(g(q), h(q) \in \rationals[q]\) and \(h(q)\) not identically zero.} in \(q\) with coefficients in \(\rationals\).
+        It is entirely possible to make the same definition with \(\complex(q)\) instead.
+        It is also common to make this definition over \(\rationals\) (or \(\complex\)) and just think of \(q\) as being a chosen value of \(\rationals\) (or \(\complex\)).
+        This has the advantage of being slightly less notation, but there are some subtleties that creep in, mostly about when certain denominators vanish.
+        We can recover this version by simply picking a value of \(q\) at which to evaluate our rational functions.
+    \end{remark}
+    
+    Notice that the first and second relations are shared by the braid group, so we can define \(H_n\) as the quotient
+    \begin{equation}
+        H_n = \rationals(q)\braid_n / \langle (T_i - q)(T_i + q^{-1}) \rangle
+    \end{equation}
+    where \(\rationals(q)\braid_n\) is the group algebra of \(\braid_n\) over the field \(\rationals(q)\).
+    
+    Rearranging the third relation we get
+    \begin{equation}
+        1 = T_i(T_i - q + q^{-1}).
+    \end{equation}
+    This means that \(T_i^{-1}\) exists, and is equal to \(T_i + q - q^{-1}\).
+    Note that whenever we write \(q\) we're really thinking of it as \(q1\) where \(1\) is the unit of \(H_n\).
+    We then have the relation
+    \begin{equation}
+        T_i - T_i^{-1} = (q - q^{-1}) 1.
+    \end{equation}
+    This can be understood as being the skein relation
+    \begin{equation}
+        \tikzsetnextfilename{hecke-skein}
+        \begin{tikzpicture}[baseline=(current bounding box)]
+            \draw [thick, ->] (0, 1) -- (1, 0);
+            \draw [line width=1.5mm, white] (1, 1) -- (0, 0);
+            \draw [thick, ->] (1, 1) -- (0, 0);
+            \node at (1.4, 0.5) {\(-\)};
+            \begin{scope}[xshift=1.8cm]
+                \draw [thick, ->] (1, 1) -- (0, 0);
+                \draw [line width=1.5mm, white] (0, 1) -- (1, 0);
+                \draw [thick, ->] (0, 1) -- (1, 0);
+                \node [right] at (1.1, 0.5) {\({}= (q - q^{-1})\)};
+            \end{scope}
+            \begin{scope}[xshift=5cm]
+                \draw [thick, rounded corners=10] (0, 1) -- (0.4, 0.5) -- (0, 0);
+                \draw [thick, rounded corners=10] (1, 1) -- (0.6, 0.5) -- (1, 0);
+                \draw [thick, ->] (0, 0) -- ++ (-0.01, -0.01);
+                \draw [thick, ->] (1, 0) -- ++ (0.01, -0.01);
+            \end{scope}
+        \end{tikzpicture}
+    \end{equation}
+    using the obvious notation for the generators \(T_i\) and identity inherited from \(\braid_n\) in the quotient.
+    
+    Let \(H_n^{\times}\) be the group of units of \(H_n\).
+    Note that \(H_n^{\times}\) is more complicated than \(H_n \setminus 0\), since we also have to account for inverses of sums of generators, as well as products of generators (any product of generators having an inverse as each generator has a multiplicative inverse).
+    This map is injective exactly when the Burau representation is, that is for \(n = 3\), not for \(n \ge 5\), and it's an open problem for \(n = 4\).
+    
+    The idea motivating the definition of \(H_n\) is that if we \enquote{set \(q = 1\)} we recover\footnote{Here \(S_n\) is playing the role of the Weyl group of type \(\dynkin{A}{n}\).} \(S_n\).
+    More formally, we have
+    \begin{equation}
+        H_n / \langle q - 1 \rangle \isomorphic \rationals S_n
+    \end{equation}
+    with the isomorphism simply being \(T_i \mapsto s_i\).
+    Thus, we can interpret \(H_n\) as a \define{\(\symbf{q}\)-deformation}\index{deformation}\index{q-deformation@\(q\)-deformation} of \(S_n\) (or rather its group algebra).
+    
+    Much of the representation theory of \(S_n\) lifts to \(H_n\).
+    The Hecke algebra also has the advantage that certain results in representation theory actually end up being easier to view in \(H_n\), and then remain true after setting \(q = 1\).
+    
+    This idea is very similar to that of the quantum group, \(U_q(\specialLinearLie_n)\), and indeed the Schur--Weyl duality of the commuting actions \(\specialLinearLie_n \curvearrowright V^{\otimes r} \curvearrowleft S_r\) lifts to a quantum version, \(U_q(\specialLinearLie_n) \curvearrowright V^{\otimes r} \curvearrowleft H_r\).
+    
+    \begin{prp}{}{}
+        Let \(w = s_{i_1} \dotsc s_{i_r}\) be a reduced expression for \(w \in S_n\), and let \(T_w = T_{i_1} \dotsm T_{i_r}\).
+        Then \(\{T_w \mid w \in S_n\}\) is a basis of \(H_n\).
+    \end{prp}
+    
+    We won't prove this result, but the key step is to show that for any two reduced expressions of \(w\) the resulting \(T_w\) is the same.
+    The proof of this part uses the skein relation to turn one expression into the other.
     
     % Appdendix
 %	\appendixpage
