@@ -1952,7 +1952,7 @@ This is simply saying that every complex matrix can be written as a sum of a ske
         The details of this are beyond the scope of this course, needing the notion of a Haar measure.
         The idea is the same as that of \cref{thm:unitary trick}, we can make any representation of \(\generalLinear_m\) unitary by defining a new inner product on \(V\) by
         \begin{equation}
-            (v, w) = \int_{\unitary_m} \innerprod{g}{g} \dd{\mu(g)}
+            (v, w) = \int_{\unitary_m} \innerprod{gv}{gw} \dd{\mu(g)}
         \end{equation}
         where \(\mu\) is the Haar measure.
     \end{proof}
@@ -2096,7 +2096,7 @@ The \(5\) box Young diagrams with at most 2 rows are
     \,.
 \end{equation}
 Of these, the first cannot be achieved by adding boxes to \(\mu = (2, 1)\), the other two can, with the added boxes highlighted above.
-Note that no column contains more than one highlighted box, and thus both are given by adding a horizontal strip to \(\mu = (2, 1)\), and thus \(\lambda \setminus \mu\) is always a horizontal strip.
+Note that no column contains more than one highlighted box, and therefore both are given by adding a horizontal strip to \(\mu = (2, 1)\), so \(\lambda \setminus \mu\) is always a horizontal strip.
 Thus, if the result above holds we should have
 \ytableausetup{boxsize=0.5em}
 \begin{equation}
@@ -2144,7 +2144,7 @@ One can then check that
 For example, the following code does this in Mathematica.
 
 \begin{cde}{}{}
-    \begin{lstlisting}[gobble=12, language=Mathematica, mathescape]
+    \begin{lstlisting}[gobble=8, language=Mathematica, mathescape]
         SchurS = ResourceFunction["SchurS"];
         Module[{h, s, vars}
         vars = {x$_1$, x$_2$, x$_3$, x$_4$, x$_5$};
