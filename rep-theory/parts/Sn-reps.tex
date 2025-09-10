@@ -1004,7 +1004,7 @@ We also have that
 
 Writing \(\semistandardYoungTableaux(\lambda, \mu)\) for the set of semistandard Young tableaux of shape \(\lambda\) and weight \(\mu\) we have that
 \begin{equation}
-    K_{\lambda\mu} = \abs{\semistandardYoungTableaux}(\lambda, \mu).
+    K_{\lambda\mu} = \abs{\semistandardYoungTableaux(\lambda, \mu)}.
 \end{equation}
 
 \begin{exm}{}{}
@@ -1290,7 +1290,7 @@ For \(w \in S_n\) we denote by \(\mu(w) = (\mu_1 \ge \mu_2 \ge \dotsb \ge \mu_n 
 So, for example, in \(S_5\) if \(w = \cycle{1,2,3}\cycle{4,5}\) then \(\mu(w) = (3, 2)\).
 We can then define a map
 \begin{align}
-    \psi \colon S_n &\to \Lambda\\
+    \psi_n \colon S_n &\to \Lambda\\
     w &\mapsto p_{\mu(w)} = p_{\mu_1} \dotsm p_{\mu_n}.
 \end{align}
 Since this map is defined only by the cycle type of \(w\) we have that \(\psi(w) = \psi(w')\) whenever \(w\) and \(w'\) are conjugate.
@@ -1300,14 +1300,14 @@ We have the obvious embedding \(S_m \times S_n \hookrightarrow S_{m + n}\), in w
     u(i) =
     \begin{cases}
         w(i) & i \in \{1, \dotsc, m\};\\
-        w'(i) & i \in \{m + 1, \dotsc, m + n\}.
+        w'(i - m) + m & i \in \{m + 1, \dotsc, m + n\}.
     \end{cases}
 \end{equation}
 Then we have
 \begin{equation}
-    \psi(w \times w') = \psi(w) \psi(w').
+    \psi_{m+n}(w \times w') = \psi_m(w) \psi_n(w').
 \end{equation}
-Recall that \(\classFunctions_n = \classFunctions_n(S_n)\) is the space of class functions, \(S_n \to \complex\), and that this is spanned by the irreducible characters \(\{\chi_\lambda \mid \lambda \partition n\}\).
+Recall that \(\classFunctions_n = \classFunctions(S_n)\) is the space of class functions, \(S_n \to \complex\), and that this is spanned by the irreducible characters \(\{\chi^\lambda \mid \lambda \partition n\}\).
 
 We may then consider the (vector space) direct sum
 \begin{equation}
@@ -1316,34 +1316,54 @@ We may then consider the (vector space) direct sum
 where \(\classFunctions_0 = \complex\).
 This graded vector space can be made into a graded ring by defining multiplication of homogeneous basis elements:
 \begin{equation}
-    \chi_\lambda * \chi_\mu \coloneq (\chi_\lambda \times \chi_\mu) \uparrow^{S_{m+n}}_{S_m \times S_n}.
+    \chi^\lambda \cdot \chi^\mu \coloneq (\chi^\lambda \times \chi^\mu) \uparrow^{S_{m+n}}_{S_m \times S_n}.
 \end{equation}
 In words, we define the product of irreducible characters to be the induced character of the representation arising from the obvious embedding \(S_m \times S_n \hookrightarrow S_{m + n}\).
+
+
+Recall that in \cref{lma:inner product on class functions on finite group} we defined an inner product on the class functions of any finite group.
+The only slight change we make here is that we want to work with a \(\rationals\)-algebra (the ring of symmetric functions with \(\{p_\mu\}\) as a basis), instead of over \(\complex\), and so we drop the complex conjugate.
+In the case of \(S_n\) this gives us the inner product,
+\begin{equation}
+    \innerprod{-}{-}_{S_n} \colon \classFunctions_n \times \classFunctions_n \to \complex,
+\end{equation}
+defined by
+\begin{equation}
+    \innerprod{f}{g}_{S_n} = \frac{1}{n!} \sum_{w \in S_n} f(w) g(w^{-1}).
+\end{equation}
 
 Any \(f, g \in \classFunctions\) may be expanded as a sum of \(f_n, g_n \in \classFunctions_n\):
 \begin{equation}
     f = \sum_{n \ge 0} f_n, \qand g = \sum_{n \ge 0} g_n.
 \end{equation}
-Recall that we've defined an inner product, \(\innerprod{-}{-}_{S_n} \colon \classFunctions_n \times \classFunctions_n \to \complex\).
-We can extend this to an inner product, \(\innerprod{-}{-} \colon \classFunctions \times \classFunctions \to \complex\), by defining
+We can then extend the inner product on \(\classFunctions_n\) to an inner product, \(\innerprod{-}{-}\), on \(\classFunctions\) by defining
 \begin{equation}
-    \innerprod{f}{g} = \sum_n \innerprod{f_n}{g_n}_{S_n}.
+    \innerprod{f}{g} = \sum_{n\ge 0} \innerprod{f_n}{g_n}_{S_n}.
 \end{equation}
-This is the obvious extension given by declaring that the different homogeneous subspaces are orthogonal.
+This is the inner product we get by declaring that \(\classFunctions_n\) and \(\classFunctions_m\) are orthogonal subspaces for \(n \ne m\).
 
 \begin{dfn}{Macdonald's Characteristic Map}{}
     \defineindex{Macdonald's characteristic map} is the map \(\ch \colon \classFunctions \to \Lambda_{\complex}\) defined on homogenous \(f \in \classFunctions_n\) by
     \begin{equation}
-        \ch(f) = \innerprod{f}{\psi}_{S_n} = \frac{1}{n!} \sum_{w \in S_n} f(w)\psi(w).
+        \ch(f) = \innerprod{f}{\psi}_{S_n} \coloneq \frac{1}{n!} \sum_{w \in S_n} f(w) \psi(w).
     \end{equation}
 \end{dfn}
+
+The last equality above is simply applying the definition of \(\innerprod{-}{-}_{S_n}\) and using the fact that \(\psi(w) = \psi(w^{-1})\) since the definition of \(\psi\) depends only on the cycle type of \(w\), which is always the same as the cycle type of \(w^{-1}\).
 
 \begin{lma}{}{}
     With the notation as above
     \begin{equation}
         \ch(f) = \sum_{\lambda \partition n} \frac{f_\mu}{z_\mu} p_\mu
     \end{equation}
-    where \(f_\mu\) is the value of \(f\) on any element of the conjugacy class of cycle type \(\mu\), and \(z_\mu\) is the size of the conjugacy class of cycle type \(\mu\).
+    where \(f_\mu\) is the value of \(f\) on any element of the conjugacy class of cycle type \(\mu\), and \(z_\mu\) is the number of elements of \(S_n\) which fix a given permutation of cycle type \(\mu\).
+    \begin{proof}
+        Since \(f\) is a class function then for all \(w \in S_n\) of cycle type \(\mu\) we have \(f(w) = f_\mu\).
+        Let \(C_\mu\) be the conjugacy class of \(S_n\) consisting of elements of cycle type \(\mu\).
+        Note that \(z_\mu\) is exactly the size of the orbit of a given permutation of cycle type \(\mu\) under the natural conjugation action of \(S_n\) on itself.
+        By the orbit-stabiliser theorem we have that \(n! = \abs{S_n} = \abs{C_\mu} z_\mu\).
+        Thus, if we group the terms in the sum into conjugacy classes we end up with \(C_\mu\) terms corresponding to a given value \(f_\mu\), and we can replace the resulting factor of \(C_\mu/n!\) with \(1/z_\mu\), which gives this result.
+    \end{proof}
 \end{lma}
 
 \begin{dfn}{Hall Inner Product}{}
@@ -1361,13 +1381,60 @@ This is the obvious extension given by declaring that the different homogeneous 
     \begin{proof}
         To show that this is a ring homomorphism we have the following
         \begin{align}
-            \ch(f * g) &= \innerprod{\Ind^{S_{m+n}}_{S_m \times S_n} f \otimes g}{\psi}_{S_{m+n}}\\
-            &= \innerprod{f \otimes g}{\Res^{S_{m+n}}_{S_m \times S_n} \psi}_{S_{m\times n}}\\
+            \ch(f \cdot g) &= \innerprod{\Ind^{S_{m+n}}_{S_m \times S_n} f \otimes g}{\psi_{m+n}}_{S_{m+n}}\\
+            &= \innerprod{f \otimes g}{\Res^{S_{m+n}}_{S_m \times S_n} \psi_{m+n}}_{S_{m\times n}}\\
+            &= \innerprod{f \otimes g}{\psi_m \times \psi_{n}}_{S_{m\times n}}\\
             &= \innerprod{f}{\psi}_{S_m} \innerprod{g}{\psi}_{S_n}\\
             &= \ch(f) \ch(g).
         \end{align}
-        The Hall inner product is defined exactly such that this map is an isometry.
-        Finally, since the \(\chi_\lambda\) are a basis of \(\classFunctions_n\) and the \(s_\lambda\) are a basis of \(\Lambda^n\) for \(\lambda \partition n\) then \(\ch\) is an isomorphism.
+        
+        The Hall inner product is defined exactly such that this map is an isometry:
+        \begin{align}
+            \innerprod{\ch(f)}{\ch(g)} &= \innerprod*{\sum_\mu \frac{f_\mu}{z_\mu} p_\mu}{\sum_\nu \frac{g_\nu}{z_\nu} p_\nu}\\
+            &= \sum_{\mu,\nu} \frac{f_\mu g_\nu}{z_\mu z_\nu} \innerprod{p_\mu}{p_\nu}\\
+            &= \sum_{\mu,\nu} \frac{f_\mu g_\nu}{z_\mu z_\nu} \delta_{\mu\nu}z_\mu\\
+            &= \sum_\mu \frac{f_\mu g_\mu}{z_\mu}\\
+            &= \innerprod{f}{g}_{S_n}.
+        \end{align}
+        
+        To show \(\ch\) is injective suppose \(f \in \ker \ch\).
+        Then we have \(f \in \classFunctions\), so we can expand it as \(f = \sum_n f_n\) with \(f_n \in \classFunctions_n\).
+        This gives
+        \begin{equation}
+            \ch(f) = \sum_n \ch(f_n) = \sum_n \sum_\mu \frac{f_\mu}{z_\mu} p_\mu.
+        \end{equation}
+        Since the \(p_\mu\) are a basis of the ring of symmetric functions we know that they are linearly independent, and thus we must have \(f_\mu/z_\mu = 0\), so \(f_\mu = 0\).
+        Thus, \(f\) vanishes on all equivalence classes, and thus is identically \(0\).
+        Hence, \(\ker \ch = 0\).
+        
+        Finally, to show that \(\ch\) is surjective let \(\eta_n\) be the trivial character of \(S_n\).
+        That is, \(\eta_n(w) = 1\) for all \(w \in S_n\).
+        Then
+        \begin{equation}
+            \ch(\eta_n) = \sum_\mu \frac{\eta_{n,\mu}}{z_\mu} p_\mu = \sum_\mu \frac{1}{z_\mu} p_\mu = h_n
+        \end{equation}
+        where we've used an identity in the ring of functions to identify the complete symmetric function, \(h_n\).
+        Now let \(\lambda\) be a partition of \(n\) and let \(\eta_\lambda = \eta_{\lambda_1} \cdot \eta_{\lambda_2} \cdot \dotsb\).
+        Then \(\eta_\lambda\) is a character of \(S_n\), specifically, it's the character we get inducing the trivial character of \(S_{\lambda_1} \times S_{\lambda_2} \times \dotsb\) up to a character of \(S_n\).
+        Then we have
+        \begin{equation}
+            \ch(\eta_\lambda) = \ch(\eta_{\lambda_1} \cdot \eta_{\lambda_2} \cdot \dotsm) = \ch(\eta_{\lambda_1}) \ch(\eta_{\lambda_2}) \dotsm = h_{\lambda_1} h_{\lambda_2} \dotsm = h_\lambda.
+        \end{equation}
+        
+        Now define
+        \begin{equation}
+            \chi^\lambda \coloneq \det(\eta_{\lambda_i - i + j})_{1 \le i , j \le n}.
+        \end{equation}
+        Since \(\ch\) is a ring homomorphism it follows from expanding the determinant that
+        \begin{equation}
+            \ch(\chi^\lambda) = \ch(\det(\eta_{\lambda_i - i + j})) = \det(\ch(\eta_{\lambda_i - i + j})) = \det(h_{\lambda_i - i + j}) = s_\lambda
+        \end{equation}
+        where the last equality is an identity in the ring of symmetric functions.
+        
+        Since \(\ch\) is an isometry and the Schur polynomials are orthonormal we have that \(\innerprod{\chi^\lambda}{\chi^\mu} = \innerprod{s_\lambda}{s_\mu}_{S_n} = \delta_{\lambda\mu}\).
+        This means that the \(\chi^\lambda\) are an orthonormal basis of \(\classFunctions_n\), so by rotating we can take them to be exactly the irreducible characters of \(S_n\).
+        Since the number of irreducible characters of \(S_n\) is exactly the number of partitions of \(n\) we have exhausted all options, and so \(\{\chi^\lambda\}\) is a basis of \(\classFunctions_n\).
+        Therefore \(\ch\) maps a basis to a basis, and thus is surjective, and hence a bijection, and so an isomorphism of graded algebras.
     \end{proof}
 \end{thm}
 
@@ -1375,8 +1442,8 @@ This is the obvious extension given by declaring that the different homogeneous 
     Consider the following maps:
     \begin{itemize}
         \item \(\ch \colon \classFunctions \to \Lambda_{\complex}\);
-        \item \(\classFunctions \to Z = \bigoplus_{n \ge 0} Z(\complex S_n)\) given by \(\chi_\lambda \mapsto c_\lambda\);
-        \item the Frobenius map \(F \colon Z \to \Lambda_{\complex}\) given by \(F(c_\lambda) = p_\mu/z_\mu\).
+        \item \(\classFunctions \to Z = \bigoplus_{n \ge 0} Z(\complex S_n)\) given by \(f \mapsto \sum_\mu f_\mu c_\mu\) where \(c_\mu\) is a class sum, that is the sum of \(w \in S_n\) of cycle type \(\mu\);
+        \item the \defineindex{Frobenius map} \(F \colon Z \to \Lambda_{\complex}\) given by \(F(c_\lambda) = p_\mu/z_\mu\).
     \end{itemize}
     These are isomorphisms, and the following diagram of these algebra isomorphisms commutes:
     \begin{equation}
@@ -1402,12 +1469,13 @@ This is the obvious extension given by declaring that the different homogeneous 
             \bigwedge^{\infty/2} V \arrow[r] & \Lambda_{\complex}
         \end{tikzcd}
     \end{equation}
-    where \(V = \bigoplus_{n \in \integers} \complex v_n\) and \(\bigwedge^{\infty/2}V\) is defined to consist of all semi-infinite wedge products of the form
+    where \(V = \bigoplus_{n \in \integers} \complex v_n\) and \(\bigwedge^{\infty/2}V\) is defined to be the span of semi-infinite wedge products of the form
     \begin{equation}
-        v_{i_1} \wedge v_{i_2} \wedge v_{i_3} \wedge \dotsb.
+        v_{i_1} \wedge v_{i_2} \wedge v_{i_3} \wedge \dotsb
     \end{equation}
+    with some condition on which indices can appear.
     The isomorphism \(\bigwedge^{\infty/2}V \isomorphic \Lambda_{\complex}\) is called the boson-fermion correspondence.
-    The details of this map are beyond the scope of this remark.
+    The details of this map are beyond the scope of this remark, but the general idea is that the basis of \(\bigwedge^{\infty/2}V\) can be labelled by partitions, \(\lambda\), and we identify them with the corresponding \(s_\lambda \in \Lambda_{\complex}\).
 \end{remark}
 
 \section{More Symmetric Functions}
@@ -1521,7 +1589,7 @@ The above is the standard reduced row echelon form, but it will be more useful f
 \begin{equation}
     \begin{pmatrix}
         * & 0 & 0 & * & 0 & * & * & 1\\
-        * & 0 & 0 & * & 0 & * & * & 0\\
+        * & 0 & 0 & * & 1 & * & * & 0\\
         * & 0 & 1 & * & 0 & * & * & 0\\
         * & 1 & 0 & * & 0 & * & * & 0
     \end{pmatrix}
@@ -1535,7 +1603,7 @@ For example, with the (second) matrix form above, where the pivots appear in row
 \begin{equation}
     \begin{pmatrix}
         0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
-        0 & 0 & 0 & 0 & 0 & * & * & 0\\
+        0 & 0 & 0 & 0 & 1 & * & * & 0\\
         0 & 0 & 1 & * & 0 & * & * & 0\\
         0 & 1 & 0 & * & 0 & * & * & 0
     \end{pmatrix}
@@ -1551,7 +1619,7 @@ Finally, delete the rows with the pivots, and we are left with
     \end{pmatrix}
     .
 \end{equation}
-Interpreting the \(0\)s as boxes in our Young diagram gives
+Replacing the \(0\)s with boxes gives the Young diagram
 \begin{equation}
     \ydiagram{4,2,1,1}\,.
 \end{equation}
