@@ -50,6 +50,8 @@ noabbrev
 % Maths
 \newcommand{\subideal}{\trianglelefteq}
 \newcommand{\affine}{\symbb{A}}
+\newcommand{\ideal}[1]{\symfrak{#1}}
+\newcommand{\isomorphic}{\cong}
 
 \includeonly{appendices/comm-alg}
 
@@ -290,7 +292,7 @@ noabbrev
         \end{proof}
     \end{lma}
     
-    \begin{lma}{Intersection}{lma:intersection of defining equatinos}
+    \begin{lma}{Intersection}{lma:intersection of defining equations}
         Let \(J\) be an index set, and \(\{S_j\}_{j \in J}\) an indexed family of subsets of \(K[x_1, \dotsc, x_n]\).
         Then
         \begin{equation}
@@ -365,7 +367,7 @@ noabbrev
         \end{proof}
     \end{lma}
     
-    We can now state some results which are the analogues of \cref{lma:V reverses inclusion,lma:union of defining equations,lma:intersection of defining equatinos} when we work with zero loci of ideals.
+    We can now state some results which are the analogues of \cref{lma:V reverses inclusion,lma:union of defining equations,lma:intersection of defining equations} when we work with zero loci of ideals.
     
     \begin{lma}{}{}
         Let \(J \subideal K[x_1, \dotsc, x_n]\).
@@ -394,7 +396,7 @@ noabbrev
     \begin{lma}{Intersection}{}
         If \(J_1, J_2 \subideal K[x_1, \dotsc, x_n]\) then \(V(J_1) \cap V(J_2) = V(J_1 + J_2)\).
         \begin{proof}
-            From \cref{lma:intersection of defining equatinos} we have that \(V(J_1) \cap V(J_2) = V(J_1 \cup J_2)\).
+            From \cref{lma:intersection of defining equations} we have that \(V(J_1) \cap V(J_2) = V(J_1 \cup J_2)\).
             We also have that \(\langle J_1 \cup J_2 \rangle = J_1 + J_2\), so \(V(J_1 \cup J_2) = V(\langle J_1 \cup J_2 \rangle) = V(J_1 + J_2)\).
         \end{proof}
     \end{lma}
@@ -450,7 +452,7 @@ noabbrev
         The following important theorem tells us that these maps, while not quite inverses, are essentially inverses, so long as we're happy to only deal with radical ideals, which we can do by liberally taking radicals.
     \end{remark}
     
-    \begin{thm}{Hilbert's Nullstellensatz}{}
+    \begin{thm}{Hilbert's Nullstellensatz}{thm:hilberts nullstellensatz}
         \begin{enumerate}
             \item For any affine variety, \(X \subseteq \affine^n\), we have \(V(II(X)) = X\).
             \item For any ideal, \(J \subideal K[x_1, \dotsc, x_n]\), we have \(I(V(J)) = \sqrt{J}\).
@@ -471,6 +473,7 @@ noabbrev
             
             The only hard step of the proof is showing that \(I(V(J)) \subseteq \sqrt{J}\).
             This requires some pretty heavy commutative algebra, so we'll skip it.
+            It is this step of the proof which requires that \(K\) is algebraically closed.
         \end{proof}
     \end{thm}
     
@@ -478,6 +481,162 @@ noabbrev
         Nullstellensatz means \enquote{theorem of the zeroes}.
     \end{remark}
     
+    \begin{exm}{}{}
+        Consider a nonzero ideal, \(J \subideal K[x]\).
+        Since \(K[x]\) is a PID we have that \(J = \langle f \rangle\) for some \(f \in K[x]\).
+        Over an algebraically closed field we can always write \(f\) as
+        \begin{equation}
+            f(x) = (x - a_1)^{k_1} \dotsm (x - a_r)^{k_r}
+        \end{equation}
+        for some \(a_i \in K\) and \(k_i, r \in \naturals\).
+        Note that \(J = \langle f \rangle\) the consists of all polynomials vanishing at \(a_i\) with order at least \(k_i\).
+        We therefore have \(V(J) = V(f) = \{a_1, \dotsc, a_n\} \subseteq \affine^1\).
+        This affine variety captures the zeros of \(f\), but loses information about their multiplicities.
+        
+        Hilbert's Nullstellensatz (\cref{thm:hilberts nullstellensatz}) tells us that \(I(V(J)) = \sqrt{J}\), and in this case we have
+        \begin{equation}
+            \sqrt{J} = \langle (x - a_1) \dotsm (x - a_r) \rangle,
+        \end{equation}
+        consisting of all polynomials vanishing at \(a_i\) with \emph{any} order.
+        So, \(\sqrt{J}\) too contains the information of the zeros of \(f\) while losing the information on their multiplicities.
+        In this way the algebraic object, \(\sqrt{J}\), and the geometric object, \(V(J)\), contain exactly the same information.
+    \end{exm}
+    
+    \begin{exm}{Not Algebraically Closed}{}
+        Note that the fact \(K\) is algebraically closed is essential.
+        In this example we'll consider the field \(\reals\), which is not algebraically closed.
+        The ideal \(\langle x^2 + 1 \rangle \subideal \reals[x]\) is prime, and hence radical (\cref{lma:prime ideal is radical}).
+        However, \(V(x^2 + 1) = \emptyset \ne \sqrt{\langle{x^2 + 1}}\).
+        Thus, Hilbert's Nullstellensatz doesn't hold as \(I(V( x^2 + 1 )) = I(\emptyset) = \reals[x]\), when the Nullstellensatz would have \(I(V(\langle x^2 + 1)) \stackrel{!}{=} \sqrt{\langle x^2 + 1 \rangle} = \langle x^2 + 1 \rangle\), which is a proper ideal.
+    \end{exm}
+    
+    \begin{exm}{}{exm:points of affine space 1 to 1 max ideals}
+        Consider the ideal \(J = \langle x - a_1, \dotsc, x - a_n \rangle \subideal K[x_1, \dotsc, x_n]\) for some \(a_i \in K\).
+        This is a maximal ideal since \(K[x_1, \dotsc, x_n]/J \isomorphic K\) (setting \(x_i = a_i\)).
+        Hence, it is also prime, and so radical (\cref{lma:prime ideal is radical}).
+        The vanishing set of this ideal is \(V(J) = \{a\}\) for \(a = (a_1, \dotsc, a_n) \in \affine^n\).
+        Then by Hilbert's Nullstellensatz (\cref{thm:hilberts nullstellensatz}) we have
+        \begin{equation}
+            I(\{a\}) = I(V(J)) = \sqrt{J} = J = \langle x_1 - a_1, \dotsc, x_n - a_n \rangle.
+        \end{equation}
+        This lets us identify points in \(\affine^n\) with minimal non-empty affine varieties.
+        By the inclusion-reversing pairings of the Nullstellensatz points in \(\affine^n\) are in one-to-one correspondence with maximal ideals in \(K[x_1, \dotsc, x_n]\).
+        This gives us another pairing of algebraic and geometric objects,
+        \begin{equation}
+            \{\text{maximal ideals of } K[x_1, \dotsc, x_n]\} \xleftrightarrow{1:1} \{\text{points in } \affine^n\}.
+        \end{equation}
+        This also shows that maximal ideals of the form of \(J\) above are actually the only maximal ideals of \(K[x_1, \dotsc, x_n]\), a fact which can be proven purely algebraically, but this proof passes through geometry.
+    \end{exm}
+    
+    We can now prove a couple of results about how \(I\) interacts with unions and intersections.
+    These are analogous to the results \cref{lma:intersection of defining equations,lma:union of defining equations} for \(V\). 
+    
+    \begin{lma}{}{}
+        Let \(X_1\) and \(X_2\) be affine varieties in \(\affine^n\).
+        Then \(I(X_1 \cup X_2) = I(X_1) \cap I(X_2)\).
+        \begin{proof}
+            Suppose \(f \in I(X_1 \cup X_2)\).
+            Then \(f\) vanishes on any point of \(X_1\) or \(X_2\), and thus \(f \in I(X_1)\) and \(f \in I(X_2)\), so \(f \in I(X_1) \cap I(X_2)\).
+            
+            Conversely, suppose \(f \in I(X_1) \cap I(X_2)\).
+            Then \(f\) vanishes on \(X_1\) and \(X_2\), and so it vanishes on \(X_1 \cup X_2\), and hence \(f \in I(X_1 \cup X_2)\).
+        \end{proof}
+    \end{lma}
+    
+    \begin{crl}{}{}
+        The intersection of two radical ideals of \(K[x_1, \dotsc, x_n]\) is again radical.
+        \begin{proof}
+            If \(J_1\) and \(J_2\) are radical ideals then there exist affine varieties, \(X_1\) and \(X_2\), such that \(J_1 = I(X_1)\) and \(J_2 = I(X_2)\).
+            Then \(J_1 \cap J_2 = I(X_1 \cup X_2)\), which is radical since the ideal of any affine variety is radical.
+        \end{proof}
+    \end{crl}
+    
+    Note that it's possible to prove this corollary purely algebraically as well.
+    
+    \begin{lma}{}{lma:ideal of intersection}
+        Let \(X_1\) and \(X_2\) be affine varieties in \(\affine^n\).
+        Then \(I(X_1 \cap X_2) = \sqrt{I(X_1) + I(X_2)}\).
+        \begin{proof}
+            By Hilbert's Nullstellensatz (\cref{thm:hilberts nullstellensatz}) we have that \(X_1 = V(I(X_1))\) and \(X_2 = V(I(X_2))\).
+            Thus, we have
+            \begin{equation}
+                I(X_1 \cap X_2) = I(V(I(X_1)) \cap V(I(X_2))).
+            \end{equation}
+            Then, by \cref{lma:intersection of defining equations} we have \(V(J_1) \cap V(J_2) = V(J_1 + J_2)\), and so
+            \begin{equation}
+                I(X_1 \cap X_2) = I(V(I(X_1) + I(X_2))).
+            \end{equation}
+            Then by the Nullstellensatz again we have \(I(V(J)) = \sqrt{J}\), and so
+            \begin{equation*}
+                I(X_1 \cap X_2) = \sqrt{I(X_1) + I(X_2)}. \qedhere
+            \end{equation*}
+        \end{proof}
+    \end{lma}
+    
+    \begin{remark}{}{}
+        It is not, in general, true that the sum of two radical ideals is radical.
+        This shouldn't be surprising, the algebraic explanation is that exponentiating a sum doesn't behave particularly simply, we need the binomial theorem.
+        This is why we have to take the radical in the lemma above.
+        
+        There is also a geometric explanation for this, in addition to the algebraic one.
+        Consider the affine varieties \(X_1, X_2 \subseteq \affine^2_{\complex}\) with \(I(X_1) = \langle x_2 - x_1^2 \rangle\) and \(I(X_2) = \langle x_2 \rangle\).
+        The real points of these varieties are shown in \cref{fig:sum radicals not radical}.
+        These correspond to \(y = x^2\) and \(y = 0\), although we're only really able to visualise these for \(x, y \in \reals\).
+        
+        The intersection of these two varieties is \(X_1 \cap X_2 = \{(0, 0)\}\).
+        Thus, \(I(X_1 \cap X_2) = I((0, 0)) = \langle x_1, x_2 \rangle\).
+        Here we've used the identification of points of \(\affine_{\complex}^2\) with maximal ideals of \(\complex[x_1, x_2]\) from \cref{exm:points of affine space 1 to 1 max ideals}.
+        
+        We have that
+        \begin{equation}
+            I(X_1) + I(X_2) = \langle x_2 - x_1^2 \rangle + \langle x_2 \rangle = \langle x_2 - x_1^2, x_2 \rangle = \langle x_1^2, x_2 \rangle.
+        \end{equation}
+        This is not a radical ideal, we have
+        \begin{equation}
+            \sqrt{\langle x_1^2, x_2 \rangle} = \langle x_1, x_2 \rangle.
+        \end{equation}
+        Which we expect from \cref{lma:ideal of intersection}.
+        
+        The geometric interpretation is then as follows.
+        The varieties \(X_1\) and \(X_2\) are tangent at their intersection point.
+        Thus, in a linear approximation their defining equations, \(x_2 = x_1^2\) and \(x_2 = 0\), are the same, and both pick out the \(x_1\) axis.
+        This means we can imagine that the intersection, \(X_1 \cap X_2\), actually extends a small distance from the origin, an infinitesimal amount in the \(x_1\) direction.
+        But, in this extended region \(x_1\) doesn't vanish, and so it doesn't lie in \(I(X_1) + I(X_2)\).
+        
+        There are various ways to deal with this problem.
+        One is to keep track of the multiplicities of curve intersections.
+        The algebraic-geometry approach is to define schemes.
+        These enlarge our class of geometric objects to include \enquote{objects extending by infinitesimally small amounts in some direction}.
+        Then the result that we get mirroring that of Hilbert's Nullstellensatz (\cref{thm:hilberts nullstellensatz}) is that affine schemes are in one-to-one correspondence with \emph{arbitrary} ideals of \(K[x_1, \dotsc, x_n]\).
+        Then the intersection of \(X_1\) and \(X_2\) is replaced with the scheme corresponding to the non-radical ideal \(\langle x_1, x_2^2 \rangle\).
+        % TODO: reference to section on schemes
+    \end{remark}
+    
+    \begin{figure}
+        \centering
+        \tikzsetnextfilename{sum-radicals-not-radical}
+        \begin{tikzpicture}
+            \draw [very thick, my blue] (-3, 0) -- (3, 0) node [right] {\(X_2\)};
+            \draw [very thick, my red, domain=-3:3, samples=100] plot (\x, \x*\x/2) node [below right] {\(X_1\)};
+            \fill [my green] (0, 0) circle [radius = 0.1] node [below] {\(X_1 \cap X_2\)};
+        \end{tikzpicture}
+        \caption[Sum of radicals not radical]{The two varieties used to demonstrate why the sum of radical ideals is not necessarily radical.}
+        \label{fig:sum radicals not radical}
+    \end{figure}
+    
+    If \(J \subideal K[x_1, \dotsc, x_n]\) is proper then \(J\) has a zero, that is \(V(J)\) is non-empty.
+    Otherwise, we'd have that \(\sqrt{J} = I(V(J)) = I(\emptyset) = K[x_1, \dotsc, x_n]\), which means \(1 \in \sqrt{J}\) and so \(1 \in J\) meaning \(J = K[x_1, \dotsc, x_n]\), violating the assumption that \(J\) is proper.
+    
+    \begin{prp}{Weak Nullstellensatz}{}
+        If \(J\) is a proper ideal of \(K[x_1, \dotsc, x_n]\) then \(V(J)\) is non-empty.
+    \end{prp}
+    
+    \begin{remark}{}{}
+        Historically the weak nullstellensatz was proven first.
+        This result is the reason for the name, \enquote{theorem of the zeros}.
+        Despite the \enquote{weak} in the name of this result the weak Nullstellensatz is actually equivalent to the full Nullstellensatz.
+        There's a trick, known as Rabinowitsch's trick, which allows one to reduce the full Nullstellensatz in \(n\) variables to the weak Nullstellensatz in \(n + 1\) variables.
+    \end{remark}
     
     \appendixpage
     \begin{appendices}
