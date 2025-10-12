@@ -1,0 +1,295 @@
+% !TeX program = lualatex
+\documentclass[fleqn]{NotesClass}
+
+\strictpagecheck
+
+\usepackage{csquotes}
+
+\usepackage{tikz}
+\usetikzlibrary{external}
+\tikzexternalize[prefix=tikz-external/]
+
+\usepackage{tikz-cd}
+\AtBeginEnvironment{tikzcd}{\tikzexternaldisable}
+\AtEndEnvironment{tikzcd}{\tikzexternalenable}
+
+\usepackage[pdfauthor={Willoughby Seago},pdftitle={Notes from D-modules Course},pdfkeywords={D-module},pdfsubject={D-modules}]{hyperref}  % Should be loaded second last (cleveref last)
+\colorlet{hyperrefcolor}{blue!60!black}
+\hypersetup{colorlinks=true, linkcolor=hyperrefcolor, urlcolor=hyperrefcolor}
+\usepackage[
+capitalize,
+nameinlink,
+noabbrev
+]{cleveref} % Should be loaded last
+
+% My packages
+\usepackage{NotesBoxes}
+\usepackage{NotesMaths2}
+
+\setmathfont[range={\int, \oint, \otimes, \oplus, \bigotimes, \bigoplus}]{Latin Modern Math}
+
+
+% Highlight colour
+\definecolor{my blue}{HTML}{084887}
+\definecolor{my red}{HTML}{CA1551}
+\definecolor{my green}{HTML}{17C3B2}
+\definecolor{my yellow}{HTML}{F58A07}
+\definecolor{my purple}{HTML}{CB9CF2}
+\colorlet{highlight}{my blue}
+
+% Title page info
+\title{Algebraic Geometry}
+\author{Willoughby Seago}
+\date{October 6th, 2025}
+\subtitle{Notes from}
+\subsubtitle{University of Glasgow}
+\renewcommand{\abstracttext}{These are my notes from the SMSTC course \emph{\(\D\)-modules} taught by Prof Gwyn Bellamy. This is a subject for which I don't have all of the prerequisites, so I'm sure these notes will be full of errors, please let me know if you find any. These notes were last updated at \printtime{} on \today{}.}
+
+% Commands
+% Maths
+\newcommand{\isomorphic}{\cong}
+\newcommand{\equivalent}{\approxeq}
+\newcommand{\D}{\symcal{D}}
+\newcommand{\sheaf}[1]{\symcal{#1}}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\End}{End}
+\newcommand{\bounded}{\symrm{b}}
+\newcommand{\reghol}{\symrm{rh}}
+\newcommand{\constructable}{\symrm{cs}}
+\DeclarePairedDelimiterX{\bracket}[2]{[}{]}{#1 , #2}
+\newcommand{\affine}{\symbb{A}}
+
+\includeonly{}
+
+\begin{document}
+    \frontmatter
+    \titlepage
+    \innertitlepage{}
+    \tableofcontents
+    % \listoffigures
+    \mainmatter
+    
+    \chapter{Introduction}
+    These are my notes from the SMSTC course on \(\D\)-modules.
+    I am taking the SMSTC algebraic geometry course at the same time, so I'm lacking some prerequisites for this course.
+    Therefore I'm sure there are many errors in these notes, which are my fault, please tell me if you find any.
+    I will assume the reader is up to the same part of the algebraic geometry course as I am, so for example for the first lecture of \(\D\)-modules I knew what an affine variety was, because that was covered in the first algebraic geometry lecture the day before.
+    
+    We will work entirely over \(\complex\), although many results generalise to other fields with sufficient adjectives (algebraically closed, characteristic zero, etc.).
+    
+    \section{Why Care About \texorpdfstring{\(\D\)}{D}-Modules?}
+    \subsection{What (Roughly) are \texorpdfstring{\(\D\)}{D}-modules?}
+    Differential functions, such as \(D_1 = \partial_1 \coloneq \difsp{}{x_1}\) and \(D_2 = x_1 - 3\partial_1\partial_2\), act on (sufficiently smooth) functions \(\complex^n \to \complex\) where \(n\) is the number of variables.
+    
+    We can compose two differential operators, and we can add them.
+    This makes the set, \(\D(\complex^n)\), of all differential operators on such functions into a ring.
+    Then a \(\D\)-module is just a module over this ring.
+    
+    Of course, there are more generic spaces of functions and function-like things than just functions \(\complex^n \to \complex\), and so there are more general \(\D\)-modules.
+    
+    A key thing to notice is that \(D_1 \circ D_2 \ne D_2 \circ D_1\), and so \(\D(\complex^n)\) is non-commutative, which makes doing algebraic geometry with it harder.
+    
+    \subsection{Why Where \texorpdfstring{\(\D\)}{D}-Modules Invented?}
+    In the 1970s Mikio Sato, and his School\footnote{The Sato School, based in Kyoto, includes mathematicians such as Kashiwara, Jimbo, and Miwa.}
+    His original goal was to study systems of linear differential equations, introducing \(\D\)-modules as a way of bringing the powerful tools of algebra and geometry to this analysis problem.
+    In doing so he invented the field of \emph{algebraic analysis}.
+    
+    Around the same time Joseph Bernstein came up with a more algebraic version of this theory in order to prove a conjecture on the meromorphic extensions of certain holomorphic functions.
+    
+    We won't go into details on the problems they were trying to solve, instead we'll look at a simple example.
+    Consider the differential operators
+    \begin{equation}
+        P_1 = x_1 + \partial_2, \quad P_2 = x_2^2 \partial_1 - 4, \qand P_3 = x_1^2 \partial_1 - x_2 \partial_2^2.
+    \end{equation}
+    Our goal is to study functions, \(f\), satisfying the linear system \(P_1(f) = P_2(f) = P_3(f) = 0\).
+    The question we'll ask is what is the dimension of \(S(P_{\bullet})\), the solution space to this system of equations?
+    
+    Notice that we're fairly vague about what we mean by \enquote{function}, it might be a polynomial, or holomorphic function, or even a distribution.
+    We're looking for general statements about solutions depending only on the \(P_i\) and not the specific types of functions we consider.
+    
+    Let \(\sheaf{O}\) be the space of functions under consideration.
+    Define \(M = \D(\complex^2) / (P_1, P_2, P_3)\).
+    Then we have the following result.
+    
+    \begin{lma}{}{}
+        \(\Hom_{\D(\complex^2)}(M, \sheaf{O}) = S(P_{\bullet})\).
+        \begin{proof}
+            As a \(\D(\complex^2)\)-module \(M\) is generated by \(1\), since \(M\) is just \(\D(\complex^2)\) after setting \(P_i = 0\).
+            Then we have a map
+            \begin{align}
+                \Hom_{\D(\complex^2)}(M, \sheaf{O}) &\to S(P_{\bullet})\\
+                \Phi &\mapsto \Phi(1).
+            \end{align}
+            Since \(S(P_{\bullet})\) is exactly the subspace of \(\D(\complex^2)\) on which the \(P_i\) act as zero this is an isomorphism.
+        \end{proof}
+    \end{lma}
+    
+    The right-hand-side of this equality can be viewed in a purely analytic way, as the solution space to some differential equations.
+    The left-hand-side can be viewed in a purely algebraic way, as a quotient of some module.
+    To do so we introduce new variables, \(y_i\), which we replace the derivatives with, imposing the required commutation relations from the derivatives.
+    To make further process we introduce geometry to our toolkit.
+    
+    We can approximate \(M\) by taking the \(P_i\) and considering their leading terms, where we introduce a grading \(\deg x_i = \deg y_i = 1\).
+    Then we have \(Q_1 = x_1 + y_2\), \(Q_2 = x_2^2 \partial_1\), and \(Q_3 = x_1^2y_1 - x_2y_2^2\).
+    Writing \(V(Q_1, Q_2, Q_3)\) for the set of common zeros of the \(Q_i\) it can be shown that
+    \begin{equation}
+        \dim V(Q_1, Q_2, Q_3) = 1.
+    \end{equation}
+    
+    A result linking this variety to symplectic geometry implies that \(M = 0\), since in particular we must have that the \enquote{characteristic variety} of \(M\) has even dimension, and \(M = 0\) is the only way that we can have \(\dim V(Q_1, Q_2, Q_3) = 1\).
+    
+    If \(M = 0\) then \(\Hom_{\D(\complex^2)}(M, \sheaf{O}) = 0\) so \(S(P_{\bullet}) = 0\).
+    That is, there are no non-trivial solutions to our system of linear differential equations.
+    
+    In other words, if \(M = 0\) then it must be that \((P_1, P_2, P_3) = \D(\complex^2)\), and so it must be that \(1 \in (P_1, P_2, P_3)\).
+    That is, there are differential operators, \(D_i \in \D(\complex^2)\) such that \(D_1P_1 + D_2P_2 + D_3P_3 = 1\).
+    Then if we're to have \(P_i = 0\) we must have that
+    \begin{equation}
+        0 = D_1P_1f + D_2P_2f + D_3P_3f = f
+    \end{equation}
+    and so we have only the trivial solution.
+    When stated in this way it is clear that it doesn't matter what \enquote{type} of function (or function-like-thing) \(f\) is.
+    
+    \subsection{Why Should You Care About \texorpdfstring{\(\D\)}{D}-Modules?}
+    This section is mostly a list of buzz-words you may or may not care about.
+    
+    Rings of differential operators on smooth varieties provide an interesting class of noncommutative rings.
+    
+    Geometric representation theory makes use of \(D\)-modules to study representations of Lie algebras, Hecke algebras, doubly affine Hecke algebras, quantum-things, and more.
+    An important example is the proof of the Kazhdan--Lustzig conjecture, relating characters of certain representations of certain Lie algebras to the transition coefficients between different bases of Hecke algebras.
+    
+    There are also applications in algebraic geometry, in particular to the theory of mixed Hodge modules.
+    
+    \section{The Riemann--Hilbert Correspondence}
+    The main goal of this course is to develop enough understanding to state and sketch a proof of the Riemann--Hilbert correspondence.
+    This can be viewed as the use of analysis to form a bridge between \(\D\)-modules and topology.
+    
+    I now repeat exactly what is in the notes, because I don't understand it yet.
+    The solution functor, \(M \to \Hom_{\D}(M, \sheaf{O})\), gives an equivalence of bounded derived categories,
+    \begin{equation}
+        D^{\bounded}_{\reghol}(\D_X) \equivalent D^{\bounded}_{\constructable}(\complex_X).
+    \end{equation}
+    The left-hand-side here is the bounded derived category of \(\D\)-modules with regular holonomic cohomology and the right-hand-side is the derived category of constructable sheaves.
+    
+    The goal is to understand what these words mean.
+    
+    \section{Prerequisites}
+    Some knowledge of sheaves is useful, but we'll avoid using them too much until they're unavoidable, at which point we'll black-box some results from sheaf theory.
+    Many of the early results we state, typically in terms of modules over the ring of differential operators on an affine variety, have sheaf-theoretic analogues, which we may sometimes state.
+    
+    Some knowledge of derived categories is useful, but again we'll avoid these where possible and black-box any results we need.
+    Proofs of key results won't use derived categories.
+    
+    \chapter{\texorpdfstring{\(\D\)}{D}-Modules}
+    In this chapter we aim to introduce \(\D\)-modules on an affine variety.
+    We start with the original motivating example, the Weyl algebra, which consists of differential operators on polynomials.
+    
+    \section{The Weyl Algebra}
+    In this section we study an algebra initially introduced by Hermann Weyl, who was doing quantum mechanics, where this algebra arises as the algebra of position and momentum generators.
+    
+    \begin{dfn}{Weyl Algebra}{}
+        The \defineindex{Weyl algebra}, \(A_n\), is the \(\complex\)-algebra with generators \(x_1, \dotsc, x_n\) and \(y_1, \dotsc, y_n\) and defining relations
+        \begin{equation}
+            \bracket{x_i}{x_j} = \bracket{y_i}{y_j} = 0, \qqand \bracket{x_i}{y_j} = \delta_{ij}.
+        \end{equation}
+    \end{dfn}
+    
+    In the above definition \(\bracket{a}{b} = ab - ba\) is the commutator and \(\delta_{ij}\) is the Kronecker delta, defined by \(\delta_{ij} = 1\) when \(i = j\) and \(\delta_{ij} = 0\) otherwise.
+    
+    Notice that this is, up to factors of \(i\) and \(\hbar\), the same algebra that is satisfied by the position and momentum generators, \(x_i\) and \(p_i\).
+    
+    This definition is of the abstract Weyl algebra, it's given in terms of generators and relations.
+    For \(f \in \complex[x_1, \dotsc, x_n]\) the product rule gives us
+    \begin{equation}
+        \diffp{}{x_i}(x_j f) = \diffp{x_i}{x_i} f + x_i \diffp{f}{x_i} = \delta_{ij}f + x_j \diffp{f}{x_i}.
+    \end{equation}
+    Rearranging this, we have
+    \begin{equation}
+        \diffp{}{x_i}(x_j f) - x_j \diffp{}{x_i}f = \bracket{\partial_i}{x_j}f = \delta_{ij}f
+    \end{equation}
+    where \(\partial_i = \difsp{}{x_j}\), and so
+    \begin{equation}
+        \bracket{\partial_i}{x_j} = \delta_{ij}.
+    \end{equation}
+    Note that this is an equation in \(\End_{\complex}(\complex[x_1, \dotsc, x_n])\).
+    
+    This leads us to the non-abstract definition of the Weyl algebra, it is the subalgebra, \(\D(\affine^n)\), of \(\End_{\complex}(\complex[x_1, \dotsc, x_n])\) generated by the operators \(x_i\) and \(\partial_i\) for \(i = 1, \dotsc, n\).
+    Note here we've viewing \(x_i\) as the operation of \enquote{multiplication by \(x_i\)}, so \(x_i\) acts on \(f\) to give \(x_if\).
+    We call \(\D(\affine^n)\) the \defineindex{ring of differential operators} on \(\affine^n\).
+    
+    \begin{lma}{}{}
+        There is a surjective algebra homomorphism
+        \begin{align}
+            A_n &\twoheadrightarrow \D(\affine^n)\\
+            x_i &\mapsto x_i\\
+            y_i &\mapsto \partial_i.
+        \end{align}
+    \end{lma}
+    
+    \begin{ntn}{Multi-Index Notation}{}
+        For\footnote{\(\naturals = \{0, 1, 2, \dotsc\}\).} \(\alpha = (\alpha_1, \dotsc, \alpha_n) \in \naturals^n\) let
+        \begin{equation}
+            x^\alpha = x_1^{\alpha_1} \dotsm x_n^{\alpha_n}, \qqand \partial^\alpha = \partial_1^{\alpha_1} \dotsm \partial_n^{\alpha_n}.
+        \end{equation}
+    \end{ntn}
+    
+    \begin{lma}{}{}
+        In \(\D(\affine^n)\) for \(\alpha, \beta \in \naturals^n\) we have
+        \begin{equation}
+            \bracket{\partial_i}{x^\alpha} = \alpha_i x^{\alpha - e_i}, \qqand \bracket{x_i}{\partial^\beta} = -\beta_i \partial^{\beta - e_i}
+        \end{equation}
+        where \(e_i = (0, \dotsc, 0, 1, 0, \dotsc, 0) \in \naturals^n\) has a \(1\) in the \(i\)th position and \(0\) everywhere else.
+        \begin{rmk}
+            Note that when \(\alpha_i = 0\) technically \(\alpha - e_i\) isn't a well defined multi-index, having a negative entry.
+            However, when this happens the \(\alpha_i\) factor in front of the term kills it anyway, so we don't have to worry about this.
+        \end{rmk}
+        \begin{proof}
+            Let \(f, g \in \complex[x_1, \dotsc, x_n]\).
+            Then we have
+            \begin{align}
+                \bracket{\partial_i}{f}g &= \partial_i(fg) - f\partial_ig\\
+                &= (\partial_if)g + f\partial_ig - f\partial_ig\\
+                &= (\partial_if)g
+            \end{align}
+            and so
+            \begin{equation}
+                \bracket{\partial_i}{f} = \partial_i f.
+            \end{equation}
+            Thus, taking \(f(x) = x^\alpha\) we have that
+            \begin{align}
+                \bracket{\partial_i}{x^\alpha} &= \partial_i x^\alpha\\
+                &= \partial_i(x_1^{\alpha_1} \dotsm x_n^{\alpha_n})\\
+                &= \alpha_i x_1^{\alpha_1} \dotsm x_i^{\alpha_i - 1} \dotsm x_n^{\alpha_n}\\
+                &= \alpha_i x^{\alpha - e_i}.
+            \end{align}
+            
+            The second result follows by induction on \(\abs{\beta} = \beta_1 + \dotsb + \beta_n\).
+            For \(\abs{\beta} = 1\) we just have \(\partial^\beta = \partial_j\) for some \(j \in \{1, \dotsc, n\}\).
+            For \(f \in \complex[x_1, \dotsc, x_n]\) we then have
+            \begin{align}
+                \bracket{x_i}{\partial^\beta}f &= \bracket{x_i}{\partial_j}f\\
+                &= x_i\partial_jf - \partial_j(x_i f)\\
+                &= x_i\partial_jf - (\partial_j x_i) f - x_i \partial_j f\\
+                &= -(\partial_j x_i) f\\
+                &= -\delta_{ij} f
+            \end{align}
+            and so we have
+            \begin{equation}
+                \bracket{x_i}{\partial^\beta} = -\delta_{ij}f
+            \end{equation}
+            which is exactly the same action as \(-\beta_i \partial^{\beta - e_i}\) since by assumption \(\beta_j = 1\) \(\beta_k = 0\) for \(k \ne j\) so for \(i = j\) we have \(-\beta_j\partial^{\beta - e_j}\), which is \(-1\partial^{(0, \dotsc, 0)} = -1\) and for \(i \ne j\) we have \(-\beta_i = 0\) so we just get \(0\).
+            
+            We then proceed to induct on \(\abs{\beta}\).
+        \end{proof}
+    \end{lma}
+    
+    
+%    \appendixpage
+%    \begin{appendices}
+%        \include{appendices/comm-alg}
+%    \end{appendices}
+    \backmatter
+    \renewcommand{\glossaryname}{Acronyms}
+    \printglossary[acronym]
+    \printindex
+\end{document}
