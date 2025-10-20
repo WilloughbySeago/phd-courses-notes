@@ -311,7 +311,7 @@ noabbrev
     
     We can also give some examples of simple affine varieties.
     
-    \begin{exm}{Affine Varieties}{}
+    \begin{exm}{Affine Varieties}{exm:affine varieties}
         \begin{enumerate}
             \item Affine \(n\)-space is itself an affine variety.
             Specifically, \(\affine^n = V(0)\), since the zero polynomial vanishes.
@@ -328,10 +328,10 @@ noabbrev
         This is very close to the definition of a topology on \(\affine^n\) in terms of open sets, \(\emptyset\) and \(X\) should be open, and the topology should be closed under finite intersections and arbitrary unions.
         Notice how unions and intersections exchange roles.
         Instead what we have is actually the requirements to define a topology on \(\affine^n\) via the \emph{closed} sets.
-        We'll do exactly this in . % TODO add reference to section on Zarisiki topology
+        We'll do exactly this in \cref{chap:zariski topology}.
     \end{remark}
     
-    \begin{exm}{Affine \(1\)-Space}{}
+    \begin{exm}{Affine {\normalsize \(1\)}-Space}{exm:affine varieties of A1}
         The only affine varieties in \(\affine^1\) are \(\affine^1\), \(\emptyset\), and all finite sets.
         Any finite set, \(\{\alpha_1, \dotsc, \alpha_n\}\), is the vanishing set of \((x - \alpha_1) \dotsm (x - \alpha_n)\).
         To show that infinite sets cannot be affine varieties here (other than \(\affine^1\)) suppose \(X = V(S)\) is infinite for some \(S \subseteq K[x]\).
@@ -422,7 +422,7 @@ noabbrev
     
     This is indeed an ideal, if \(f, g \in I(X)\) then \(f(x) = g(x) = 0\) for all \(x \in X\) and \(f(x) + g(x) = 0\), so \(f + g \in I(X)\), and \(-f(x) = 0\) so \(-f \in I(X)\), and if \(h \in K[x_1,\dotsc, x_n]\) then \(f(x)h(x) = 0h(x) = 0\) so \(fh \in I(X)\).
     
-    \begin{lma}{Reversal of Inclusion}{}
+    \begin{lma}{Reversal of Inclusion}{lma:I reverses inclusion}
         Suppose \(X_1 \subseteq X_2 \subseteq \affine^n\).
         Then \(I(X_2) \subseteq I(X_1)\).
         \begin{proof}
@@ -531,7 +531,7 @@ noabbrev
     We can now prove a couple of results about how \(I\) interacts with unions and intersections.
     These are analogous to the results \cref{lma:intersection of defining equations,lma:union of defining equations} for \(V\). 
     
-    \begin{lma}{}{}
+    \begin{lma}{}{lma:ideal of union}
         Let \(X_1\) and \(X_2\) be affine varieties in \(\affine^n\).
         Then \(I(X_1 \cup X_2) = I(X_1) \cap I(X_2)\).
         \begin{proof}
@@ -637,6 +637,248 @@ noabbrev
         Despite the \enquote{weak} in the name of this result the weak Nullstellensatz is actually equivalent to the full Nullstellensatz.
         There's a trick, known as Rabinowitsch's trick, which allows one to reduce the full Nullstellensatz in \(n\) variables to the weak Nullstellensatz in \(n + 1\) variables.
     \end{remark}
+    
+    \section{Polynomial Functions}
+    \begin{dfn}{}{}
+        A \defineindex{polynomial function} on \(\affine^n\) is any function \(\affine^n \to K\) determined by \(x \mapsto f(x)\) for some \(f \in K[x_1, \dotsc, x_n]\).
+    \end{dfn}
+    
+    Note that such functions form a ring.
+    
+    An immediate consequence of the Nullstellensatz is that polynomials and polynomial functions on \(\affine^n\) agree.
+    That is, two polynomials in \(K[x_1, \dotsc, x_n]\) are equal if and only if the polynomial functions they determine on \(\affine^n\) are equal.
+    
+    If \(f, g \in K[x_1, \dotsc, x_n]\) determine the same polynomial function on \(\affine^n\) then \(f(x) = g(x)\) for all \(x \in \affine^n\) by definition of equality of functions.
+    Then \((f - g)(x) = 0\) for all \(x \in \affine^n\).
+    Then by the Nullstellensatz we have
+    \begin{equation}
+        f - g \in I(\affine^n) = I(V(0)) = \sqrt{\langle 0 \rangle} = \langle 0 \rangle
+    \end{equation}
+    and thus \(f - g = 0\) in \(K[x_1, \dotsc, x_n]\), which means \(f = g\) as polynomials.
+    
+    The trickiest thing here is distinguishing between a polynomial and the polynomial function it determines.
+    The solution to this is to use the work above to mostly ignore the distinction.
+    We identify \(K[x_1, \dotsc, x_n]\) with the ring of polynomial functions on \(\affine^n\).
+    
+    We can just as well define polynomial functions on any subset of \(\affine^n\), and the most useful subsets to define them on are affine varieties.
+    Note that this subsumes the above definition by considering \(\affine^n\) as an affine variety.
+    
+    \begin{dfn}{}{}
+        Let \(X \subseteq \affine^n\) be an affine variety.
+        Then a \defineindex{polynomial function} on \(X\) is any function \(X \to K\) determined by \(x \mapsto f(x)\) for some \(f \in K[x_1, \dotsc, x_n]\).
+        
+        The ring of all polynomial functions on \(X\) is called the \defineindex{coordinate ring}, denoted \(A(X)\).
+    \end{dfn}
+    
+    \begin{ntn}{}{}
+        A common alternative notation for the coordinate ring of \(X\) is \(K[X]\), not to be confused with the polynomial ring in a single variable, \(K[x]\), or say the group algebra or \(K\)-span of \(X\).
+    \end{ntn}
+    
+    \begin{lma}{}{}
+        Let \(X \subseteq \affine^n\) be an affine variety.
+        Then the coordinate ring is given by
+        \begin{equation}
+            A(X) \isomorphic K[x_1, \dotsc, x_n] / I(X).
+        \end{equation}
+        \begin{proof}
+            The isomorphism simply identifies the equivalence class of a polynomial, \([f]\), with the corresponding function \(x \mapsto f(x)\), which is clearly a ring homomorphism.
+            We need only show that this is independent of choice of representative.
+            To do so suppose that \(f, g \in [f]\).
+            That is \(f - g \in I(X)\).
+            Then \(f(x) - g(x) = 0\) for all \(x \in X\), and thus \(f(x) = g(x)\), so \(f\) and \(g\) determine the same polynomial function on \(X\).
+        \end{proof}
+    \end{lma}
+    
+    We will identify \(A(X)\) and \(K[x_1, \dotsc, x_n]/I(X)\) from now on.
+    
+    The idea here is that as far as \(X\) is concerned two polynomials are the same if they are equal for all \(x \in X\).
+    Whether these polynomials differ outside of \(X\) is not a question relevant when we're studying \(X\).
+    Thus, the difference of these two polynomials should vanish on \(X\), which is exactly what it means for the difference of these two polynomials to be in \(I(X)\).
+    
+    Note that as well as being a ring \(A(X)\) is actually a vector space, and the multiplication of two polynomial functions is \(K\)-bilinear.
+    This means \(A(X)\) is actually a \(K\)-algebra.
+    Despite this, the name coordinate \emph{ring} remains.
+    
+    \begin{exm}{}{}
+        Consider the affine variety \(X = V(y - x^2) \subseteq \affine^2\).
+        Then \(A(X) = K[x, y] / I(X)\).
+        We have that \(K[x, y] / \langle y - x^2 \rangle \isomorphic K[x, x^2] = K[x]\), which is an integral domain.
+        Thus, \(\langle y - x^2 \rangle\) is prime, and so by \cref{lma:prime ideal is radical} we have \(\langle y - x^2 \rangle = \sqrt{\langle y - x^2 \rangle}\).
+        Thus, \(I(X) = \sqrt{\langle y - x^2 \rangle} = \langle y - x^2 \rangle\) and so \(A(X) = K[x, y] / I(X) \isomorphic K[x]\).
+    \end{exm}
+    
+    Note that we almost always only identify coordinate rings up to isomorphism.
+    
+    \section{Affine Subvarieties}
+    We will now repeat much of our previous work to define \emph{relative} versions of many concepts.
+    These replace the ambient space, \(\affine^n\), with some other affine variety, \(Y \subseteq \affine^n\), and then make the equivalent definitions for \(X \subseteq Y\) given by the vanishing set of some polynomials.
+    
+    \begin{dfn}{}{}
+        Let \(Y \subseteq \affine^n\) be a fixed affine variety.
+        For a subset, \(S \subseteq A(Y)\), we define it's \defineindex{relative zero locus} to be
+        \begin{equation}
+            V_Y(S) = \{x \in Y \mid f(x) = 0 \forall f \in S\} \subseteq Y.
+        \end{equation}
+        Subsets of this form are called \define{affine subvarieties}\index{affine subvariety} of \(Y\).
+    \end{dfn}
+    
+    \begin{ntn}{}{}
+        When no confusion is likely to occur we drop the subscript \(Y\) and just write \(V(S)\).
+        This is usually fine due to the following point.
+    \end{ntn}
+    
+    Note that affine subvarieties of \(Y\) are exactly the affine varieties (subsets of \(\affine^n\)) which are also subsets of \(Y\).
+    In the definition we're just restricting the polynomial functions determined on \(\affine^n\) to polynomial functions defined on \(Y\) before restricting further to \(X\).
+    This doesn't actually change anything\footnote{This is an important part of the definition of a sheaf, which we'll see later}.
+    % TODO: reference to definition of sheaf
+    
+    \begin{dfn}{}{}
+        Let \(Y \subseteq \affine^n\) be a fixed affine variety.
+        For a subset, \(X \subseteq Y\), we define the \defineindex{relative ideal} of \(X\) in \(Y\) to be
+        \begin{equation}
+            I_Y(X) = \{f \in A(Y) \mid f(x) = 0 \forall x \in X\} \subideal A(Y).
+        \end{equation}
+    \end{dfn}
+    
+    \begin{ntn}{}{}
+        When no confusion is likely to occur we drop the subscript \(Y\) and just write \(I(X)\).
+    \end{ntn}
+    
+    \begin{lma}{}{}
+        Let \(X \subseteq Y \subseteq \affine^n\) be affine varieties.
+        Then
+        \begin{equation}
+            A(X) \isomorphic A(Y) / I_Y(X).
+        \end{equation}
+        \begin{proof}
+            The isomorphism identifies an equivalence class, \([f]\), of polynomial functions on \(Y\) with the polynomial function on \(X\) defined by \(x \mapsto f(x)\).
+            This is clearly an isomorphism.
+            It is independent of the choice of representatives because if \(f, g \in [f]\) then \(f - g \in I_Y(X)\), which means \(f(x) - g(x) = 0\) on \(X\), which means \(f(x) = g(x)\) for \(x \in X\) and therefore \(f\) and \(g\) both determine the same polynomial function on \(X\).
+        \end{proof}
+    \end{lma}
+    
+    There are many relative results we can now state, but won't prove.
+    First, all of the properties of \(V\) and \(Y\) with respect to inclusions, unions, and intersections still hold for the relative versions.
+    That is, we get analogous relative results for \cref{lma:V reverses inclusion,lma:union of defining equations,lma:intersection of defining equations,lma:I reverses inclusion,lma:ideal of union,lma:ideal of intersection}.
+    
+    \begin{thm}{Relative Nullstellensatz}{}
+        Let \(X \subseteq Y \subseteq \affine^n\) be affine varieties.
+        Then we have \(V_Y(I_Y(X)) = X\).
+        Let \(J \subideal A(Y)\), then \(I_Y(V_Y(J)) = \sqrt{J}\).
+    \end{thm}
+    
+    This gives us a bijection
+    \begin{equation}
+        \{\text{affine subvarieties of } Y\} \xleftrightarrow{1:1} \{\text{radical ideals of } A(Y)\}.
+    \end{equation}
+    
+    \chapter{Zariski Topology}
+    \label{chap:zariski topology}
+    In this section we see that there is a natural topology on any affine variety, given by declaring all affine subvarieties to be closed.
+    
+    \section{Topological Preliminaries}
+    A topology can be defined by specifying open sets.
+    It is also possible to define a topology by specifying closed sets (complements of open sets).
+    This gives an equivalent definition of a topology, which is what we will work with.
+    
+    \begin{lma}{}{}
+        Let \(X\) be a set.
+        We can declare a \defineindex{topology} on \(X\) by declaring a collection of closed sets so long as
+        \begin{enumerate}
+            \item the empty set and \(X\) are closed;
+            \item arbitrary intersections of closed sets are closed;
+            \item finite unions of closed sets are closed.
+        \end{enumerate}
+    \end{lma}
+    
+    Notice that the standard definition of a topology has arbitrary unions/finite intersections of open sets.
+    These get swapped because taking complements turns unions into intersections and vice versa by De Morgan's laws.
+    
+    \begin{lma}{}{}
+        If \(Y\) is a topological space and \(X \subseteq Y\) is a set then the \defineindex{subspace topology} on \(X\) is given by declaring the closed sets of \(X\) to be those sets, \(A \subseteq X\), of the form \(A = C \cap Y\) for \(C \subseteq Y\) closed in the topology of \(Y\).
+    \end{lma}
+    
+    \begin{lma}{}{}
+        A function, \(f \colon X \to Y\), between topological spaces is \defineindex{continuous} if the preimage of a closed set is closed.
+    \end{lma}
+    
+    \section{Zariski Topology}
+    \begin{dfn}{Zariski Topology}{}
+        Let \(X\) be an affine variety.
+        The \defineindex{Zariski topology} on \(X\) is given by declaring the closed sets to be the affine subvarieties of \(X\).
+    \end{dfn}
+    
+    That is, the closed subsets are exactly those of the form \(V_X(S) = V(S)\) where \(S \subseteq A(X)\).
+    
+    Unless stated otherwise all topological notions for an affine variety will be considered with respect to the Zariski topology.
+    Likewise, any topological notions for a subset of an affine variety will be considered with respect to the subspace topology of the affine variety (which is itself considered with respect to the Zariski topology).
+    
+    \begin{lma}{}{}
+        The Zariski topology is really a topology.
+        \begin{proof}
+            Let \(X\) be an affine variety.
+            Since \(X = V(I(X))\) and \(\emptyset = V(1)\) we have that \(X\) and \(\emptyset\) are closed.
+            A collection of closed subsets is a collection of affine subvarieties.
+            This is closed under arbitrary intersection by the relative version of \cref{lma:intersection of defining equations}, and is closed under finite unions by the relative version of \cref{lma:union of defining equations}.
+        \end{proof}
+    \end{lma}
+    
+    Notice that if we have affine varieties, \(X \subseteq Y\), then there are \textit{a priori} two topologies we could consider on \(X\):
+    \begin{enumerate}
+        \item The Zariski topology;
+        \item The subspace topology.
+    \end{enumerate}
+    However, these are actually exactly the same.
+    To see this note that the affine subvarieties of \(X\) (that is, the closed sets of \(X\) in the Zariski topology) are precisely the affine subvarieties of \(Y\) which are a subset of \(X\), that is, they're of the form \(Z \cap Y\) where \(Z \subseteq Y\) is closed, but that's precisely the closed sets of the subspace topology.
+    
+    To showcase some of the slightly unusual features of the Zariski topology we'll consider \(\affine_{\complex}^1\) and compare things to the standard topology on \(\complex\).
+    
+    \begin{exm}{}{}
+        Consider the unit ball,
+        \begin{equation}
+            B = \{x \in \affine_{\complex}^1 \mid \abs{x} \le 1\}.
+        \end{equation}
+        Viewing this as a subset of \(\complex\) in the standard topology it is clearly closed.
+        Viewing it as a subset of \(\affine_{\complex}^1\) in the Zariski topology it is not closed, since it is an infinite set and the only affine varieties of \(\affine^1\) are \(\affine^1\) and finite sets (\cref{exm:affine varieties of A1}).
+    \end{exm}
+    
+    This example informs our intuition for closed sets in the Zariski topology.
+    Specifically, closed sets are, in a sense, \enquote{small}.
+    Meaning that open sets are \enquote{big}.
+    Now, in dimensions greater than \(1\) we can have infinite closed sets, so we have to be a bit careful about the meaning of \enquote{small}, but it's a reasonable intuition to have.
+    
+    Note that any Zariski closed subset of \(\affine_{\complex}^n\) is also closed in the standard topology of \(\complex^n\).
+    This is because given \(X = V(f_1, \dotsc, f_n)\) a Zariski-closed subset we have that \(X = (f_1, \dotsc, f_n)^{-1}(0)\), where we're considering a function \((f_1, \dotsc, f_n) \colon \complex^n \to \complex\) and \(\{0\} \subseteq \complex\) is closed in the standard topology and polynomials are clearly continuous (with respect to the standard topology), so \(X\) is the preimage of a closed set under a continuous map and so is closed in the standard topology also.
+    
+    Only very few closed subsets in the standard topology are also closed in the Zariski topology.
+    The Zariski topology is coarser than the standard topology.
+    
+    \begin{exm}{}{}
+        Let \(f \colon \affine_{\complex}^1 \to \affine_{\complex}^1\) be any injective map.
+        Then if \(X \subseteq \affine_{\complex}^1\) is finite (i.e., Zariski-closed) then \(f^{-1}(X)\) is also finite, and hence Zariski-closed.
+        We also have that \(f^{-1}(\emptyset) = \emptyset\) and any injective polynomial from \(\complex \to \complex\) necessarily has domain \(f^{-1}(\affine_{\complex}^1) = \affine_{\complex}^1\).
+        Thus, the preimage of any Zariski-closed subset is again Zariski-closed, and so \(f\) is always continuous.
+    \end{exm}
+    
+    \begin{exm}{Product Topology}{}
+        Given topological spaces, \(X\) and \(Y\), their product, \(X \times Y\), can be equipped with a topology by declaring open subsets to be those of the form \(\bigcup_{i \in I} U_i \times V_i\) where \(U_i \subseteq X\) and \(V_i \subseteq Y\) are families of open subsets in their respective topologies.
+        
+        The standard topology on \(\complex^n\) is precisely the product topology induced by the standard topology on each copy of \(\complex\).
+        This is not so for the Zariski topology.
+        
+        Let \(X \subseteq \affine_{\complex}^n\) and \(Y \subseteq \affine_{\complex}^m\) be affine varieties.
+        Then we have seen that \(X \times Y \subseteq \affine_{\complex}^{n+m}\) is an affine variety (\cref{exm:affine varieties}).
+        However, the Zarisiki topology on \(X \times Y\) does not coincide with the product topology on \(X \times Y\) induced by the Zariski topology on \(X\) and \(Y\).
+        
+        To see this note that \(V(x - y) = \{(a, a) \mid a \in K\} \subseteq \affine_{\complex}^2\) is closed in the Zariski topology of \(\affine_{\complex}^2\), but it is not closed in the product topology, since the only way to write it as a union of products is
+        \begin{equation}
+            \bigcup_{a \in K} \{a\} \times \{a\},
+        \end{equation}
+        but \(\{a\}\) is not open in the Zariski-topology (its complement is an infinite subset of \(\affine_{\complex}^1\)).
+    \end{exm}
+    
+    Note that the diagonal, \(\Delta = \{(a, a) \mid a \in X\}\), is a closed subset of \(X\) if and only if \(X\) is Hausdorff.
+    This shows that the Zariski topology is not Hausdorff, at least when we're working over an infinite field.
     
     \appendixpage
     \begin{appendices}
