@@ -1,0 +1,88 @@
+\chapter{Commutative Algebra}
+Here we collect some results from commutative algebra which we'll make use of in the course.
+This won't be very well organised, and is more for reference than actual reading.
+The conditions to be included here are pretty much \enquote{I had to look it up} or \enquote{I had to think about it for more than 10 seconds} while writing these notes, or \enquote{I thought it was worth recapping}.
+
+\section{Ideals}
+
+\begin{dfn}{Prime Ideal}{}
+    A proper ideal, \(\ideal{p} \subideal R\), is \define{prime}\index{prime ideal} if whenever \(ab \in \ideal{p}\) for \(a, b \in R\) then either \(a \in \ideal{p}\) or \(b \in \ideal{p}\).
+    
+    Equivalently, \(\ideal{p}\) is prime if \(R/\ideal{p}\) is an integral domain.
+\end{dfn}
+
+\begin{dfn}{Maximal Ideal}{}
+    A proper ideal, \(\ideal{m} \subideal R\), is \define{maximal}\index{maximal ideal} if whenever there is another ideal, \(I \subideal R\), with \(\ideal{m} \subseteq I\) then either \(I = \ideal{m}\) or \(I = R\).
+    
+    Equivalently, \(\ideal{m}\) is maximal if \(R/\ideal{m}\) is a field.
+\end{dfn}
+
+\begin{lma}{}{lma:product of ideals subset of intersection}
+    Let \(R\) be a ring with ideals \(I\) and \(J\).
+    Then \(IJ \subseteq I \cap J\).
+    \begin{proof}
+        If \(a \in I\) and \(b \in J\) then \(ab \in I\) and \(ab \in J\) by definition of an ideal.
+        Then \(ab \in I \cap J\).
+    \end{proof}
+\end{lma}
+
+\begin{lma}{}{lma:radical of product is radical of intersection}
+    Let \(R\) be a ring with ideals \(I\) and \(J\).
+    Then \(\sqrt{IJ} = \sqrt{I \cap J} = \sqrt{I} \cap \sqrt{J}\).
+    \begin{proof}
+        We prove a circle of inclusions.
+        We start with \(\sqrt{IJ} \subseteq \sqrt{I \cap J}\), which follows from \cref{lma:product of ideals subset of intersection}.
+        
+        If \(a \in \sqrt{I \cap J}\) then \(a^k \in I \cap J\) for some \(k \in \naturals\).
+        Thus, \(a^k \in I\) and \(a^k \in J\).
+        Hence, \(a \in \sqrt{I} \cap \sqrt{J}\).
+        
+        If \(a \in \sqrt{I} \cap \sqrt{J}\) then \(a^k \in I\) and \(a^{\ell} \in J\) for some \(k, \ell \in \naturals\).
+        Then \(a^k a^{\ell} = a^{k + \ell} \in IJ\), and so \(a \in \sqrt{IJ}\).
+    \end{proof}
+\end{lma}
+
+\begin{lma}{}{lma:prime ideal is radical}
+    Every prime ideal is radical.
+    \begin{proof}
+        Let \(\ideal{p}\) be a prime ideal of a ring, \(R\).
+        Consider \(\sqrt{\ideal{p}}\).
+        If \(a \in \sqrt{\ideal{p}}\) then there exists some \(k \in \naturals\) such that \(a^k \in \ideal{p}\).
+        Suppose that \(k\) is minimal in making this true.
+        If \(k = 1\) then \(a \in \ideal{p}\).
+        If \(k > 1\) then by the definition of a prime ideal have \(x \cdot x^{k-1} \in \ideal{p}\) implying \(x \in \ideal{p}\) or \(x^{k-1} \in \ideal{p}\).
+        However, the later cannot be the case because \(k\) was assumed minimal.
+        Therefore, \(x \in \ideal{p}\), and since \(\ideal{p} \subseteq \sqrt{\ideal{p}}\) (\cref{lma:ideal is subset of its radical}) it must be that \(\ideal{p} = \sqrt{\ideal{p}}\).
+    \end{proof}
+\end{lma}
+
+\section{Noetherian Rings}
+\begin{dfn}{Noetherian}{}
+    A ring, \(R\), is noetherian if it satisfies the ascending chain condition.
+    That is, if every chain of ideals,
+    \begin{equation}
+        I_1 \subseteq I_2 \subseteq I_3 \subseteq \dotsb
+    \end{equation}
+    terminates, so \(I_{n+1} = I_n\) for sufficiently large \(n\).
+\end{dfn}
+
+Note that all fields are noetherian, and so is \(\integers\).
+
+\begin{lma}{}{lma:noetherian iff all ideals finitely generated}
+    Let \(R\) be a ring.
+    The following are equivalent:
+    \begin{enumerate}
+        \item \(R\) is a noetherian.
+        \item Every ideal of \(R\) is finitely generated.
+    \end{enumerate}
+\end{lma}
+
+\subsection{Hilbert's Basis Theorem}
+\begin{thm}{Hilbert's Basis Theorem}{thm:hilberts basis theorem}
+    If \(R\) is a noetherian ring then \(R[x]\) is also Noetherian.
+\end{thm}
+
+\begin{crl}{}{crl:poly ring over noetherian is noetherian}
+    If \(R\) is a noetherian ring then \(R[x_1, \dotsc, x_n]\) is noetherian.
+\end{crl}
+
