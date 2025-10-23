@@ -6,6 +6,9 @@
 \usepackage{csquotes}
 \usepackage{subcaption}
 
+\usepackage[language=british]{biblatex}
+\addbibresource{ref.bib}
+
 \usepackage{tikz}
 \usetikzlibrary{external}
 \tikzexternalize[prefix=tikz-external/]
@@ -52,15 +55,18 @@ noabbrev
 \newcommand{\affine}{\symbb{A}}
 \newcommand{\ideal}[1]{\symfrak{#1}}
 \newcommand{\isomorphic}{\cong}
+\DeclareMathOperator{\Spec}{Spec}
+\DeclareMathOperator{\codim}{codim}
+\DeclareMathOperator{\Kdim}{Kdim}
 
-\includeonly{appendices/comm-alg}
+\includeonly{appendices/comm-alg, appendices/topology}
 
 \begin{document}
     \frontmatter
     \titlepage
     \innertitlepage{}
     \tableofcontents
-    % \listoffigures
+    \listoffigures
     \mainmatter
     
     \chapter{Introduction}
@@ -75,6 +81,8 @@ noabbrev
     
     We write \(K[x_1, \dotsc, x_n]\) for the ring of polynomials with coefficients in \(K\) in the variables \(x_1, \dotsc, x_n\).
     We write \(f(a)\) to mean the evaluation of an element of this ring at the point \(a = (a_1, \dotsc, a_n) \in K^n\), and where no confusion may arise we'll usually call this point \(x = (x_1, \dotsc, x_n)\).
+    
+    The natural numbers, \(\naturals\), are assumed to contain \(0\).
     
     \section{Motivation}
     This section contains various motivating examples of algebro-geometric thinking, in varying levels of precision.
@@ -127,19 +135,17 @@ noabbrev
     The result is that as we go around the points \(x = 1, \dotsc, 2n\) we move from one copy of \(\complex\) to the other.
     
     Fortunately, we know how to deal with this, we take branch cuts between zeros.
-    Take both copies of \(\complex\), and perform branch cuts along the intervals \([1, 2], [3, 4], \dotsc, [2n - 1, 2n]\).
+    Take both copies of \(\complex\), and perform branch cuts along alternate intervals, \([1, 2], [3, 4], \dotsc, [2n - 1, 2n]\).
     For \(n = 3\) this produces \cref{fig:complex planes with branch cuts}.
-    Now glue these along the cuts, which gives the picture
-    % TODO
-    Finally, because it makes things nicer, add two points at infinity, one for each copy of \(\complex\), compactifying everything to get the picture
-    % TODO
+    Now glue these along the cuts, which gives the picture \cref{fig:complex planes with branch cuts glued}.
+    Finally, because it makes things nicer, add two points at infinity, one for each copy of \(\complex\), compactifying everything to get the picture \cref{fig:complex planes with branch cuts glued and compactified}.
     We see that this leaves us with a Riemann surface of genus \(g = n - 1\).
     This relates algebraic geometry to the theory of Riemann surfaces.
     
     \begin{figure}
         \centering
         \begin{subfigure}{0.8\textwidth}
-            \tikzexternaldisable
+            \centering
             \tikzsetnextfilename{riemann-surface-1}
             \begin{tikzpicture}
                 \draw [very thick, rounded corners=1, my blue, fill=my blue!50] (0, -2) -- (8, -2) -- (9, 0) -- (1, 0) -- cycle;
@@ -161,6 +167,38 @@ noabbrev
             \caption{Branch cuts along alternate intervals.}
             \label{fig:complex planes with branch cuts}
         \end{subfigure}
+        
+        \begin{subfigure}{0.8\textwidth}
+            \centering
+            \tikzsetnextfilename{riemann-surface-2}
+            \begin{tikzpicture}
+                \fill [my blue!50] (0, 0) arc (180:270:1) arc (90:0:1) arc (360:270:1) arc (90:180:1) -- ++ (10, 0) arc (0:90:1) arc (270:180:1) arc (180:90:1) arc (270:360:1) -- cycle;
+                \draw [very thick, my blue] (0, 0) arc (180:270:1) arc (90:0:1) arc (360:270:1) arc (90:180:1);
+                \draw [very thick, my blue] (10, -4) arc (0:90:1) arc (270:180:1) arc (180:90:1) arc (270:360:1);
+                \draw [very thick, my blue, fill=white] (3.75, -2) circle [x radius = 0.5, y radius = 0.75];
+                \draw [very thick, my blue, fill=white] (6.25, -2) circle [x radius = 0.5, y radius = 0.75];
+                \draw [my red, very thick] (2, -2) .. controls (2.4, -2.2) and (2.85, -2.2) .. (3.25, -2);
+                \draw [my red, very thick] (4.25, -2) .. controls (4.8, -2.2) and (5.2, -2.2) .. (5.75, -2);
+                \draw [my red, very thick] (6.75, -2) .. controls (7.15, -2.2) and (7.6, -2.2) .. (8, -2);
+                \draw [my red, very thick, dashed] (2, -2) .. controls (2.4, -1.8) and (2.85, -1.8) .. (3.25, -2);
+                \draw [my red, very thick, dashed] (4.25, -2) .. controls (4.8, -1.8) and (5.2, -1.8) .. (5.75, -2);
+                \draw [my red, very thick, dashed] (6.75, -2) .. controls (7.15, -1.8) and (7.6, -1.8) .. (8, -2);
+            \end{tikzpicture}
+            \caption{Gluing along branch cuts.}
+            \label{fig:complex planes with branch cuts glued}
+        \end{subfigure}
+        
+        \begin{subfigure}{0.8\textwidth}
+            \centering
+            \tikzsetnextfilename{riemann-surface-3}
+            \begin{tikzpicture}
+                \draw [very thick, my blue, fill=my blue!50] (0.5, 0.5) arc (90:180:0.5) arc (180:270:1) arc (90:0:1) arc (360:270:1) arc (90:180:1) arc (180:270:0.5) -- ++ (9, 0) arc (270:360:0.5) arc (0:90:1) arc (270:180:1) arc (180:90:1) arc (270:360:1) arc (0:90:0.5) -- cycle;
+                \draw [very thick, my blue, fill=white] (3.75, -2) circle [x radius = 0.5, y radius = 0.75];
+                \draw [very thick, my blue, fill=white] (6.25, -2) circle [x radius = 0.5, y radius = 0.75];
+            \end{tikzpicture}
+            \caption{Compactification by adding a point at infinity for each plane.}
+            \label{fig:complex planes with branch cuts glued and compactified}
+        \end{subfigure}
         \caption{Producing a Riemann surface from a curve}
     \end{figure}
     
@@ -177,11 +215,19 @@ noabbrev
         X = \{(x_1, x_2, x_3) \in \reals^3 \mid 1 + x_1^3 + x_2^3 + x_3^3 - (1 + x_1 + x_2 + x_3)\} \subseteq \reals^3.
     \end{equation}
     This is called the \defineindex{Clebsch surface}.
+    It's plotted in \cref{fig:clebsch surface}.
     This is a cubic surface because it's defined by a single cubic equation.
     It's possible to draw straight lines on this surface.
     One can ask how many such straight lines exist.
-    The answer, surprisingly, is always 27, at least under some mild conditions.
+    The answer over \(\complex\), surprisingly, is always 27, at least under some mild conditions.
+    The Clebsch surface has the nice property that all of these lines are real.
     Cubic surfaces are actually a weird middle ground, between the infinite families of lines on a quadratic surface, and the general absence of lines on surfaces defined by any higher degree equation.
+    
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{images/clebsch-surface}
+        \caption{The Clebsch surface, as well as the 27 lines which lie on it.}
+    \end{figure}
     
     The question of how many geometric objects of a certain type exist is one of enumerative geometry, which makes heavy use of algebraic geometry.
     
@@ -383,7 +429,7 @@ noabbrev
     
     This result, combined with our earlier analysis, means that every affine variety is the zero locus of a radical ideal.
     
-    \begin{lma}{Union}{}
+    \begin{lma}{Union}{lma:union of ideals with V}
         If \(J_1, J_2 \subideal K[x_1, \dotsc, x_n]\) then \(V(J_1) \cup V(J_2) = V(J_1 J_2) = V(J_1 \cap J_2)\).
         \begin{proof}
             That \(V(J_1) \cup V(J_2) = V(J_1 J_2)\) is \cref{lma:union of defining equations}.
@@ -761,7 +807,7 @@ noabbrev
     First, all of the properties of \(V\) and \(Y\) with respect to inclusions, unions, and intersections still hold for the relative versions.
     That is, we get analogous relative results for \cref{lma:V reverses inclusion,lma:union of defining equations,lma:intersection of defining equations,lma:I reverses inclusion,lma:ideal of union,lma:ideal of intersection}.
     
-    \begin{thm}{Relative Nullstellensatz}{}
+    \begin{thm}{Relative Nullstellensatz}{thm:relative nullstellensatz}
         Let \(X \subseteq Y \subseteq \affine^n\) be affine varieties.
         Then we have \(V_Y(I_Y(X)) = X\).
         Let \(J \subideal A(Y)\), then \(I_Y(V_Y(J)) = \sqrt{J}\).
@@ -877,13 +923,390 @@ noabbrev
         but \(\{a\}\) is not open in the Zariski-topology (its complement is an infinite subset of \(\affine_{\complex}^1\)).
     \end{exm}
     
-    Note that the diagonal, \(\Delta = \{(a, a) \mid a \in X\}\), is a closed subset of \(X\) if and only if \(X\) is Hausdorff.
+    Note that the diagonal, \(\Delta = \{(a, a) \mid a \in X\}\), is a closed subset of \(X\) if and only if \(X\) is Hausdorff (\cref{lma:hausdorff iff diagonal closed}).
     This shows that the Zariski topology is not Hausdorff, at least when we're working over an infinite field.
+    
+    These examples show that the notion of continuous functions and products of spaces aren't that useful when it comes to the Zariski topology.
+    In the next section we'll define some much more useful properties.
+    
+    \section{Irreducible Spaces}
+    Consider the affine variety \(X = V(x_1x_2) \subseteq \affine^2\).
+    This consists of all points \((x_1, x_2) \in \affine^2\) where \(x_1 = 0\) or \(x_2 = 0\).
+    We can see this by just considering the solutions to \(x_1x_2 = 0\), or by noticing that \(V(x_1x_2) = V(x_1) \cup V(x_2)\) by \cref{lma:union of defining equations}.
+    When we take \(K = \complex\) we can plot the real points of this affine variety, they're simply the coordinate axes, \(X_1 = V(x_2)\) and \(X_2 = V(x_1)\) (see \cref{fig:affine variety coordinate axes}).
+    Note the exchange of indices, the \(x_i\) coordinate axis is where all other coordinates vanish.
+    We see that \(X = X_1 \cup X_2\), giving us a way to decompose \(X\) into two \enquote{smaller} affine varieties.
+    Notice also that \((0, 0) \in X_1\) and \((0, 0) \in X_2\), so these are not disjoint affine varieties.
+    This leads us to make the following definitions.
+    
+    \begin{figure}
+        \centering
+        \tikzsetnextfilename{affine-variety-coordinate-axes}
+        \begin{tikzpicture}[font=\footnotesize]
+            \draw [my blue, ultra thick, ->] (0, -3) -- ++ (0, 6) node [below left] {\(X_2 = V(x_1)\)} node [above] {\(x_2\)};
+            \draw [my green, ultra thick, ->] (-3, 0) -- ++ (6, 0) node [above left] {\(X_1 = V(x_2)\)} node [right] {\(x_1\)}; 
+            \fill [my red] (0, 0) circle [radius = 0.075] node [below right] {\(X_1 \cap X_2\)};
+        \end{tikzpicture}
+        \caption[The affine variety \(X = V(x_1x_2)\).]{The real points of the affine variety \(X = V(x_1 x_2)\), which breaks into two components, \(X = X_1 \cup X_2 = V(x_2) \cup V(x_1)\). Note the nonempty intersection \(X_1 \cap X_2 = \{(0, 0)\}\).}
+        \label{fig:affine variety coordinate axes}
+    \end{figure}
+    
+    \begin{dfn}{Connected Space}{}
+        A topological space, \(X\), is \defineindex{disconnected} if there exist closed proper (i.e., nonempty) subsets, \(X_1, X_2 \subsetneq X\), such that \(X = X_1 \cup X_2\) and \(X_1 \cap X_2 = \emptyset\).
+        Otherwise \(X\) is called \defineindex{connected}.
+    \end{dfn}
+    
+    \begin{dfn}{Irreducible Space}{}
+        A topological space, \(X\), is \defineindex{reducible} if there exist closed proper (i.e., nonempty) subsets, \(X_1, X_2 \subsetneq X\), such that \(X = X_1 \cup X_2\).
+        Otherwise \(X\) is called \defineindex{irreducible}.
+    \end{dfn}
+    
+    Note that the only difference between these is that for a space to be disconnected it needs to split into non-overlapping sets, whereas to be reducible the sets can be overlapping.
+    In particular, irreducibility implies connectedness (if it doesn't split as a union it definitely doesn't split as a union of disjoint sets).
+    
+    We can see that \(X = V(x_1x_2)\) is reducible, since \(X = X_1 \cap X_2 = V(x_2) \cap V(x_1)\) (remembering that \(V(x_1)\) and \(V(x_2)\) are closed in the Zariski topology).
+    However, \(X\) is not disconnected, since if it split into two Zariski-closed disjoint subsets then these would also be closed in the standard topology, and we can see from the picture that this space is not disconnected.
+    
+    \begin{exm}{}{}
+        Note that reducibility depends on the topology.
+        For example, the complex plane, \(\complex\), is reducible in the standard topology because we can write it as
+        \begin{equation}
+            \complex = \{z \in \complex \mid \abs{z} \le 1\} \cup \{z \in \complex \mid \abs{z} \ge 1\}.
+        \end{equation}
+        However, in the Zariski topology any such decomposition would require at least one of the sets to be infinite, and the only infinite affine subvariety of \(\affine_{\complex}^1\) is \(\affine_{\complex}^1\) itself, so there is no way to write \(\affine_{\complex}^1\) as a union of \emph{proper} Zariski-closed subsets.
+    \end{exm}
+    
+    \begin{exm}{}{}
+        \begin{enumerate}
+            \item Consider a single point, \(p \in \affine^n\).
+            The set \(\{p\} = V(x - p)\) is an affine variety.
+            This is clearly irreducible, if \(\{p\} = X_1 \cup X_2\) then one of \(X_1\) or \(X_2\) must be \(\{p\}\), so these aren't proper subsets.
+            
+            \item The emptyset is reducible, since we cannot write it as a union of nonempty sets.
+            
+            \item Let \(X = \{p_1, \dotsc, p_m\} \subseteq \affine^n\) be any finite set with \(m \ge 2\).
+            This is an affine variety, \(X = V((x - p_1) \dotsm (x - p_m))\).
+            We can always write \(X = \{p_1, \dotsc, p_{m-1}\} \cup \{p_m\} = V((x - p_1) \dotsm (x - p_{m-1})) \cup V(x - p_m)\), showing that \(X\) is reducible.
+        \end{enumerate}
+        Combining these three, we see that a finite affine variety is irreducible if and only if it contains exactly one point.
+    \end{exm}
+    
+    Connectedness and reducibility, as stated above, are topological properties.
+    It turns out that there are alternative algebraic characterisation of these properties for the Zariski topology.
+    
+    \begin{prp}{}{}
+        Let \(X\) be a disconnected affine variety such that \(X = X_1 \cup X_2\) with \(X_1, X_2 \subsetneq X\) closed subsets.
+        Then \(A(X) \isomorphic A(X_1) \times A(X_2)\).
+        \begin{proof}
+            In \(A(X)\) by \cref{lma:ideal of union} we have that
+            \begin{equation}
+                I(X_1) \cap I(X_2) = I(X_1 \cup X_2) = I(X) = \langle 0 \rangle.
+            \end{equation}
+            We also have \(X_1 \cap X_2 = \emptyset\), and so by \cref{lma:ideal of intersection}
+            \begin{equation}
+                \sqrt{I(X_1) + I(X_2)} = I(X_1 \cap X_2) = I(\emptyset) = A(X).
+            \end{equation}
+            Since \(1^k = 1\) it must be that \(1 \in I(X_1) + I(X_2)\), and thus \(I(X_1) + I(X_2) = A(X)\).
+            Then by the Chinese remainder theorem (\cref{lma:chinese remainder theorem}) we have an isomorphism
+            \begin{equation}
+                A(X) = \isomorphic \frac{A(X)}{I(X_1)} \times \frac{A(X)}{I(X_2)} = A(X_1) \times A(X_2). \qedhere
+            \end{equation}
+        \end{proof}
+    \end{prp}
+    
+    \begin{prp}{}{}
+        Let \(X\) be a nonempty affine variety.
+        Then \(X\) is irreducible if and only if \(A(X)\) is an integral domain.
+        \begin{proof}
+            Since \(X\) is nonempty \(A(X)\) is not the zero ring, which is required to be an integral domain.
+            We will prove that \(X\) is reducible if and only if it \(A(X)\) is not an integral domain.
+            
+            Suppose that \(A(X)\) is not an integral domain.
+            That is, there exist nonzero \(f_1, f_2 \in A(X)\) with \(f_1 f_2 = 0\).
+            Then \(X_1 = V(f_1)\) and \(X_2 = V(f_2)\) are closed subsets of \(X\) and since \(f_i\) are nonzero \(X_i \subsetneq X\).
+            By \cref{lma:union of defining equations}, \(X_1 \cup X_2 = V(f_1) \cup V(f_2) = V(f_1f_2) = V(0) = X\), and so \(X\) is reducible.
+            
+            Suppose instead that \(X\) is reducible, so \(X = X_1 \cup X_2\) for some closed proper subsets, \(X_1, X_2 \subsetneq X\).
+            By the relative Nullstellensatz (\cref{thm:relative nullstellensatz}) we know that \(I(X_i) \ne \{0\}\), since under the bijection between affine subvarieties and radical ideals of \(A(X)\) the ideal \(\{0\}\) corresponds to \(X\) itself.
+            Thus, there exists nonzero \(f_i \in I(X_i)\).
+            Then \(f_1 f_2\) vanishes on \(X_1 \cup X_2 = X\) since \(f_1\) vanishes on \(X_1\) and \(f_2\) vanishes on \(X_2\).
+            Thus, \(f_1 f_2 = 0\) in \(A(X)\), and so \(A(X)\) is not an integral domain.
+        \end{proof}
+    \end{prp}
+    
+    \begin{exm}{}{}
+        Affine space, \(\affine^n\), is irreducible (and hence connected) since its coordinate ring, \(A(\affine^n) = K[x_1, \dotsc, x_n]\), is an integral domain.
+        
+        More generally, any affine variety given as the vanishing set of some linear polynomials is irreducible, since its coordinate ring is again isomorphic to a polynomial ring over a field, which is an integral domain.
+    \end{exm}
+    
+    \begin{remark}{}{rmk:bijection between prime ideals and irreducible subvars}
+        Note that \(A(X) = K[x_1, \dotsc, x_n] / I(X)\) being an integral domain means that \(I(X)\) is a prime ideal.
+        This gives us yet another bijection between algebraic and geometric objects:
+        \begin{equation*}
+            \{\text{nonempty irreducible affine subvarieties of } X\} \xleftrightarrow{1:1} \{\text{prime ideals of } A(X)\}.
+        \end{equation*}
+        In other words,
+        \begin{equation*}
+            \{\text{nonempty irreducible affine subvarieties of } X\} \xleftrightarrow{1:1} \Spec A(X).
+        \end{equation*}
+    \end{remark}
+    
+    \section{Noetherian Spaces}
+    In this section we'll see that any affine variety can always be written as a finite union of irreducible spaces.
+    We'll actually show that this is true for a much broader class of spaces.
+    These are called Noetherian spaces, having a very similar definition to that of a Noetherian ring.
+    
+    \begin{dfn}{Noetherian Space}{}
+        A topological space, \(X\), is \define{Noetherian}\index{Noetherian!topological space} if every \emph{descending} chain of closed subsets,
+        \begin{equation}
+            X \supseteq X_1 \supseteq X_2 \supseteq \dotsb,
+        \end{equation}
+        stabilises.
+        That is, for sufficiently large \(i\) we have \(X_{i+1} = X_i\).
+    \end{dfn}
+    
+    Note that the corresponding definition for Noetherian \emph{rings} has an ascending chain of ideals, \(I_1 \subseteq I_2 \subseteq \dotsb\).
+    We can reformulate the definition of Noetherian spaces in terms of ascending chains of \emph{open} subsets.
+    We can also view this as the reversal of inclusions under \(X \mapsto I(X)\).
+    
+    \begin{lma}{}{}
+        Any affine variety with the Zariski topology is a Noetherian topological space.
+        \begin{proof}
+            Suppose \(X\) is an affine variety admitting an infinite descending chain, \(X_1 \supsetneq X_2 \supsetneq \dotsb\).
+            Then by the relative Nullstellensatz (\cref{thm:relative nullstellensatz}) this gives rise to an infinite ascending chain, \(I(X_1) \subsetneq I(X_2) \subsetneq \dotsb\), in \(A(X)\), but \(A(X)\) is always Noetherian as it is a quotient of the polynomial ring, which is Noetherian (\cref{thm:hilberts basis theorem,crl:poly ring over noetherian is noetherian}) and a quotient of a Noetherian ring is always Noetherian (\cref{lma:quotient of Noetherian is Noetherian}).
+        \end{proof}
+    \end{lma}
+    
+    \begin{lma}{}{}
+        Any subspace of a Noetherian space is Noetherian.
+        \begin{proof}
+            Let \(X\) be a Noetherian topological space and \(Y\) a subspace of \(X\).
+            Consider a descending chain, \(Y_1 \supseteq Y_2 \supseteq \dotsb\), of closed subsets of \(Y\).
+            By definition of the subspace topology each of these closed subsets is of the form \(Y_i = Y \cap X_i\) with \(X_i \subseteq X\) some closed subset of \(X\).
+            Thus, we have the chain \(Y \cap X_1 \supseteq Y \cap X_2 \supsetneq \dotsb\) in \(X\).
+            This gives rise to a descending chain \(X_1 \supseteq X_1 \cap X_2 \supseteq X_1 \cap X_2 \cap X_3 \supseteq \dotsb\).
+            This must stabilise, so \(X_1 \cap \dotsb \cap X_{n+1} = X_1 \cap \dotsb \cap X_n\) for sufficiently large \(n\).
+            This then implies that \(Y \cap X_{n+1} =  \cap Y \cap X_n\) for sufficiently large \(n\), and thus \(Y_{n+1} = Y_n\) for sufficiently large \(n\), so our original chain stabilises and \(Y\) is Noetherian.
+        \end{proof}
+    \end{lma}
+    
+    \begin{crl}{}{}
+        Any subspace of an affine variety is a Noetherian topological space.
+    \end{crl}
+    
+    \begin{prp}{Irreducible Decomposition}{}
+        Any Noetherian space, \(X\), decomposes as a finite union, \(X = X_1 \cup \dotsb \cup X_r\), of nonempty irreducible closed subsets.
+        Further, if \(X_i \nsubseteq X_j\) for \(i \ne j\) then the \(X_i\) are unique up to order.
+        We call the \(X_i\) the \define{irreducible components}\index{irreducible component} of \(X\).
+        \begin{proof}
+            If \(X = \emptyset\) then \(X\) is such a union with \(r = 0\), so suppose that \(X \ne \emptyset\).
+            
+            Suppose that \(X\) doesn't admit such a decomposition.
+            This means that \(X\) is reducible, else it decomposes as itself with \(r = 1\).
+            This means \(X = X_1 \cup X_1'\) for some closed proper subsets \(X_1, X_1' \subsetneq X\).
+            If both of these sets admit such a decomposition then so would \(X\), so it must be that at least one of them doesn't, say \(X_1'\).
+            Then by the same logic \(X_1'\) is reducible, so \(X_1' = X_2 \cup X_2'\) for some closed proper subsets \(X_2, X_2' \subsetneq X_1'\).
+            Again, one of these must not admit a decomposition, so is reducible.
+            Repeating like this we define an infinite chain \(X \supsetneq X_1 \supsetneq X_2 \supsetneq \dotsb\).
+            This contradicts the assumption that \(X\) is Noetherian, proving existence.
+            
+            Suppose now that we have two such decompositions for \(X\),
+            \begin{equation}
+                X = X_1 \cup \dotsb \cup X_r = X_1' \cup \dotsb \cup X_s'.
+            \end{equation}
+            For any \(i \in \{1, \dotsc, r\}\) we have \(X_i \subseteq \bigcup_j X_j'\), and so \(X_i = \bigcup_j (X_i \cap X_j')\).
+            By assumption \(X_i\) is irreducible, so we must have that all but one of these terms is empty, and so \(X_i = X_i \cap X_j'\) for some \(j\), meaning \(X_i \subseteq X_j'\) for some \(j\).
+            Similarly, we have that \(X_j' \subseteq X_k\) for some \(k\).
+            Thus, we have \(X_i \subseteq X_j' \subseteq X_k\), and by assumption this is only possible for \(i = k\), which then implies that \(X_i = X_j'\).
+            Thus, every set on the left appears on the right.
+            The same logic can be applied to show that every set on the right appears on the left.
+            Thus the two decompositions are the same, up to the order of terms.
+        \end{proof}
+    \end{prp}
+    
+    \begin{remark}{}{}
+        One can compute the irreducible decomposition of an affine variety from the corresponding primary decomposition (\cref{def:primary decomposition}) of its ideal, which always exists (\cref{lma:noetherian ring ideals have primary decomposition}).
+        Let \(X \subseteq \affine^n\) be an affine variety, and let \(I(X) = Q_1 \cap \dotsb \cap Q_r\) with \(Q_i\) primary ideals of \(K[x_1, \dotsc, x_n]\) be the primary decomposition of \(I(X)\).
+        Then by Hilbert's Nullstellensatz (\cref{thm:hilberts nullstellensatz}) and \cref{lma:union of ideals with V} we have
+        \begin{multline}
+            X = V(I(X)) = V(Q_1 \cap \dotsb \cap Q_r) = V(Q_1) \cup \dotsb \cup V(Q_r)\\
+            = V(\sqrt{Q_1}) \cup \dotsb \cup V(\sqrt{Q_r})
+        \end{multline}
+        and since \(\sqrt{Q_i}\) is prime the \(V(\sqrt{Q_i})\) are irreducible by \cref{rmk:bijection between prime ideals and irreducible subvars}.
+        Keeping only the minimal prime ideals, corresponding to maximal affine subvarieties, we obtain the irreducible decomposition of \(X\).
+        
+        This gives us the following bijection:
+        \begin{equation}
+            \{\text{irreducible components of }X\} \xleftrightarrow{1:1} \{\text{minimal prime ideals of } A(X)\}.
+        \end{equation}
+    \end{remark}
+    
+    We have previously remarked that open sets are \enquote{big} in the Zariski topology.
+    For example, in \(\affine^1\) the open sets are precisely the cofinite sets.
+    We see this particularly when we consider irreducible affine varieties.
+    
+    Let \(X\) be an irreducible topological space, and let \(U, U' \subsetneq X\) be open and nonempty.
+    Then \(U \cap U'\) is never empty.
+    Suppose that \(U \cap U' = \emptyset\), then taking the complement of this we have \(X \setminus (U \cap U') = (X \setminus U) \cup (X \setminus U') = X \setminus \emptyset = X\), and since \(U\) and \(U'\) are open their complements are closed, so this contradicts \(X\) being irreducible.
+    Intuitively, any two open sets are (edge cases aside) always so large that they overlap, no matter how we choose them.
+    
+    Further, the closure of \(U\), the smallest closed subset containing \(U\), denoted \(\overline{U}\), is all of \(X\).
+    That is, \(U\) is \defineindex{dense} in \(X\).
+    To see this suppose that \(Y \subseteq X\) is a closed subset containing \(U\).
+    Then \(X = Y \cup (X \setminus U)\), and since \(X\) is irreducible and \(X \setminus U \ne X\) it must be that \(Y = X\), and in particular this is true when \(Y = \overline{U}\).
+    Intuitively, this means that if \(U\) is open then while it may not contain all of \(X\) it contains something \enquote{close} to any given point of \(X\).
+    
+    \chapter{Dimension}
+    We have an intuitive notion of dimension, from our knowledge of vector spaces or manifolds.
+    The dimension is the number of degrees of freedom, it's the number of pieces of information we need to specify to pick out a particular point.
+    We know from manifolds that precisely how this information specifies a point only works in a neighbourhood of the point.
+    
+    Here we'll define the dimension in terms of topological properties.
+    Then we'll show that it aligns with a notion of dimension for the corresponding coordinate rings.
+    
+    \section{Dimension of a Topological Space}
+    The key idea here is that if \(X\) is irreducible then any closed proper subset aught to have a smaller dimension than \(X\).
+    If we want this to hold then we have to look at all chains of inclusions of closed subsets, and define the dimension to be large enough that all of the subsets can have lower dimension, remembering that of course we want the dimension to be a natural number if finite.
+    
+    \begin{dfn}{Dimension}{}
+        Let \(X\) be a nonempty topological space.
+        The \define{dimension}\index{dimension!of a topological space} of \(X\), \(\dim X\), is the supremum over all \(n \in \naturals\) such that there exists a chain,
+        \begin{equation}
+            \emptyset \neq Y_0 \subsetneq Y_1 \subsetneq \dotsb \subsetneq Y_n,
+        \end{equation}
+        of length \(n\) consisting of irreducible closed subsets, \(Y_i \subseteq X\).
+        If the supremum doesn't exist the dimension is \(\infty\).
+    \end{dfn}
+    
+    The idea here is that we can take \(Y_i\) to have dimension \(i\), so that \(X\) having dimension \(n\) still leaves room to fit all of these smaller spaces.
+    
+    \begin{dfn}{Codimension}{}
+        Let \(X\) be a nonempty topological space, and let \(Y\) be a nonempty irreducible closed subset of \(X\).
+        The \define{codimension}\index{codimension!of a topoloigcal space} of \(Y\) in \(X\), \(\codim_X Y\), is the supremum over all \(n \in \naturals\) such that there exists a chain,
+        \begin{equation}
+            Y \subseteq Y_0 \subsetneq Y_1 \subsetneq \dotsb \subsetneq Y_n
+        \end{equation}
+        of length \(n\) consisting of irreducible closed subsets of \(X\) containing \(Y\).
+        If the supremum doesn't exist the codimension is \(\infty\).
+    \end{dfn}
+    
+    Similar to the notion of dimension, the codimension of \(Y_i\) being \(i + \dim Y\) lets us fit all of these spaces between \(Y\) and \(X\), and so we should have \(\dim X = n + \dim Y\), or \(n = \dim X - \dim Y\), which intuitively is what the codimension should be.
+    
+    \begin{ntn}{}{}
+        For the dimension of a vector space, \(V\), over \(K\) we write \(\dim_K V\), leaving \(\dim X\) without a subscript for the topological dimension.
+    \end{ntn}
+    
+    \begin{exm}{}{}
+        The affine space, \(\affine^1\), has dimension 1, since the maximal chains of nonempty irreducible closed subsets of \(\affine^1\) are just \(\{p\} \subsetneq \affine^1\) for \(p \in \affine^1\), which all have length 1.
+        Similarly, \(\codim_{\affine^1} \{p\} = 1\).
+    \end{exm}
+    
+    \begin{remark}{}{}
+        We typically think of being Noetherian as a finiteness condition.
+        However, it is not strong enough to imply finite dimension.
+        For example, consider \(X = \naturals\) equipped with the topology in which the closed subsets are \(\emptyset\), \(X\), and \(Y_n = \{0, \dotsc, n\}\) for \(n \in \naturals\).
+        Then \(X\) is Noetherian, but has chains \(Y_0 \subsetneq Y_1 \subsetneq \dotsb \subsetneq Y_n\) of nonempty irreducible closed subsets of arbitrary length, and thus the supremum of their lengths is \(\infty\).
+    \end{remark}
+    
+    Fortunately, for affine varieties this infinite-dimension problem cannot occur.
+    To see this we need an algebraic notion of dimension.
+    
+    \section{Dimension of a Ring}
+    We now give an algebraic notion of the dimension of a ring.
+    This definition is constructed precisely so that it corresponds to the notion of dimension in the previous section.
+    
+    \begin{dfn}{Krull Dimension}{}
+        Let \(R\) be a ring.
+        The \defineindex{Krull dimension}\index{dimension!of a ring}, \(\Kdim R\), of \(R\) is the supremum over all \(n \in \naturals\) such that there exists a chain,
+        \begin{equation}
+            \ideal{p}_0 \subsetneq \ideal{p}_1 \subsetneq \dotsb \subsetneq \ideal{p}_n
+        \end{equation}
+        of length \(n\) consisting of prime ideals, \(\ideal{p}_i \subideal R\).
+    \end{dfn}
+    
+    Similarly, we can give an algebraic definition of codimension.
+    Note that since we've moved to the algebraic side we're looking at chains ending with \(\ideal{p}\), whereas on the topology side we looked at chains starting with \(Y\).
+    
+    \begin{dfn}{Height}{}
+        Let \(R\) be a ring with prime ideal \(\ideal{p}\).
+        The \defineindex{height} of \(\ideal{p}\), also known as the \define{codimension}\index{codimension!of a ring}, \(\codim_R \ideal{p}\), is the supremum over all \(n\) such that there exists a chain,
+        \begin{equation}
+            \ideal{p}_0 \subsetneq \ideal{p}_1 \subsetneq \dotsb \subsetneq \ideal{p}_n \subsetneq \ideal{p}
+        \end{equation}
+        of length \(n\) consisting of prime ideals contained in \(\ideal{p}\).
+    \end{dfn}
+    
+    We can now show that these two notions of (co)dimension actually agree for affine varieties.
+    
+    \begin{lma}{}{}
+        Let \(X\) be a nonempty affine variety.
+        Then \(\dim X = \Kdim A(X)\).
+        
+        Further, if \(Y\) is a nonemtpy irreducible affine subvariety of \(X\) then \(\codim_X Y = \codim_{A(X)} I(Y)\).
+        \begin{proof}
+            Every chain of nonempty irreducible closed subsets of \(X\) corresponds to a chain of prime ideals of \(A(X)\).
+            Thus, the corresponding notions of dimension are equivalent.
+            
+            We know that \(I(Y)\) is a prime ideal of \(A(X)\).
+            If we require that the chain in \(X\) starts with \(Y\) this is equivalent to requiring that the corresponding chain in \(A(X)\) ends with \(I(Y)\), since \(I\) reverses inclusions (\cref{lma:I reverses inclusion}).
+            Thus, the corresponding notions of codimension are equivalent.
+        \end{proof}
+    \end{lma}
+    
+    Note that a finitely generated algebra over a field always has finite dimension.
+    Hence \(A(X)\) has finite dimension, since it's a quotient of \(K[x_1, \dotsc, x_n]\) which is the free commutative algebra over \(K\) generated by \(x_1, \dotsc, x_n\).
+    Thus, \(X\) has finite dimension.
+    Note that \(\Kdim K[x_1, \dotsc, x_n] = n\) \cite[Prop 11.9(a)]{gathmann.comm.alg}.
+    
+    \begin{prp}{}{}
+        Let \(X\) and \(Y\) be nonempty irreducible affine varieties.
+        \begin{enumerate}
+            \item \label{itm:dim product is sum dims}\(\dim (X \times Y) = \dim X + \dim Y\) (where \(X \times Y\) is equipped with the Zariski topology, not the product topology).
+            \item As a special case of the above, \(\dim \affine^n = n\).
+            \item \label{itm:dim is dim plus codim}If \(Y \subseteq X\) then \(\dim X = \dim Y + \codim_X Y\).
+            \item As a special case of the above \(\codim_X \{p\} = \dim X\) for all \(p \in X\).
+            \item \label{itm:irreducible components of V(f) have codim 1}If \(f \in A(X)\) is nonzero then every irreducible component of \(V(f)\) has codimension \(1\) in \(X\), and hence dimension \(\dim X - 1\).
+        \end{enumerate}
+        \begin{proof}
+            \Cref{itm:dim product is sum dims} follows from the equivalent statement for the ideals, which in turn follows from \cite[Ex 11.33]{gathmann.comm.alg}.
+            
+            \Cref{itm:dim is dim plus codim} holds because all maximal chains of prime ideals in \(A(X)\) have the same length (which is not the case in an arbitrary ring) \cite[Crl 11.12]{gathmann.comm.alg}.
+            Thus, any maximal chain containing the prime ideal \(I(Y)\) has length \(\dim X\).
+            
+            \Cref{itm:irreducible components of V(f) have codim 1} follows from the equivalent algebraic statement, which is known as Krull's principal ideal theorem \cite[Prop 11.15]{gathmann.comm.alg}.
+        \end{proof}
+    \end{prp}
+    
+    \begin{exm}{}{}
+        Consider the affine variety \(X = V(x_2 - x_1^2) \subseteq \affine_{\complex}^2\).
+        The real points of this are shown in \cref{fig:real points of x squared}.
+        
+        This is irreducible, since its coordinate ring is \(A(X) = \complex[x_1, x_2] / \langle x_2 - x_1^2 \rangle \isomorphic \complex[x_1, x_1^2] = \complex[x_1]\).
+        
+        The dimension of this variety is, as expected, \(1\), since it is the zero locus of a single nonzero polynomial in \(\affine_{\complex}^2\) and \(\dim \affine_{\complex}^2 = 2\) so \(\dim X = \dim \affine^2 - 1\).
+    \end{exm}
+    
+    \begin{figure}
+        \centering
+        \tikzsetnextfilename{quadratic-variety}
+        \begin{tikzpicture}
+            \draw [thick, my blue, ->] (-3, 0) -- (3, 0) node [above] {\(x_1\)};
+            \draw [thick, my blue, ->] (0, -1) -- (4.5, 0) node [left] {\(x_2\)};
+            \draw [very thick, my red, domain=-3:3, samples=100] plot (\x, \x*\x/2) node [below right] {\(X_1\)};
+            \fill [my green] (0, 0) circle [radius = 0.1] node [below] {\(X_1 \cap X_2\)};
+        \end{tikzpicture}
+        \caption[Quadratic variety.]{The real points of the affine variety \(V(x_2 - x_1^2)\).}
+        \label{fig:real points of x squared}
+    \end{figure}
+    
     
     \appendixpage
     \begin{appendices}
         \include{appendices/comm-alg}
+        \include{appendices/topology}
     \end{appendices}
+    \printbibliography
     \backmatter
     \renewcommand{\glossaryname}{Acronyms}
     \printglossary[acronym]

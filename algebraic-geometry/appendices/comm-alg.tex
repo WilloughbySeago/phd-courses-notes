@@ -56,9 +56,38 @@ The conditions to be included here are pretty much \enquote{I had to look it up}
     \end{proof}
 \end{lma}
 
+\begin{lma}{Chinese Remainder Theorem}{lma:chinese remainder theorem}
+    Let \(R\) be a ring with ideals \(I\) and \(J\).
+    Consider the ring homomorphism
+    \begin{equation}
+        \varphi \colon R \to \frac{R}{I} \times \frac{R}{J}
+    \end{equation}
+    which sends \(r\) to \((r \bmod I, r \bmod J)\).
+    Then
+    \begin{enumerate}
+        \item \(\varphi\) is injective if and only if \(I \cap J = \langle 0 \rangle\);
+        \item \(\varphi\) is surjective if and only if \(I + J = R\).
+    \end{enumerate}
+    \begin{proof}
+        Notice that \(\ker \varphi\) consists of all \(r \in R\) such that \((r \bmod I, r \bmod J) = (0, 0)\), which means precisely that \(r \in I\) and \(r \in J\), so \(r \in I \cap J\).
+        Thus, if \(I \cap J = \langle 0 \rangle\) then \(\ker \varphi = \langle 0 \rangle\), so \(\varphi\) is injective.
+        The same logic in reverse proves the converse.
+        
+        Suppose that \(\varphi\) is surjective.
+        Then \((1, 0)\) is in the image of \(\varphi\), so there exists some element \(r \in R\) with \((r \bmod I, r \bmod J) = (1, 0)\), which means \(r \bmod J = 0\) so \(r \in J\).
+        Then \(1 - r \bmod I = 1 - 1 = 0\), so \(1 - r \in I\) and \(r \in J\), so \(1 = (1 - r) + r \in I + J\) so \(I + J = R\).
+        
+        Now suppose that \(I + J = R\).
+        Then there exist \(a \in I\) and \(b \in J\) such that \(a + b = 1\), so \(b = 1 - a\), meaning \(b \bmod I = 1 - a \bmod I = 1 - 1 = 0\) and \(a + b \bmod I = a \bmod I = 1\).
+        Thus, \((1, 0)\) is in the image of \(\varphi\).
+        Similarly, \((0, 1)\) is in the image of \(\varphi\).
+        Since \((1, 0)\) and \((0, 1)\) generate \(R/I \times R/J\) we are done.
+    \end{proof}
+\end{lma}
+
 \section{Noetherian Rings}
-\begin{dfn}{Noetherian}{}
-    A ring, \(R\), is noetherian if it satisfies the ascending chain condition.
+\begin{dfn}{Noetherian Ring}{}
+    A ring, \(R\), is \define{Noetherian}\index{Noetherian!ring} if it satisfies the ascending chain condition.
     That is, if every chain of ideals,
     \begin{equation}
         I_1 \subseteq I_2 \subseteq I_3 \subseteq \dotsb
@@ -66,23 +95,90 @@ The conditions to be included here are pretty much \enquote{I had to look it up}
     terminates, so \(I_{n+1} = I_n\) for sufficiently large \(n\).
 \end{dfn}
 
-Note that all fields are noetherian, and so is \(\integers\).
+Note that all fields are Noetherian, and so is \(\integers\).
+
+\begin{dfn}{Noetherian Module}{}
+    Let \(R\) be a ring, and let \(M\) be an \(R\)-module.
+    We say that \(M\) is \define{Noetherian}\index{Noetherian!module} if it satisfies the ascending chain condition.
+    That is, if every chain of submodules,
+    \begin{equation}
+        M_1 \subseteq M_2 \subseteq M_3 \subseteq \dotsb
+    \end{equation}
+    terminates, so \(M_{n+1} = M_n\) for sufficiently large \(n\).
+\end{dfn}
+
+Note that \(R\) is Noetherian as a ring exactly when \(R\) is Noetherian as an \(R\)-module.
 
 \begin{lma}{}{lma:noetherian iff all ideals finitely generated}
     Let \(R\) be a ring.
     The following are equivalent:
     \begin{enumerate}
-        \item \(R\) is a noetherian.
+        \item \(R\) is a Noetherian.
         \item Every ideal of \(R\) is finitely generated.
     \end{enumerate}
 \end{lma}
 
+\begin{lma}{}{lma:module Noetherian equivalents}
+    Let \(R\) be a ring and \(M\) an \(R\)-module.
+    The following are equivalent:
+    \begin{enumerate}
+        \item \(M\) is Noetherian.
+        \item Every submodule of \(M\) is finitely generated.
+        \item \label{itm:module noetherian if maximal submodule exists}Every nonempty family of submodules of \(M\) has a maximal element.
+    \end{enumerate}
+\end{lma}
+
+\begin{lma}{}{lma:submodule of Noetherian is Noetherian}
+    Let \(M\) be a Noetherian \(R\)-module.
+    Then any submodule of \(M\) is also Noetherian.
+    \begin{proof}
+        Let \(N\) be a submodule of \(M\).
+        Then any ascending chain, \(N_1 \subseteq N_2 \subseteq \dotsb\), in \(N\) is also an ascending chain in \(M\), and thus stabilises.
+        Thus \(N\) is also Noetherian.
+    \end{proof}
+\end{lma}
+
+\begin{lma}{}{lma:quotient of Noetherian is Noetherian}
+    Let \(M\) be a Noetherian \(R\)-module.
+    Then any quotient of \(M\) is also Noetherian.
+    \begin{proof}
+        Let \(N\) be a submodule of \(M\) and consider the quotient \(M/N\) with the quotient map \(\pi \colon M \twoheadrightarrow M/N\).
+        Let \(P_1 \subseteq P_2 \subseteq \dotsb\) be an ascending chain in \(M/N\).
+        Then setting \(M_i = \pi^{-1}(P_i)\) defines an ascending chain, \(M_1 \subseteq M_2 \subseteq \dotsb\), in \(M\), which must stabilise.
+        Thus, for sufficiently large \(n\) we have \(M_{n+1} = M_n\).
+        Since \(\pi\) is surjective this implies that \(P_{n+1} = \pi(M_{n+1}) = \pi(M_n) = P_n\), and thus our original chain in \(M/N\) stabilises.
+    \end{proof}
+\end{lma}
+
 \subsection{Hilbert's Basis Theorem}
 \begin{thm}{Hilbert's Basis Theorem}{thm:hilberts basis theorem}
-    If \(R\) is a noetherian ring then \(R[x]\) is also Noetherian.
+    If \(R\) is a Noetherian ring then \(R[x]\) is also Noetherian.
 \end{thm}
 
 \begin{crl}{}{crl:poly ring over noetherian is noetherian}
-    If \(R\) is a noetherian ring then \(R[x_1, \dotsc, x_n]\) is noetherian.
+    If \(R\) is a Noetherian ring then \(R[x_1, \dotsc, x_n]\) is Noetherian.
 \end{crl}
+
+\section{Primary Ideals}
+\begin{dfn}{Primary Ideal}{}
+    Let \(R\) be a ring.
+    An ideal, \(Q \subideal R\), with \(Q \ne R\) is called \defineindex{primary} if for all \(a, b \in R\) with \(a b \in Q\) we have \(a \in Q\) or \(b^n \in Q\) for some \(n \in \naturals\).
+\end{dfn}
+
+Note that this definition is equivalent to \(b \in \sqrt{Q}\).
+
+Every prime ideal is primary, with \(n = 1\).
+Conversely, the definition of a primary ideal is exactly such that \(\sqrt{Q}\) is a prime ideal whenever \(Q\) is a primary ideal.
+
+The idea to keep in mind, which is true for PIDs, is that primary ideals are powers of prime ideals.
+For example, \((p^n)\) is a primary ideal of \(\integers\) for \(p\) prime (so \((p)\) is a prime ideal).
+
+\begin{dfn}{Primary Decomposition}{def:primary decomposition}
+    Let \(R\) be a ring and \(I \subideal R\) an ideal.
+    Then a \defineindex{primary decomposition} of \(I\) is a finite set of primary ideals, \(Q_1, \dotsc, Q_r\), such that \(I = Q_1 \cap \dotsb \cap Q_r\).
+\end{dfn}
+
+\begin{lma}{}{lma:noetherian ring ideals have primary decomposition}
+    In a Noetherian ring every ideal admits a primary decomposition.
+\end{lma}
 
