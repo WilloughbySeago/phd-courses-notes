@@ -1259,7 +1259,7 @@ noabbrev
     Thus, \(X\) has finite dimension.
     Note that \(\Kdim K[x_1, \dotsc, x_n] = n\) \cite[Prop 11.9(a)]{gathmann.comm.alg}.
     
-    \begin{prp}{}{}
+    \begin{prp}{}{prp:dimension facts}
         Let \(X\) and \(Y\) be nonempty irreducible affine varieties.
         \begin{enumerate}
             \item \label{itm:dim product is sum dims}\(\dim (X \times Y) = \dim X + \dim Y\) (where \(X \times Y\) is equipped with the Zariski topology, not the product topology).
@@ -1300,6 +1300,198 @@ noabbrev
         \label{fig:real points of x squared}
     \end{figure}
     
+    Note that irreducibility is required for the above statements to be true.
+    However, if we relax this condition then we can still say something provided we know the irreducible decomposition of the affine variety, \(X = X_1 \cup \dotsb \cup X_r\).
+    The dimension of \(X\) is simply the largest dimension of any of its irreducible components,
+    \begin{equation}
+        \dim X = \max\{\dim X_1, \dotsc, \dim X_r\}.
+    \end{equation}
+    We must have that \(\dim X\) is at least the greatest dimension of an irreducible component, since any chain in an irreducible component is also a chain in \(X\).
+    We must have that \(\dim X\) is bounded above by the largest dimension of one of its irreducible components because if \(Y_0 \subsetneq \dotsb \subsetneq Y_n\) is a chain of nonempty irreducible affine subvarieties of \(X\) then \(Y_n = (Y_n \cap X_1) \cup \dotsb \cup (Y_n \cap X_r)\) is a union of closed subsets, and since \(Y_n\) is irreducible it must be that these are empty except for one term, so \(Y_n = Y_n \cap X_i\), but then this chain is also a chain in \(X_i\), meaning that \(\dim X_i \ge n\).
+    
+    This result allows us to mostly focus on irreducible spaces when we're considering dimension.
+    
+    Another result that can allow us to determine the dimension of \(X\) is that, even if \(X\) is reducible,
+    \begin{equation}
+        \dim X = \sup\{\codim_X \{a\} \mid a \in X\}.
+    \end{equation}
+    If \(\codim_X \{a\} \ge n\) there must be some chain, \(\{a\} \subseteq Y_0 \subsetneq \dotsb \subsetneq Y_n\) of irreducible affine subvarieties of \(X\), which shows \(\dim X \ge n\).
+    If \(\dim X \ge n\) then there is a chain \(Y_0 \subsetneq \dotsb \subsetneq Y_n\) of nonempty affine subvarieties of \(X\), and then for any \(a \in Y_0\) this chain shows that \(\codim_X \{a\} \ge n\).
+    
+    \begin{exm}{}{}
+        Consider the affine variety \(X = V(x_1x_3, x_2x_3) \subseteq \affine^3\).
+        Looking at the equations we see that a point in \(X\) must either have \(x_3 = 0\) or both \(x_1 = 0\) and \(x_2 = 0\).
+        That is, \(X = V(x_3) \cup V(x_1, x_2)\).
+        Both of these are irreducible, since their defining equations are linear.
+        The first, \(V(x_3)\), consists of all points \((x_1, x_2, 0)\), so it's the \((x_1, x_2)\)-plane.
+        The second, \(V(x_1, x_2)\), consists of all points \((0, 0, x_3)\), so it's the \(x_3\)-axis.
+        This is shown in \cref{fig:plane line variety}.
+        
+        We have that \(\dim V(x_3) = 1\), because it's defined by a single nonzero equation.
+        Alternatively, the largest chain we can make inside \(V(x_3)\) is \(X_0 \subsetneq X_1\) where \(X_0\) is a point on the \(x_3\)-axis and \(X_1 = V(x_3)\) is the whole \(x_3\)-axis.
+        This is shown in \cref{fig:plane line variety line chain}.
+        
+        We also have \(\dim V(x_1, x_2) = 2\) since the largest chain we can make in this space is \(Y_0 \subsetneq Y_1 \subsetneq Y_2\) where \(Y_0\) is a point in the \((x_1, x_2)\)-plane, \(Y_1\) is a line in the \((x_1, x_2)\) plane containing \(Y_0\), and \(Y_0 = V(x_1, x_2)\) is the entire \((x_1, x_2)\)-plane.
+        This is shown in \cref{fig:plane line variety plane chain}.
+        
+        Of course, these are exactly the dimensions we would expect a line and a plane to have.
+        By the remark above we have that \(\dim X = \max\{1, 2\} = 2\).
+        Intuitively, \(\dim X\) is the maximum number of degrees of freedom needed to specify a point anywhere on the variety, even if some parts of the variety, the line in this case, don't require that amount of information.
+        
+        Continuing with this example note that \(X_0\), a point on the line, has codimension \(1\), and \(Y_0\), a point on the plane, has codimension \(2\).
+        This demonstrates how we can think of the codimension of a point as being the local dimension of the affine variety.
+        Then \cref{prp:dimension facts} \cref{itm:dim is dim plus codim} is a statement that the local dimension of an \emph{irreducible} affine variety is the same everywhere.
+    \end{exm}
+    
+    \begin{figure}
+        \centering
+        \begin{subfigure}{0.8\textwidth}
+            \centering
+            \tikzsetnextfilename{variety-plane-line}
+            \begin{tikzpicture}[scale=0.5]
+                \fill [my green] (-3, 0, -2) -- (3, 0, -2) -- (3, 0, 2) node [right, xshift=0.1cm] {\(V(x_1, x_2)\)}  -- (-3, 0, 2) -- cycle;
+                \draw [very thick, my blue] (0, 0, 0) -- (0, 3, 0)  node [below right, yshift=0.2cm] {\(V(x_3)\)};
+                \draw [very thick, my blue] (0, -0.77, 0) -- (0, -3, 0);
+            \end{tikzpicture}
+            \caption[The affine variety \(V(x_1x_2, x_2x_3)\).]{The affine variety \(V(x_1x_3, x_2x_3) = V(x_3) \cup V(x_1, x_2)\).}
+            \label{fig:plane line variety}
+        \end{subfigure}
+        
+        \begin{subfigure}{0.8\textwidth}
+            \centering
+            \tikzsetnextfilename{variety-plane-line-line-chain}
+            \begin{tikzpicture}[scale=0.5]
+                \fill [lightgray] (-3, 0, -2) -- (3, 0, -2) -- (3, 0, 2) -- (-3, 0, 2) -- cycle;
+                \draw [very thick, gray] (0, 0, 0) -- (0, 3, 0);
+                \draw [very thick, gray] (0, -0.77, 0) -- (0, -3, 0);
+                \fill [my red] (0, 2, 0) circle [radius=0.1cm] node [right] {\(X_0\)};
+                \begin{scope}[xshift=7cm]
+                    \fill [lightgray] (-3, 0, -2) -- (3, 0, -2) -- (3, 0, 2) -- (-3, 0, 2) -- cycle;
+                    \draw [very thick, my red] (0, 0, 0) -- (0, 3, 0) node [below right, yshift=0.1cm, xshift=-0.1cm] {\(X_1\)};
+                    \draw [very thick, my red] (0, -0.77, 0) -- (0, -3, 0);
+                    \fill [my red] (0, 2, 0) circle [radius=0.1cm];
+                \end{scope}
+            \end{tikzpicture}
+            \caption{A maximal length chain in \(V(x_3)\).}
+            \label{fig:plane line variety line chain}
+        \end{subfigure}
+        
+        \begin{subfigure}{0.8\textwidth}
+            \centering
+            \tikzsetnextfilename{variety-plane-line-plane-chain}
+            \begin{tikzpicture}[scale=0.5]
+                \fill [lightgray] (-3, 0, -2) -- (3, 0, -2) -- (3, 0, 2) -- (-3, 0, 2) -- cycle;
+                \draw [very thick, gray] (0, 0, 0) -- (0, 3, 0);
+                \draw [very thick, gray] (0, -0.77, 0) -- (0, -3, 0);
+                \fill [my red] (2, 0, 1) circle [radius=0.1cm] node [above] {\(Y_0\)};
+                \begin{scope}[xshift=7cm]
+                    \fill [lightgray] (-3, 0, -2) -- (3, 0, -2) -- (3, 0, 2) -- (-3, 0, 2) -- cycle;
+                    \draw [very thick, gray] (0, 0, 0) -- (0, 3, 0);
+                    \draw [very thick, gray] (0, -0.77, 0) -- (0, -3, 0);
+                    \fill [my red] (2, 0, 1) circle [radius=0.1cm];
+                    \draw [my red, very thick] (3, 0, 1.5) -- (-3, 0, -1.5) node [above, shift={(0.3, -0.15)}] {\(Y_1\)};
+                \end{scope}
+                \begin{scope}[xshift=14cm]
+                    \fill [my red] (-3, 0, -2) node [above right, yshift=-0.1cm] {\(Y_2\)} -- (3, 0, -2) -- (3, 0, 2) -- (-3, 0, 2) -- cycle;
+                    \draw [very thick, gray] (0, 0, 0) -- (0, 3, 0);
+                    \draw [very thick, gray] (0, -0.77, 0) -- (0, -3, 0);
+                \end{scope}
+            \end{tikzpicture}
+            \caption{A maximal length chain in \(V(x_1, x_2)\).}
+            \label{fig:plane line variety plane chain}
+        \end{subfigure}
+        \caption[The affine variety \(V(x_1x_3, x_2x_3)\).]{The affine variety \(V(x_1x_3, x_2x_3)\) with its irreducible decomposition, and maximal chains in each irreducible component.}
+    \end{figure}
+    
+    Often it's useful to restrict to cases where all irreducible components have the same dimension.
+    For this we introduce the following terminology.
+    
+    \begin{dfn}{Pure Dimension}{}
+        A Noetherian topological space, \(X\), is of \defineindex{pure dimension}\index{dimension!pure} \(n\) if every irreducible component of \(X\) has dimension \(n\).
+    \end{dfn}
+    
+    There are common shorthands for some special pure (co)dimensions.
+    
+    \begin{dfn}{}{}
+        An affine variety is
+        \begin{enumerate}
+            \item a \defineindex{curve} if it has pure dimension \(1\);
+            \item a \defineindex{surface} if it has pure dimension \(2\);
+            \item a \defineindex{hypersurface} in a pure-dimensional affine variety \(Y\) if it is an affine subvariety of \(Y\) of pure dimension \(\dim Y - 1\).
+        \end{enumerate}
+    \end{dfn}
+    
+    \begin{wrn}
+        These terms are not used consistently.
+        Some authors require that a curve is irreducible, and others allow a curve to refer to any affine variety whose irreducible components have dimension at most \(1\).
+        Our choice is somewhere between these, we do not require that a curve is irreducible, but we do require that its irreducible components have dimension \emph{exactly} \(1\).
+    \end{wrn}
+    
+    Notice that \cref{prp:dimension facts} \cref{itm:irreducible components of V(f) have codim 1} is a statement that if \(f \in A(X)\) is nonzero then \(V(f)\) is a hypersurface.
+    
+    This suggests that we should ask if \emph{every} hypersurface is of this form.
+    It turns out that the answer actually depends on some algebraic properties of \(A(X)\).
+    Specifically, whether \(A(X)\) is a UFD.
+    This is because of the following result.
+    
+    \begin{prp}{}{prp:ufd iff prime ideal codim 1 principal}
+        Let \(R\) be a Noetherian integral domain.
+        Then the following are equivalent:
+        \begin{enumerate}
+            \item \label{itm:ufd}\(R\) is a UFD.
+            \item \label{itm:prime ideal codim 1 principal}Every prime ideal of codimension \(1\) in \(R\) is principal.
+        \end{enumerate}
+        \begin{proof}
+            We first show that \cref{itm:prime ideal codim 1 principal} implies \cref{itm:ufd}.
+            Since \(R\) is Noetherian we can decompose any nonzero nonunit, \(f \in R\), as a product of irreducible elements.
+            If this were not the case then \(f\) could not itself be irreducible, and so \(f = f_1 f_1'\) and one of these must also not be decomposable, say \(f_1'\), so \(f_1' = f_2f_2'\).
+            Repeating this gives a chain \(\langle f \rangle \subsetneq \langle f_1' \rangle \subsetneq \langle f_2' \rangle \subsetneq\), contradicting the fact that \(R\) is Noetherian.
+            
+            To prove that \(R\) is a UFD it is sufficient to show that every irreducible element, \(f \in R\), is prime.
+            To do so choose a minimal prime ideal, \(\ideal{p}\), containing \(f\).
+            Then by Krull's principal ideal theorem (\cref{prp:dimension facts} \cref{itm:irreducible components of V(f) have codim 1}) we have that \(\codim \ideal{p} = 1\), and so \(\ideal{p}\) is principal by assumption.
+            That is, \(\ideal{p} = \langle g \rangle\) for some prime element, \(g \in R\).
+            However, \(g\) divides \(f\) and \(f\) is irreducible, so up to units \(f = g\), and thus \(f\) is also prime.
+            
+            We now show that \cref{itm:ufd} implies \cref{itm:prime ideal codim 1 principal}.
+            Let \(\ideal{p}\) be a prime ideal of codimension 1 in \(R\).
+            Then we can choose a nonzero element, \(f \in \ideal{p}\).
+            Since \(\ideal{p} \ne \langle 1 \rangle\) we know that \(f\) is not a unit.
+            Since \(R\) is a UFD we can uniquely (up to order) write \(f = f_1 \dotsm f_k\) for \(f_i \in R\) prime.
+            Then since \(\ideal{p}\) is prime it must be that at least one of the \(f_i\) is in \(\ideal{p}\).
+            Since the codimension of \(\ideal{p}\) is 1 this requires that \(\ideal{p} = \langle f_i \rangle\), and thus \(\ideal{p}\) is principal.
+        \end{proof}
+    \end{prp}
+    
+    Let \(X\) be an irreducible hypersurface in \(\affine^n\).
+    Then \(I(X) \subideal K[x_1, \dotsc, x_n]\) is a prime ideal of codimension \(1\).
+    Since \(K[x_1, \dotsc, x_n]\) is a UFD it follows that \(I(X) = \langle f \rangle\) for some \(f \in K[x_1, \dotsc, x_n]\).
+    
+    If \(X\) is a hypersurface, but not necessarily irreducible, then we can apply the same argument to each irreducible component of \(X = X_1 \cup \dotsb \cup X_r\), showing that \(I(X_i) = \langle f_i \rangle\) for some \(f_i \in K[x_1, \dotsc, x_n]\).
+    Then \(I(X) = \langle f \rangle\) with \(f = f_1 \dotsm f_k\), which is again principal.
+    
+    \begin{dfn}{}{}
+        Let \(X\) be an affine hypersurface in \(\affine^n\) with ideal \(I(X) = \langle f \rangle\).
+        Then the \defineindex{degree} of \(X\) is the degree of \(f\) as a polynomial.
+    \end{dfn}
+    
+    This degree is well defined because of the uniqueness of factorisation.
+    For example, over \(\complex\), up to units and reordering, \(f(x) = (x - a_1) \dotsm (x - a_k)\) with \(a_i\) the roots of \(f\), and then \(f\) has degree \(k\).
+    This lets us talk of linear, quadric, or cubic hypersurfaces, and so on.
+    
+    It is generally a hard problem to find out if \(A(X)\) is a UFD for a given affine vareity.
+    The following example is just one case in which \(A(X)\) is not principal.
+    
+    \begin{exm}{}{}
+        Let \(R = K[x_1, x_2, x_3, x_4] / \langle x_1x_4 - x_2x_3 \rangle\).
+        This is a three dimensional integral domain.
+        The elements \(x_1\), \(x_2\), \(x_3\) and \(x_4\) are irreducible, but not prime.
+        Thus, \(R\) is not a UFD.
+        Both \(x_1x_4\) and \(x_2x_3\) are decompositions of the same element of \(R\) into irreducible elements, and they don't agree up to units.
+        The ideal \(\langle x_1, x_2\rangle\) is prime and of codimension \(1\) in \(R\), but it is not principal.
+        
+        Thus, by \cref{prp:ufd iff prime ideal codim 1 principal} the plane, \(V(x_1, x_2)\), is a hypersurface in \(X = V(x_1x_4 - x_2x_3)\), but the ideal of \(V(x_1, x_2)\) cannot be generated by a single element of \(A(X)\).
+    \end{exm}
     
     \appendixpage
     \begin{appendices}
