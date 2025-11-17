@@ -85,6 +85,10 @@ The conditions to be included here are pretty much \enquote{I had to look it up}
     \end{proof}
 \end{lma}
 
+\begin{dfn}{Local Ring}{def:local ring}
+    A \defineindex{local ring} is a ring with a unique maximal ideal.
+\end{dfn}
+
 \section{Noetherian Rings}
 \begin{dfn}{Noetherian Ring}{}
     A ring, \(R\), is \define{Noetherian}\index{Noetherian!ring} if it satisfies the ascending chain condition.
@@ -182,3 +186,58 @@ For example, \((p^n)\) is a primary ideal of \(\integers\) for \(p\) prime (so \
     In a Noetherian ring every ideal admits a primary decomposition.
 \end{lma}
 
+\section{Localisation}
+\begin{dfn}{Multiplicatively Closed Set}{}
+    Let \(R\) be a commutative ring.
+    A set, \(S\), is called \defineindex{multiplicatively closed} if \(S\) is closed under multiplication and contains \(1\).
+\end{dfn}
+
+\begin{dfn}{Localisation}{}
+    Let \(R\) be a ring, and let \(S\) be a multiplicatively closed subset of \(R\).
+    The \defineindex{localisation} of \(R\) at \(S\) is the ring, 
+    \begin{equation}
+        S^{-1}R = (R \times S) / {\sim}
+    \end{equation}
+    where \((r, s) \sim (r', s')\) if there exists some \(t \in S\) such that
+    \begin{equation}
+        t(sr' - s'r) = 0.
+    \end{equation}
+    The operations in this ring are
+    \begin{align}
+        (r, s) + (r', s') &= (rs' + r's, ss'),\\
+        (r, s) (r', s') &= (rr', ss').
+    \end{align}
+\end{dfn}
+
+The idea is that \((r, s)\) is really the fraction, \(\frac{r}{s}\).
+This is where the definition of the operations comes from.
+The key example being \(R = \integers\) and \(S = \integers \setminus \{0\}\), in which case \(S^{-1}R = \rationals\).
+The equivalence relation is then enforcing that things like \(1/2\) and \(2/4\) are considered the same.
+The \(t\) is needed to deal with the case where there are zero divisors.
+The multiplicative identity of \(S^{-1}R\) is \(1/1\), and the additive identity is \(0/s\) for any \(s \in S\) (they're all equivalent).
+There's an embedding, \(R \hookrightarrow S^{-1}R\), \(r \mapsto r/1\).
+
+Note that if \(R\) is an integral domain then \(S^{-1}R\) is its field of fractions.
+
+If \(0 \in S\) then \(S^{-1}R = 0\).
+
+The localisation of \(S\) in \(R\) has the universal property that the map \(i \colon R \hookrightarrow S^{-1}R\) is universal in that if \(f \colon R \to T\) is a ring homomorphism sending every element of \(S\) to a unit of \(T\) then there exists a unique ring homomorphism, \(g \colon S^{-1}R \to T\), such that \(f = g \circ i\).
+That is,
+\begin{equation}
+    \begin{tikzcd}
+        R \arrow[r, "i"] \arrow[dr, "f"'] & S^{-1}R \arrow[d, dashed, "\exists ! g"]\\
+        & T.
+    \end{tikzcd}
+\end{equation}
+
+\begin{ntn}{}{}
+    Let \(R\) be a commutative ring and \(x \in R\).
+    Then we write \(R_x\) for \(S^{-1}R\) with \(S = \{1, x, x^2, \dotsc\}\).
+    
+    Let \(\ideal{p}\) be a prime ideal of \(R\).
+    Then we write \(R_{\ideal{p}}\) for \(S^{-1}R\) with \(S = R \setminus \ideal{p}\).
+\end{ntn}
+
+This notation can be a bit confusing.
+For \(R_x\) we've forced \(x\) to be invertible.
+For \(R_{\ideal{p}}\) we've forced everything \emph{not} in \(\ideal{p}\) to be invertible.

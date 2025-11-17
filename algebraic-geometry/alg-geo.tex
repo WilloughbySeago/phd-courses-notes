@@ -61,6 +61,12 @@ noabbrev
 \DeclareMathOperator{\Kdim}{Kdim}
 \newcommand{\sheaf}[1]{\symscr{#1}}
 \newcommand{\id}{\symrm{id}}
+\makeatletter
+\newcommand{\c@egory}[1]{\symsfup{#1}}
+\newcommand{\cat}[1]{\c@egory{#1}}
+\newcommand{\Ring}{\c@egory{Ring}}
+\makeatother
+\newcommand{\op}{\symrm{op}}
 
 \includeonly{appendices/comm-alg, appendices/topology}
 
@@ -1569,7 +1575,7 @@ noabbrev
         \end{equation}
     \end{dfn}
     
-    \begin{lma}{}{}
+    \begin{lma}{}{lma:zero locus of regular function is closed}
         The zero locus of a regular function is closed.
         \begin{proof}
             Let \(X\) be an affine variety, \(U \subseteq X\) an open subset, and \(\varphi \in \sheaf{O}_X(U)\) a regular function.
@@ -1780,16 +1786,44 @@ noabbrev
         \begin{enumerate}
             \item \(\sheaf{F}(U)\) should be an object in the relevant category;
             \item \(\rho_{V,U}\) should be a morphism in the relevant category;
-            \item \(\sheaf{F}(\emptyset)\) should be the zero object of the relevant category (that is the object which is both initial and terminal).
+            \item \(\sheaf{F}(\emptyset)\) should be the terminal object of the relevant category (that is the object which is both initial and terminal).
         \end{enumerate}
     \end{remark}
     
-    \begin{exm}{Constant Sheaf}{}
+    \begin{remark}{Presheaf is a Functor}{}
+        Let \(\cat{U}\) be the poset category of open sets of \(X\).
+        That is, objects are open sets, \(U \subseteq X\), and there is a unique morphism \(i_{U,V} \colon U \to V\) if \(U \subseteq V\).
+        Consider a functor \(F \colon \cat{U}^{\op} \to \Ring\).
+        This assigns to each open subset, \(U \subseteq X\), a ring, \(F(U)\).
+        To each pair of open subsets, \(U \subseteq V \subseteq X\), it assigns a map \(r_{V,U} = F(i_{U,V}) \colon F(V) \to F(U)\).
+        
+        The fact that this is a contravariant functor means that
+        \begin{enumerate}
+            \item \(F(\emptyset) = 0\), since a contravariant functor sends the initial object to the terminal objects.
+            \item for \(U \subseteq V \subseteq W \subseteq X\) open we have unique maps \(i_{U,V} \colon U \to V\) and \(i_{V,W} \colon V \to W\), which we can compose to get a map \(i_{V,W} \circ i_{U,V} \colon U \to W\), which by uniqueness of maps in \(\cat{U}\) must just be \(i_{U,W} \colon U \to W\).
+            Applying \(F\) we have \(F(i_{V,W} \circ i_{U,V}) = F(i_{V,W}) \circ F(i_{U,V}) = r_{W,V} \circ r_{V,U}\).
+            Applying \(F\) to \(i_{U,W}\) we get \(F(i_{U,W}) = r_{W,U}\).
+            Thus, \(r_{W,V} \circ r_{V,U} = r_{W,U}\).
+            \item for \(U \subseteq X\) we have the (unique) identity arrow, \(\id_U \colon U \to U\), and applying \(F\) to this we get \(F(\id_U) = \id_{F(U)}\).
+        \end{enumerate}
+        We see that we can define a presheaf, \(\sheaf{F}\), by taking \(\sheaf{F}(U) = F(U)\) and \(\rho_{V,W} = r_{V,W}\).
+        Conversely, any sheaf defines such a functor.
+        So a presheaf is nothing but a functor \(\cat{U}^{\op} \to \Ring\) (or replace \(\Ring\) with some other category).
+    \end{remark}
+    
+    \begin{exm}{Preheaf of Functions}{}
+        Let \(X\) be a topological space.
+        The sheaf of functions, \(\sheaf{F}\), on \(X\) has \(\sheaf{F}(U) = \{f \colon U \to \complex\}\), which is a ring under pointwise operations.
+        There's a unique function \(\emptyset \to \complex\), and so \(\sheaf{F}(\emptyset) = 0\) is the zero ring.
+        The restriction maps are just the normal restriction of functions, which then work out to have all the desired properties.
+    \end{exm}
+    
+    \begin{exm}{Constant Preheaf}{}
         Let \(X\) be a topological space, and let \(S\) be a set.
         The constant presheaf, \(\underline{S}_{\symrm{pr}}\), consists of all constant functions.
         That is, \(\underline{S}_{\symrm{pr}}(U)\) consists of functions \(U \to S\) which are constant.
         The restriction maps are the usual restriction of functions.
-        Since there is a unique function \(\emptyset \to S\), which is vacuously constant, we have that \(\underline{S}_{\symrm{pr}}(U) = 0\), and as discussed restriction works out.
+        Since there is a unique function \(\emptyset \to S\), which is vacuously constant, we have that \(\underline{S}_{\symrm{pr}}(\emptyset) = 0\), and as discussed restriction works out.
     \end{exm}
     
     The notion of a presheaf captures a lot of what it means to be a function, even if the sections aren't actually functions.
@@ -1799,10 +1833,440 @@ noabbrev
         A \defineindex{sheaf} of rings is a presheaf, \(\sheaf{F}\), satisfying the \defineindex{gluing property}: if \(U \subseteq X\) is an open set with an open cover, \(\{U_i\}_{i \in I}\), and there are \(\varphi_i \in \sheaf{F}(U_i)\) such that \(\varphi|_{U_i \cap U_j} = \varphi|_{U_i \cap U_j}\) then there exists some unique \(\varphi \in \sheaf{F}(U)\) such that \(\varphi|_{U_i} = \varphi_i\) for all \(i \in I\).
     \end{dfn}
     
+    \begin{remark}{}{}
+        Sometimes the gluing property is split up into two parts, uniqueness and existence:
+        \begin{enumerate}
+            \item locality/identity: if \(\varphi, \psi \in \sheaf{F}(U)\) are such that \(\varphi|_{U_i} = \psi|_{U_i}\) for all \(i\) then \(\varphi = \psi\);
+            \item gluability: if \(\varphi_i \in \sheaf{F}(U_i)\) are such that \(\varphi_i|_{U_i \cap U_j} = \varphi_j|_{U_i \cap U)j}\) then there exists \(\varphi \in \sheaf{F}(U)\) such that \(\varphi_i = \varphi|_{U_i}\) for all \(i \in I\).
+        \end{enumerate}
+        As we've stated it our gluability axiom has \enquote{there exists some unique \(\varphi\)}, and this takes care of the locality property also.
+    \end{remark}
+    
     The idea here is that we can take the \(\varphi_i\) to be functions defined on covering sets, and then as long as they agree on the overlap of these sets we can glue them together into a single function defined on the whole set.
     For this to be possible we usually require some nice property of our functions.
     For example, they may need to be continuous, smooth, or holomorphic, depending on whether we want the resulting function to be continuous, smooth, or holomorphic, so depending on whether we're doing topology, differential geometry, or complex analysis.
     Functions on their own rarely glue together nicely.
+    
+    \begin{exm}{}{}
+        Let \(X\) be an affine variety.
+        Then the \defineindex{sheaf of regular functions} is \(\sheaf{O}_X\) where \(\sheaf{O}_X(U)\) is the ring of regular functions on the open set \(U \subseteq X\).
+    \end{exm}
+    
+    \begin{exm}{Locally Constant Sheaf}{}
+        Let \(X\) be a topological space, and let \(S\) be a set.
+        The locally constant sheaf (of sets), \(\underline{S}\), consists of all locally constant functions.
+        That is, \(\underline{S}(U)\) consists of functions \(U \to S\) where for \(p \in U\) there exists a neighbourhood of \(p\), \(U_p \subseteq U\), on which the function is constant.
+        The restriction maps are the usual restriction of functions.
+        Since there is a unique function \(\emptyset \to S\) which is vacuously locally constant we have that \(\underline{S}(\emptyset) = 0\).
+        We have the gluing property.
+        Let \(\{U_i\}_{i \in I}\) be an open cover of \(U\) and \(\varphi_i \in \underline{S}(U_i)\) with \(\varphi_i|_{U_i \cap U_j} = \varphi_j|_{U_i \cap U_j}\).
+        We claim that these glue uniquely to give \(\varphi \in \underline{S}(U)\) defined by \(\varphi(p) = \varphi_i(p)\) if \(p \in U_i\).
+        We need only to show that this is well-defined, that is, if \(p \in U_i \cap U_j\) then \(\varphi_i(p) = \varphi_j(p)\).
+        This is true since \(\varphi_i|_{U_i \cap U_j} = \varphi_j|_{U_i \cap U_j}\).
+        
+        Note that we have to take \emph{locally constant} functions, not just constant ones, if we want a sheaf, as opposed to a presheaf.
+        The reason for this is if we take \(U = U_1 \sqcup U_2\), then we may define \(\varphi_1(p) = s\) for \(p \in U_1\) and \(\varphi_2(p) = s'\) for \(p \in U_2\) with \(s \ne s'\).
+        Then these don't glue to define a function which is constant on \(U = U_1 \sqcup U_2\).
+        However, if our space is connected then we cannot have this scenario arise and we do get a sheaf of constant functions.
+    \end{exm}
+    
+    \begin{dfn}{Restriction}{def:restriction of sheaves}
+        Let \(\sheaf{F}\) be a presheaf on \(X\).
+        Then we define the restriction of \(\sheaf{F}\) to an open set, \(U \subseteq X\), to be the presheaf \(\sheaf{F}|_U\), on \(U\), where \(\sheaf{F}|_U(V) = \sheaf{F}(V)\) for all open sets \(V \subseteq U\), and the restriction maps are those of \(\sheaf{F}\).
+        
+        If \(\sheaf{F}\) is a sheaf so is \(\sheaf{F}|_U\).
+    \end{dfn}
+    
+    \begin{dfn}{Stalks}{}
+        Let \(\sheaf{F}\) be a presheaf on \(X\).
+        The \defineindex{stalk} of \(\sheaf{F}\) at \(a \in X\) is
+        \begin{equation}
+            \sheaf{F}_a = \{(U, \varphi) \mid U \subseteq X \text{ open}, a \in U, \varphi \in \sheaf{F}(U)\} / {\sim}
+        \end{equation}
+        where \((U, \varphi) \sim (U', \varphi')\) if there exists some open subset, \(V \subseteq U \cap U'\), on which \(\varphi|_V = \varphi'|_V\).
+        
+        We call elements of \(\sheaf{F}_a\) \define{germs}\index{germ} of \(\sheaf{F}\) at \(a\).
+    \end{dfn}
+    
+    The stalk, \(\sheaf{F}_a\), inherits the structure of a ring from the \(\sheaf{F}(U)\) for \(U\) a neighbourhood of \(a\).
+    For example, \((U, \varphi) + (V, \psi) = (U \cap V, \varphi + \psi)\).
+    Of course, one needs to show that this is well-defined.
+    
+    There is a morphism \(\sheaf{F}(U) \to \sheaf{F}_a\), given by \(\varphi \mapsto (U, \varphi)\).
+    
+    The idea here is that \(\sheaf{F}(U)\) contains information about the sheaf in a neighbourhood and \(\sheaf{F}_a\) contains information about the sheaf at a point.
+    That is, we think of \(\sheaf{F}(U)\) as consisting of functions defined on an open set, \(U\), and we think of \(\sheaf{F}_a\) as consisting of functions defined on an arbitrarily small open neighbourhood of \(a\).
+    This can be made more precise by defining the stalk to be a directed limit:
+    \begin{equation}
+        \sheaf{F}_a = \varinjlim_{U \ni a} \sheaf{F}(U).
+    \end{equation}
+    Here we have a directed system of functions on open neighbourhoods of \(a\), joined by restrictions, and part of the definition of a directed limit is that we consider two elements the same if they eventually are the same in this limit, that is, if after sufficient restriction they are the same.
+    Intuitively, we take some nested neighbourhoods of \(a\) and if we can keep getting smaller and smaller, \enquote{zooming in} on \(a\), until the two functions agree, we consider them to be the same function.
+    
+    Despite stalks seemingly having less information it is often sufficient to look at stalks to determine whether a given property holds for a sheaf.
+    
+    Note that when we have a sheaf with a name like \(\sheaf{O}_X\) we typically denote the stalk at \(a\) as \(\sheaf{O}_{X,a}\), rather than, say \((\sheaf{O}_X)_a\), \(\sheaf{O}_{Xa}\), or some other clunky notation.
+    
+    \begin{exm}{}{}
+        Let \(\underline{S}\) be the locally constant sheaf.
+        Then \(\underline{S}_a = S\).
+        We identify a germ, \((U, \varphi)\), with \(\varphi(a) \in S\), and there is one such germ for each value of \(S\).
+        Then two germs, \((U, \varphi)\) and \((U', \varphi')\) are only the same if they agree on some open subset of \(U \cap U'\) containing \(a\), but because \(\varphi\) and \(\varphi'\) are locally constant this just means that \(\varphi(a) = \varphi'(a)\), so this identification provides a bijection between \(\underline{S}_a\) and \(S\).
+        This is all taking place with sheaves of sets, so we have an isomorphism, \(\underline{S}_a \isomorphic S\) for all \(a \in X\), as claimed.
+    \end{exm}
+    
+    Consider the sheaf of differentiable functions on the real line (with the standard topology).
+    A germ at \(a \in \reals\) allows us to compute the value of the corresponding function at \(a\), and the value of the derivative of the function at \(a\).
+    It does not allow us to compute the value of the function anywhere else.
+    
+    Consider the sheaf of holomorhpic functions on \(\complex\) (with the standard topology).
+    Then since the value of such functions is fully determined by the value on some smaller open set the germs of these functions contain enough information to compute the value of the function at other points (as long as they're part of the same connected open set as the point at which we take the germ).
+    
+    Given an affine variety, \(X\), there is a well-defined evaluation map, \(\sheaf{O}_{X,a} \to K\), \((U, \varphi) \mapsto \varphi(a)\).
+    This tells us the value of \(\varphi\) at \(a\), but not at any other point.
+    
+    It is possible to describe regular functions algebraically in terms of a localisation of the coordinate ring.
+    This is, in fact, the reason why we call localisations localisations.
+    
+    \begin{lma}{}{}
+        Let \(a\) be a point in the affine variety \(X\).
+        Then the stalk, \(\sheaf{O}_{X,a}\), is isomorphic as a \(K\)-algebra to the localisation \(A(X)_{I(a)}\) at the maximal ideal \(I(a) \subideal A(X)\).
+        That is,
+        \begin{equation}
+            \sheaf{O}_{X,a} \isomorphic \left\{ \frac{f}{g} \,\middle|\, f, g \in A(X), g(a) \ne 0 \right\}.
+        \end{equation}
+        This means that \(\sheaf{O}_{X,a}\) is a local ring (in the sense of \cref{def:local ring}), having the unique maximal ideal
+        \begin{equation}
+            I_a \coloneq \{(U, \varphi) \in \sheaf{O}_{X,a} \mid \varphi(a) = 0\} \isomorphic \left\{ \frac{f}{g} \mid f, g \in A(X), f(a) = 0, g(a) \ne 0 \right\}.
+        \end{equation}
+        We call this the \defineindex{local ring} of \(X\) at \(a\).
+        \begin{proof}
+            Consider the map
+            \begin{equation}
+                \begin{aligned}
+                    F \colon A(X)_{I(a)} &\to \sheaf{O}_{X,a}\\
+                    \frac{f}{g} &\mapsto \left( D(g), \frac{f}{g} \right).
+                \end{aligned}
+            \end{equation}
+            This sends a formal fraction, \(f/g\), to the corresponding quotient of polynomial functions on the open set \(D(g)\) on which the denominator doesn't vanish.
+            Notice that \(a \in D(g)\) since \(g(a) \ne 0\) by definition.
+            This is a \(K\)-algebra homomorphism by construction of the operations on \(\sheaf{O}_{X,a}\).
+            This map is well-defined, if \(f/g = f'/g'\) in \(A(X)_{I(a)}\) then \(h(fg' - f'g) = 0\) for some \(h \in A(X) \setminus I(a)\).
+            Thus, the functions \(f/g\) and \(f'/g'\) agree on the open neighbourhood \(D(h) \cap D(g) \cap D(g')\) of \(a\), and so determine the same element of the stalk.
+            
+            Further, \(F\) is surjective since by definition any regular function in a sufficiently small neighbourhood of \(a\) is representable as a fraction, \(f/g\), with \(f \in A(X)\) and \(g \in A(X) \setminus I(a)\).
+            
+            This map is injective.
+            Suppose \(f/g\) is mapped to the zero element.
+            That is, \(f/g\) is zero on an open neighbourhood of \(a\).
+            We can always shrink this open neighbourhood to be \(D(h)\) for some \(h \in A(X)\), since the distinguished open sets form a basis for the Zariski topology.
+            Further, since \(h(a) \ne 0\) (as we have \(a \in D(h)\) by assumption) we know that \(h \notin I(a)\), so \(h \in A(X) \setminus I(a)\).
+            Thus, we have \(h(f \cdot 1 - 0 \cdot g) = 0\) on all of \(X\), and thus this function is zero in \(A(X)\).
+            Therefore \(g/f = 0/1\) in \(A(X)_{I(a)}\), so the map has trivial kernel.
+        \end{proof}
+    \end{lma}
+    
+    \chapter{Morphisms}
+    We have looked at regular functions on some affine variety \(X\).
+    These are maps from some open subset of \(X\) to the field, \(K\).
+    Thinking of \(K\) as itself being the affine variety \(\affine^1\) we will consider these regular functions to be our first example of morphisms between affine varieties.
+    Our goal in this chapter is to extend this definition to define morphisms between any two affine varieties.
+    
+    It turns out that the correct way to define morphisms, \(X \to Y\), is actually to look at regular functions out of both \(X\) and \(Y\).
+    This gives rise to two sheaves, and morphisms between sheaves give us what we want, although of course we still have to define morphisms between sheaves.
+    
+    \section{Ringed Spaces}
+    In order to make these definitions it's important that the data of the regular functions is attached to our affine variety, as later we'll want to be able to define an affine variety abstractly in such a way that changing the regular functions also changes the structure of the affine variety.
+    To this end we make the following definition pairing up the required data.
+    
+    \begin{dfn}{Ringed Spaces}{}
+        A \defineindex{ringed space}, \((X, \sheaf{O}_X)\), is a pair consisting of a topological space, \(X\), and a sheaf, \(\sheaf{O}_X\), on \(X\).
+        We call \(\sheaf{O}_X\) the \defineindex{structure sheaf} of the ringed space.
+    \end{dfn}
+    
+    \begin{ntn}{}{}
+        We will typically just write \(X\) for a ringed space, in which case the structure sheaf is always denoted \(\sheaf{O}_X\).
+    \end{ntn}
+    
+    We will always consider an affine variety, \(X\), as a ringed space, \((X, \sheaf{O}_X)\) where the structure sheaf, \(\sheaf{O}_X\), is the sheaf of regular functions.
+    Likewise, any open subset, \(U\), of a ringed space, \(X\) (including the case where \(X\) is an affine variety) will be considered as a ringed space with the structure sheaf given by restriction, \(\sheaf{O}_U = \sheaf{O}_X|_U\) (\cref{def:restriction of sheaves}).
+    
+    The reason that this is important for defining morphisms is we've attached extra information to our affine varieties.
+    This means that our definition of a morphism, \(f \colon X \to Y\), should preserve this extra information.
+    In fact, we can define the notion of a morphism of ringed spaces more generally, and then morphisms of affine varieties are just a special case of this.
+    
+    The correct notion of preserving the structure of the sheaves of regular functions is that given a regular function \(\varphi \colon U \to K\) on an open subset \(U \subseteq Y\) the composite, \(\varphi \circ f \colon f^{-1}(U) \to K\) should again be a regular function.
+    Note that this requires that \(f^{-1}(U)\) is an open subset of \(X\), so at the very least \(f\) must be continuous.
+    
+    There is a problem with this requirement if we're aiming for full generality.
+    While the composite \(\varphi \circ f\) is defined for regular functions, \(\varphi\), if we take an arbitrary ringed space then we cannot always assume that the elements of \(\sheaf{O}_X(U)\) are functions, that is, composition isn't necessarily defined.
+    There are two ways around this problem:
+    \begin{enumerate}
+        \item Lots of technicalities.
+        \item Ignore it.
+    \end{enumerate}
+    We'll pick the later.
+    \begin{important}
+        From now on until we specify otherwise we will assume that all sheaves of rings are actually sheaves of \(K\)-valued functions.
+    \end{important}
+    Note that this also makes all sheaves sheaves of \(K\)-algebras, since we can always define pointwise scalar multiplication.
+    This allows us to make the following definitions.
+    
+    \section{Morphisms}
+    \begin{dfn}{Pullback}{}
+        Let \(f \colon X \to Y\) be a map between ringed spaces.
+        For any map, \(\varphi \colon U \to K\), from the open subset \(U \subseteq Y\) we define the \defineindex{pullback} of \(\varphi\) by \(f\), \(f^*\varphi \colon f^{-1}(U) \to K\) by precomposition, \(f^*\varphi = \varphi \circ f\).
+    \end{dfn}
+    
+    \begin{dfn}{Morphism of Ringed Spaces}{}
+        Let \(f \colon X \to Y\) be a map of ringed spaces.
+        This is a \defineindex{morphism of ringed spaces} if
+        \begin{enumerate}
+            \item \(f\) is continuous; and
+            \item for all open subsets \(U \subseteq Y\) and for all \(\varphi \in \sheaf{O}_Y(U)\) we have \(f^*\varphi \in \sheaf{O}_X(f^{-1}(U))\).
+            That is, pulling back by \(f\) defines a \(K\)-algebra homomorphism
+            \begin{equation}
+                \begin{aligned}
+                    f^* \colon \sheaf{O}_Y(U) &\to \sheaf{O}_X(f^{-1}(U))\\
+                    \varphi &\mapsto f^*\varphi.
+                \end{aligned}
+            \end{equation}
+        \end{enumerate}
+        As usual, we say that a morphism of ringed spaces is an isomorphism of ringed spaces if it has a two sided inverse which is also a morphism of ringed spaces.
+    \end{dfn}
+    
+    \begin{dfn}{Morphism of Affine Varieties}{}
+        A morphism of (open subsets of) affine varieties is exactly a morphism of the corresponding ringed spaces.
+    \end{dfn}
+    
+    \begin{remark}{}{}
+        Here are some of the technicalities we avoid by assuming all sheaves are sheaves of \(K\)-valued functions.
+        Let \(\sheaf{F}\) and \(\sheaf{G}\) be sheaves on \(X\).
+        A \defineindex{morphism of sheaves}, \(\varphi \colon \sheaf{F} \to \sheaf{G}\), is a collection of morphisms, \(\varphi_U \colon \sheaf{F}(U) \to \sheaf{G}(U)\) for \(U \subseteq X\) an open subset.
+        These must be compatible with restriction, that is, for \(U \subseteq V \subseteq X\) open the diagram
+        \begin{equation}
+            \begin{tikzcd}
+                \sheaf{F}(V) \arrow[r, "\varphi_V"] \arrow[d, "{\rho^{\sheaf{F}}_{V,U}}"'] & \sheaf{G}(U) \arrow[d, "{\rho^{\sheaf{G}}_{V,U}}"]\\
+                \sheaf{F}(U) \arrow[r, "\varphi_U"'] & \sheaf{G}(U)
+            \end{tikzcd}
+        \end{equation}
+        must commute, where \(\rho_{V,U}^{\sheaf{F}}\) and \(\rho_{V,U}^{\sheaf{G}}\) are the restriction maps of \(\sheaf{F}\) and \(\sheaf{G}\) respectively.
+        
+        Composition of morphisms of sheaves is given by \((\varphi \circ \varphi')_U = \varphi_U \circ \varphi'_U\).
+        
+        With this definition sheaves of objects from some category, \(\cat{C}\), on a topological space, \(X\), form a category themselves, often denoted \(\cat{C}_X\) or \(\operatorname{Sh}_X(\cat{C})\).
+        
+        Note that if we interpret our sheaves as functors then \(\varphi \colon \sheaf{F} \to \sheaf{G}\) is precisely a natural transformation.
+        
+        Let \(f \colon X \to Y\) be a continuous map of topological spaces.
+        The \defineindex{direct image functor}, \(f_* \colon \cat{C}_X \to \cat{C}_Y\) sends a sheaf, \(\sheaf{F}\), on \(X\) to the sheaf, \(f_*\sheaf{F}\), on \(Y\) defined by \(f_*\sheaf{F}(U) = \sheaf{F}(f^{-1}(U))\).
+        If \(\varphi \colon \sheaf{F} \to \sheaf{G}\) is a morphism of sheaves then \(f_*\varphi \colon f_*\sheaf{F}(U) \to f_*\sheaf{G}(U)\) is a morphism of sheaves given by the family of morphisms \(\sheaf{F}(f^{-1}(U)) \to \sheaf{G}(f^{-1}(U))\) for \(U \subseteq Y\) open given by \(\psi \mapsto \varphi_{f^{-1}(U)}(\psi)\).
+        
+        A \defineindex{morphism of ringed spaces}, \((X, \sheaf{O}_X) \to (Y, \sheaf{O}_Y)\), is a pair, \((f, \varphi)\) where \(f \colon X \to Y\) is a continuous map between the underlying topological spaces and \(\varphi \colon \sheaf{O}_Y \to f_* \sheaf{O}_X\) is a morphism of sheaves.
+        
+        Unpacking this definition a little, a morphism of ringed spaces is a continuous function, \(f \colon X \to Y\), and a family of morphisms \(\varphi_U \colon \sheaf{O}_Y \to \sheaf{O}_X(f^{-1}(U))\) for all open sets \(U \subseteq Y\) such that if \(U \subseteq V \subseteq Y\) are open then
+        \begin{equation}
+            \begin{tikzcd}
+                \sheaf{O}_Y(V) \arrow[r, "\varphi_V"] \arrow[d, "{\rho_{V,U}^{\sheaf{O}_Y}}"'] & \sheaf{O}_X(f^{-1}(V)) \arrow[d, "{\rho_{V,U}^{f_*\sheaf{O}_X}}"]\\
+                \sheaf{O}_Y(U) \arrow[r, "\varphi_U"'] & \sheaf{O}_X(f^{-1}(U))
+            \end{tikzcd}
+        \end{equation}
+        commutes.
+    \end{remark}
+    
+    Note that if \(f \colon X \to Y\) and \(g \colon Y \to Z\) are morphisms of ringed spaces then so is \(g \circ f \colon X \to Z\).
+    This follows immediately from the definition since \(g \circ f\) is also continuous and for \(\varphi \in \sheaf{O}_Z(U)\) we have \((g \circ f)^*\varphi = \varphi \circ g \circ f = f^*(g \circ \varphi) = f^*(g^*\varphi)\) and since \(f^* \colon \sheaf{O}_Y(g^{-1}(U)) \to \sheaf{O}_X(f^{-1}(g^{-1}(U)))\) and \(g^* \colon \sheaf{O}_Z(U) \to \sheaf{O}_Y(g^{-1}(U))\) are both \(K\)-algebra homomorphisms so is \((g \circ f)^* = f^* \circ g^*\).
+    
+    The identity map of ringed spaces is \(\id_X \colon X \to X\) and \(\id_X^*\varphi \colon  \sheaf{O}_X(U) \to \sheaf{O}_X(\id_X^{-1}(U)) = \sheaf{O}_X(U)\) is defined by \(\varphi \mapsto \id_X^*\varphi = \varphi \circ \id_X = \varphi\).
+    
+    Associativity of composition follows from associativity of composition of continuous functions and ring homomorphisms.
+    Thus, ringed spaces form a category.
+    
+    Restrictions of morphisms are also morphisms.
+    That is, if \(f \colon X \to Y\) is a morphism of ringed spaces and we have open subsets \(U \subseteq X\) and \(V \subseteq Y\) such that \(f(U) \subseteq V\) then the restricted map \(\tilde{f} \colon U \to V\) given by \(\tilde{f}(x) = f(x)\) is again a morphism of ringed spaces.
+    This again essentially follows from the definition and the fact that sheaves are set up to work with restriction.
+    
+    There is also a gluing property similar to that of sheaves.
+    
+    \begin{lma}{Gluing Property of Morphisms}{}
+        Let \(f \colon X \to Y\) be a map of ringed spaces, and let \(\{U_i\}_{i \in I}\) be an open cover of \(X\) such that all restrictions, \(f|_{U_i} \colon U_i \to Y\), are morphisms of ringed spaces.
+        Then \(f\) is a morphism of ringed spaces.
+        \begin{proof}
+            We need to check two things.
+            We start with continuity.
+            Let \(V \subseteq Y\) be open.
+            Then
+            \begin{equation}
+                f^{-1}(V) = \bigcap_{i \in I} (U_i \cap f^{-1}(V)) = \bigcup_{i \in I} (f|_{U_i})^{-1}(V).
+            \end{equation}
+            Since the restrictions are all continuous and \(V\) is open we know that \((f|_{U_i})^{-1}(V)\) is open in \(U_i\) and thus their union is open in \(X\).
+            
+            The second thing we have to show is that \(f\) maps pullback sections of \(\sheaf{O}_Y\) to sections of \(\sheaf{O}_X\).
+            Again, let \(V \subseteq Y\) be open, and let \(\varphi \in \sheaf{O}_Y(V)\).
+            Then
+            \begin{equation}
+                (f^*\varphi)|_{U_i \cap f^{-1}(V)} = (f|_{U_i \cap f^{-1}(V)})^*\varphi \in \sheaf{O}_X(U_i \cap f^{-1}(V))
+            \end{equation}
+            since \(f|_{U_i}\) and therefore also \(f|_{U_i \cap f^{-1}(V)}\) are morphisms.
+            Then by the gluing property for sheaves this means that \(f^*\varphi \in \sheaf{O}_X(f^{-1}(V))\).
+        \end{proof}
+    \end{lma}
+    
+    We can apply this result to morphisms between (open subsets of) affine varieties.
+    
+    \begin{prp}{}{prp:morphisms between affine varieties is just tuple of regular functions}
+        Let \(U\) be an open subset of an affine variety, \(X\), and let \(Y \subseteq \affine^n\) be an affine variety.
+        Then a morphism, \(f \colon U \to Y\), is a map of the form
+        \begin{equation}
+            \begin{aligned}
+                f = (\varphi_1, \dotsc, \varphi_n) \colon U &\to Y\\
+                x &\mapsto (\varphi_1(x), \dotsc, \varphi_n(x))
+            \end{aligned}
+        \end{equation}
+        where \(\varphi_i \in \sheaf{O}_X(U)\).
+        \begin{proof}
+            Suppose \(f \colon U \to Y\) is a morphism of affine varieties.
+            Then for \(i = 1, \dotsc, n\) we can define the \(i\)th coordinate function, \(y_i \colon Y \to K\) to simply be projecting out the \(i\)th coordinate, \(y_i(a_1, \dotsc, a_n) = a_i\).
+            This is a regular function on \(Y\), and thus we have that \(\varphi_i \coloneq f^*y_i \in \sheaf{O}_X(f^{-1}(Y)) = \sheaf{O}_X(U)\) by the properties of a morphism.
+            We then also have that \(f^*y_i = y_i \circ f\), which is just the \(i\)th component function of \(f\).
+            Thus, we have \(f = (\varphi_1, \dotsc, \varphi_n)\).
+            
+            Conversely, suppose that \(f = (\varphi_1, \dotsc, \varphi_n)\) with \(\varphi_i \in \sheaf{O}_X(U)\) and \(f(U) \subseteq Y\).
+            First, we show that \(f\) is continuous.
+            Let \(Z\) be any closed subset of \(Y\).
+            Then \(Z = V(g_1, \dotsc, g_m)\) for some \(g_i \in A(Y)\) and
+            \begin{equation}
+                f^{-1}(Z) = \{x \in U \mid g_i(\varphi_1(x), \dotsc, \varphi_n(x)) = 0 \forall i = 1, \dotsc, m\}.
+            \end{equation}
+            The functions \(x \mapsto g_i(\varphi_1(x), \dotsc, \varphi_n(x))\) are regular, since the \(\varphi_i\) are regular and the \(g_i\) are polynomials, and evaluating a polynomial at a quotient of polynomials again gives a quotient of polynomials locally.
+            Thus, \(f^{-1}(Z)\) is closed in \(U\) since the zero loci of regular functions are closed (\cref{lma:zero locus of regular function is closed}).
+            Thus, \(f\) is continuous.
+            
+            Now suppose that \(\psi \in \sheaf{O}_Y(W)\) is a regular function on an open subset, \(W \subseteq Y\).
+            Then we have
+            \begin{equation}
+                \begin{aligned}
+                    f^* \psi = \psi \circ f \colon f^{-1}(W) &\to K\\
+                    x &\mapsto \psi(\varphi_1(x), \dotsc, \varphi_n(x)),
+                \end{aligned}
+            \end{equation}
+            which is again regular, since replacing the variables in a quotient of polynomials by other quotients of polynomials results again in a quotient of polynomials.
+            Thus, \(f^*\psi \in \sheaf{O}_X(f^{-1}(W))\), and so \(f\) is indeed a morphism.
+        \end{proof}
+    \end{prp}
+    
+    \begin{crl}{}{}
+        Regular functions from \(U \to \affine^1\) are precisely the regular functions in \(\sheaf{O}_X(U)\).
+    \end{crl}
+    
+    These results are a sanity check on our definitions.
+    A morphism mapping to an affine subvariety of \(\affine^n\) is simply an \(n\)-tuple of regular functions whose image lies in said affine subvariety.
+    Further, we see that regular functions are really just the special case of \(n = 1\).
+    
+    We can take \(U = X\).
+    Then in this case we can interpret morphisms entirely algebraically through the following corollary.
+    
+    \begin{crl}{}{}
+        Let \(X\) and \(Y\) be affine varieties.
+        Then there is a bijection
+        \begin{equation}
+            \{\text{morphisms } X \to Y\} \xleftrightarrow{1:1} \{K\text{-algebra homomorphisms } A(Y) \to A(X)\}.
+        \end{equation}
+        \begin{proof}
+            By definition, any morphism, \(f \colon X \to Y\), determines a \(K\)-algebra homomorphism, \(f^* \colon \sheaf{O}_Y(Y) \to \sheaf{O}_X(X)\), and since \(\sheaf{O}_Y(Y) = A(Y)\) and \(\sheaf{O}_X(X) = A(X)\) this gives us one direction of the bijection.
+            
+            Conversely, let \(g \colon A(Y) \to A(X)\) be a \(K\)-algebra homomorphism.
+            Take \(Y \subseteq \affine^n\) and let \(y_1, \dotsc, y_n\) be the coordinate functions of \(\affine^n\).
+            Then we can define \(\varphi_i \coloneqq g(y_i) \in A(X) = \sheaf{O}_X(X)\).
+            Setting \(f = (\varphi_1, \dotsc, \varphi_n) \colon X \to \affine^n\) we then have that for any \(h \in K[y_1, \dotsc, y_n]\)
+            \begin{equation}
+                (f^*h)(x) = h(f(x)) = h(\varphi_1(x), \dotsc, \varphi_n(x)) = g(h)(x)
+            \end{equation}
+            for all \(x \in X\).
+            The last equality holds because both sides of the equation are \(K\)-algebra homomorphisms in \(h\) and on the generators \(y_i\) they both give \(\varphi_i(x)\), so they must be the same \(K\)-algebra homomorphisms.
+            
+            This shows that \(h(f(x)) = 0\) for all \(h \in I(Y)\), since these are the polynomials which map to zero in \(A(Y)\), and thus \(g\) will vanish on these polynomials.
+            Then the image of \(f\) is in \(V(I(Y)) = Y\), so we have a map \(f \colon X \to Y\) as needed.
+            Its coordinate functions are regular, since they are just \(\varphi_i\), and so by \cref{prp:morphisms between affine varieties is just tuple of regular functions} \(f\) is a morphism.
+            The calculation above shows that \(f^* = g\), and so this is indeed inverse to the first map stated.
+        \end{proof}
+    \end{crl}
+    
+    \begin{crl}{}{}
+        Under the above bijection isomorphisms of affine varieties correspond to isomorphisms of \(K\)-algebras.
+        \begin{proof}
+            This follows immediately upon noting that for \(f \colon X \to Y\) and \(g \colon Y \to X\) we have
+            \begin{equation}
+                (f \circ g)^* = g^* \circ f^* \qand (g \circ f)^* = f^* \circ g^*
+            \end{equation}
+            and so if \(f\) and \(g\) are inverses then we have \(\id_Y^* = \id_{A(Y)} = g^* \circ f^*\) so \(f^*\) has a left inverse and \(\id_X^* = \id_{A(X)} = f^* \circ g^*\) so \(f^*\) has a right inverse.
+            The converse also holds, if we assume that \(A(Y) \to A(X)\) is an isomorphism it must arise as the pullback of some invertible morphism of affine varieties.
+        \end{proof}
+    \end{crl}
+    
+    \begin{remark}{}{}
+        We can state this all a bit more formally with the language of category theory.
+        There is a contravariant functor, \(A\), from the category of affine varieties to the full subcategory of \(K\)-algebras which can arise as the coordinate rings of affine varieties\footnote{This is, as best I can tell, the full subcategory of finitely generated \(K\)-algebras with no nilpotent elements.}\footnote{One way to get around having to take this subcategory is to work with schemes, then we will have a corresponding functor between the category of affine schemes and the category of commutative unital rings. In fact, this functor is an equivalence, and can be used abstractly to define schemes.}.
+        On objects this map is \(X \mapsto A(X)\), and on morphisms it is \(f \mapsto f^*\).
+        The correspondence of isomorphisms in both categories is due to the fact that this functor both preserves and reflects isomorphisms.
+    \end{remark}
+    
+    Note that an isomorphism of affine varieties is \emph{not} a bijective morphism, just as for topological spaces where the inverse of a continuous map need not be continuous.
+    This is demonstrated in the following example.
+    
+    \begin{exm}{}{}
+        Let \(X = V(x_1^2 - x_2^3) \subseteq \affine^2\).
+        Consider the map
+        \begin{equation}
+            \begin{aligned}
+                f \colon \affine^1 &\to X\\
+                t &\mapsto (t^3, t^2).
+            \end{aligned}
+        \end{equation}
+        Note that \((t^3, t^2) \in X\) since \((t^3)^2 - (t^2)^3 = 0\).
+        Thus, \(f\) is a morphism of affine varieties since its component functions, \(t \mapsto t^3\) and \(t \mapsto t^2\), are regular (even polynomial) functions.
+        
+        The corresponding \(K\)-algebra homomorphism is \(f^* \colon A(X) \to A(\affine^1)\).
+        We have \(A(X) = K[x_1, x_2]/\langle x_1^2 - x_2^3\rangle\) and \(A(\affine^1) = K[t]\).
+        Then \(f^*(\overline{x_1}) = t^3\) and \(f^*(\overline{x_2}) = t^2\), which we get by composing \(f\) with the coordinate functions on \(\affine^2\).
+        
+        The function \(f\) is a bijection, with inverse
+        \begin{equation}
+            \begin{aligned}
+                f^{-1} \colon X &\to \affine^1\\
+                (x_1, x_2) &\mapsto
+                \begin{cases}
+                    \frac{x_1}{x_2} & x_2 \ne 0,\\
+                    0 & x_2 = 0.
+                \end{cases}
+            \end{aligned}
+        \end{equation}
+        However, \(f\) is not an isomorphism, that is, \(f^{-1}\) is not a morphism, since this would require that \(f^*\) is an isomorphism, which it isn't as we can readily check that the linear polynomial, \(t\), is not in the image of \(f^*\).
+    \end{exm}
+    
+    \section{Products}
+    Recall that when we defined the product of affine varieties we didn't equip it with the product topology, instead we equipped it with the subspace topology viewing it as a subspace of \(\affine^m \times \affine^n\) with the Zariski topology.
+    This is the \enquote{correct} topology for the product because it means that the product is indeed an affine variety and satisfies the universal property of products.
+    We just couldn't say this until now because the universal property of products of affine varieties involves morphisms between affine varieties.
+    
+    \begin{prp}{}{}
+        Let \(X\) and \(Y\) be affine varieties.
+        Let \(\pi_X \colon X \times Y \to Y\) and \(\pi_Y \colon X \times Y \to Y\) be projections onto the corresponding factors.
+        Then \(X \times Y\) equipped with these projections satisfies the universal property of a product.
+        \begin{proof}
+            First note that \(\pi_X\) and \(\pi_Y\) are indeed morphisms of affine varieties since they are of the form \((a_1, \dotsc, a_m, a_{m+1}, \dotsc a_{m+n}) \mapsto (a_1, \dotsc, a_m)\) and \((a_1, \dotsc, a_m a_{m+1}, \dotsc, a_{m + n}) \mapsto (a_{m+1}, \dotsc, a_{m+n})\), which clearly have regular component functions (being identities).
+            
+            The universal property of products states that for any other affine variety, \(Z\), equipped with morphisms \(f_X \colon Z \to X\) and \(f_Y \colon Z \to Y\) there exists a unique map \(f \colon Z \to X \times Y\) such that \(f_X = \pi_X \circ f\) and \(f_Y = \pi_Y \circ f\).
+            Given such a \(Z\) with \(f_X\) and \(f_Y\) we can simply take \(f(z) = (f_X(z), f_Y(z))\).
+            This is then a morphism of affine varieties since its component functions are regular since \(f_X\) and \(f_Y\) are morphisms.
+            By construction we have \(\pi_X \circ f = f_X\) and \(\pi_Y \circ f = f_Y\).
+            Thus, \(X\times Y\) is really the product in the category of affine varieties.
+        \end{proof}
+    \end{prp}
+    
+    Under the correspondence between affine varieties and their coordinate rings the universal property of the product becomes the universal property of the coproduct of \(K\)-algebras.
+    The coproduct of \(K\)-algebras is just the tensor product over \(K\).
+    Thus, the coordinate ring of \(A(X \times Y)\) is precisely \(A(X) \otimes_K A(Y)\).
     
     \appendixpage
     \begin{appendices}
