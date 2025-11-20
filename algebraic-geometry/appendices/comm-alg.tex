@@ -85,6 +85,33 @@ The conditions to be included here are pretty much \enquote{I had to look it up}
     \end{proof}
 \end{lma}
 
+\begin{dfn}{Reduced Ring}{}
+    A ring is \defineindex{reduced} if it has no nozero nilpotents.
+\end{dfn}
+
+\begin{lma}{}{lma:quotient by radical is reduced}
+    The quotient of a ring by a radical ideal is reduced.
+    \begin{proof}
+        Let \(R\) be a ring and \(I \subideal R\) a radical ideal.
+        That is,
+        \begin{equation}
+            I = \sqrt{I} = \{r \in R \mid r^n \in I \text{ for some } n \in \naturals\}.
+        \end{equation}
+        Suppose that \(r + I\) is nilpotent in \(R/I\).
+        Then \((r + I)^n = 0\) for some \(n \in \naturals\), but \((r + I)^n = r^n + I\), and so this is \(0\) in \(R/I\) if and only if \(r^n \in I\), but then \(r \in I\) since \(I\) is radical.
+        Thus, \(r + I = 0 + I\) is zero, and so there are no nonzero nilpotents, and thus \(R/I\) is reduced.
+    \end{proof}
+\end{lma}
+
+\begin{lma}{}{lma:quotient reduced implies ideal radical}
+    Let \(R\) be a ring with \(I \subideal R\) an ideal such that \(R/I\) is a reduced ring.
+    Then \(I\) is a radical ideal of \(R\).
+    \begin{proof}
+        Let \(r \in R\) be such that \(r^n \in J\).
+        Then in \(R/I\) we have \(0 = 0 + I = r^n + I = (r + I)^n\), and since \(R/I\) is reduced this implies that \(r + I = 0 + I\), and thus \(r \in I\), so \(I\) is radical.
+    \end{proof}
+\end{lma}
+
 \begin{dfn}{Local Ring}{def:local ring}
     A \defineindex{local ring} is a ring with a unique maximal ideal.
 \end{dfn}

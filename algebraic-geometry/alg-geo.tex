@@ -54,6 +54,7 @@ noabbrev
 % Maths
 \newcommand{\subideal}{\trianglelefteq}
 \newcommand{\affine}{\symbb{A}}
+\newcommand{\projective}{\symbb{P}}
 \newcommand{\ideal}[1]{\symfrak{#1}}
 \newcommand{\isomorphic}{\cong}
 \DeclareMathOperator{\Spec}{Spec}
@@ -65,6 +66,9 @@ noabbrev
 \newcommand{\c@egory}[1]{\symsfup{#1}}
 \newcommand{\cat}[1]{\c@egory{#1}}
 \newcommand{\Ring}{\c@egory{Ring}}
+\newcommand{\CRing}{\c@egory{CRing}}
+\newcommand{\affvar}{\c@egory{AffVar}}
+\newcommand{\CAlg}[1]{\c@egory{CAlg}_{#1}}
 \makeatother
 \newcommand{\op}{\symrm{op}}
 
@@ -1695,7 +1699,7 @@ noabbrev
     This result is really one of commutative algebra.
     We've worked with polynomial functions here where there's an existing notion of division, but it's possible to restate things in terms of localisations.
     
-    \begin{crl}{}{}
+    \begin{crl}{}{crl:regular functions on distinguished are localisation}
         Let \(X\) be an affine variety and \(f \in A(X)\).
         Then \(\sheaf{O}_X(D(f))\) is isomorphic as a \(K\)-algebra to the localisation, \(A(X)_f\), of the coordinate ring at the multiplicatively closed subset \(\{f^n \mid n \in \naturals\}\).
         \begin{proof}
@@ -2081,6 +2085,8 @@ noabbrev
     
     Associativity of composition follows from associativity of composition of continuous functions and ring homomorphisms.
     Thus, ringed spaces form a category.
+    Since affine varieties are just special cases of ringed spaces there is a full subcategory of this which is the category of affine varieties.
+    Call this category \(\affvar\).
     
     Restrictions of morphisms are also morphisms.
     That is, if \(f \colon X \to Y\) is a morphism of ringed spaces and we have open subsets \(U \subseteq X\) and \(V \subseteq Y\) such that \(f(U) \subseteq V\) then the restricted map \(\tilde{f} \colon U \to V\) given by \(\tilde{f}(x) = f(x)\) is again a morphism of ringed spaces.
@@ -2267,6 +2273,318 @@ noabbrev
     Under the correspondence between affine varieties and their coordinate rings the universal property of the product becomes the universal property of the coproduct of \(K\)-algebras.
     The coproduct of \(K\)-algebras is just the tensor product over \(K\).
     Thus, the coordinate ring of \(A(X \times Y)\) is precisely \(A(X) \otimes_K A(Y)\).
+    In other words, the functor from affine varieties to \(K\)-algebras, \(X \mapsto A(X)\), is contravariant, sending products to coproducts.
+    
+    \section{Redefining Affine Varieties}
+    So far we've constructed a functor \(\affvar^{\op} \to \CAlg{K}\), sending an affine variety, \(X\), to its coordinate ring, \(A(x)\), and sending a morphism, \(f \colon X \to Y\), to its pullback, \(f^* \colon A(Y) \to A(X)\).
+    In this section we'll construct a functor going the other way.
+    
+    The first problem we have is that not every \(K\)-algebra can be the coordinate ring of an affine variety.
+    One immediate requirement is that the coordinate ring of an affine variety is always reduced, that is, it has no nilpotent elements.
+    This is because \(A(X) = K[x_1, \dotsc, x_n]/I(X)\) and \(I(X)\) is a radical ring (\cref{lma:quotient by radical is reduced}).
+    Another condition is that since \(K[x_1, \dotsc, x_n]\) is Noetherian so is its quotient, \(A(X)\).
+    In particular, this means that \(A(X)\) is finitely generated.
+    
+    Thus, it makes sense to restrict our attention to finitely generated reduced \(K\)-algebras, \(R\).
+    The question we ask is if we can construct an affine variety which has \(R\) as its coordinate ring.
+    
+    To start we pick generators, \(a_1, \dotsc, a_n\), for \(R\).
+    This gives a \(K\)-algebra homomorphism
+    \begin{equation}
+        \begin{aligned}
+            g \colon K[x_1, \dotsc, x_n] &\to R\\
+            f &\mapsto f(a_1, \dotsc, a_n).
+        \end{aligned}
+    \end{equation}
+    Further, if \(J = \ker g\) then the isomorphism theorems give us \(R \isomorphic K[x_1, \dotsc, x_n] / J\).
+    Since \(R\) is reduced this means that \(J\) is a radical ideal by \cref{lma:quotient reduced implies ideal radical}.
+    Thus, \(X = V(J)\) is an affine variety in \(\affine^n\) with \(I(X) = I(V(J)) = \sqrt{J} = J\) and so the coordinate ring of \(X\) is \(A(X) = K[x_1, \dotsc, x_n]/I(X) = K[x_1, \dotsc, x_n]/J \isomorphic R\).
+    
+    Notice that the construction here of \(X\) depends on a choice of generators of \(R\), and different choices may produce different affine varieties.
+    However, these affine varieties will be isomorphic since by construction they have the same coordinate rings.
+    Thus all that really differs is the embedding of these affine varieties in \(\affine^n\).
+    
+    What we have done here is construct a map from potential coordinate rings (finitely generated reduced \(K\)-algebras) to affine varieties.
+    This extends to a functor, and in fact this (contravariant) functor is an equivalence of categories.
+    
+    So far we have considered all affine varieties as subsets of \(\affine^n\) for some \(n\).
+    This has been fine so far, just as it's usually ok to think of manifolds as being embedded in \(\reals^n\) for some \(n\).
+    However, it's not the most general definition.
+    The following definition relaxes this condition, by simply requiring that affine varieties are things that are \emph{isomorphic} to things we've been calling affine varieties up to this point.
+    
+    \begin{dfn}{Affine Variety}{}
+        An \defineindex{affine variety} is a ringed space which is isomorphic to a ringed space \((X, \sheaf{O}_X)\) where \(X\) is a closed subset of \(\affine^n\) for some \(n\) in the Zariski topology and \(\sheaf{O}_X\) is the sheaf of regular functions on \(X\).
+    \end{dfn}
+    
+    With this definition we now have a bijection
+    \begin{equation}
+        \{\text{affine varieties}\}/{\isomorphic} \xleftrightarrow{1:1} \{\text{finitely generated reduced } K\text{-algebras}\}/{\isomorphic}.
+    \end{equation}
+    These maps are actually contravariant functors, and actually form an equivalence of categories.
+    Specifically, we can actually define the category of affine varieties to be the category which is (up to equivalence of categories) dual to the category of finitely generated reduced \(K\)-algebras.
+    This lets us give a purely algebraic definition of the geometric concept of affine varieties.
+    
+    Importantly, with this new definition of affine varieties all of the results we've stated so far carry over.
+    For example, given a \enquote{new definition} affine variety, \((X, \sheaf{O}_X)\), \(X\) is still a topological space, so all topological properties continue to hold, and we can still interpret elements of \(\sheaf{O}_X\) as regular functions on \(X\).
+    We can define the coordinate ring \(A(X)\) to just be \(A(X) \coloneq \sheaf{O}_X(X)\), since we've seen that this equality holds with the \enquote{old definition}.
+    Other things, like products, can be defined by first picking an embedding of \(X\) into affine space and then making definitions relative to this embedding.
+    
+    With this new definition there are things which we missed before.
+    The most important of which are distinguished open sets.
+    
+    \begin{prp}{}{}
+        Let \(X\) be an affine variety and let \(f \in A(X)\).
+        Then the distinguished open subset, \(D(f)\), is an affine variety with coordinate ring \(A(D(f)) \isomorphic A(X)_f\).
+        \begin{proof}
+            First note that
+            \begin{equation}
+                Y = \{(x, t) \in X \times \affine^1 \mid tf(x) = 1\} \subseteq X \times \affine^1
+            \end{equation}
+            is an affine variety since it is the zero locus of the polynomial \(tf(x) - 1\).
+            For \(x \in Y\) since \(tf(x) = 1\) we know that \(f(x) \ne 0\), and so \(1/f(x)\) makes sense, and in particular \(t = 1/f(x)\). 
+            
+            Consider the projection map
+            \begin{equation}
+                \begin{aligned}
+                    g \colon Y &\to D(f)\\
+                    (x, t) &\mapsto x.
+                \end{aligned}
+            \end{equation}
+            This is a morphism of ringed spaces.
+            It has an inverse given by
+            \begin{equation}
+                \begin{aligned}
+                    g^{-1} \colon D(f) &\to Y\\
+                    x &\mapsto \left( x, \frac{1}{f(x)} \right).
+                \end{aligned}
+            \end{equation}
+            Here we use \(t = 1/f(x)\).
+            Thus, \(g\) is an isomorphism (of ringed spaces) between \(D(f)\) and the affine variety \(Y\), and so \(D(f)\) is itself an affine variety.
+            
+            Since \(D(f)\) is a subset of \(X\) it is a subvariety, and thus it's coordinate ring is \(\sheaf{O}_X(D(f)) \isomorphic A(X)_f\) (\cref{crl:regular functions on distinguished are localisation}, this still holds with the new definition of an affine variety).
+        \end{proof}
+    \end{prp}
+    
+    \chapter{Varieties}
+    In the last chapter we redefined affine varieties to be slightly more general.
+    There are still some things which are affine-variety-like but are not affine varieties, even with this new definition.
+    For example, consider \(U = \affine^2 \setminus \{0\} \subseteq \affine^2 = X\).
+    If \(U\) was an affine subvariety of \(X\) then it would have coordinate ring \(\sheaf{O}_X(U)\), and as previously claimed (\cref{exm:extending regular functions over a point}) \(\sheaf{O}_X(U) = K[x_1, x_2]\).
+    However, \(K[x_1, x_2] = A(X)\), which would imply that \(U\) and \(X\) are isomorphic as affine varieties, and that the isomorphism is simply the identity map (since this is an equality of coordinate rings, not just an isomorphism).
+    However, clearly this is clearly not an isomorphism (its not even a bijection) and so \(U\) is not an affine variety.
+    
+    We can cover \(U\) with two distinguished open sets,
+    \begin{equation}
+        D(x_1) = \{(x_1, x_2) \in \affine^2 \mid x_1 \ne 0\}, \qand D(x_2) = \{(x_1, x_2) \in \affine^2 \mid x_2 \ne 0\}.
+    \end{equation}
+    These are affine varieties, as we showed at the end of the previous chapter, and so \(U\) can be covered by affine varieties.
+    
+    This suggests that we should extend our thinking to include things which are covered by affine varieties.
+    This is analgous to considering a manifold as being covered by copies of (open subsets of) \(\reals^n\).
+    There needs to be some compatibility condition on this covering, which for a manifold comes from conditions on the transition maps.
+    
+    Another motivation for these definitions is that in the standard topology affine varieties over \(\complex\) are never bounded, and thus never compact, unless they are a finite set.
+    This is undesirable, and we often want to take something which isn't compact and add a \enquote{point at infinity} to make it compact.
+    This can be achieved by gluing affine varieties together where some of them include points at infinity.
+    This will lead us to the definition of projective varieties later, but for now we won't have any such points.
+    
+    \section{Prevarieties}
+    A space which is covered by affine varieties is called a prevariety.
+    Later we'll define varieties as prevarieties with an extra condition.
+    
+    \begin{dfn}{Prevariety}{}
+        A \defineindex{prevariety} is a ringed space, \(X\), with a finite open cover by affine varieties.
+        Morphisms of prevarieties are morphisms of ringed spaces.
+        The elements of \(\sheaf{O}_X(U)\) for \(U \subseteq X\) an open set are called \define{regular functions}\index{regular function} on \(U\).
+    \end{dfn}
+    
+    Note that the requirement is the \emph{existence} of an open cover by affine varieties, the open cover is not part of the data of the prevariety.
+    
+    Any affine variety is trivially a prevariety, having a finite cover open cover by distinguished open subsets, which are themselves affine varieties.
+    
+    The simplest way to construct new prevarieties is to glue them together from affine varieties, or from other prevarieties.
+    To do so let \(X_1\) and \(X_2\) be two prevarieties.
+    Let \(U_{1,2} \subseteq X_1\) and \(U_{2,1} \subseteq X_2\) be open subsets.
+    Let \(f \colon U_{1,2} \to U_{2,1}\) be an isomorphism of ringed spaces.
+    Then we can define a new prevariety, \(X\), by gluing \(X_1\) and \(X_2\) along \(f\).
+    That is, we identify \(U_{1,2} \subseteq X_1\) and \(U_{2,1} \subseteq X_2\) using \(f\).
+    This identification happens at multiple levels.
+    \begin{enumerate}
+        \item As a set, \(X = (X_1 \sqcup X_2)/{\sim}\) where \(a \sim f(a)\) and \(f(a) \sim a\) for \(a \in U_{1,2}\) and \(a \sim a\) for \(a \in X_1 \cup X_2\) defines an equivalence relation.
+        This gives us natural embeddings \(i_1 \colon X_1 \to X\) and \(i_2 \colon X_2 \to X\) mapping \(x \in X_i\) to its equivalence class in \((X_1 \sqcup X_2) / {\sim}\).
+        \item As a topological space, \(U \subseteq X\) is declared to be open if \(i_1^{-1}(U)\) and \(i_2^{-1}(U)\) are open, that is, we equip \(X_1 \sqcup X_2\) with the obvious topology and then \(X\) with the quotient topology.
+        \item As a ringed space, we define the structure sheaf of \(X\) by
+        \begin{equation}
+            \sheaf{O}_X(U) = \{\varphi \colon U \to K \mid i_1^*\varphi \in \sheaf{O}_{X_1}(i_1^{-1}(U)), i_2^*\varphi \in \sheaf{O}_{X_2}(i_2^{-1}(U))\}.
+        \end{equation}
+        Intuitively, this means that a function on \(X\) is regular if it is regular when restricted to \(X_1\) and \(X_2\).
+    \end{enumerate}
+    
+    When \(X\) is constructed in such a way the images of \(i_1\) and \(i_2\) are open subsets of \(X\) which are isomorphic (as ringed spaces) to \(X_1\) and \(X_2\) respectively.
+    Since \(X_1\) and \(X_2\) are prevarieties they have a covering by affine open subsets, and then this provides a covering of \(X\) by such subsets.
+    
+    \begin{remark}{}{}
+        I believe that the construction above makes \(X\) the pushout \(X = X_1 +_{U_{2,1}} X_2\), that is, it's the colimit of the diagram
+        \begin{equation}
+            \begin{tikzcd}
+                X_1 & U_{1,2} \arrow[l, hook'] \arrow[r, "f"] & X_2
+            \end{tikzcd}
+        \end{equation}
+        This is called the cograph of \(f\), being dual to the graph, which is the pullback of \(f\) along the identity on \(U_{2,1}\).
+    \end{remark}
+    
+    \begin{exm}{}{}
+        Consider the case of \(X_1 = X_2 = \affine^1\) and \(U_{1,2} = U_{2,1} = \affine^1 \setminus \{0\}\).
+        We can consider two different gluing isomorphisms, \(f \colon U_{1,2} \to U_{2,1}\):
+        \begin{enumerate}
+            \item Let \(f(x) = 1/x\).
+            Then \(X_1 = \affine^1\) is an open subset of \(X\) with complement \(X \setminus X_1 = X_2 \setminus U_{2,1}\), which is just a single point corresponding to \(0\) in \(X_2\).
+            We interpret this as \enquote{\(\infty = 1/0\)} in the \(X_1\) coordinate.
+            We think of the glued space as \(\affine^1 \cup \{\infty\}\), which is the compactification, \(\projective^1\), of the affine line.
+            
+            When \(K = \complex\) \(X\) is the Riemann sphere, as shown in \cref{fig:projective space from gluing}.
+            The gluing shown here gives us morphisms \(X_1 \to X_2 \subseteq \projective^1\), \(x \mapsto x\) and \(X_2 \to X_1 \subseteq \projective^1\), \(x \mapsto x\).
+            These correspond to reflecting across the horizontal axis in our picture of the Riemann sphere.
+            These glue together to a single morphism, \(\projective^1 \to \projective^1\), which can be thought of as \(x \mapsto 1/x\) when we interpret \(\projective^1\) as \(\affine^1 \cup \{\infty\}\).
+            
+            \item Instead, we can take \(f \colon U_{1,2} \to U_{2,1}\) to be the identity map.
+            Then the space given by gluing \(X_1\) and \(X_2\) along \(f\) is given in the picture \cref{fig:double zero from gluing}.
+            We interpret this space as the \enquote{affine line with two zeros}.
+            
+            This is a slightly weirder space, in particular when we take \(K = \complex\).
+            For example, any sequence in \(\complex\) which tends to zero now has two possible limits in \(X\), either copy of \(0\).
+            As before we have maps \(X_1 \to X_2 \subseteq X\) and \(X_2 \to X_1 \subseteq X\) both given by \(x \mapsto x\).
+            These glue to give a morphism \(g \colon X \to X\) which acts as the identity on the nonzero points and exchanges the two zero points.
+            This means that the set \(\{x \in X \mid g(x) = x\} = \affine^1\setminus \{0\}\) is not closed in \(X\), even though it is defined by an equality of two continuous maps.
+            
+            This space is \emph{too} weird for many of our purposes, so we will not allow such spaces to be varieties.
+        \end{enumerate}
+    \end{exm}
+    
+    
+    \begin{figure}
+        \centering
+        \begin{subfigure}{0.8\textwidth}
+            \centering
+            \tikzsetnextfilename{gluing-projective-space}
+            \begin{tikzpicture}[baseline=(current bounding box), scale=0.6]
+                \draw [very thick, my blue] (262:2) arc (262:-82:2);
+                \draw [very thick, my blue] (85:3) arc (85:-265:3);
+                \node [my blue] at (90:1.5) {\(0\)};
+                \node [my blue] at (45:1.5) {\(1/2\)};
+                \node [my blue] at (135:1.5) {\(-1/2\)};
+                \node [my blue] at (0:1.5) {\(1\)};
+                \node [my blue] at (180:1.5) {\(-1\)};
+                \node [my blue] at (-45:1.5) {\(2\)};
+                \node [my blue] at (225:1.5) {\(-2\)};
+                \node [my blue] at (270:3.5) {\(0\)};
+                \node [my blue] at (45:3.5) {\(2\)};
+                \node [my blue] at (135:3.5) {\(-2\)};
+                \node [my blue] at (0:3.5) {\(1\)};
+                \node [my blue] at (180:3.5) {\(-1\)};
+                \node [my blue] at (-45:3.5) {\(1/2\)};
+                \node [my blue] at (225:3.5) {\(-1/2\)};
+                \foreach \i in {100, 120, ..., 260} {
+                    \draw [my blue, very thick, <->] (\i:2.1) -- (\i:2.9);
+                }
+                \foreach \i in {80, 60, ..., -80} {
+                    \draw [my blue, very thick, <->] (\i:2.1) -- (\i:2.9);
+                }
+                \draw [my blue, very thick, ->] (4, 0) -- ++ (1, 0) node [midway, above] {Glue};
+                \draw [very thick, my blue] (8, 0) circle [radius=2.5];
+                \fill [my blue] (8, 2.5) circle [radius=0.075] node [above] {\(\infty\)};
+                \fill [my blue] (8, -2.5) circle [radius=0.075] node [below] {\(0\)};
+            \end{tikzpicture}
+            \caption[Projective space]{Gluing together two copies of \(\affine^1\) along \(\affine^1 \setminus \{0\}\) to produce \(\projective^1\).}
+            \label{fig:projective space from gluing}
+        \end{subfigure}
+        \begin{subfigure}{0.8\textwidth}
+            \centering
+            \tikzsetnextfilename{gluing-double-origin}
+            \begin{tikzpicture}[baseline=(current bounding box)]
+                \draw [very thick, my blue] (-4, 0) -- (4, 0);
+                \draw [very thick, my blue] (-4, 1) -- (4, 1);
+                \foreach \i in {-4, ..., 4} {
+                    \node [above, my blue] at (\i, 1) {\(\i\)};
+                    \node [below, my blue] at (\i, 0) {\(\i\)};
+                }
+                \foreach \i in {1, ..., 4} {
+                    \draw [very thick, my blue, <->] (\i, 0.1) -- ++ (0, 0.8);
+                    \draw [very thick, my blue, <->] (-\i, 0.1) -- ++ (0, 0.8);
+                }
+                \draw [very thick, my blue, ->] (0, -1) -- ++ (0, -1) node [midway, right] {Glue};
+                \draw [very thick, my blue] (-4, -3) -- (-0.2, -3);
+                \draw [very thick, my blue] (0.2, -3) -- (4, -3);
+                \fill [my blue] (0, -2.5) circle [radius=0.075] node [above] {\(0\)};
+                \fill [my blue] (0, -3.5) circle [radius=0.075] node [below] {\(0\)};
+                \draw [very thick, dashed, my blue] (-0.2, -3) .. controls (-0.15, -2.8) .. (0, -2.5);
+                \draw [very thick, dashed, my blue] (-0.2, -3) .. controls (-0.15, -3.3) .. (0, -3.5);
+                \draw [very thick, dashed, my blue] (0.2, -3) .. controls (0.15, -2.8) .. (0, -2.5);
+                \draw [very thick, dashed, my blue] (0.2, -3) .. controls (0.15, -3.3) .. (0, -3.5);
+            \end{tikzpicture}
+            \caption[Double zero]{Gluing together two copies of \(\affine^1\) along \(\affine^1\setminus \{0\}\) to produce the line with two origins.}
+            \label{fig:double zero from gluing}
+        \end{subfigure}
+        \caption{Different ways to glue two punctured affine lines.}
+    \end{figure}
+    
+    In order to glue together an arbitrary number of sets we need to do the same as the case of two sets and also add a compatibility condition for the overlap of the gluings.
+    This is what we define here.
+    
+    Let \(I\) be a finite index set and let \(X_i\) be prevarieties for \(i \in I\).
+    Then for \(i, j \in I\) with \(i \ne j\) let \(U_{i,j} \subseteq X_i\) be an open subset equipped with an isomorphism of ringed spaces, \(f_{i,j} \colon U_{i,j} \to U_{j,i}\) such that for \(i, j, k \in I\) all distinct we have
+    \begin{enumerate}
+        \item \(f_{j,i} = f_{i,j}^{-1}\); and
+        \item \(f_{i,j}^{-1}(U_{j,k}) \subseteq U_{i,k}\) and \(f_{j,k} \circ f_{i,j}|_{f^{-1}_{i,j}(U_{j,k})} = f_{i,k}|_{f^{-1}_{i,j}(U_{j,k})}\).
+    \end{enumerate}
+    The first condition just says that we can glue \(i\) to \(j\) or \(j\) to \(i\), in the case of 2 sets we just ignored this and glued \(1\) to \(2\).
+    The second condition says if we glue \(i\) to \(j\) and then to \(k\) that should be the same as gluing \(i\) directly to \(j\).
+    The construction then proceeds in an analogous way to the case of two sets.
+    We define \(X = \left( \bigcup_{i \in I} X_i \right)/{\sim}\) where \(a \sim f_{i,j}(a)\) for all \(a \in U_{i,j}\) and \(a \sim a\) for all \(a\).
+    The conditions above are exactly what is required for this to define an equivalence relation.
+    Then \(X\) is made into a prevariety by the obvious topology and structure sheaf generalising the case of gluing two sets.
+    That is, we have embeddings \(i_j \colon X_j \to X\) and \(U \subseteq X\) is open if \(i_j^{-1}(U)\) is open in \(X_j\) for all \(j \in I\), and we define
+    \begin{equation}
+        \sheaf{O}_X(U) = \{\varphi \colon U \to K \mid i_j^*\varphi \in \sheaf{O}_{X_j}(i_j^{-1}(U)) \text{ for all} j \in I\}.
+    \end{equation}
+    
+    \section{Properties of Prevarieties}
+    First note that all topological concepts, such as connectedness, irreducibility and dimension, carry over from affine varieties to prevarities.
+    In particular, the decomposition into irreducible subspaces holds.
+    For properties involving the structure of the ringed spaces we need to look at to what extent subsets, images, and preimages under morphisms and products are again prevarieties.
+    
+    Let \(X\) be a prevariety and let \(U \subseteq X\) be an open subset.
+    Then \(U\) is a a prevariety, with the structure sheaf \(\sheaf{O}_U = \sheaf{O}_{X}|_U\).
+    Since \(X\) can be covered by affine varieties \(U\) can be covered by open subsets of affine varieties, which can then themselves be covered by affine varieties (such as distinguished open sets).
+    We call \(U\) an \defineindex{open subprevariety} of \(X\).
+    
+    Things are a little more complicated for \(Y \subseteq X\) a closed subset.
+    An open subset, \(U \subseteq Y\), is not, generally, open in \(X\).
+    So, we can't define a structure sheaf on \(Y\) by setting \(\sheaf{O}_Y(U)\) to be \(\sheaf{O}_X(U)\).
+    Instead, we can define \(\sheaf{O}_Y(U)\) to be the \(K\)-algebra of functions \(U \to K\) which are locally restrictions of functions on \(X\).
+    That is,
+    \begin{equation}
+        \sheaf{O}_Y(U) \coloneq \{\varphi \colon U \to K \mid \forall a \in U \exists \text{ and open neighbourhood, } V \text{, of }a \text{ in }X \text{ and } \psi \in \sheaf{O}_X(V) \text{ with } \varphi = \psi|_{U \cap V}\}.
+    \end{equation}
+    The local nature of this definition makes \(\sheaf{O}_Y\) a sheaf, and thus \((Y, \sheaf{O}_Y)\) is a ringed space.
+    One can show that \(Y\) is indeed a prevariety in this way, and we call it a \defineindex{closed subprevariety}.
+    
+    For a general (neither open nor closed) subset of \(X\) there is no way to make it into a prevariety in a natural way.
+    Worse than this, the notions of open and closed subprevarieties do not mix well, taking a union of an open and closed subprevariety need not naturally form an open or closed subprevariety.
+    For example, taking \(X = \affine^2\) there's an open subprevariety \(U = \affine^1 \times (\affine^1 \setminus \{0\})\), and a closed subprevariety \(Y = \{0\}\).
+    The union of these does not have a natural structure as a subprevariety of \(\affine^2\) since at the origin it does not look like an affine variety (\cref{fig:not subprevariety}).
+    
+    \begin{figure}
+        \centering
+        \tikzsetnextfilename{not-subprevariety}
+        \begin{tikzpicture}[baseline=(current bounding box), scale=0.8]
+            \fill [my blue] (0, 0.05) rectangle (3, 2);
+            \fill [my blue] (0, -0.05) rectangle (3, -2);
+            \fill [my blue] (1.45, -0.1) rectangle (1.55, 0.1);
+        \end{tikzpicture}
+        \caption[Not a subprevariety]{The union of \(U = \affine^1 \times (\affine^1 \setminus \{0\})\) and \(Y = \{0\}\) is not a subprevariety of \(X = \affine^2\).}
+        \label{fig:not subprevariety}
+    \end{figure}
     
     \appendixpage
     \begin{appendices}
