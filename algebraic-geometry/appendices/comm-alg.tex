@@ -268,3 +268,21 @@ That is,
 This notation can be a bit confusing.
 For \(R_x\) we've forced \(x\) to be invertible.
 For \(R_{\ideal{p}}\) we've forced everything \emph{not} in \(\ideal{p}\) to be invertible.
+
+\section{Graded Rings}
+\begin{dfn}{Graded Ring}{}
+    A \defineindex{graded ring} is a ring, \(R\), and abelian subgroups, \(R_d \subseteq R\) for \(d \in \naturals\) such that
+    \begin{equation}
+        R = \bigoplus_{d \in \naturals} R_d
+    \end{equation}
+    i.e., for \(f \in R\) there is a unique decomposition \(f = \sum_{d \in \naturals} f_d\) with \(f_d \in R_d\).
+    We call elements of \(R_d\) degree \(d\) elements, and elements of \(R_d\setminus\{0\}\) are homogeneous of degree \(d\).
+\end{dfn}
+
+\begin{dfn}{Graded Algebra}{}
+    A \defineindex{graded algebra} is a graded ring equipped with a product making it into an algebra which respects the grading, so that for \(\lambda \in K\) and \(f \in R_d\) we have \(\lambda f \in R_d\) and for \(g \in R_{d'}\) we have \(fg \in R_{d + d'}\).
+\end{dfn}
+
+Note these definitions of grading are given for \(\naturals\), so-called \(\naturals\)-gradings.
+We can replace \(\naturals\) with any commutative monoid and the definition still makes sense.
+Common choices are \(\integers\) or \(\integers/2\integers\).

@@ -71,6 +71,24 @@ noabbrev
 \newcommand{\CAlg}[1]{\c@egory{CAlg}_{#1}}
 \makeatother
 \newcommand{\op}{\symrm{op}}
+\newcommand{\Gr}{\symrm{Gr}}
+
+\ExplSyntaxOn
+% Create LaTeX interface command
+\NewDocumentCommand{\projCoord}{ O{\mathord{:}} m }{  % optional arg is separator, mandatory
+    %arg is comma separated list
+    [
+    \willoughby_projCoord:nn { #1 } { #2 }
+    ]
+}
+
+\clist_new:N \l_willougbhy_projCoord_clist  % Create new clist variable
+\cs_new_protected:Npn \willoughby_projCoord:nn #1 #2 {  % create LaTeX3 function
+    \clist_set:Nn \l_willougbhy_projCoord_clist { #2 }  % set clist variable with
+    %clist #2 passed by user
+    \clist_use:Nn \l_willougbhy_projCoord_clist { #1 }  % print list separated by #1
+}
+\ExplSyntaxOff
 
 \includeonly{appendices/comm-alg, appendices/topology}
 
@@ -2553,6 +2571,7 @@ noabbrev
     In particular, the decomposition into irreducible subspaces holds.
     For properties involving the structure of the ringed spaces we need to look at to what extent subsets, images, and preimages under morphisms and products are again prevarieties.
     
+    \subsection{Subprevarieties}
     Let \(X\) be a prevariety and let \(U \subseteq X\) be an open subset.
     Then \(U\) is a a prevariety, with the structure sheaf \(\sheaf{O}_U = \sheaf{O}_{X}|_U\).
     Since \(X\) can be covered by affine varieties \(U\) can be covered by open subsets of affine varieties, which can then themselves be covered by affine varieties (such as distinguished open sets).
@@ -2563,9 +2582,10 @@ noabbrev
     So, we can't define a structure sheaf on \(Y\) by setting \(\sheaf{O}_Y(U)\) to be \(\sheaf{O}_X(U)\).
     Instead, we can define \(\sheaf{O}_Y(U)\) to be the \(K\)-algebra of functions \(U \to K\) which are locally restrictions of functions on \(X\).
     That is,
-    \begin{equation}
-        \sheaf{O}_Y(U) \coloneq \{\varphi \colon U \to K \mid \forall a \in U \exists \text{ and open neighbourhood, } V \text{, of }a \text{ in }X \text{ and } \psi \in \sheaf{O}_X(V) \text{ with } \varphi = \psi|_{U \cap V}\}.
-    \end{equation}
+    \begin{multline}
+        \sheaf{O}_Y(U) \coloneq \{\varphi \colon U \to K \mid \forall a \in U \exists \text{ an open neighbourhood, } V \text{, of }a \text{ in }X\\
+        \text{ and } \psi \in \sheaf{O}_X(V) \text{ with } \varphi = \psi|_{U \cap V}\}.
+    \end{multline}
     The local nature of this definition makes \(\sheaf{O}_Y\) a sheaf, and thus \((Y, \sheaf{O}_Y)\) is a ringed space.
     One can show that \(Y\) is indeed a prevariety in this way, and we call it a \defineindex{closed subprevariety}.
     
@@ -2585,6 +2605,659 @@ noabbrev
         \caption[Not a subprevariety]{The union of \(U = \affine^1 \times (\affine^1 \setminus \{0\})\) and \(Y = \{0\}\) is not a subprevariety of \(X = \affine^2\).}
         \label{fig:not subprevariety}
     \end{figure}
+    
+    Let \(Y\) be a closed subprevariety of \(X\).
+    Then the inclusion map, \(Y \hookrightarrow X\), is a morphism, since inclusions are continuous and regular functions are, by construction, still regular when restricted to \(Y\).
+    
+    If \(f \colon Z \to X\) is a morphism from some prevariety, \(Z\), and is such that \(f(Z) \subseteq Y\) then we can also think of \(f\) as a morphism \(Z \to Y\), sinec the pullback of a regular function on \(Y\) by \(f\) is locally a pullback of a regular function on \(X\), and thus regular since \(f \colon X \to Z\) is a morphism.
+    
+    \subsection{Images and Preimages}
+    Let \(f \colon X \to Y\) be a morphism of prevarieties.
+    The image of an open or closed subprevariety of \(X\) is not necessarily an open or closed subprevariety of \(Y\).
+    
+    For example, consider the affine variety \(X = V(x_2x_3 - 1) \cup \{0\} \subseteq \affine^3\).
+    On this variety \(x_1\) can take any value, while \(x_2\) must be invertible, since \(x_2x_3 = 1\), or we can have\(x_1 = x_2 = x_3 = 0\).
+    Thus, \(x_2\) can only be zero if all three coordinates are zero.
+    Take the projection morphism, \(f \colon X \to \affine^2\), onto the first two coordinates.
+    The image, \(f(X)\), is \(\affine^1 \times (\affine^2 \setminus \{0\}) \cup \{0\}\), that is, \(x_1 \in \affine^1\) and \(x_2 \in \affine^1\) with \(x_2 = 0\) only if \(x_1 = 0\) also.
+    This space, \(\affine^1 \times (\affine^1 \setminus \{0\}) \cup \{0\}\), is neither an open nor closed subprevariety as argued with \cref{fig:not subprevariety}.
+    
+    Conversely, if we take the inverse image of an open or closed subprevariety of \(Y\) under the morphism \(f \colon X \to Y\) then the result is again an open or closed subprevariety.
+    
+    \subsection{Products}
+    A naive definition of the product, \(X \times Y\), of two prevarieties is to choose open affine covers, \(\{U_i\}_{i \in I}\) and \(\{V_j\}_{j \in J}\), and then take the affine product varieties, \(U_i \times V_j\) as an open cover of \(X \times Y\).
+    This is the right idea, but proving that the resulting space doesn't depend on the choice of affine cover is hard.
+    Fortunately, all we need to do is show that this space satisfies the universal property of products and then it's guaranteed to be unique (up to isomorphism).
+    
+    \begin{prp}{Existence of Products}{}
+        Let \(X\) and \(Y\) be prevarieties.
+        Their product exists.
+        \begin{proof}
+            Let \(\{U_1, \dotsc, U_n\}\) and \(\{V_1, \dotsc, V_m\}\) be coverings of \(X\) and \(Y\) by affine varieties.
+            We cn form all pairs \(U_i \times V_j\), which are affine varieties, and we can glue any two such products along their common open subset, that is, we glue \(U_i \times V_j\) and \(U_{i'} \times V_{j'}\) along the identity morphism of \((U_i \cap U_{i'}) \cap (V_j \cap V_{j'})\).
+            These identity maps clearly satisfy the requirements of the gluing construction.
+            The resulting space covered by these \(U_i \cap V_j\) is exactly the Cartesian product \(X \times Y\).
+            
+            The affine products come with projection morphisms, \(U_i \times V_j \to U_i \subseteq X\) and \(U_i \times V_j \to V_j \subseteq Y\).
+            We can glue these to morphisms \(\pi_X \colon X \times Y \to X\) and \(\pi_Y \colon X \times Y \to Y\).
+            
+            It remains only to check that \(X \times Y\) with these projection morphisms satisfies the universal property of a product.
+            Suppose that \(Z\) is another prevariety equipped with morphisms \(f_X \colon Z \to X\) and \(f_Y \colon Z \to Y\).
+            We're looking to have a unique morphism \(f \colon Z \to X \times Y\) such that \(\pi_X \circ f = f_X\) and \(\pi_Y \circ f = f_Y\).
+            These conditions impose that \(\pi_X(f(z)) = f_X(z)\) and \(\pi_Y(f(z)) = f_Y(z)\) and since \(\pi_X\) and \(\pi_Y\) are just projection onto the first coordinate it must be that \(f(z) = (f_X(z), f_Y(z))\).
+            There is no choice in defining \(f\), so it is unique, and indeed \(X \times Y\) is the product.
+        \end{proof}
+    \end{prp}
+    
+    Suppose \(X\) and \(Y\) are two prevarieties with closed subprevarieties \(X' \subseteq X\) and \(Y' \subseteq Y\).
+    Then \(X' \times Y'\) has a prevariety structure as a product of prevarieties, but it also has a prevariety structure as a closed subset of \(X \times Y\).
+    Fortunately, these two structures agree.
+    
+    \subsection{Varieties}
+    We now impose a condition which removes pathalogical spaces such as the line with two origins.
+    If we were working with manifolds we wouldn't allow this space as it isn't Hausdorff.
+    However, we've already seen that most affine varieties \emph{aren't} Hausdorff, so this is the wrong condition to impose here.
+    The solution is to use the characterisation of being Hausdorff of \cref{lma:hausdorff iff diagonal closed} but modified to our purposes.
+    This lets us check if a topological space, \(X\), is Hausdorff by first forming the product, \(X \times X\), with the product topology, and then \(X\) is Hausdorff if the diagonal, \(\Delta = \{(x, x) \mid x \in X\} \subseteq X \times X\), is closed with the subspace topology.
+    Now, as stated this is equivalent to being Hausdorff in terms of separating neighbourhoods, so we need to modify it.
+    The correct change happens to be that \(X \times X\) should not be equipped with the product topology, but instead is equipped with its own Zariski topology.
+    
+    \begin{dfn}{Separated}{}
+        A prevariety \(X\) is called a \defineindex{variety} or \defineindex{separated} if the diagonal, \(\Delta = \{(x, x) \mid x \in X\}\), is closed in \(X \times X\) (when \(X \times X\) is equipped with the Zariski topology).
+    \end{dfn}
+    
+    Let's check this rules out the line with two origins, \(X\).
+    Let \(a\) and \(b\) be the two origins.
+    Then \(X \times X\) has \((a, a)\), \((a, b)\), \((b, a)\), and \((b, b)\).
+    However, of these only \((a, a)\) and \((b, b)\) are in \(\Delta\).
+    This means that \(\Delta\) is not closed, because the closure of \(\Delta\) also contains \((a, b)\) and \((b, a)\), since any polynomials which vanish at \((a, a)\) and \((b, b)\) also vanish at \((a, b)\) and \((b, a)\), since \(a\) and \(b\) are both just copies of \(0\).
+    
+    We will almost always assume that we are working with separated spaces.
+    Fortunately, the following shows that this doesn't mean we lose too much, just the pathalogical cases like the line with two origins.
+    
+    \begin{lma}{}{}
+        \begin{enumerate}
+            \item Affine varieties are varieties.
+            \item Open and closed subprevarieties of varieties are varieties.
+            Therefore we call them \define{open}\index{open subvariety} and \define{closed subvarieties}\index{closed subvariety}.
+        \end{enumerate}
+        \begin{proof}
+            \begin{enumerate}
+                \item Let \(X \subseteq \affine^n\) be an affine variety.
+                Then we can identify \(X \times X\) as having coordinates \(x_1, \dotsc, x_n\) on the first factor and \(y_1, \dotsc, y_n\) on the second factor.
+                Then we have \(\Delta = V(x_1 - y_1, \dotsc, x_n - y_n)\), and so \(\Delta\) is closed.
+                \item If \(Y \subseteq X\) is either an open or closed subset then we can take the inclusion morphism \(i \colon Y \times Y \to X \times X\).
+                This exists by the universal property of the product and the fact that \((a, b) \mapsto a\) and \((a, b) \mapsto b\) define morphisms \(Y \to X \times X\).
+                Then we have \(\Delta_Y = i^{-1}(\Delta_X)\) and since \(\Delta_X\) is closed by assumption \(\Delta_Y\) is closed since \(i\) is continuous.
+            \end{enumerate}
+        \end{proof}
+    \end{lma}
+    
+    Many of the definitions we've made for affine varieties still make sense for varieties.
+    For example, we can talk of curves and surfaces in a variety.
+    
+    \begin{dfn}{}{}
+        A variety of pure dimension \(1\) is called a \defineindex{curve}, and a variety of pure dimension \(2\) is called a \defineindex{surface}.
+        If \(X\) is a pure-dimensional variety and \(Y\) a pure-dimensional subvariety of codimension \(1\), that is \(\dim Y = \dim X - 1\), then we say \(Y\) is a \defineindex{hypersurface} in \(X\).
+    \end{dfn}
+    
+    There are many desirable properties of varieties, such as the following.
+    
+    \begin{prp}{}{}
+        Let \(f, g \colon X \to Y\) be a morphism of prevarieties, and let \(Y\) be a variety.
+        Then
+        \begin{enumerate}
+            \item the graph, \(\Gamma_f = \{(x, f(x)) \mid x \in X\}\) is closed in \(X \times Y\);
+            \item the set \(\{x \in X \mid f(x) = g(x)\}\) is closed in \(X \times Y\).
+         \end{enumerate}
+         \begin{proof}
+             \begin{enumerate}
+                 \item Notice that there are two maps \(X \times Y \to Y\), given by \((x, y) \mapsto f(x)\) and \((x, y) \mapsto y\).
+                 Thus, by the universal property of the product, there is a unique morphism \(X \times Y \to Y \times Y\), and it must be given by \((x, y) \mapsto (f(x), y)\).
+                 Then \(\Gamma_f\) is the preimage of \(\Delta_Y\) under this map, and since \(\Delta_Y\) is closed and this map is continuous \(\Gamma_f\) is closed.
+                 \item There are two maps \(X \to Y\), namely \(f\) and \(g\), and thus by the universal property of the product there's a unique map \(X \to Y \times Y\), and we can check that for the required diagram to commute it must be given by \(x \mapsto (f(x), g(x))\).
+                 Then the given set is the preimage of \(\Delta_Y\) under this map, and thus, by continuity of this map, the given set is closed.
+             \end{enumerate}
+         \end{proof}
+    \end{prp}
+    
+    Note that the set \(\{x \in X \mid f(x) = g(x)\}\) is the equaliser of \(f\) and \(g\) in the category of varieties.
+    
+    \chapter{Projective Varieties: Topology}
+    An affine variety is only compact (in the standard topology of, say, \(\complex\)) if it consists of finitely many points.
+    In the previous chapter we saw that by gluing together two copies of \(\affine^1\) we produced the compact \(\projective^1\).
+    Unfortunately, the description of such spaces in terms of gluing of affine patches is fairly cumbersome.
+    In this chapter we'll look at a better description for compact spaces that are defined similarly to affine varieties.
+    That is, we'll look at spaces (have a covering of spaces) defined to be the vanishing sets of some functions.
+    The idea is to work with projective space in place of affine space, which involves adding \enquote{points at infinity} to compactify.
+    In fact, it turns out that the class of varieties we construct this way is massive, so large that we won't see any examples that aren't open subsets of such a projective variety.
+    
+    \section{Projective Space}
+    \begin{dfn}{Projective Space}{}
+        For \(n \in \naturals\) we define the \define{projective \(\symbf{n}\)-space}\index{projective space} over a field, \(K\), to be the set, \(\projective^n_K = \projective^n\), of all 1-dimensional linear subspaces of the vector space \(K^{n + 1}\).
+    \end{dfn}
+    
+    Note that this definition defines \(\projective^n\) as \(\Gr(1, n+1)\), the Grassmannian of \(1\)-dimensional subspaces of \(n + 1\) dimensional space.
+    In a couple of chapters we'll see that Grassmannians can be generalised greatly to \(k\)-dimensional subspaces.
+    
+    Dealing with all \(1\)-dimensional subspaces is a little tricky.
+    The solution is to identify each subspace with a point in that subspace.
+    The problem then is that we can choose any nonzero point for this description.
+    Fortunately, all of these points are related by scalar multiplication.
+    We therefore make the identification
+    \begin{equation}
+        \projective^n = (K^{n + 1} \setminus \{0\}) / {\sim}
+    \end{equation}
+    where \(\sim\) is the equivalence relation given by declaring \((x_0, \dotsc, x_n) \sim (y_0, \dotsc, y_n)\) if there exists some \(\lambda \in K^*\) such that for all \(i\) we have \(x_i = \lambda y_i\).
+    Note that \(\lambda\) must be the same for all \(i\).
+    It's also common to write this as \(\projective^n = (K^{n+1} \setminus \{0\}) / K^*\).
+    We index our coordinates starting at \(0\) when working with projective spaces so that the last index is \(n\), this is just a choice, but a convenient one.
+    We denote the equivalence class of \((x_0, \dotsc, x_n)\) by \(\projCoord{x_0, \dotsc, x_n}\), and we will generally think of these as being the points of \(\projective^n\).
+    We call these the \defineindex{homogeneous coordinates} of a point.
+    Note that as part of the definition we cannot have all of the \(x_i\) zero.
+    
+    There is an obvious embedding of affine \(n\)-space in projective \(n\)-space, given by
+    \begin{equation}
+        \begin{aligned}
+            f \colon \affine^n &\to \projective^n\\
+            (x_1, \dotsc, x_n) &\mapsto \projCoord{1, x_1, \dotsc, x_n}.
+        \end{aligned}
+    \end{equation}
+    Fixing the first coordinate to be \(1\) removes the ability to scale within the image of this function, and thus we can see that the map is injective.
+    The image of the map is \(U_0 = \{\projCoord{x_0, x_1, \dotsc, x_n} \mid x_0 \ne 0\}\).
+    On this image the inverse map is given by
+    \begin{equation}
+        \projCoord{x_0, \dotsc, x_n} \mapsto \left( \frac{x_1}{x_0}, \dotsc, \frac{x_n}{x_0} \right).
+    \end{equation}
+    With this we can think of \(\affine^n\) as being embedded as the open subset \(U_0 \subseteq \projective^n\).
+    We call \(\affine^n\) viewed in this way the \defineindex{affine part} of \(\projective^n\) and we call \((x_1/x_0, \dotsc, x_n/x_0)\) the \defineindex{affine coordinates} of \(\projCoord{x_0, \dotsc, x_n}\).
+    
+    The remaining points, \(\projCoord{0, x_1, \dotsc, x_n}\), are viewed as \enquote{points at infinity}, since their affine coordinates (which aren't really defined) have \(x_1/0 \enquote{=} \infty\).
+    Forgetting the first coordinate, which is always zero here, we can identify the points at infinity with a copy of \(\projective^{n-1}\).
+    Thus,
+    \begin{equation}
+        \projective^n = \affine^n \sqcup \projective^{n-1}.
+    \end{equation}
+    So, projective space breaks up into affine space plus points at infinity.
+    Once we give \(\projective^n\) the structure of a variety we will see that in this decomposition \(\affine^n\) is an open subvariety and \(\projective^{n-1}\) is a closed subvariety.
+    
+    Note that when \(K = \complex\) with the standard topology we can give \(\complex^n\) the product topology, and then \(\complex^n \setminus \{0\}\) and \(\complex^{\times}\) get a subspace topology, and finally \((\complex^n \setminus \{0\})/\complex^{\times}\) gets the quotient topology.
+    This makes \(\projective^n_{\complex}\) into a compact space.
+    Recall that the quotient topology has as open sets those sets which have open preimage under the quotient map, \(\pi \colon \complex^{n+1} \setminus \{0\} \twoheadrightarrow \projective^{n+1}_{\complex}\).
+    Let
+    \begin{equation}
+        S^{n-1} = \{(x_0, \dotsc, x_n) \in \complex^{n + 1} \mid \abs{x_0}^2 + \dotsb + \abs{x_n}^2 = 1\}
+    \end{equation}
+    be the unit sphere in \(\complex^{n+1}\).
+    This is compact since it is a closed and bounded subset of \(\complex^{n + 1}\).
+    Further, every point in \(\projective^n\) can always be represented by choosing a point which lies on \(S^{n-1}\), so the map \(\pi|_{S^{n-1}} \colon S^{n-1} \to \projective^n\) is surjective, and so \(\projective^n\) is compact as it's the image of a compact set under a continuous map.
+    
+    \section{Homogeneous Polynomials}
+    We want to define projective varieties in analogy to affine varieties, that is, as the zero loci of polynomials.
+    However, if \(f \in K[x_0, \dotsc, x_n]\) is an arbitrary polynomial then defining this to be something like
+    \begin{equation}
+        \{\projCoord{x_0, \dotsc, x_n} \mid f(x_0, \dotsc, x_n) = 0\}
+    \end{equation}
+    doesn't make sense, since homogeneous coordinates are only defined up to a scalar and whether \(f\) vanishes at a point will therefore depend on the choice of that scalar.
+    For example, if we take \(n = 1\) and \(f(x_0, x_1) = x_1^2 - x_0\) then \(f(1, 1) = 0\) and \(f(-1, -1) = 2 \ne 0\) even though \(\projCoord{1,1}\) and \(\projCoord{-1,{-}1}\) represent the same point in \(\projective^1\).
+    To get around this problem we restrict the polynomials we consider.
+    
+    \begin{dfn}{Homogeneous Polynomials}{}
+        A polynomial, \(f \in K[x_0, \dotsc, x_n]\), is \defineindex{homogeneous} (of degree \(d\)) if all of its monomials have the same total degree (\(d\)).
+        Write \(K[x_0, \dotsc, x_n]_d\) for the homogeneous polynomials of degree \(d\).
+     \end{dfn}
+    
+    For example, \(x_0x_1 + x_1^2 - x_0x_2\) is homogeneous of degree \(2\).
+    For a homogeneous polynomial if we scale by some nonzero \(\lambda \in K\) then each monomial picks up a factor of \(\lambda^d\), and thus \(f(\lambda x_0, \dotsc, \lambda x_n) = \lambda^d f(x_0, \dotsc, x_n)\), which crucially means that the zeros of \(f\) are unaffected by scaling.
+    This lets us define the zero locus of \(f\) in the obvious way.
+    
+    The ring \(R = K[x_0, \dotsc, x_n]\) is graded, taking \(R_d = K[x_0, \dotsc, x_n]_d\) to consist of all degree \(d\) homogeneous polynomials.
+    
+    \begin{dfn}{Homogeneous Ideal}{}
+        An ideal in a graded ring is \define{homogenous}\index{homogeneous ideal} if it is generated by homogeneous elements.
+    \end{dfn}
+    
+    Note that the elements of a homogeneous ideal \emph{are not} homogeneous.
+    For example, taking \(R = K[x]\) the ideal \(\langle x \rangle\) is homogeneous, since it is generated by the homogeneous polynomial \(x\).
+    However, \(x^2 + x^3 = x(x + x^2)\) is in this ideal, and this is not homogeneous.
+    
+    Another example is \(R = K[x, y]\) with the ideal \(\langle x, xy + y^2 \rangle\).
+    Each generating polynomial is homogeneous, but not of the same degree, that isn't a requirement.
+    
+    \begin{lma}{Properties of Homogeneous Ideals}{lma:homogeneous ideal properties}
+        Let \(R\) be a graded ring with ideals \(J\), \(J_1\) and \(J_2\).
+        \begin{enumerate}
+            \item The ideal \(J\) is homogeneous if and only if for all \(f \in J\) with homogeneous decomposition \(f = \sum_{d \in \naturals} f_d\) we have \(f_d \in J\) for all \(d \in \naturals\).
+            \item If \(J_1\) and \(J_2\) are homogeneous ideals then so are \(J_1 + J_2\), \(J_1J_2\), \(J_1 \cap J_2\), and \(\sqrt{J_1}\).
+            \item If \(J\) is homogeneous then the quotient ring, \(R/J\), is a graded ring with homogeneous decomposition \(R/J = \bigoplus_{d \in \naturals} R_d/(R_d \cap J)\).
+        \end{enumerate}
+        \begin{proof}
+            \begin{enumerate}
+                \item Let \(J = \langle h_i \mid i \in I \rangle\) be a homogeneous ideal generated by homogeneous \(h_i \in R\).
+                Let \(f \in J = \sum_{i \in I} g_i h_i\) for some (not-necessarily-homogeneous) \(g_i \in R\), of which only finitely many are nonzero.
+                Let \(g_i = \sum_{e \in \naturals} g_{i,e}\) be the homogeneous decomposition of \(g_i\) into homogeneous elements, \(g_{i,e} \in R_e\).
+                Then we have
+                \begin{equation}
+                    f = \sum_{i \in I} g_{i} h_i = \sum_{i \in I} \sum_{e \in \naturals} g_{i,e}h_i
+                \end{equation}
+                and from this and uniqueness of decompositions we have
+                \begin{equation}
+                    f_d = \sum_{\substack{i \in I, e \in \naturals\\ e + \deg h_i = d}} g_{i,e} h_i
+                \end{equation}
+                which shows that \(f_d \in J\).
+                
+                Now suppose that if \(f \in J\) then \(f_d \in J\) for all \(f_d\).
+                We claim that \(J\) is generated by the homogeneous parts of all polynomials in \(J\), that is, \(J = \langle h_d \mid h \in J, d \in \naturals \rangle\), so \(J\) is a homogeneous ideal.
+                Clearly we have \(J \subseteq \langle h_d \mid h \in J, d \in \naturals \rangle\) since \(h = \sum_{d \in \naturals} h_d\) and so \(h \in J\), and we also have that \(J \supseteq \langle h_d \mid h \in J, d \in \naturals\) by assumption that \(J\) contains all homogeneous parts of its elements, and thus everything they generate.
+                
+                \item Suppose that \(J_1\) and \(J_2\) are homogeneous ideals.
+                Then they are generated by homogeneous elements.
+                The ideal \(J_1 + J_2\) is generated by \(J_1 \cup J_2\) and \(J_1 \cap J_2\) is generated by \(J_1 \cap J_2\), both of which consist of homogeneous elements, and \(J_1J_2\) is generated by products of homogeneous elements, which are again homogeneous.
+                
+                It remains only to show that \(\sqrt{J_1}\) is homogeneous.
+                We do this by checking that the previous part applies.
+                Take \(f \in \sqrt{J_1}\).
+                We will work by induction on \(d = \deg f\).
+                Let \(f = f_0 + \dotsb + f_d\) be the homogeneous decomposition of \(f\).
+                Then for some \(n \in \naturals\) we have that
+                \begin{equation}
+                    f^n = (f_0 + \dotsb + f_d)^n = f_d^n + \text{lower degree terms}
+                \end{equation}
+                is in \(J_1\).
+                Since \(J_1\) is homogeneous by the previous point it must be that the degree \(nd\) part \(f_d^n\) is in \(J_1\), and thus \(f_d \in \sqrt{J_1}\).
+                Then we have that the difference of two elements of \(\sqrt{J_1}\), \(f - f_d = f_0 + \dotsb + f_{d-1}\), is in \(\sqrt{J_1}\) also.
+                Then, by induction, we have that \(f_0, \dotsc, f_{d-1} \in \sqrt{J_1}\), so \(\sqrt{J_1}\) contains all homogeneous parts of any of its elements, and so is itself homogeneous.
+                
+                \item Consider the map \(R_d / (R_d \cap J) \to R/J\) sending \(f + R_d \cap J\) to \(f + J\).
+                This is a clearly a group homomorphism.
+                The kernel of this map consists of elements \(f + R_d \cap J\) which map to \(0 + J\), which is to say \(f\) is an element of \(J\), but then \(f \in R_d \cap J\) so \(f + R_d \cap J = 0 + R_d \cap J\), and thus the kernel is trivial, so this map is injective.
+                This injection allows us to consider \(R_d/(R_d \cap J)\) as a subgroup of \(R/J\) for any fixed \(d \in \naturals\).
+                
+                Now let \(f \in R\) have homogeneous decomposition \(f = \sum_{d \in \naturals} f_d\).
+                Then using this subgroup we have the homogeneous decomposition \(f + R_d \cap J = \sum_{d \in \naturals} (f + R_d \cap J) = \sum_{d \in \naturals} (f_d + R_d \cap J)\), so \(f + J\) has a homogeneous decomposition in \(R/J\).
+                It remains to show that this is unique.
+                Suppose \(\sum_{d \in \naturals} (f_d + J) = \sum_{d \in \naturals} (f_d' J)\) are two decompositions of \(f + J\).
+                Then equality in \(R/J\) means that the difference, \(\sum_{d \in \naturals} (f_d - f_d')\) lies in \(J\), and so by the first part of this lemma \(f_d - f_d' \in J\) for all \(d\), and thus \(f_d + R_d \cap J = f_d' + R_d \cap J\), and equality in the subgroup means equality in \(R/J\), and thus we have the result.
+            \end{enumerate}
+        \end{proof}
+    \end{lma}
+    
+    Take for example \(J = \langle x^2 \rangle \subideal K[x]\).
+    This is homogeneous, and contains elements like \(f(x) = 2x^2 + x^3 = (2 + x)x^2\).
+    Then according to this result the homogeneous parts, \(f_2(x) = 2x^2\) and \(f_3(x) = x^3\), must also be in \(J\), and indeed they are.
+    
+    \section{Projective Varieties}
+    We are now equipped to define projective varieties in the same way we defined affine ones.
+    For simplicity for \(f \in K[x_0, \dotsc, x_n]\) a homogeneous polynomial and \(x = \projCoord{x_0, \dotsc, x_n} \in \projective^n\) we write the condition that \(f(x_0, \dotsc, x_n) = 0\) (which is invariant under scaling of coordinates) as \(f(x) = 0\).
+    
+    \begin{dfn}{Projective Variety}{}
+        Fix \(n \in \naturals\) and some subset \(S \subseteq K[x_0, \dotsc, x_n]\) of homogeneous polynomials.
+        The \define{projective zero locus}\index{zero locus!projective} of \(S\) is defined to be the set
+        \begin{equation}
+            V(S) \coloneq \{x \in \projective^n \mid f(x) = 0 \forall f \in S\} \subseteq \projective^n.
+        \end{equation}
+        Any set of this form is called a \defineindex{projective variety}.
+        For \(S = \{f_1, \dotsc, f_k\}\) we write \(V(S) = V(f_1, \dotsc, f_k)\).
+    \end{dfn}
+    
+    For a homogeneous ideal, \(J \subideal K[x_0, \dotsc, x_n]\), we write
+    \begin{equation}
+        V(J) = \{x \in \projective^n \mid f(x) = 0 \text{ for all homogeneous } f \in J\} \subseteq \projective^n,
+    \end{equation}
+    If \(J\) is the ideal generated by the set \(S\) of homogeneous polynomials then clearly \(V(J) = V(S)\).
+    
+    \begin{dfn}{}{}
+        Let \(X \subseteq \projective^n\) be any subset of projective space.
+        We define its \defineindex{ideal} to be
+        \begin{equation}
+            I(X) \coloneq \langle f \in K[x_0, \dotsc, x_n] \mid f \text{ homogeneous}, f(x) = 0 \forall x \in X \rangle \subideal K[x_0, \dotsc, x_n].
+        \end{equation}
+    \end{dfn}
+    
+    Note that this definition is slightly different to the affine case.
+    The homogeneous polynomials vanishing on \(X\) do not form an ideal, instead we take they ideal they generate.
+    This wasn't the case in the affine setting where polynomials vanishing on \(X\) automatically form an ideal.
+    
+    \begin{ntn}{}{}
+        Where we wish to distinguish constructions in the affine setting and projective setting we will write \(V_{\symrm{p}}\) and \(I_{\symrm{p}}\) for the projective setting and \(V_{\symrm{a}}\) and \(I_{\symrm{a}}\) for the affine setting.
+    \end{ntn}
+    
+    For the most part in this and the next chapter we'll stick with \(V\) and \(I\) for the projective case and \(V_{\symrm{a}}\) and \(I_{\symrm{a}}\) if we want to compare to the affine case.
+    
+    \begin{exm}{}{}
+        We have that
+        \begin{equation}
+            V(1) = \{x \in \projective^n \mid 1 = 0\} = \emptyset,
+        \end{equation}
+        and
+        \begin{equation}
+            V(0) = \{x \in \projective^n \mid 0 = 0\} = \projective^n.
+        \end{equation}
+        So, \(\emptyset\) and \(\projective^n\) are projective varieties.
+    \end{exm}
+    
+    \begin{exm}{}{}
+        If \(f_1, \dotsc, f_r \in K[x_0, \dotsc, x_n]\) are homogeneous linear polynomials in the \(x_i\) then we call \(V(f_1, \dotsc, f_r) \subseteq \projective^n\) a linear subspace of \(\projective^n\).
+        
+        For example, taking \(n = 1\) we can consider \(x - y \in K[x, y]\), which gives the linear subspace \(V(x - y)\), which consists of the points \(\projCoord{x, {-}x}\) for \(x \in K\).
+        All of these points are equivalent to \(\projCoord{1, {-}1}\), so in this case our linear subspace is just a single point, which makes sense, we've got a line, \(\projective^1\), and we've taken a linear subspace which certainly isn't all of \(\projective^1\), so we've been left with a single intersection point.
+    \end{exm}
+    
+    \begin{exm}{}{}
+        For \(a = \projCoord{a_0, \dotsc, a_n} \in \projective^n\) the set \(\{a\}\) is a projective variety.
+        This variety is defined by the equation \(x - a = 0\), however, this is not homogeneous.
+        Let \(i \in \{0, \dotsc, n\}\) be such that \(a_i \ne 0\), such an \(i\) exists as projective coordinates cannot all be zero.
+        Then we have
+        \begin{equation}
+            V(a_ix_0 - a_0x_i, a_ix_1 - a_1x_i, \dotsc, a_ix_n - a_nx_i) = \{a\}
+        \end{equation}
+        since the first equation, \(a_i x_0 - a_0x_i = 0\), forces us to take \(x_0 = a_0x_i/a_i\), the second forces \(x_1 = a_1x_i/a_i\), and so on.
+        Thus we always have that \(x_0 \propto a_0\), \(x_1 \propto a_1\), and so on, and the constant of proportionality is \(x_i/a_i\) in each case.
+        Hence, \(\projCoord{x_0, x_1, \dotsc, x_n} = \projCoord{a_0 x_i/a_i, a_1 x_i/a_i, \dotsc, a_n x_i/a_i} = \projCoord{a_0, a_1, \dotsc, a_n}\), so if \(x\) satisfies all equations it must be that \(x = a\) as points in projective space.
+    \end{exm}
+    
+    \begin{exm}{}{}
+        Let \(f = x_1^2 - x_2^2 - x_0^2 \in \complex[x_0, x_1, x_2]\).
+        The real part of the affine zero locus, \(V_{\symrm{a}}(f) \subseteq \affine^3\), is the 2-dimensional cone.
+        The projective zero locus, \(V_{\symrm{p}}(f) \subseteq \projective^2\), is the set of all one-dimensional linear subspaces contained in this cone.
+        We have seen that we can think of \(\projective^2\) as \(\affine^2\).
+        We can embed \(\affine^2\) in \(\affine^3\) by setting \(x_0 = 1\)).
+        We should think of \(\projective^2\) as being this copy of \(\affine^2\) plus some points (actually a whole copy of \(\projective^1\)) at infinity.
+        Note that we're making a choice to embed at \(x_0 = 1\), any nonzero \(x_0\) value would work just as well.
+        With this interpretation the real part of \(V_{\symrm{p}}(f)\) consists of the hyperbola \(x_1^2 - x_2^2 - 1 = 0\), which comes from setting \(x_0 = 1\) in \(f\), (so is the intersection of the cone and the \(x_0 = 1\) plane) as well as the two points \(a\) and \(b\), at infinity which are where this hyperbola tends to.
+        These two points in projective space correspond to two lines through the origin, specifically, they correspond to the lines making up the asymptotes of the hyperbola.
+        
+        In this case both the affine and zero locus of \(f\) carry essentially the same information.
+        For the affine case we view this information as the points of the cone.
+        For the projective case we view the cone as being formed from linear subspaces, and we then view the locus as only being one point per such a linear subspace, the point at which it intersects the (arbitrary) plane \(x_0 = 1\).
+    \end{exm}
+    
+    We can formalise and generalise the correspondence between the affine and projective cases when we have cones like this.
+    
+    \begin{dfn}{Cone}{}
+        Let \(\pi \colon \affine^{n+1} \setminus \{0\} \to \projective^n\) be the obvious map \((x_0, \dotsc, x_n) \mapsto \projCoord{x_0, \dotsc, x_n}\).
+        \begin{enumerate}
+            \item An affine variety, \(X \subseteq \affine^{n+1}\), is called a \defineindex{cone} if \(0 \in X\) and for all \(x \in X\) we have \(\lambda x \in X\) for \(\lambda \in K\).
+            That is, \(X\) consists of the origin and a union of lines through the origin.
+            \item For a cone, \(X \subseteq \affine^{n+1}\), its \defineindex{projectivsation} is
+            \begin{equation}
+                \projective(X) \coloneq \pi(X \setminus \{0\}) = \{\projCoord{x_0, \dotsc, x_n} \in \projective^n \mid (x_0, \dotsc, x_n) \in X\setminus \{0\}\} \subseteq \projective^n.
+            \end{equation}
+            \item For a projective variety, \(X \subseteq \projective^n\), the \define{cone} over \(X\) is
+            \begin{equation}
+                C(X) \coloneq \{0\} \cup \pi^{-1}(X) = \{0\} \cup \{(x_0, \dotsc, x_n) \mid \projCoord{x_0, \dotsc, x_n} \in X\} \subseteq \affine^{n+1}.
+            \end{equation}
+        \end{enumerate}
+    \end{dfn}
+    
+    Note that the cone over the projective variety \(X\) is a cone in the first sense, since it contains \(0\) and the scaling invariance of the projective coordinates ensures it contains all scalar multiples of any of its points.
+    
+    Let \(S \subseteq K[x_0, \dotsc, x_n]\) be a set of non-constant homogeneous polynomials.
+    Then \(V_{\symrm{a}}(S)\) is a cone.
+    We have that \(0 \in V_{\symrm{a}}(S)\) as any non-constant homogeneous polynomial consists of monomials of the form \(x_{i_1} \dotsm x_{i_d}\) which vanish at \(0\).
+    Further, if \(\lambda \in K\) and \(x \in V_{\symrm{a}}(S)\) then \(f(x) = 0\) for all \(f \in S\) and since the \(f\) are homogeneous we have \(f(\lambda x) = \lambda^{\deg f}f(x) = 0\) and thus \(\lambda x \in V_{\symrm{a}}(S)\) also.
+    
+    Conversely, if we take the ideal of a cone it is always homogeneous.
+    Let \(X \subseteq \affine^{n+1}\) be a cone, and take \(f \in I_{\symrm{a}}(X)\).
+    Then \(f\) has a homogeneous decomposition as a polynomial, \(f = \sum_{d \in \naturals} f_d\).
+    For \(x \in X\) and \(\lambda \in K\) we have \(\lambda x \in X\) since \(X\) is a cone, and thus we have \(f(\lambda x) = 0\).
+    Then we have
+    \begin{equation}
+        0 = f(\lambda x) = \sum_{d \in \naturals} f_d(\lambda x) = \sum_{d \in \naturals} \lambda^d f_d(x)
+    \end{equation}
+    and the right hand side can only be the zero polynomial if \(f_d(x) = 0\) for all \(x \in X\) and all \(d \in \naturals\), and thus \(f_d \in I_{\symrm{a}}(X)\), so \(I_{\symrm{a}}(X)\) is homogeneous by \cref{lma:homogeneous ideal properties}.
+    
+    \begin{lma}{}{}
+        There is a bijection
+        \begin{equation}
+            \begin{aligned}
+                \{\text{cones in } \affine^{n+1}\} &\leftrightarrow \{\text{projective varieties in } \projective^n\},\\
+                X &\mapsto \projective(X),\\
+                C(X) &\mapsfrom X.
+            \end{aligned}
+        \end{equation}
+        \begin{proof}
+            For a set \(S \subseteq K[x_0, \dotsc, x_n]\) of non-constant homogeneous polynomials we have
+            \begin{equation}
+                \projective(V_{\symrm{a}}(S)) = V_{\symrm{p}}(S), \qqand C(V_{\symrm{p}}(S)) = V_{\symrm{a}}(S).
+            \end{equation}
+            But \(V_{\symrm{a}}(S)\) is really itself just a cone by the work above, and further every cone is of this form, namely coming from a set of homogeneous generators of a homogeneous ideal, and every projective variety is also associated to such a set of homogeneous generators of a homogeneous ideal and so we are done.
+        \end{proof}
+    \end{lma}
+    
+    The correspondence between cones and projective varieties works by passing from the affine to the projective zero locus of the same set of homogeneous polynomials.
+    
+    Due to all these similarities in definitions and zero loci it is reasonable to expect that many results from the affine case carry over to the projective, and indeed this is the case.
+    However, one of the most important results, Hilbert's Nullstellensatz, doesn't quite carry over without a slight change.
+    We would like to have \(V(I(X)) = X\) and \(I(V(J)) = \sqrt{J}\), but there's a problem.
+    This is usually true by reducing to the affine case with the identification with cones.
+    However, the origin in \(\affine^{n+1}\) doesn't correspond to a point in \(\projective^n\), having all coordinates zero.
+    The corresponding ideal to the origin of \(\affine^{n+1}\) is \(\langle x_0, \dotsc, x_n \rangle\), and we must exclude this idea from consideration.
+    
+    \begin{dfn}{Irrelevant Ideal}{}
+        The radical homogeneous ideal
+        \begin{equation}
+            I_0 \coloneq \langle x_0, \dotsc, x_n \rangle \subideal K[x_0, \dotsc, x_n]
+        \end{equation}
+        is called the \defineindex{irrelevant ideal}.
+    \end{dfn}
+    
+    \begin{prp}{Projective Nullstellensatz}{}
+        \begin{enumerate}
+            \item For any projective variety, \(X \subseteq \projective^n\), we have \(V(I(X)) = X\).
+            \item For any homogeneous ideal, \(J \subideal K[x_0, \dotsc, x_n]\), with \(\sqrt{J} \ne I_0\) we have \(I(V(J)) = \sqrt{J}\).
+        \end{enumerate}
+        In particular, there is an inclusion-reversing bijection
+        \begin{equation}
+            \begin{aligned}
+                \{\text{projective varieties in } \projective^n\} &\leftrightarrow \{\text{homogeneous radical ideals in } K[x_0, \dotsc, x_n] \text{ not equal to } I_0\},\\
+                X &\mapsto I(X),\\
+                 V(J) &\mapsfrom J.
+            \end{aligned}
+        \end{equation}
+        \begin{proof}
+            The first point, \(V(I(X)) = X\), follows in the same way as the affine case, and so does the inclusion \(I(V(J)) \supseteq \sqrt{J}\).
+            The fact that \(V\) and \(I\) reverse inclusions also follows in the same way as the affine case.
+            
+            It remains then to show that \(I(V(J)) \subseteq \sqrt{J}\).
+            To do so let \(J\) be a homogeneous ideal of \(K[x_0, \dotsc, x_n]\) such that \(\sqrt{J} \ne I_0\).
+            Then we have
+            \begin{equation*}
+                I(V(J)) = \langle f \in K[x_0, \dotsc, x_n] \mid f \text{ homogeneous}, f(x) = 0 \forall x \in V(J) \rangle.
+            \end{equation*}
+            Viewing \(V(J)\) as a collection of lines through the origin we can replace it with the points making up these lines minus the origin, which doesn't correspond to a point in projective space.
+            That is, we can replace \(V(J)\) with \(V_{\symrm{a}}(J) \setminus \{0\}\), giving
+            \begin{equation*}
+                I(V(J)) = \langle f \in K[x_0, \dotsc, x_n] \mid f \text{ homogeneous}, f(x) = 0 \forall x \in V_{\symrm{a}}(J) \setminus \{0\} \rangle.
+            \end{equation*}
+            Since the affine zero locus of polynomials is, by definition, closed we have \(\overline{V_{\symrm{a}}(J)} = V_{\symrm{a}}(J)\), and since \(\{0\}\) is an affine variety we also have \(\overline{\{0\}} = \{0\}\).
+            Thus, we have \(\overline{V_{\symrm{a}}(J) \setminus \{0\}} = \overline{V_{\symrm{a}}(J)} \setminus \overline{\{0\}} = V_{\symrm{a}}(J) \setminus \{0\}\), and so
+            \begin{equation*}
+                I(V(J)) = \langle f \in K[x_0, \dotsc, x_n] \mid f \text{ homogeneous}, f(x) = 0 \forall x \in \overline{V_{\symrm{a}}(J) \setminus \{0\}} \rangle.
+            \end{equation*}
+            We know that \(V_{\symrm{a}}(J) \ne \{0\}\), because if this was the case we'd have \(\sqrt{J} = I_{\symrm{a}}(V_{\symrm{a}}(J)) = I_{\symrm{a}}(\{0\}) = I_0\), which we're assuming is not the case.
+            Thus, we have \(I(V(J)) = I_{\symrm{a}}(V_{\symrm{a}}(J)) = \sqrt{J}\) where the last equality follows from the affine Nullstellensatz.
+            
+            The additional statement about the bijection now follows by the fact that \(I(X)\) is always radical, as the second part shows, and the fact that \(I(X) \ne I_0\) since if it was we'd have \(I_0 = I(V(I_0)) = I(\emptyset) = K[x_0, \dotsc, x_n]\), and \(I_0 \ne K[x_0, \dotsc, x_n]\), so this is a contradiction.
+        \end{proof}
+    \end{prp}
+    
+    \begin{remark}{}{}
+        Most of the other properties of \(V\) and \(I\) carry over to the projective case, including the following:
+        \begin{enumerate}
+            \item For any two subsets, \(S_1, S_2 \subseteq K[x_0, \dotsc, x_n]\), of homogeneous polynomials we have \(V(S_1) \cup V(S_2) = V(S_1 S_2)\);
+            \item For any family, \(S_i\), of subsets of \(K[x_0, \dotsc, x_n]\) of homogeneous polynomials we have \(\bigcap_i V(S_i) = V(S)\) where \(S = \bigcup_i S_i\).
+            \item If \(J_1, J_2 \subideal K[x_0, \dotsc, x_n]\) are homogeneous ideals then
+            \begin{equation}
+                V(J_1) \cup V(J_2) = V(J_1 J_2) = V(J_1 \cap J_2), \qand V(J_1) \cap V(J_2) = V(J_1 + J_2).
+            \end{equation}
+            \item For any two projective varieties, \(X_1, X_2 \subseteq \projective^n\), we have \(I(X_1 \cap X_2) = \sqrt{I(X_1) + I(X_2)}\) so long as the latter is not the irrelevant ideal, and further we only get the irrelevant ideal if \(X_1\) and \(X_2\) are disjoint, for example \(X_1 = \{\projCoord{0,1}\} = V(x_0)\) and \(X_2 = \{\projCoord{1, 0}\} = V(x_1)\) in \(\projective^1\).
+            Further, we have \(I(X_1 \cup X_2) = I(X_1) \cap I(X_2)\).
+        \end{enumerate}
+        The proofs of these results are very similar to the affine cases.
+    \end{remark}
+    
+    Just as we did in the affine case we can construct the coordinate ring of a projective variety, and then work relative to another variety.
+    
+    \begin{dfn}{}{}
+        Let \(X \subseteq \projective^n\) be a projective variety.
+        We call
+        \begin{equation}
+            S(X) \coloneq K[x_0, \dotsc, x_n]/ I(X)
+        \end{equation}
+        the \defineindex{homogeneous coordinate ring} of \(X\).
+    \end{dfn}
+    
+    This ring is a graded ring (\cref{lma:homogeneous ideal properties}) and so it makes sense to talk of homogeneous elements of \(S(X)\).
+    Unlike in the affine case we cannot interpret elements of \(S(X)\) as functions on \(X\) since their values would be changed by rescaling of the homogeneous coordinates.
+    For example, if we take \(f = x_0 \in K[x_0, x_1] = S(\projective^1)\) we have \(f(1, 1) = 1\) and \(f(-1, -1) = -1\) even though in \(\projective^1\) \(\projCoord{1,1} = \projCoord{{-}1,{-}1}\).
+    Fortunately, the condition \(f(x) = 0\) is still well-defined for homogeneous \(f \in S(X)\), and so we can still define projective subvarieties of projective varieties as we did in the affine case.
+    
+    \begin{dfn}{}{}
+        Let \(Y\) be a projective variety.
+        For \(J\) a homogeneous ideal of \(S(Y)\) we set
+        \begin{equation}
+            V_Y(J) \coloneq \{x \in Y \mid f(x) = 0 \text{ for all homogeneous } f \in J\} \subseteq Y \subseteq \projective^n
+        \end{equation}
+        and for a subset, \(X \subseteq Y\), we set
+        \begin{equation}
+            I_Y(X) \coloneq \langle f \in S(Y) \mid f \text{ homogeneous}, f(x) = 0 \forall x \in X \rangle \subideal S(Y).
+        \end{equation}
+        We call all subsets of the form \(V_Y(J)\) for some homogeneous \(J \subideal S(Y)\) \define{projective subvarieties}\index{projective subvariety} of \(Y\).
+    \end{dfn}
+    
+    As in the affine case we will usually drop the \(Y\) subscripts when it's clear we're working relative to \(Y\).
+    We will also include or drop subscript \(\symrm{p}\) for projective as needed.
+    
+    Again, as in the affine case, projective subvarieties of \(Y\) are exactly the projective varieties which are contained entirely in \(Y\).
+    Just as in the affine case the relative Nullstellensatz says that the properties of \(V\) and \(I\) transfer to this setting also.
+    
+    An occasionally useful property is that every projective subvariety, \(X\), of a projective variety, \(Y \subseteq \projective^n\), can be written as the zero locus of finitely many homogeneous polynomials in \(S(Y)\) of the same degree.
+    This follows from the fact that \(V(f) = V(x_0^df, \dotsc, x_n^df)\) for all homogeneous \(f \in S(Y)\) and \(d \in \naturals\).
+    So we can always take the polynomials we have and include finitely many more polynomials multiplied with appropriate powers of \(x_i\) to make the degrees the same.
+    However, it is not true that every homogeneous ideal of \(S(Y)\) can be generated by homogeneous elements of the same degree.
+    
+    Following the affine case we can now define a topology on a projective variety, just as we did for the affine setting by recognising that arbitrary intersections and finite unions of subvarieties of a projective variety are again subvarieties, so the Zariski topology can be defined in the same way.
+    
+    \begin{dfn}{Zariski Topology}{}
+        The \defineindex{Zariski topology} on a projective variety, \(X\), has as its closed sets projective subvarieties of \(X\).
+    \end{dfn}
+    
+    From now on this is the topology we will use for all projective varieties (including \(\projective^n\)) and their subsets.
+    Note that the Zariski topology on a projective subvariety is precisely the subspace topology.
+    
+    We want to consider \(\affine^n\) as a subset of \(\projective^n\), so we should check that the two Zariski topologies are compatible.
+    To do so we need the following definition.
+    
+    \begin{dfn}{Homogenisation}{}
+        \begin{enumerate}
+            \item For a homogeneous polynomial, \(f \in K[x_0, \dotsc, x_n]\), the \defineindex{dehomogenisation} of \(f\) is the polynomial \(f^{\symrm{i}} \in K[x_1, \dotsc, x_n]\) obtained by setting \(x_0 = 1\).
+            
+            \item If \(f \in K[x_1, \dotsc, x_n]\) is a not-necessarily-homogeneous polynomial,
+            \begin{equation}
+                f = \sum_{i_1, \dotsc, i_n \in \naturals} a_{i_1, \dotsc, i_n} x_1^{i_1} \dotsm x_n^{i_n}
+            \end{equation}
+            its \defineindex{homogenisation} is the homogeneous polynomial, \(f^{\symrm{h}} \in K[x_0, \dotsc, x_n]\), given by
+            \begin{equation}
+                f^{\symrm{h}} = x_0^df\left( \frac{x_1}{x_0}, \dotsc, \frac{x_n}{x_0} \right) = \sum_{i_1, \dotsc, i_n \in \naturals} a_{i_1, \dotsc, i_n} x_0^{d - i_1 - \dotsb - i_n} x_1^{i_1} \dotsm x_n^{i_n}.
+            \end{equation}
+        \end{enumerate}
+    \end{dfn}
+    
+    First, note that \(f^{\symrm{i}}\) is, in general, not homogeneous.
+    For example, if \(f(x, y) = x^2 + xy + y^2\) then \(f^{\symrm{i}}(y) = 1 + y + y^2\).
+    Evaluating at \(x_0 = 1\) is a ring homomorphism, that is
+    \begin{equation}
+        (fg)^{\symrm{i}} = f^{\symrm{i}} g^{\symrm{i}}, \qqand (f + g)^{\symrm{i}} = f^{\symrm{i}} + g^{\symrm{i}}.
+    \end{equation}
+    Further, this is clearly surjective, and so we can apply this construction directly to ideals.
+    For a homogeneous ideal, \(J \subideal K[x_0, \dotsc, x_n]\), the dehomogeneisation is \(J^{\symrm{i}} = \{f^{\symrm{i}} \mid f \in J\}\), which is again an ideal.
+    
+    The construction of the homogenisation of \(f\) forces it to be homogeneous.
+    However, it is not in general a ring homomorphism.
+    If \(f, g \in K[x_1, \dotsc, x_n]\) are of degrees \(d\) and \(e\) respectively then
+    \begin{equation}
+        (fg)^{\symrm{h}} = x_0^{d + e} f\left( \frac{x_1}{x_0}, \dotsc, \frac{x_n}{x_0} \right) g\left( \frac{x_1}{x_0}, \dotsc, \frac{x_n}{x_0} \right) = f^{\symrm{h}} g^{\symrm{h}},
+    \end{equation}
+    but we do not in general have that \((f + g)^{\symrm{h}} = f^{\symrm{h}} + g^{\symrm{h}}\).
+    In fact, if \(f\) and \(g\) have different degrees then \(f^{\symrm{h}} + g^{\symrm{h}}\) is not homogeneous.
+    In order to apply this construction to an ideal, \(J \subideal K[x_1, \dotsc, x_n]\), we have to define \(J^{\symrm{h}} \subideal K[x_0, \dotsc, x_n]\) to be the ideal generated by \(f^{\symrm{h}}\) for all \(f \in J\).
+    
+    Note that \((f^{\symrm{h}})^{\symrm{i}} = f\) and \((f^{\symrm{i}})^{\symrm{h}}\).
+    
+    This now lets us view \(\affine^n\) as  a subset of \(\projective^n\).
+    We want to identify the open set \(U_0 = \{\projCoord{x_0, \dotsc, x_n} \in \projective^n \mid x_0 \ne 0\} = \projective^n \setminus V(x_0)\) with \(\affine^n\) by the bijection
+    \begin{equation}
+        \begin{aligned}
+            \affine^n &\to U_0,\\
+            (x_1, \dotsc, x_n) &\mapsto \projCoord{1, x_1, \dotsc, x_n}.
+        \end{aligned}
+    \end{equation}
+    With this identification the subspace topology of \(U_0\) is precisely the Zariski topology of \(\affine^n\) as an affine variety.
+    If \(X = V(J) \cap \affine^n\) is closed in the subspace topology (for some \(J \subideal K[x_0, \dotsc, x_n]\) a homogeneous ideal) then \(X = V_{\symrm{a}}(J^{\symrm{i}})\) is also Zariski-closed.
+    If \(X = V_{\symrm{a}}(J) \subseteq \affine^n\) is Zariski-closed (for some \(J \subideal K[x_1, \dotsc, x_n]\)) then \(X = V_{\symrm{p}}(J^{\symrm{h}}) \cap \affine^n\) is closed in the subspace topology as well.
+    Thus this map is a homeomorphism.
+    Once we've given projective varieties the structure of varieties we'll see this map is in fact an isomorphism of varieties.
+    
+    We can now port over all of the topological notions from the affine case, such as connectedness, irreducibility, and dimension.
+    The geometric interpretation of these ideas is the same as in the affine case, since the points at infinity don't really change much of the geometric picture.
+    
+    All subsets, \(U_i = \{\projCoord{x_0, \dotsc, x_n} \in \projective^n \mid x_i \ne 0\}\), are homeomorphic to \(\affine^n\).
+    These subsets cover \(\projective^n\) and have a non-empty intersection.
+    After a small amount of work this allows one to show that \(\projective^n\) is irreducible, since each \(\affine^n\) is, and \(\dim \projective^n\) is the supremum of the dimensions of the \(\affine^n\), which is just \(n\).
+    
+    \begin{prp}{}{}
+        Let \(J \subideal K[x_1, \dotsc, x_n]\) be an ideal.
+        Consider its affine zero locus, \(X = V_{\symrm{a}}(J) \subseteq \affine^n\), and its closure, \(\overline{X}\), in \(\projective^n\).
+        \begin{enumerate}
+            \item \(\overline{X} = V(J^{\symrm{h}})\);
+            \item if \(J = \langle f \rangle\) is a nonzero principal ideal then \(\overline{X} = V(f^{\symrm{h}})\).
+        \end{enumerate}
+        \begin{proof}
+            Clearly \(V(J^{\symrm{h}})\) is closed and contains \(X\).
+            To show that \(V(J^{\symrm{h}})\) is the smallest such set let \(Y \supseteq X\) be any closed set.
+            We will prove that \(Y \supseteq V(J^{\symrm{h}})\).
+            Since \(Y\) is closed \(Y = V(J')\) for some homogeneous ideal, \(J'\).
+            Any homogeneous element of \(J'\) can be written as \(x_0^df^{\symrm{h}}\) for some \(d \in \naturals\) and \(f \in K[x_1, \dotsc, x_n]\).
+            Then since \(X \subseteq Y\) we must have that \(x_0^df^{\symrm{h}}\) vanishes on \(X\).
+            Since \(x_0 \ne 0\) on \(X \subseteq \affine^n\) it must be that \(f\) vanishes on \(X\).
+            Thus, \(f \in I_{\symrm{a}}(X) = I_{\symrm{a}}(V_{\symrm{a}}(J)) = \sqrt{J}\).
+            Thus, there exists \(m \in \naturals\) with \(f^m \in J\).
+            Hence \((f^{\symrm{h}})^m = (f^m)^{\symrm{h}} \in J^{\symrm{h}}\) for some \(m \in \naturals\).
+            Thus, \(f^{\symrm{h}} \in \sqrt{J^{\symrm{h}}}\) and so \(x_0^df^{\symrm{h}} \in \sqrt{J^{\symrm{h}}}\).
+            Therefore \(J' \subseteq \sqrt{J^{\symrm{h}}}\) and so \(Y = V(J') \supseteq V(\sqrt{J^{\symrm{h}}}) = V(J^{\symrm{h}})\) as desired.
+            
+            Now suppose \(J = \langle f \rangle = \{fg \mid g \in K[x_1, \dotsc, x_n]\}\).
+            Then we have
+            \begin{equation}
+                \overline{X} = V((fg)^{\symrm{h}} \mid g \in K[x_1, \dotsc, x_n]) = V(f^{\symrm{h}} g^{\symrm{h}} \mid g \in K[x_1, \dotsc, x_n]) = V(f^{\symrm{h}})
+            \end{equation}
+            by the first part.
+        \end{proof}
+    \end{prp}
+    
+    Let \(X\) be a hypersurface in \(\projective^n\), and assume without generality that it doesn't contain the set of points at infinity, \(V(x_0)\), as a component.
+    Then \(Y = X \cap \affine^n\) is an affine hypersurface whose closure is \(X\).
+    Thus, the ideal \(I(Y)\) is principal, generated by some \(g \in K[x_1, \dotsc, x_n]\).
+    
+    Setting \(f = g^{\symrm{h}} \in K[x_0, \dotsc, x_n]\) we have \(V(f) = \overline{Y} = X\), and since \(g\) has no repeated factors the same is true for \(f\), and thus \(I(X) = \langle f \rangle\).
+    So, just as in the affine case the ideal of any projective hypersurface is principal, and so the notion of degree holds in the projective case.
+    
+    \begin{dfn}{}{}
+        Let \(X\) be a hypersurface in \(\projective^n\) with ideal \(I(X) = \langle f \rangle\).
+        Then the degree of \(f\) is also called the degree of \(X\), and we use the terms linear, quadric, and cubic for degree 1, 2, and 3 respectively.
+    \end{dfn}
+    
+    Note, it is generally insufficient to homogenise just a set of generators.
+    For example, if we take \(J = \langle x_1, x_2 - x_1^2 \rangle \subideal K[x_1, x_2]\) this has affine zero locus \(X = V_{\symrm{a}}(J) = \{0\} \subseteq \affine^2\).
+    This one-point set is closed in \(\projective^2\), and thus \(\overline{X} = \{\projCoord{1,0,0}\}\) is just the corresponding point in homogeneous coordinates.
+    However, if we homogenise the generators of \(J\) we get the homogeneous ideal \(\langle x_1, x_0x_2 - x_1^2\), which has projective zero locus \(V(J) = \{\projCoord{1,0,0},\projCoord{0,0,1}\} \supsetneq \overline{X}\), so we don't get the closure.
+    
+    The computational problem of homogenising all elements of an ideal is generally hard.
+    The solution is to show that there's a special basis of \(J\), known as a Gro\"obner basis, and if we homogenise this then the result corresponds to \(\overline{X}\).
+    This reduces the problem to finding such a basis and then homogenising the finite number of polynomials it contains.
+    
+    \chapter{Projective Varieties: Ringed Spaces}
     
     \appendixpage
     \begin{appendices}
