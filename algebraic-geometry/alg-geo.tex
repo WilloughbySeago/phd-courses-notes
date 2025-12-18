@@ -89,6 +89,16 @@ noabbrev
     \clist_use:Nn \l_willougbhy_projCoord_clist { #1 }  % print list separated by #1
 }
 \ExplSyntaxOff
+\makeatletter
+\newcommand{\@bigwedge}{\raisebox{0.2ex}{\scalebox{.9}[.9]{\(\bigwedge\)}}}
+\NewDocumentCommand{\wedgespace}{o}{
+    \IfNoValueTF{#1}{\@bigwedge}{\@bigwedge^{\mkern-4mu#1}\mkern1mu}
+}
+\makeatother
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\rank}{rank}
+\newcommand{\trans}{\top}
+\DeclarePairedDelimiterX{\innerprod}[2]{\langle}{\rangle}{#1 , #2}
 
 \includeonly{appendices/comm-alg, appendices/topology}
 
@@ -2112,7 +2122,7 @@ noabbrev
     
     There is also a gluing property similar to that of sheaves.
     
-    \begin{lma}{Gluing Property of Morphisms}{}
+    \begin{lma}{Gluing Property of Morphisms}{lma:gluing property of morphisms}
         Let \(f \colon X \to Y\) be a map of ringed spaces, and let \(\{U_i\}_{i \in I}\) be an open cover of \(X\) such that all restrictions, \(f|_{U_i} \colon U_i \to Y\), are morphisms of ringed spaces.
         Then \(f\) is a morphism of ringed spaces.
         \begin{proof}
@@ -3258,6 +3268,812 @@ noabbrev
     This reduces the problem to finding such a basis and then homogenising the finite number of polynomials it contains.
     
     \chapter{Projective Varieties: Ringed Spaces}
+    
+    \section{Regular Functions on Projective Varieties}
+    In order to make projective varieties into varieties we need to make them into ringed spaces.
+    To do this we need to come up with a suitable notion of regular functions on an open subset of a projective variety.
+    Such an object should be a \(K\)-valued function which is locally a quotient of polynomials.
+    The added difficulty we have is that the homogeneous coordinate ring, \(S(X)\), does not consist of well-defined functions on \(X\), since rescaling the coordinates changes the value: for \(\lambda \in K\), \(x \in X\) and homogeneous degree \(d\) \(f \in S(X)\) we have \(f(\lambda x) = \lambda^d f(x)\).
+    Things are even worse if \(f\) isn't homogeneous.
+    The solution is to only allow homogeneous elements and take quotients where the extra \(\lambda^d\) factors cancel.
+    
+    \begin{dfn}{Regular Function}{}
+        Let \(U\) be an open subset of a projective variety, \(X\).
+        A \defineindex{regular function} on \(U\) is a map \(\varphi \colon U \to K\) such that for all \(a \in U\) there exists \(d \in \naturals\) with \(g, f \in S(X)_d\) where \(g(x) \ne 0\) and
+        \begin{equation}
+            \varphi(x) = \frac{f(x)}{g(x)}
+        \end{equation}
+        for all \(x \in U_a\) where \(U_a\) is an open neighbourhood of \(a\) contained in \(U\).
+        
+        We write \(\sheaf{O}_X(U)\) for the set of all regular functions on \(U\).
+    \end{dfn}
+    
+    Clearly \(\sheaf{O}_X(U)\) is a subring of the algebra of all functions \(U \to K\), and by the local nature of the definition \(\sheaf{O}_X\) is a sheaf on \(X\).
+    
+    The following result shows that this is a reasonable definition by showing that if we restrict to open subsets defined by one coordinate being nonzero then we get the expected structure of an affine variety.
+    This makes projective varieties prevarieties, since projective space, \(\projective^n\), is covered by such open sets, all of which are isomorphic to \(\affine^n\).
+    
+    \begin{prp}{}{}
+        Let \(X \subseteq \projective^n\) be a projective variety, and let
+        \begin{equation}
+            U_i = \{\projCoord{x_0, \dotsc, x_n} \in X \mid x_i \ne 0\} \subseteq X.
+        \end{equation}
+        This is an affine variety, making \(X\) a prevariety.
+        \begin{proof}
+            It is sufficient to prove the statement for some fixed \(i\), so we'll take \(i = 0\).
+            Let \(X = V(J)\) for some homogeneous ideal, \(J \subideal K[x_0, \dotsc, x_n]\), and let \(Y = V_{\symrm{a}}(J^{\symrm{h}})\).
+            We claim that
+            \begin{equation}
+                \begin{aligned}
+                    F \colon Y &\to U_0,\\
+                    (x_1, \dotsc, x_n) &\mapsto \projCoord{1, x_1, \dotsc, x_n}
+                \end{aligned}
+            \end{equation}
+            is an isomorphism with inverse
+            \begin{equation}
+                \begin{aligned}
+                    F^{-1} \colon U_0 &\to Y,\\
+                    \projCoord{x_0, \dotsc, x_n} &\mapsto \left( \frac{x_1}{x_0}, \dotsc, \frac{x_n}{x_0} \right).
+                \end{aligned}
+            \end{equation}
+            These are well-defined since \(x_0 \ne 0\) on \(U_0\) and if \(\projCoord{x_0, \dotsc, x_n}\) and \(\projCoord{\lambda x_0, \dotsc, \lambda x_n}\) represent the same point in \(U_0\) then under \(F^{-1}\) both map to the same point since \(F^{-1}(\projCoord{\lambda x_0, \dotsc, \lambda x_n}) = (\lambda x_1/\lambda x_0, \dotsc, \lambda x_n / \lambda x_0) = (x_1/x_0, \dotsc, x_n/x_0)\).
+            Clearly these two maps are inverses.
+            
+            These maps are also continuous, the preimage of the closed set \(V(J') \cap U_0\) under \(F\), for some homogeneous ideal \(J' \subideal K[x_1, \dotsc, x_n]\), is the closed set \(V_{\symrm{a}}({J'}^{\symrm{i}})\), and the image of a closed set, \(V_{\symrm{a}}(J') \subseteq Y\), for some \(J' \subideal K[x_1, \dotsc, x_n]\), under \(F\) is the closed set \(V({J'}^{\symrm{h}}) \cap U_0\).
+            
+            All we need to show now is that \(F\) and \(F^{-1}\) pull back regular functions to regular functions.
+            A regular function on an open subset of \(U_0\) is locally of the form \(f(x_0, \dotsc, x_n)/g(x_0, \dotsc, x_n)\) where \(g\) is locally nonzero and \(f\) and \(g\) are homogeneous of the same degree.
+            Then
+            \begin{equation}
+                F^* \frac{f(x_0, \dotsc, x_n)}{g(x_0, \dotsc, x_n)} = \frac{f^{\symrm{i}}(x_1, \dotsc, x_n)}{g^{\symrm{i}}(x_1, \dotsc, x_n)},
+            \end{equation}
+            so \(F^*(g/f)\) is a local quotient of polynomials, and thus is regular on \(Y\).
+            Similarly, a regular function on an open subset of \(Y\) is locally a quotient \(f(x_1, \dotsc, x_n)/g(x_1, \dotsc, x_n)\) where \(g\) is locally nonzero and \(f\) and \(g\) are polynomials.
+            Then
+            \begin{equation}
+                (F^{-1})^* \frac{f(x_1, \dotsc, x_n)}{g(x_1, \dotsc, x_n)} = \frac{f(x_1/x_0, \dotsc, x_n/x_0)}{g(x_1/x_0, \dotsc, x_n/x_0)}.
+            \end{equation}
+        \end{proof}
+        This is a regular function on \(U_0\) since it can be written as a quotient of two homogeneous polynomials of the same degree by multiplying the numerator and denominator by \(x_0^d\) for \(d = \max\{\deg f, \deg g\}\).
+        Thus, \(F\) and \(F^{-1}\) are morphisms of ringed spaces, and hence \(F\) is an isomorphism of ringed spaces.
+        This lets us identify \(U_0\) as an affine open subset of \(X\), and since the \(U_i\) cover \(X\) this means \(X\) is a prevariety.
+    \end{prp}
+    
+    One of the big advantages of projective varieties is that they have global descriptions in homogeneous coordinates which don't require any gluing.
+    The following result shows that many morphisms of projective varieties can also be constructed without gluing.
+    
+    \begin{lma}{}{lma:morphism of projective varieties by components}
+        Let \(X \subseteq \projective^n\) be a projective variety, and let \(f_0, \dotsc, f_m \in S(X)\) be homogeneous elements of the same degree, \(d\).
+        Then on the open subset \(U = X \setminus V(f_0, \dotsc, f_m)\) there is a morphism
+        \begin{equation}
+            \begin{aligned}
+                f \colon U &\to \projective^m,\\
+                x &\mapsto \projCoord{f_0(x), \dotsc, f_m(x)}.
+            \end{aligned}
+        \end{equation}
+        \begin{proof}
+            First, note that \(f\) is well-defined as a map between sets.
+            By definition of \(U\) the \(f_i\) cannot all be simultaneous zero, so the image can never be \(\projCoord{0, \dotsc, 0}\).
+            If we rescale the homogeneous coordinates of \(x \in U\) by \(\lambda\) then we have
+            \begin{equation}
+                \projCoord{f_0(\lambda x), \dotsc, f_m(\lambda x)} = \projCoord{\lambda^d f_0(x), \dotsc, \lambda^d f_m(x)} = \projCoord{f_0(x), \dotsc, f_m(x)}.
+            \end{equation}
+            
+            To check \(f\) is a morphism we will use the gluing property of morphisms (\cref{lma:gluing property of morphisms}).
+            This allows us to show that \(f\) is a morphism so long as all restrictions to sets of an open cover are morphisms.
+            To this end let \(\{V_i\}_{i=0}^m\) be the affine open cover of \(\projective^m\) given by \(V_i = \{\projCoord{y_0, \dotsc, y_m} \mid y_i \ne 0\}\).
+            Then the open subsets \(U_i = f^{-1}(V_i) = \{x \in X \mid f_i(x) \ne 0\}\) cover \(U\), and the affine coordinates \(y_j/y_i\) on \(V_i\) let us write the function \(f|_{U_i}\) as a quotient of polynomials, \(f_j/f_i\) for \(j \ne i\), and these are regular functions on \(U_i\).
+            Thus, \(f|_{U_i}\) is a morphism of affine varieties by \cref{prp:morphisms between affine varieties is just tuple of regular functions}, and so \(f\) is a morphism of prevarieties by the gluing property.
+        \end{proof}
+    \end{lma}
+    
+    \begin{exm}{}{}
+        Let \(A \in \generalLinear(n + 1, K)\) be an invertible matrix.
+        Then \(f \colon \projective^n \to \projective^n\), \(x \mapsto Ax\) has inverse \(f^{-1} \colon \projective^n \to \projective^n\), \(x \mapsto A^{-1}x\).
+        Matrix multiplication of \(A\) and the projective coordinates \(x\) is defined in the obvious way.
+        We can apply the previous lemma because the projective coordinates of \(Ax\) are linear combinations of the projective coordinates of \(x\) with coefficients taken from the entries of \(A\).
+        That is, \(f_0(x) = A_{00}x_0 + A_{01}x_1 + \dotsb + A_{0n}x_n\) and so on, so by the previous lemma \(f\) is a morphism, and hence isomorphism.
+        
+        We call such maps \define{projective automorhpisms}\index{projective automorphism}, and in fact these are the only isomorphisms of \(\projective^n\).
+    \end{exm}
+    
+    \begin{exm}{}{}
+        Let \(a = \projCoord{1, 0, \dotsc, 0} \in \projective^n\) and take \(L = V(x_0) \isomorphic \projective^{n-1}\).
+        The map \(f \colon \projective^n \setminus \{a\} \to \projective^{n-1}\), \(\projCoord{x_0, \dotsc, x_n} \mapsto \projCoord{x_1, \dotsc, x_n}\) consists of forgetting one of the homogeneous coordinates.
+        This is a morphism by the previous lemma with \(f_i(x) = x_{i + 1}\) for \(i = 0, \dotsc, n - 1\).
+        
+        The geometric interpretation of this morphism is as follows.
+        For \(x = \projCoord{x_0, \dotsc, x_n} \in \projective^n \setminus \{a\}\) the unique line through \(a\) and \(x\) is given parametrically by
+        \begin{equation}
+            \{\projCoord{s, tx_1, \dotsc, tx_n} \mid \projCoord{s,t} \in \projective^1\}.
+        \end{equation}
+        The intersection of this line with \(L\) is \(\projCoord{0, x_1, \dotsc, x_n}\), which is simply \(f(x)\) after identifying \(L\) with \(\projective^{n-1}\).
+        We therefore call \(f\) the \defineindex{projection} from \(a\) to the linear subspace \(L\).
+        
+        We can perform the same construction for any \(a \in \projective^n\) and any linear subspace, \(L\), of dimension \(n - 1\) not containing \(a\).
+        The corresponding morphism is then related to \(f\) by a projective automorphism.
+    \end{exm}
+    
+    \begin{exm}{}{}
+        Continue the notation of the previous example.
+        It is not possible to extend \(f\) to the point \(a\).
+        The intuitive reason for this is that the line through \(a\) and \(x\) is not unique for \(x = a\).
+        However, we can change this by restricting to a suitable projective variety.
+        For \(X = V(x_0x_2 - x_1^2)\) we can consider the map \(f \colon X \to \projective^1\) defined by
+        \begin{equation}
+            \projCoord{x_0, x_1, x_2} \mapsto
+            \begin{cases}
+                \projCoord{x_1, x_2} & \projCoord{x_0, x_1, x_2} \ne \projCoord{1, 0, 0},\\
+                \projCoord{x_0, x_1} & \projCoord{x_0, x_1, x_2} \ne \projCoord{0, 0, 1}.
+            \end{cases}
+        \end{equation}
+        This is well defined since \(x_0x_2 - x_1^2 = 0\) means that \(\projCoord{x_1, x_2} = \projCoord{x_0, x_1}\) whenever both points are defined.
+        This extends the projection to all of \(X\), which includes \(a\), and it is a morphism as it's made by patching together two projections.
+        
+        Geometrically, the \(f(a)\) is the intersection of \(L\) with the tangent to \(X\) at \(a\).
+        This geometric picture also shows that \(f\) is bijective, for every point \(y \in L\) the restriction of the defining polynomial, \(x_0x_2 - x_1^2\), to \(a\) and \(y\) has degree \(2\), and so this line intersects \(X\) at two points, counted with multiplicities.
+        One of these points is \(a\), and the other is then the unique preimage \(f^{-1}(y)\).
+        In fact, \(f\) is an isomorphism, since one can check that its inverse is the map \(\projective^1 \to X\) given by \(\projCoord{y_0, y_1} \mapsto \projCoord{y_0^2, y_0y_1, y_1^2}\).
+        
+        This example shows that we cannot expect every morphism between projective varieties to have a global description by homogeneous polynomials.
+        We will see that there is however always such a global description for morphisms between projective spaces.
+    \end{exm}
+    
+    \begin{exm}{}{}
+        Let \(X \subseteq \projective^2\) be a projective conic, that is an irreducible quadric curve.
+        Suppose also that \(\mathop{\operatorname{char}} K \ne 2\).
+        We know that the affine part of \(X\), \(X \cap \affine^2\), is isomorhpic to \(V_{\symrm{a}}(x_2 - x_1^2)\) or \(V_{\symrm{a}}(x_1x_2 - 1)\) by a linear transformation followed by a translation.
+        Extending this map to a projective automorphism of \(\projective^2\) we see that the projective conic, \(X\), is isomorphic to \(V(x_0x_2 - x_1^2)\) or \(V(x_1x_2 - x_0^2)\), which are both isomorphic to each other and in fact isomorphic to \(\projective^1\).
+        So, all projective conics are just \(\projective^1\).
+    \end{exm}
+    
+    \section{Projective Varieties are Separated}
+    We will now show that projective varieties are separated, and thus are varieties, not just prevarieties.
+    We have to check that the diagonal, \(\Delta_X\), of a projective variety, \(X\), is closed in \(X \times X\).
+    It is sufficient to check this for \(X = \projective^n\).
+    
+    Note that \(\projective^n \times \projective^m \ne \projective^{n + m}\).
+    So, we need a good description of \(\projective^n \times \projective^n\).
+    It turns out however that there is a sensible choice of homogeneous coordinates we can use to describe \(\projective^n \times \projective^n\) embedded in some larger projective space.
+    We'll construct these coordinates now, for the more general case of \(\projective^n \times \projective^m\).
+    
+    Let \(\projective^n\) be projective space with homogeneous coordinates \(x_0, \dotsc, x_n\), and let \(\projective^m\) be projective space with homogeneous coordinates \(y_0, \dotsc, y_m\).
+    Let \(N = nm + n + m = (n + 1)(m + 1) - 1\), and let \(\projective^N\) be projective space with the homogeneous coordinates \(z_{ij}\) for \(0 \le i \le n\) and \(0 \le j \le m\).
+    There is an obvious map
+    \begin{equation}
+        f \colon \projective^n \times \projective^m \to \projective^N
+    \end{equation}
+    given by \((x_i, y_j) \mapsto z_{ij} = x_iy_j\).
+    This is well-defined, if we rescale all of the \(x_i\) then we also rescale all of the \(z_{ij}\) by the same factor, and thus the points in \(\projective^N\) are unchanged by this rescaling.
+    The same goes for rescaling all of the \(y_j\).
+    
+    \begin{prp}{}{}
+        Let \(f \colon \projective^n \times \projective^m \to \projective^N\) be the map defined above.
+        Then
+        \begin{enumerate}
+            \item the image, \(X = f(\projective^n \times \projective^m)\), is a projective variety given by
+            \begin{equation}
+                X = V(z_{ij} z_{kl} - z_{il}z_{kj} \mid 0 \le i, k \le n, 0 \le j, l \le m),
+            \end{equation}
+            and
+            \item \(f \colon \projective^n \times \projective^m \to X\) is an isomorphism.
+        \end{enumerate}
+        In particular, this means that \(\projective^n \times \projective^m \isomorphic X\) is a projective variety.
+        The corresponding embedding \(\projective^n \times \projective^m \hookrightarrow \projective^N\) is called the \defineindex{Segre embedding} and the coordinates \(z_{ij}\) are called the \defineindex{Segre coordinates} of \(\projective^n \times \projective^m\).
+        \begin{proof}
+            Points of \(f(\projective^n \times \projective^m)\) satisfy the given equations since in terms of the homogeneous coordinates \(x_i\) and \(y_j\) the defining equations become
+            \begin{equation}
+                x_iy_j x_ky_l - x_i y_l x_k y_j = 0.
+            \end{equation}
+            Conversely, consider \(z \in \projective^n\) with homogeneous coordinates \(z_{00}, \dotsc, z_{nm}\) satisfying the given equations.
+            At least one of these coordinates must be nonzero, which we can take to be \(z_{00}\) without loss of generality.
+            We can then pass to affine coordinates by setting \(z_{00} = 1\).
+            Then the defining relations with \(k = l = 0\) give us \(z_{ij} = z_{i0}z_{0j}\).
+            Setting \(x_i = z_{i0}\) and \(y_j = z_{0j}\) we obtain a point in \(\projective^n \times \projective^m\) which maps to \(z\) under \(f\).
+            
+            Let \(z \in X\) be a point with \(z_{00} = 1\) as before.
+            If \(f(x, y) = z\) for some \((x, y) \in \projective^n \times \projective^m\) then it must be that \(x_0 \ne 0 \ne y_0\), so we can pass to affine coordinates setting \(x_0 = 1 = y_0\).
+            Then it follows that \(x_i = z_{i0}\) and \(y_j = z_{0j}\) for all \(i\) and \(j\), and thus \(f\) is injective, and hence a map onto its image is a bijection.
+            This also shows that \(f\) and its inverse are given locally in affine coordinates by polynomial maps, and hence \(f\) is an isomorphism.
+        \end{proof}
+    \end{prp}
+    
+    \begin{exm}{}{}
+        Consider the product \(\projective^1 \times \projective^1\).
+        Since \((1 + 1)(1 + 1) - 1 = 3\) we can identify \(\projective^1 \times \projective^1\) with the quadric surface
+        \begin{equation}
+            X = \{\projCoord{z_{00}, z_{01}, z_{10}, z_{11}} \mid z_{00}z_{11} = z_{10}z_{01}\} \subseteq \projective^3.
+        \end{equation}
+        The isomorphism is given by
+        \begin{equation}
+            f(\projCoord{x_0, x_1}, \projCoord{y_0, y_1}) = \projCoord{x_0y_0, x_0y_1, x_1y_0, x_1y_1}.
+        \end{equation}
+        Under this mapping the lines \(\{a\} \times \projective^1\) and \(\projective^1 \times \{a\}\) in \(\projective^1 \times \projective^1\) (for a given fixed \(a \in \projective^1\)) map to lines in \(X \subseteq \projective^3\).
+        
+        The real points of \(X\) form a hyperboloid, and the lines in \(\projective^1 \times \projective^1\) map to lines on this hyperboloid.
+    \end{exm}
+    
+    \begin{crl}{}{}
+        Every projective variety is a variety.
+        \begin{proof}
+            We have already seen that every projective variety is a prevariety, so it remains only to show that \(\projective^n\) is separated.
+            That is, that the diagonal, \(\Delta_{\projective^n}\), is closed in \(\projective^n \times \projective^n\).
+            The diagonal is
+            \begin{equation}
+                \Delta_{\projective^n} = \{(\projCoord{x_0, \dotsc, x_n}, \projCoord{y_0, \dotsc, y_n}) \mid x_iy_j - x_jy_i = 0\}.
+            \end{equation}
+            This works because these defining equations, \(x_iy_j - x_jy_i\) are the determinants of \(2 \times 2\) matrices
+            \begin{equation}
+                \begin{pmatrix}
+                    x_i x_j\\
+                    y_i y_j
+                \end{pmatrix}
+                ,
+            \end{equation}
+            and the vanishing of these determinants means that the rank of the matrix
+            \begin{equation}
+                \begin{pmatrix}
+                    x_0 & x_1 & \dots & x_n\\
+                    y_0 & y_1 & \dots & y_n
+                \end{pmatrix}
+            \end{equation}
+            is at most one.
+            For this matrix to not be full rank it must have linearly dependent rows.
+            That is, \(x_i\) must be \(\lambda y_i\) for some \(\lambda\) for all \(i\), and thus the points \(\projCoord{x_0, \dotsc, x_n}\) and \(\projCoord{y_0, \dotsc, y_n}\) must be the same in \(\projective^n\).
+            
+            It then follows that \(\Delta_{\projective^n}\) is closed since it is the zero locus of the homogeneous linear polynomials \(z_{ij} - z_{ji}\) in the Segre coordintes \(z_{ij} = x_iy_j\) of \(\projective^n \times \projective^n\).
+        \end{proof}
+    \end{crl}
+    
+    Note that if \(X \subseteq \projective^m\) and \(Y \subseteq \projective^n\) are projective varieties then \(X \times Y\) is a closed subset of \(\projective^m \times \projective^n\), and since the latte is a projective variety by the Segre embedding we have that \(X \times Y\) is a projective variety also, and in particular is a projective subvariety of \(\projective^m \times \projective^n\).
+    
+    \section{Closed Maps}
+    Projective spaces are compact in the classical topology over the ground field \(\complex\).
+    This is one of their most important properties.
+    Since projective varieties are closed subsets of projective spaces they are also compact in the classical topology.
+    However, every prevariety is compact in the Zariski topology, since it's a Noetherian space.
+    This means that compactness in the Zariski topology doesn't capture the same intuitive idea as it does in the classical topology (namely being of finite extent).
+    We need an alternative property to capture this intuitive property in the Zariski topology.
+    
+    The key idea in the classical topology is that continuous maps should map compact sets to compact sets.
+    This means that the image of a morphism between projective varieties should be closed.
+    This is not true for general varieties, and it will replace the notion of compactness of projective varieties.
+    
+    \begin{dfn}{Closed Map}{}
+        A map \(f \colon X \to Y\), between topological spaces, is \defineindex{closed} if \(f(A) \subseteq Y\) is closed for all closed subsets \(A \subseteq X\).
+    \end{dfn}
+    
+    \begin{prp}{}{}
+        The projection map, \(\pi \colon \projective^n \times \projective^m \to \projective^m\) is closed.
+        \begin{proof}
+            Let \(Z \subseteq \projective^n \times \projective^m\) be a closed set.
+            Then \(Z = V(f_1, \dotsc, f_r)\) for some homogeneous polynomials \(f_1, \dotsc, f_r\) of degree \(d\) in the Segre coordinates of \(\projective^n \times \projective^m\).
+            That is, the \(f_i\) are homogeneous polynomials of degree \(d\) in the coordinates \(x_0, \dotsc, x_n, y_0, \dotsc, y_m\) of \(\projective^n\) and \(\projective^m\).
+            Consider some fixed point \(a \in \projective^m\).
+            We will determine when \(a \in \pi(Z)\).
+            To do so let \(g_i = f_i(-, a) \in K[x_0, \dotsc, x_n]\).
+            Then \(a \notin \pi(Z)\) if and only if there is no \(x \in \projective^n\) such that \((x, a) \i Z\), which occurs if and only if \(V(g_1, \dotsc, g_r) = \emptyset\), which is equivalent to having \(\sqrt{\langle g_1, \dotsc, g_r \rangle} = \langle 1 \rangle\) or \(\sqrt{\langle g_1, \dotsc, g_r \rangle} = \langle x_0, \dotsc, x_n \rangle\).
+            Both of these are equivalent to having some \(k_i \in \naturals\) with \(x_i^{k_i} \in \langle g_1, \dotsc, g_r \rangle\) for all \(i\), which is true if and only if \(K[x_0, \dotsc, x_n]_k \subseteq \langle g_1, \dotsc, g_r \rangle\) for some \(k = k_0 + \dotsb + k_n \in \naturals\).
+            This can only be satisfied if \(k \ge d\) in which case the condition is equivalent to \(K[x_0, \dotsc, x_n]_k = \langle g_1, \dotsc, g_r \rangle_k\).
+            Since \(\langle g_1, \dotsc, g_r \rangle = \{h_1 g_1 + \dotsb + h_r g_r \mid h_i \in K[x_0, \dotsc, x_n]\}\) this is the same as saying that the \(K\)-linear map
+            \begin{equation}
+                \begin{aligned}
+                    F_k \colon (K[x_0, \dotsc, x_n]_{k-d})^r &\to K[x_0, \dotsc, x_n]\\
+                    (h_1, \dotsc, h_r) &\mapsto h_1g_1 + \dotsb + h_rg_r
+                \end{aligned}
+            \end{equation}
+            is surjective, which is the case if and only if it has rank \(\dim_K K[x_0, \dotsc, x_n]_k = \binom{n + k}{k}\) for \(k \ge d\).
+            This is true if and only if at least one minor of size \(\binom{n+k}{k}\) of the matrix for some \(F_k\) is nonzero.
+            The minors are polynomials in the coefficients of the \(g_i\), and thus the coordinates of \(a\), and so the non-vanishing of a minor is an open condition in the Zariski topology of \(\projective^m\).
+            Thus, the set of all \(a \in \projective^m\) with \(a \notin \pi(Z)\) is open, and thus its complement, \(\pi(Z)\), is closed.
+        \end{proof}
+    \end{prp}
+    
+    We can also interpret this in an algebraic way.
+    We start with some equations, \(f_1(x, y) = \dotsb = f_r(x, y) = 0\).
+    We then ask for the image of their common zero locus under the projection \((x, y) \mapsto y\).
+    The equations satisfied on this image are precisely the equations in \(y\) which can be derived from the original equations by eliminating \(x\).
+    For this reason the result above is sometimes known as the main theorem of elimination theory.
+    
+    \begin{crl}{}{}
+        The projection map, \(\pi \colon \projective^n \times Y \to Y\), is closed for any variety, \(Y\).
+        \begin{proof}
+            We first show the statement for an affine variety, \(Y \subseteq \affine^n\).
+            Let \(Z \subseteq \projective^n \times Y\) be closed, and let \(\overline{Z}\) be its closure in \(\projective^n \times \projective^m\).
+            If \(\pi \colon \projective^n \times \projective^m \to \projective^m\) is the projection map then by the previous result \(\pi(\overline{Z})\) is closed in \(\projective^m\).
+            Therefore
+            \begin{equation}
+                \pi(Z) = \pi(\overline{Z} \cap (\projective^n \times Y)) = \pi(\overline{Z}) \cap Y
+            \end{equation}
+            is closed in \(Y\).
+            
+            Now if \(Y\) is an arbitrary variety we can cover it by affine open subsets.
+            The condition that a subset is closed can be checked by restricting to the elements of an open cover, and so the statement follows from the statement for affine open patches above.
+        \end{proof}
+    \end{crl}
+    
+    This property of \(\projective^n\) which captures the classical idea of compactness, so we'll give it a name.
+    
+    \begin{dfn}{Complete Varieties}{}
+        A variety, \(X\), is \defineindex{complete} if the projection \(\pi \colon X \times Y \to Y\) is closed for any variety, \(Y\).
+    \end{dfn}
+    
+    Clearly \(\projective^n\) is complete by the previous corollary.
+    
+    \begin{exm}{}{}
+        A closed subvariety, \(X'\), of a complete variety, \(X\), is closed.
+        If \(Z \subseteq X' \times Y\) is closed then \(Z\) is closed in \(X \times Y\) and hence its image under the projection \(X \times Y \to Y\) is closed by completeness of \(X\).
+        This image is exactly the image of the projection \(X' \times Y \to Y\) also, so \(X'\) is complete.
+    \end{exm}
+    
+    \begin{exm}{}{}
+        Agreeing with our intuition from the classical topology, \(\affine^1\) is not complete.
+        Consider the closed subset \(Z = V(x_1x_2 - 1) \subseteq \affine^1 \times \affine^1\).
+        Points in this variety satisfy \(x_2 = 1/x_1\), and therefore under projection onto the second factor we get the subset \(\affine^1 \setminus \{0\}\), which is not closed.
+        
+        The geometric interpretation here is that \(\affine^1\) lacks the point at infinity that \(\projective^1\) has.
+        This additional point is the one which corresponds to \(0\) under \(x \mapsto 1/x\), and so if we instead take \(Z = V(x_1x_2 - 1) \subseteq \projective^1 \times \affine^1\) then we get the image \(\affine^1\), the hole at \(0\) being filled by the point at infinity, and \(\affine^1\) is closed.
+        
+        Geometrically, the word \enquote{complete} reflects the idea of having all of the points at infinity.
+    \end{exm}
+    
+    Not all complete varieties are projective, but it's hard to find examples of complete non-projective varieties.
+    We won't see any.
+    For most practical purposes complete and projective are synonymous.
+    
+    Complete varieties have the desired property, as we can now show.
+    
+    \begin{crl}{}{}
+        Let \(f \colon X \to Y\) be a morphism of varieties.
+        If \(X\) is complete then its image, \(f(X)\), is a complete closed subvariety of \(Y\).
+        \begin{proof}
+            Let \(\pi \colon X \times Y \to Y\) be projection.
+            This is closed since \(X\) is complete.
+            The graph \(\Gamma_f \subseteq X \times Y\) is closed, and hence \(f(X) = \pi(\Gamma_f)\) is closed also, and so is a closed subvariety of \(Y\).
+            
+            To show that \(f(X)\) is complete let \(Y'\) be a variety and \(Z \subseteq f(X) \times Y'\) a closed subset.
+            Let \(\pi' \colon f(X) \times Y' \to Y'\) be projection, and define the map \(\psi \colon X \times Y' \to f(X) \times Y'\) by \((x, y) \mapsto (f(x), y)\).
+            Note that this is continuous.
+            Then \(\pi' \circ \psi \colon X \times Y' \to f(X) \times Y' \to Y'\) is simply the projection \(\pi'' \colon X \times Y' \to Y'\), so we have
+            \begin{equation}
+                \pi'(Z) = \pi'(\psi(\psi^{-1}(Z))) = \pi''(\psi^{-1}(Z))
+            \end{equation}
+            which is closed since \(\psi^{-1}(Z)\) is closed (as preimages of closed subsets under a continuous function are closed) and \(\pi''\) is a closed map.
+            Thus, \(\pi'\) is a closed map, and so \(f(X)\) is complete.
+        \end{proof}
+    \end{crl}
+    
+    \subsection{Applications}
+    \begin{crl}{}{}
+        Let \(X\) be a connected complete variety.
+        Then \(\sheaf{O}_X(X) = K\), that is, every global regular function on \(X\) is constant.
+        \begin{proof}
+            A global regular function, \(\varphi \in \sheaf{O}_X(X)\), determines a morphism \(\varphi \colon X \to \affine^1\).
+            We can extend the codomain to consider this as a morphism \(\varphi \colon X \to \projective^1 = \affine^1 \cup \{\infty\}\) whose image, \(\varphi(X) \subseteq \projective^1\), doesn't contain the point at infinity.
+            Since \(X\) is complete \(\varphi(X)\) is closed, and thus it must be a finite set, since these are the only closed proper subsets of \(\projective^1\).
+            Since \(X\) is connected \(\varphi(X)\) must be also, and thus \(\varphi(X)\) is a single point, and so \(\varphi\) is constant.
+        \end{proof}
+    \end{crl}
+    
+    This result has a complex-analytic counterpart.
+    A holomorhpic function on the compact space \(\projective^1_{\complex} = \complex \cup \{\infty\}\) (the Riemann sphere) is bounded (since it's continuous and defined on a compact set).
+    Liouville's theorem then asserts that every bounded holomorphic function on \(\complex\) is constant.
+    More generally, every holomorphic function on a connected compact complex manifold is constant.
+    
+    Another application is to embed projective spaces in large projective spaces.
+    Take \(n, d \in \integers_{>0}\).
+    There are \(N = \binom{n+d}{n} - 1\) monomials of degree \(d\) in the \(x_0, \dotsc, x_n\).
+    Let \(f_0, \dotsc, f_N \in K[x_0, \dotsc, x_n]\) be these monomials in an arbitrary, but fixed, order.
+    
+    Consider the map \(F \colon \projective^n \to \projective^N\) given by \(x \mapsto \projCoord{f_0(x), \dotsc, f_N(x)}\).
+    This is a morphism since the monomials \(x_0^d, \dotsc, x_n^d\) cannot all simultaneously be zero (since we can't have all \(x_i = 0\) at the same time in projective space).
+    Thus, \cref{lma:morphism of projective varieties by components} applies.
+    Thus, \(X = F(\projective^n)\) is a projective variety.
+    We claim that \(F \colon \projective^n \to X\) is an isomorphism.
+    All we have to do is find an inverse morphism.
+    This isn't too hard, we can do it for an open affine cover.
+    Consider the open subset on which \(x_i \ne 0\), so \(x_i^d \ne 0\) for some \(i\).
+    On this set we can pass to affine coordinates by setting \(x_i = 1\).
+    Then the inverse morphism is given by \(x_j = x_j x_i^{d - 1} / x_i^d\) for all \(j \ne i\), which is a quotient of two degree \(d\) monomials and thus is a morphism.
+    
+    This lets us realise \(\projective^n\) as a subvariety, \(X\), of \(\projective^N\).
+    This is usually called the degree-\(d\) \defineindex{Veronese embedding}, and the coordinates on \(\projective^N\) are called the \defineindex{Veronese coordinates} of \(\projective^n\).
+    This embedding can also be restricted to any projective variety, \(Y \subseteq \projective^n\), and it gives an isomorphism by degree-\(d\) polynomials between \(Y\) and a projective subvariety of \(\projective^N\),
+    
+    The importance of the Veronese embedding is the fact that degree-\(d\) polynomials in the coordinates of \(\projective^n\) turn into linear polynomials in the Veronese coordinates.
+    
+    \begin{exm}{}{}
+        For \(d = 1\) the Veronese embedding of \(\projective^n\) is just the identity, \(\projective^n \to \projective^n\).
+        
+        For \(n = 1\) the degree-\(d\) Veronese embedding of \(\projective^1\) in \(\projective^d\) is \(F \colon \projective^1 \to \projective^d\), \(\projCoord{x_0, x_1} \mapsto \projCoord{x_0^d, x_0^{d-1}x_1, \dotsc, x_0x_1^{d-1}, x_1^d}\).
+    \end{exm}
+    
+    \begin{crl}{}{}
+        Let \(X \subseteq \projective^n\) be a projective variety, and let \(f \in S(X)\) be homogeneous and non-constant.
+        Then \(X \setminus V(f)\) is an affine variety.
+        \begin{proof}
+            If \(f(x) = x_0\) then this reduces to recognising that \(U_0 = \{x \in X \mid x_i \ne 0\}\) is an affine variety.
+            More generally, if \(f\) is linear then the statement reduces to this case by a projective automorphism sending \(f(x)\) to \(x_0\).
+            If \(f\) is of degree \(d > 1\) we can reduce it to the linear case by first applying the degree-\(d\) Veronese embedding.
+        \end{proof}
+    \end{crl}
+    
+    \chapter{Grassmannians}
+    \section{Definition}
+    Grassmannians generalise projective spaces.
+    The projective space, \(\projective^n\), is the set of all \(1\)-dimensional subspaces of \(K^{n+1}\).
+    Grassmannians consist of all \(k\)-dimensional subsets of \(K^n\).
+    
+    \begin{dfn}{Grassmannian}{}
+        Let \(n \in \integers_{>0}\) and let \(k \in \integers\) with \(0 \le k \le n\).
+        The \defineindex{Grassmannian}, \(\Gr(k, n)\), consists of all \(k\)-dimensional linear subspaces of \(K^n\).
+    \end{dfn}
+    
+    By previous work we know that \(k\)-dimensional linear subspaces of \(K^n\) for \(k > 0\) are in natural bijection with \((k - 1)\)-dimensional subspaces of \(\projective^{n-1}\).
+    We can consider \(\Gr(k, n)\) to be the set of all such projective linear subspaces.
+    
+    Our goal is to make \(\Gr(k, n)\) into a variety, in a way that matches up with the variety structure of \(\Gr(1, n) = \projective^{n-1}\).
+    We will see that \(\Gr(k, n)\) is in fact a projective variety.
+    This will require that we first look at wedge products.
+    
+    \begin{dfn}{Alternating Map}{}
+        Let \(V\) be a \(K\)-vector space and \(k \in \integers_{\ge 0}\).
+        A \(k\)-fold multilinear map, \(f \colon V^k \to W\), with \(W\) another \(K\)-vector space, is \defineindex{alternating} if \(f(v_1, \dotsc, v_k) = 0\) whenever there exist \(i, j \in \{1, \dotsc, k\}\) with \(v_i = v_j\) and \(i \ne j\).
+    \end{dfn}
+    
+    It is then a result of this definition and multilinearity (for \(\mathop{\operatorname{char}} K \ne 2\)) that permuting the entries, \(v_i\), results in \(f\) picking up a sign:
+    \begin{equation}
+        f(v_{\sigma(1)}, \dotsc, v_{\sigma(k)}) = (\sgn \sigma) f(v_1, \dotsc, v_k).
+    \end{equation}
+    
+    \begin{exm}{}{}
+        \begin{enumerate}
+            \item The determinant, \(\det \colon \matrices{n}{K} \isomorphic (K^n)^n \to K\) is an alternating \(n\)-fold multilinear map.
+            This follows from the well known fact that exchanging two neighbouring columns of a matrix results in a sign change.
+            \item The cross product, \({\times} \colon (K^3)^2 \to K^3\), is an alternating bilinear map.
+        \end{enumerate}
+    \end{exm}
+    
+    \begin{dfn}{Wedge Product}{}
+        Let \(V\) be a \(K\)-vector space, and \(k \in \integers_{\ge 0}\).
+        A \(k\)-fold \defineindex{wedge product} of \(V\) is a vector space, \(T\), together with an alternating \(k\)-fold multilinear ap \(\tau \colon V^k \to T\), satisfying the following universal property: for all \(k\)-fold alternating linear maps, \(f \colon V^k \to W\), there is a unique linear map \(\overline{f} \colon T \to W\) such that \(f = \overline{f} \circ \tau\), i.e., such that the diagram
+        \begin{equation}
+            \begin{tikzcd}
+                V^k \arrow[r, "f"] \arrow[d, "\tau"'] & W\\
+                T \arrow[ur, dashed, "\exists!\overline{f}"]
+            \end{tikzcd}
+        \end{equation}
+        commutes.
+    \end{dfn}
+    
+    As usual with universal properties we need to show that such an object exists.
+    Then once we have it will be unique up to unique isomorphism.
+    That is the content of the following proposition.
+    
+    \begin{prp}{}{}
+        Let \(V\) be a \(K\)-vector space and fix some \(k \in \integers_{\ge 0}\).
+        Let \(T = \wedgespace[k] V = (V^{\otimes k})/L\) where \(L\) is the linear subspace generated by elements \(v_1 \otimes \dotsb \otimes v_k\) where there exists \(i \ne j\) with \(v_i = v_j\).
+        Further, let \(\tau(v_1, \dotsc, v_k) \eqcolon v_1 \wedge \dotsb \wedge v_k\) be the image of \(v_1 \otimes \dotsb \otimes v_k\) under this quotient.
+        We claim that \((T, \tau)\) is a \(k\)-fold wedge product.
+        \begin{proof}
+            We simply have to show that the universal property holds.
+            To do so let \(f \colon V^k \to W\) be an alternating multilinear map.
+            Let \(\overline{f} \colon T \to W\) be defined by \(v_1 \wedge \dotsb \wedge v_k \mapsto f(v_1, \dotsc, v_k)\) is such that \(f = \overline{f} \circ \tau\) since \((\overline{f} \circ \tau)(v_1, \dotsc, v_k) = \overline{f}(v_1 \wedge \dotsb \wedge v_k)\).
+            There was no choice made here, so \(\overline{f}\) is unique in this property.
+        \end{proof}
+    \end{prp}
+    
+    \begin{exm}{}{}
+        Let \(V\) be a finite-dimensional vector space of dimension \(n\) with basis \(\{e_1, \dotsc, e_n\}\).
+        \begin{enumerate}
+            \item There is a basis of \(\wedgespace[k] V\) given by \(\{e_{i_1} \wedge \dotsb \wedge e_{i_k} \mid i_1 < \dotsb < i_k\}\).
+            In particular, this means \(\dim \wedgespace[k] V = \binom{n}{k}\), since any subset of \(k\) indices from \(\{1, \dotsc, n\}\) uniquely defines such an ordered wedge product.
+            \item We have \(\wedgespace[0] V \isomorphic K\) since \(\wedgespace{{0}} V\) is spanned by the unique empty wedge product.
+            Similarly, we have \(\wedgespace[1] V \isomorphic V\) since this space is spanned by the \(1\)-fold wedge products \(e_i\).
+            We also have \(\wedgespace[n] V \isomorphic K\), since \(\wedgespace n V\) is spanned by \(e_1 \wedge \dotsb \wedge e_n\).
+            An explicit isomorphism is given by interpreting \(v_i\) in \(v_1 \wedge \dotsb \wedge v_n\) as the \(i\)th column of a matrix and then taking the determinant of this matrix.
+            \item For \(V = K^3\) and \(v, w \in K^3\) using the antisymmetry of \(\wedge\) it follows that if \(v = \sum_i a_ie_i\) and \(w = \sum_i b_ie_i\) then
+            \begin{equation}
+                v \wedge w = (a_1b_2 - a_2b_1)e_1 \wedge e_2 + (a_1b_3 - a_3b_1)e_1 \wedge e_3 + (a_2 b_3 - a_3b_2) e_2 \wedge e_3.
+            \end{equation}
+            Identifying \(e_1 \wedge e_2\), \(e_1 \wedge e_3\), and \(e_2 \wedge e_3\) as a basis of \(\wedgespace[2] K^3 \isomorphic K^3\) this is simply the cross product of \(v\) and \(w\).
+        \end{enumerate}
+    \end{exm}
+    
+    Notice that in the last example the coordinates of \(v \wedge w\) are just the \(2 \times 2\) minors of the \(2 \times 3\) matrix with rows \(v\) and \(w\).
+    This is a general phenomenon.
+    For \(0 \le k \le n\) let \(v_1, \dotsc, v_k \in K^n\) be vectors which can be expressed in a basis as \(v_i = \sum_j a_{ij}e_j\).
+    Then for strictly increasing indices, \(i_1 < \dotsb < i_k\), we can consider the coefficient of \(e_{i_1} \wedge \dotsb \wedge e_{i_k}\) of \(v_1 \wedge \dotsb \wedge v_k\) in \(\wedgespace[k] V\).
+    By multi linearity we have
+    \begin{equation}
+        v_1 \wedge \dotsb \wedge v_k = \sum_{j_1, \dotsc, j_k} a_{1j_1} \dotsm a_{kj_k} e_{j_1} \wedge \dotsb \wedge e_{j_k}.
+    \end{equation}
+    The indices here are not necessarily in ascending order, which we can correct picking up some signs, to get
+    \begin{equation}
+        v_1 \wedge \dotsb \wedge v_k = \sum_{j_1, \dotsc, j_k} (\sgn \sigma) a_{1i_{\sigma(1)}} \dotsm a_{ki_{\sigma(k)}} e_{i_1} \wedge \dotsb \wedge e_{i_k}
+    \end{equation}
+    where \(\sigma\) is the permutation which results in ordered indices.
+    Then the coefficient of this is precisely the determinant of \(A = (a_{ij})\).
+    This is exactly the determinant of the submatrix of the matrix whose rows are \(v_1, \dotsc, v_k\) taking only the columns indexed by \(i_1, \dotsc, i_k\).
+    
+    \begin{exm}{}{}
+        Consider \(\wedgespace[3]\reals^4\), and the vectors
+        \begin{equation}
+            v_1 = 
+            \begin{pmatrix}
+                1\\
+                2\\
+                3\\
+                4
+            \end{pmatrix}
+            , \quad v_2 = 
+            \begin{pmatrix}
+                5\\
+                6\\
+                7\\
+                8
+            \end{pmatrix}
+            , \quad v_3 = 
+            \begin{pmatrix}
+                1\\
+                2\\
+                2\\
+                2
+            \end{pmatrix}
+            .
+        \end{equation}
+        We want to compute \(v_1 \wedge v_2 \wedge v_3\) in the standard basis of \(\wedgespace[3]\reals^4\).
+        To do so take the matrix with the \(v_i\) as rows:
+        \begin{equation}
+            \begin{pmatrix}
+                1 & 2 & 3 & 4\\
+                5 & 6 & 7 & 8\\
+                1 & 2 & 2 & 2
+            \end{pmatrix}
+            .
+        \end{equation}
+        The coefficient of \(e_1 \wedge e_2 \wedge e_3\) is
+        \begin{equation}
+            \det
+            \begin{pmatrix}
+                1 & 2 & 3\\
+                5 & 6 & 7\\
+                1 & 2 & 2
+            \end{pmatrix}
+            = 4.
+        \end{equation}
+        This agrees with a more laborious calculation in which we see that there are six ways of getting \(e_1\), \(e_2\) and \(e_3\) in a wedge product through a brute force expansion of \(v_1 \wedge v_2 \wedge v_3\), namely\footnote{We use multi-index notation here, where \(e_{ijk} = e_i \wedge e_j \wedge e_k\).}
+        \begin{multline}
+            1 \cdot 6 \cdot 2 e_{123} + 1 \cdot 7 \cdot 2 e_{132} + 2 \cdot 5 \cdot 2 e_{213} + 2 \cdot 7 \cdot 1 e_{231} + 3 \cdot 5 \cdot 2 e_{312} + 3 \cdot 6 \cdot 1 e_{321}\\
+            = (12 - 14 - 20 + 14 + 30 - 18)e_{123} = 4 e_1 \wedge e_2 \wedge e_3.
+        \end{multline}
+    \end{exm}
+    
+    This result allows us to encode the linear dependence and span of vectors.
+    
+    \begin{lma}{}{}
+        Let \(v_1, \dotsc, v_k \in K^n\) for some \(k \le n\).
+        Then \(v_1 \wedge \dotsb \wedge v_k = 0\) if and only if \(\{v_1, \dotsc, v_k\}\) is a linearly dependent set.
+        \begin{proof}
+            We have that \(v_1 \wedge \dotsb \wedge v_k = 0\) if and only if the coefficients of all standard basis vectors, \(e_{i_1} \wedge \dotsb \wedge e_{i_k}\), vanish, which we've seen happens if and only if the corresponding matrix minors vanish, which is the case if and only the corresponding matrix with rows given by \(v_i\) is not full rank, which is equivalent to the \(v_i\) being linearly dependent.
+        \end{proof}
+    \end{lma}
+    
+    \begin{lma}{}{}
+        Let \(v_1, \dotsc, v_k \in K^n\) and \(w_1, \dotsc, w_k \in K^n\) be two linearly independent sets.
+        Then the alternating tensor products \(v_1 \wedge \dotsb \wedge v_k\) and \(w_1 \wedge \dotsb \wedge w_k\) are linearly dependent in \(\wedgespace[k]K^n\) if and only if \(\Span\{v_1, \dotsc, v_k\} = \Span\{w_1, \dotsc, w_k\}\).
+        \begin{proof}
+            We know by the previous lemma that \(v_1 \wedge \dotsb \wedge v_k\) and \(w_1 \wedge \dotsb \wedge w_k\) are nonzero.
+            Suppose they are linearly dependent, that is, there exists \(\lambda \in K\) such that \(v_1 \wedge \dotsb \wedge v_k = \lambda w_1 \wedge \dotsb \wedge w_k\).
+            Then \(w_i \wedge v_1 \wedge \dotsb v_k = \lambda w_i \wedge w_1 \wedge \dotsb \wedge w_k = 0\) for all \(i\) since \(w_i\) appears twice in the wedge product.
+            Thus, the vectors \(w_i, v_1, \dotsc, v_k\) are linearly dependent, and since the \(v_j\) alone are linearly independent it must be that \(w_i \in \Span\{v_1, \dotsc, v_k\}\).
+            Thus, we have that \(\Span\{w_1, \dotsc, w_k\} \subseteq \Span\{v_1, \dotsc, v_k\}\), and an equivalent argument gives inclusion in the other direction.
+            
+            Now suppose that the \(v_i\) and \(w_i\) span the same subspace of \(K^n\).
+            Then the basis \(w_i\) can be obtained from the basis \(v_i\) by a finite sequence of basis transformations of the form \(v_i \mapsto v_i + \lambda v_j\) and \(v_i \mapsto \lambda v_i\) for some \(\lambda \in K\) and \(i \ne j\).
+            However, we have
+            \begin{equation}
+                v_1 \wedge \dotsb \wedge v_{i-1} \wedge (v_i + \lambda v_j) \wedge v_{i+1} \wedge \dotsb \wedge v_k = v_1 \wedge \dotsb \wedge v_i \wedge \dotsb \wedge v_k
+            \end{equation}
+            since \(v_j\) appears twoce, and
+            \begin{equation}
+                v_1 \wedge \dotsb \lambda v_i \wedge \dotsb \wedge v_k = \lambda v_1 \wedge \dotsb \wedge v_i \wedge \dotsb \wedge v_k.
+            \end{equation}
+            So these transformations change the wedge product by at most scalar multiplication, and thus \(v_1 \wedge \dotsb \wedge v_k\) and \(w_1 \wedge \dotsb w_k\) must be linearly dependent.
+        \end{proof}
+    \end{lma}
+    
+    This way of thinking about spans, that is about subspaces, is helpful when working with Grassmanianns.
+    
+    \section{Pl\"ucker Embedding}
+    Let \(0 \le k \le n\) and let \(N = \binom{n}{k} - 1\).
+    Let \(v_1, \dotsc, v_k\) be linearly independent elements of \(K^n\).
+    Consider the map \(f \colon \Gr(k, n) \to \projective^N\) given by sending the linear subspace \(\Span \{v_1, \dotsc, v_k\} \in \Gr(k, n)\) to the class \(v_1 \wedge \dotsb \wedge v_k \in \wedgespace[k]K^n \isomorphic K^{\binom{n}{k}} \subseteq \projective^{\binom{n}{k} - 1}\).
+    
+    This is well-defined: \(v_1 \wedge \dotsb \wedge v_k\) is nonzero since the \(v_i\) are linearly independent, and changing the basis of the subspace doesn't change the resulting point in \(\projective^N\) by the previous lemma.
+    Further, this map is injective, also by the previous lemma.
+    We call \(f\) the \defineindex{Pl\"ucker embedding} of \(\Gr(k, n)\) into \(\projective^n\).
+    For a \(k\)-dimensional linear subspace, \(L \in \Gr(k, n)\), the homogeneous coordinates of \(f(L)\) in \(\projective^N\) are called its \defineindex{Pl\"ucker coordinates}.
+    These turn out to just be the maximal minors of the matrix whose rows are \(v_1, \dotsc, v_k\).
+    
+    \begin{exm}{}{}
+        The Pl\"ucker embedding of \(\Gr(1, n)\) simply maps the one-dimensional linear subspace \(\Span\{a_1 e_1 + \dotsb + a_n e_n\}\) to the point \(\projCoord{a_1, \dotsc, a_n} \in \projective^{n - 1}\) (note \(\binom{n}{1} - 1 = n - 1\)).
+        Thus, \(\Gr(1, n) = \projective^{n-1}\) as expected.
+    \end{exm}
+    
+    \begin{exm}{}{}
+        Consider the two dimensional subspace, \(L = \Span\{e_1 + e_2, e_1 + e_3\}\), of \(K^3\).
+        We have
+        \begin{equation}
+            (e_1 + e_2) \wedge (e_1 + e_3) = -e_1 \wedge e_2 + e_1 \wedge e_3 + e_2 \wedge e_3,
+        \end{equation}
+        and thus, up to a choice of ordering the coordinates, the Pl\"ucker coordinates of \(L\) in \(\projective^{2}\) are \(\projCoord[{-}1,1,1]\).
+        These are exactly the three \(2 \times 2\) minors of the matrix
+        \begin{equation}
+            \begin{pmatrix}
+                1 & 1 & 0\\
+                1 & 0 & 1
+            \end{pmatrix}
+        \end{equation}
+        whose rows are \(e_1 + e_2\) and \(e_1 + e_3\).
+        Changing these spanning vectors just does row operations on this matrix, changing the maximal minors by at most a common constant factor, which again shows that the Pl\"ucker coordinates are well-defined.
+    \end{exm}
+    
+    We've shown that \(\Gr(k, n)\) embeds into projective space.
+    It remains to show that it is a closed subset, that is, a projective variety.
+    To do this we need the following result.
+    The idea is that we've just shown that linear subspaces, with a given basis, \(\{v_1, \dotsc, v_k\}\), correspond to \enquote{pure (alternating) tensors} \(v_1 \wedge \dotsb \wedge v_k\), not to linear combinations of things of this form.
+    So, we need to find equations describing these pure tensors in \(\wedgespace[k]K^n\).
+    The key observation for this is from the following examples.
+    
+    \begin{exm}{}{}
+        \begin{enumerate}
+            \item Let \(\omega = e_1 \wedge e_2\) and consider the map \(K^4 \to \wedgespace[3]K^4\) given by \(v \mapsto v \wedge \omega\).
+            On an arbitrary element of \(K^4\) this map evaluates to
+            \begin{equation}
+                (a_1 e_1 + a_2 e_2 + a_3 e_3 + a_4 e_4) \wedge e_1 \wedge e_2 = a_3 e_1 \wedge e_2 \wedge e_3 + a_4 e_1 \wedge e_2 \wedge e_4.
+            \end{equation}
+            This shows that the image of this map is a two-dimensional subspace, so the rank of the map is \(2 = 4 - 2\) (where the \(4\) is from \(K^4\) and the \(2\) is from \(\omega \in \wedgespace[2] K^4\)).
+            
+            \item Consider \(\omega = e_1 \wedge e_2 + e_3 \wedge e_4\) and the same map as above.
+            We then have
+            \begin{equation}
+                (a_1 e_1 + a_2 e_2 + a_3 e_3 + a_4 e_4) \wedge (e_1 \wedge e_2 + e_3 \wedge e_4) = a_1 e_1 \wedge e_3 \wedge e_4 + a_2 e_2 \wedge e_3 \wedge e_4 + a_3 e_1 \wedge e_2 \wedge e_3 + a_4 e_1 \wedge e_2 \wedge e_4.
+            \end{equation}
+            This shows that the image of this map is a four-dimensional subspace, so the rank of the map is \(4 > 4 - 2\).
+        \end{enumerate}
+    \end{exm}
+    
+    \begin{lma}{}{}
+        For a fixed, nonzero, \(\omega \in \wedgespace[k] K^n\) with \(k < n\) consider the \(K\)-linear map
+        \begin{equation}
+            \begin{aligned}
+                f \colon K^n &\to \wedgespace[k+1] K^n,\\
+                v &\mapsto v \wedge \omega.
+            \end{aligned}
+        \end{equation}
+        The rank of \(f\) is at least \(n - k\), and is equal to \(n - k\) if and only if \(\omega = v_1 \wedge \dotsb \wedge v_k\) for some \(v_i \in K^n\).
+        \begin{proof}
+            Let \(v_1, \dotsc, v_k\) be a basis of \(\ker f\), note \(r = n - \rank f\).
+            Extend this to a basis, \(v_1, \dotsc, v_n\), of \(K^n\).
+            Taking the basis \(v_{i_1} \wedge \dotsb \wedge v_{i_k}\) with \(i_1 < \dotsb < i_k\) for \(\wedgespace[k]K^n\) we can express \(\omega\) as
+            \begin{equation}
+                \omega = \sum_{i_1 < \dotsb < i_k} a_{i_1\dotso i_k} v_{i_1} \wedge \dotsb \wedge v_{i_k}
+            \end{equation}
+            for some \(a_{i_1 \dotso i_k} \in K\).
+            For \(i = 1, \dotsc, r\) we know that \(v_i \in \ker f\), so
+            \begin{equation}
+                0 = v_i \wedge \omega = \sum_{i_1 < \dotsb < i_k} a_{i_1 \dotso i_k} v_i \wedge v_{i_1} \wedge \dotsb \wedge v_{i_k}.
+            \end{equation}
+            We have \(v_i \wedge v_{i_1} \wedge \dotsb \wedge v_{i_k} = 0\) if \(i \in \{i_1, \dotsc, i_k\}\), and when this isn't the case \(v_i \wedge v_{i_1} \wedge \dotsb \wedge v_{i_k}\) is (up to sign) one of the standard basis vectors of \(\wedgespace[k+1]K^n\).
+            This equation therefore tells us that we must have \(a_{i_1 \dotso i_k} = 0\) whenever \(i \notin \{i_1, \dotsc, i_k\}\).
+            Since this holds for \(i = 1, \dotsc, r\) we conclude that \(a_{i_1 \dotso i_k}\) is only allowed to be nonzero if \(\{1, \dotsc, r\} \subseteq \{i_1, \dotsc, i_k\}\).
+            
+            At least one of these coefficients must be nonzero, as \(\omega \ne 0\) by assumption.
+            This therefore requires that \(r \le k\), which is to say that \(\rank f = n - r \ge n - k\).
+            Further, if we have equality then only \(a_{1\dotso k}\) can be nonzero, which means that \(\omega\) is a scalar multiple of \(v_1 \wedge \dotsb \wedge v_k\), so is a pure alternating tensor.
+            
+            Conversely, suppose \(\omega = w_1 \wedge \dotsb \wedge w_k\) for some linearly independent \(w_i \in K^n\).
+            Then \(w_i \in \ker f\), and so \(\dim \ker f \ge k\), which means \(\rank f \le n - k\).
+            Combining this with \(\rank f \ge n - k\) we see that we must have equality in the case where \(\omega\) is a pure alternating tensor.
+        \end{proof}
+    \end{lma}
+    
+    \begin{crl}{}{}
+        The Pl\"ucker embedding makes \(\Gr(k, n)\) a closed subset of \(\projective^{\binom{n}{k} - 1}\), so it is a projective variety.
+        \begin{proof}
+            First, \(\Gr(n, n)\) is just a single point, the subspace \(K^n \subseteq K^n\).
+            Thus, \(\Gr(n, n)\) is a variety.
+            We can then assume that \(k < n\).
+            Then by construction \(\omega \in \projective^{\binom{n}{k} - 1}\) is in \(\Gr(k, n)\) if and only if it is the class of a pure tensor, \(v_1 \wedge \dotsb \wedge v_k\).
+            By the previous result this is the case if and only if the rank of the linear map \(f \colon K^n \to \wedgespace[k+1]K^n\), \(v \mapsto v \wedge \omega\), is \(n - k\).
+            The rank of this map is always at least \(n - k\), so we can check this condition by checking that all \((n - k + 1) \times (n - k + 1)\) minors of the matrix for \(f\) vanish.
+            These minors are homogeneous polynomials in the entries of this matrix, which are the coordinates of \(\omega\).
+            Thus, we have reduced the condition for \(\omega\) to be in \(\Gr(k, n)\) to the vanishing of certain homogeneous polynomials, and thus \(\Gr(k, n)\) is a closed subset of \(\projective^{\binom{n}{k} - 1}\).
+        \end{proof}
+    \end{crl}
+    
+    \begin{exm}{}{}
+        The Grassmannian \(\Gr(2, 4)\) is given by the vanishing of all sixteen \(3 \times 3\) minors of a \(4 \times 4\) matrix corresponding to a linear map \(K^4 \to \wedgespace[3]K^4\).
+        It is then a closed subset of \(\projective^{\binom{4}{2} - 1} = \projective^5\) given by the vanishing locus of \(16\) cubic equations.
+    \end{exm}
+    
+    This is \emph{not} the simplest set of equations describing \(\Gr(2, 4)\).
+    In fact, it's possible to specify \(\Gr(2, 4)\) with a single quadratic equation.
+    A more useful description of Grassmannians is in terms of affine patches, as we'll now construct.
+    This also has the advantage of making the dimension of \(\Gr(k, n)\) obvious.
+    
+    Let \(U_0 \subseteq \Gr(k, n) \subseteq \projective^{\binom{n}{k} - 1}\) be the open subset where the \(e_1 \wedge \dotsb \wedge e_k\) coordinate is nonzero.
+    Then a linear subspace, \(L \in \Gr(k, n)\), is a point in \(U_0\) if and only if it is the row span of a \(k \times n\) matrix of the form \((A|B)\) for \(A\) an invertible \(k \times k\) matrix and \(B\) an arbitrary \(k \times (n - k)\) matrix.
+    Multiplying such a matrix on the left by \(A^{-1}\), which doesn't change its row span, gives us that \(U_0\) is the image of the map
+    \begin{equation}
+        \begin{aligned}
+            f \colon \matrices[k]{(n-k)}{K} = \affine^{k(n - k)} &\to U_0,\\
+            C &\mapsto \text{row span of } (I_k | C)
+        \end{aligned}
+    \end{equation}
+    where \(C = A^{-1}B\).
+    Different matrices, \(C\), lead to different row spans of \((I_k|C)\), so \(f\) is a bijection.
+    Further, the maximal minors of \((I_k|C)\) are polynomial functions in the entries of \(C\), and so \(f\) is a morphism.
+    The \((i, j)\) entry of \(C\) can be reconstructed from \(f(C)\) up to a sign as the maximal minor of \((I_k|C)\) taking all columns of \(E_k\) except the \(i\)th and taking the \(j\)th column of \(C\).
+    Thus, \(f^{-1}\) is a morphism, and so \(f\) is an isomorphism.
+    
+    \begin{crl}{}{}
+        The Grassmannian \(\Gr(k, n)\) is an irreducible variety of dimension \(k(n - k)\).
+        \begin{proof}
+            We have just seen that \(\Gr(k, n)\) has an open cover by affine spaces, \(\affine^{k(n - k)}\).
+            Any two of these patches have a non-empty intersection, we can always write down a \(k \times n\) matrix such that any two given maximal minors are nonzero.
+            The result then follows.
+        \end{proof}
+    \end{crl}
+    
+    This construction gives us an alternative, and very useful, description of the Grassmanian \(\Gr(k, n)\).
+    It is the space of all full-rank \(k \times n\) matrices modulo row operations.
+    We know that all such matrices are row equivalent to a unique reduced row echelon form matrix, so \(\Gr(k, n)\) is the set of full-rank \(k \times n\) matrices in reduced row echelon form.
+    
+    For example, \(\Gr(1, 2) = \projective^1\) consists of all full-rank \(1 \times 2\) matrices of reduced row echelon form.
+    The only two such matrices are
+    \begin{equation}
+        \begin{pmatrix}
+            1 & *
+        \end{pmatrix}
+        \qqand
+        \begin{pmatrix}
+            0 & 1
+        \end{pmatrix}
+    \end{equation}
+    which correspond to \(\affine^1 \subseteq \projective^1\) as \(*\) varies over \(K\), and \(\infty \in \projective^1\) respectively.
+    
+    This construction of Grassmannians also gives us the following symmetry property.
+    
+    \begin{prp}{}{}
+        For \(0 \le k \le n\) we have that \(\Gr(k, n) \isomorphic \Gr(n - k, n)\).
+        \begin{proof}
+            There is a well-defined set theoretic bijection, \(f \colon \Gr(k, n) \to \Gr(n - k, n)\) sending a \(k\)-dimensional linear subspace, \(L \subseteq K^n\), to its orthogonal complement,
+            \begin{equation}
+                L^{\perp} = \{x \in K^n \mid \innerprod{x}{y} = 0 \forall y \in L\}
+            \end{equation}
+            where \(\innerprod{x}{y} = \sum_{i=1}^n x_i y_i\) is the standard bilinear form.
+            It remains to show that \(f\) is a morphism.
+            We can do this on the affine coordinates.
+            Let \(L \in \Gr(k, n)\) be described by as the subspace spanned by the rows of a matrix \((I_k|C)\) where the entries of \(C \in \matrices[k]{(n - k)}{K}\) are the affine coordinates of \(L\).
+            Then since
+            \begin{equation}
+                \begin{pmatrix}
+                    I_k & C
+                \end{pmatrix}
+                \begin{pmatrix}
+                    -C\\
+                    I_{n-k}
+                \end{pmatrix}
+                = 0
+            \end{equation}
+             we see that \(L^{\perp}\) is the subspace spanned by the rows of \((-C^{\trans} | I_{n-k})\), but the maximal minors of this matrix, that is the Pl\"ucker coordinates of \(L^{\perp}\), are polynomials in the entries of \(C\), and so \(f\) is a morphism.
+             Since \(f\) is self inverse it is an isomorphism.
+        \end{proof}
+    \end{prp}
+    
+    
     
     \appendixpage
     \begin{appendices}
